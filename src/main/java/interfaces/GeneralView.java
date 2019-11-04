@@ -19,7 +19,7 @@ public class GeneralView extends JFrame {
 	public GeneralView(String directory) {
 
 		this.directory = directory;
-		String fileName= "result.xls";
+		String fileName= "results.xls";
 		String path=this.directory + "\\" + fileName;
 		excel= new File(path);
 		
@@ -46,16 +46,21 @@ public class GeneralView extends JFrame {
 		tabPanel.addTab("Images", panelImageTree);
 
 		getContentPane().add(tabPanel);
+		
+		setVisible(true);
 	}
 
 	private void imageTreePanelContent(JPanel panelImageTree) {
-		// TODO Auto-generated method stub
+		ImageTreePanel imageTree= new ImageTreePanel(directory);
+		panelImageTree.add(imageTree);
+		panelImageTree.setVisible(true);
 
 	}
 
 	private void excelPanelContent(JPanel panelExcel, File excel) {
 		ExcelTableCreator excelPanel= new ExcelTableCreator(excel);
 		panelExcel.add(excelPanel);
+		panelExcel.setVisible(true);
 
 	}
 

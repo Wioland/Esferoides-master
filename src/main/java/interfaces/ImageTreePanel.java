@@ -20,7 +20,7 @@ import javax.swing.tree.DefaultTreeModel;
 import esferoides.Utils;
 import ij.io.DirectoryChooser;
 
-public class ImageTreePanel extends JPanel {
+public class ImageTreePanel extends JSplitPane {
 
 	/**
 	 * 
@@ -30,94 +30,38 @@ public class ImageTreePanel extends JPanel {
 	private String dir;
 	private List<ImageIcon> listImages;
 	private List<JButton> listImagesPrev;
+	
 
+	
+	
 	public ImageTreePanel(String directory) {
+		
 		this.dir = directory;
-
-	}
-
-	/*
-	 * Crea el panel donde se muestran las imagenes de resultado
-	 */
-	private void createPanelImage(JPanel cont) {
-		List<String> result = new ArrayList<String>();
-		listImages = new ArrayList<ImageIcon>();
-		listImagesPrev = new ArrayList<JButton>();
+		setDividerSize( 1 );
+        setContinuousLayout( true );
 		
-		
-
-		File folder = new File(dir);
-		Utils.search(".*\\.tiff", folder, result);
-		Collections.sort(result);
-
-		for (String name : result) {
-			ImageIcon image = new ImageIcon(name);
-			listImages.add(image);
-		}
-		
-		listImagesPrev = getPreview(listImages,cont);
-		
-
-	}
-
-	
-	
-	
-	
-	/* devuelve una imagen de tamaño 100x100 VISTA PREVIA */
-	public List<JButton> getPreview(List<ImageIcon> listImages, JPanel cont) {
-		
-		List<JButton> listImagesPrev = new ArrayList<JButton>();
-		
-
-		for (ImageIcon image : listImages) {
-			JButton button = new JButton(image);
-			button.setSize(100, 1000);
-			
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) { // si se genera el click que muestre un visualizador de imagenes
-					ViewImagesBigger viewImageBig= new ViewImagesBigger();							
-				}
-			});
-
-			listImagesPrev.add(button);
-			
-			cont.add(button);
-		}
-		return listImagesPrev;
-
-	}
-
-	
-	
-	
-	
-	
-	
-	/*
-	 * Funcion que crea la region dividida dentro de la pestaña de visualizacion de
-	 * las imagenes
-	 */
-
-	private void createSplitFrame(JTabbedPane tP) {
-		// create a panel
 		JPanel p1 = new JPanel();
 		JPanel p = new JPanel();
 
-		p1.setLayout(new GridLayout(0, 0));
-		
-		
+		p1.setLayout(new GridLayout(0, 4));
+
 		createPanelImage(p1);// lista de imagenes
+		createTree();
 		p.add(arbol);// arbol
 
-		JSplitPane panel1 = new JSplitPane(SwingConstants.VERTICAL, p1, p);
+		this.setRightComponent(p1);
+		this.setLeftComponent(p);
+		this.setOrientation(SwingConstants.VERTICAL);
+		this.setVisible(true);
 
-		panel1.setOrientation(SwingConstants.VERTICAL);
-
-		tP.addTab("Images", panel1);
 	}
 	
 	
+
+	
+	
+
+	// CREAR EL ARBOL DE DIRECTORIOS
 
 	/*
 	 * Funcion que crea el arbol del directorio seleccionado
@@ -136,7 +80,7 @@ public class ImageTreePanel extends JPanel {
 		// agregamos el modelo al arbol, donde previamente establecimos la raiz
 		arbol = new JTree(modelo);
 		// definimos los eventos
-		arbol.getSelectionModel().addTreeSelectionListener(this);
+		//arbol.getSelectionModel().addTreeSelectionListener(this);
 
 		// creamos el resto de nodos del arbol
 		addChildTree(rootCarpet, folder, modelo);
@@ -155,7 +99,7 @@ public class ImageTreePanel extends JPanel {
 			DefaultMutableTreeNode child = new DefaultMutableTreeNode(f.getName());
 			modelo.insertNodeInto(child, parentNode, index);
 			index++;
-			System.out.println(f.getParent());
+			//System.out.println(f.getParent());
 
 			if (f.isDirectory()) {
 				addChildTree(child, f, modelo);
@@ -164,6 +108,51 @@ public class ImageTreePanel extends JPanel {
 
 	}
 
-	
+	// CREAR LA LISTA DE IMAGENES A MOSTRAR
+
+	/*
+	 * Crea el panel donde se muestran las imagenes de resultado
+	 */
+	private void createPanelImage(JPanel cont) {
+		List<String> result = new ArrayList<String>();
+		listImages = new ArrayList<ImageIcon>();
+		listImagesPrev = new ArrayList<JButton>();
+
+		File folder = new File(dir);
+		Utils.search(".*\\.tiff", folder, result);
+		Collections.sort(result);
+
+		for (String name : result) {
+			ImageIcon image = new ImageIcon(name);
+			listImages.add(image);
+		}
+
+		listImagesPrev = getPreview(listImages, cont);
+
+	}
+
+	/* devuelve una imagen de tamaño 100x100 VISTA PREVIA */
+	public List<JButton> getPreview(List<ImageIcon> listImages, JPanel cont) {
+
+		List<JButton> listImagesPrev = new ArrayList<JButton>();
+
+		for (ImageIcon image : listImages) {
+			JButton button = new JButton(image);
+			button.setSize(100, 1000);
+
+			button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) { // si se genera el click que muestre un visualizador de
+																// imagenes
+					ViewImagesBigger viewImageBig = new ViewImagesBigger();
+				}
+			});
+
+			listImagesPrev.add(button);
+
+			cont.add(button);
+		}
+		return listImagesPrev;
+
+	}
 
 }
