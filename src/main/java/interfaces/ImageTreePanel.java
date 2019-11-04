@@ -1,7 +1,10 @@
 package interfaces;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,47 +19,18 @@ import javax.swing.tree.DefaultTreeModel;
 import esferoides.Utils;
 import ij.io.DirectoryChooser;
 
-public class ShowResults extends JFrame implements TreeSelectionListener {
+public class ImageTreePanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JTree arbol;
 	private JFrame frame;
 	private String dir;
 
-	// luego poner como parametro un directorio, que es el que la persona selecciona
-	// para realizar los calculos
-	// tambien dejar uno con la seleccion del directorio por si lo que se quiere es
-	// visualizar unos datos que ya se habia creado anteriormente
-	public void showResults() {
-
-		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the nd2 images");
-		dir = dc.getDirectory();
-
-		// creamos el marco que muestra los resultados
-		frame = new JFrame("Results");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(300, 300);
-
-		// tabla de pestañas dentro del contenedor
-		JTabbedPane tP = new JTabbedPane();
-
-		// si se le quiere poner a las pestañas un icono
-		// ImageIcon icon = createImageIcon(" ");
-
-		// creamos el arbol de directorios
-		createTree();
-
-		// creamos la lista de imagenes a mostrar
-		createPanelImage();
-
-		// crear el cotenido de la pestania de mostrar contenido de la carpeta-arbol
-		// directorios
-
-		createSplitFrame(tP);
-
-		// add panel
-		frame.add(tP);
-
-		frame.show();
+	public ImageTreePanel(String directory) {
+		this.dir = directory;
 
 	}
 
@@ -66,7 +40,7 @@ public class ShowResults extends JFrame implements TreeSelectionListener {
 	private void createPanelImage() {
 		List<String> result = new ArrayList<String>();
 		List<ImageIcon> listImages = new ArrayList<ImageIcon>();
-		List<ImageIcon> listImagesPrev = new ArrayList<ImageIcon>();
+		List<JButton> listImagesPrev = new ArrayList<JButton>();
 
 		File folder = new File(dir);
 		Utils.search(".*\\.tiff", folder, result);
@@ -77,21 +51,34 @@ public class ShowResults extends JFrame implements TreeSelectionListener {
 			listImages.add(image);
 		}
 		listImagesPrev = getPreview(listImages);
+
 		
-		for (ImageIcon imageprev : listImagesPrev) {
-			imageprev.addActionListener(this);
-		}
-		
-		
+
 	}
+	
+	
 
 	/* devuelve una imagen de tamaño 100x100 VISTA PREVIA */
-	public List<ImageIcon> getPreview(List<ImageIcon> listImages) {
-		List<ImageIcon> listImagesPrev = new ArrayList<ImageIcon>();
+	public List<JButton> getPreview(List<ImageIcon> listImages) {
+		List<JButton> listImagesPrev = new ArrayList<JButton>();
 
 		for (ImageIcon image : listImages) {
-			Image prev = image.getImage().getScaledInstance(100, 100, Image.SCALE_AREA_AVERAGING);
-			listImagesPrev.add(new ImageIcon(prev));
+			JButton button= new JButton(image);
+			button.setSize(100, 1000);
+			button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) { // si se genera el click que muestre un visualizador de imagenes 
+					
+						
+						
+						
+						
+					
+					
+				}
+			});
+			
+			
+			listImagesPrev.add(button);
 		}
 		return listImagesPrev;
 
@@ -161,11 +148,32 @@ public class ShowResults extends JFrame implements TreeSelectionListener {
 		}
 
 	}
-	
-	
+
 	private void PhotoMouseClicked(MouseEvent evt) {
-        
-    }
+		JFrame imageFrame = new JFrame();
+
+		JButton backBu = new JButton();
+		JButton forwardBu = new JButton();
+
+		backBu.addMouseListener(this); // de la lista de imagenes va a la imagen anterior a la actual
+		forwardBu.addMouseListener(this); // de la lista de imagenes va a la posterior a la actual
+
+		backBu.setText("<");
+		forwardBu.setText(">");
+
+		JPanel p1 = new JPanel();
+		JPanel p = new JPanel();
+
+		p1.add(); // imagenclicada guardar en otrolado al igual que la posicion para luego poder
+					// hacer lo de los botones
+		p.add(backBu);// botones
+		p.add(forwardBu);// botones
+
+		JSplitPane jsplit = new JSplitPane(SwingConstants.HORIZONTAL, p1, p);
+
+		jsplit.setOrientation(SwingConstants.HORIZONTAL);
+
+	}
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
