@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,8 +27,9 @@ public class ImageTreePanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JTree arbol;
-	private JFrame frame;
 	private String dir;
+	private List<ImageIcon> listImages;
+	private List<JButton> listImagesPrev;
 
 	public ImageTreePanel(String directory) {
 		this.dir = directory;
@@ -37,10 +39,12 @@ public class ImageTreePanel extends JPanel {
 	/*
 	 * Crea el panel donde se muestran las imagenes de resultado
 	 */
-	private void createPanelImage() {
+	private void createPanelImage(JPanel cont) {
 		List<String> result = new ArrayList<String>();
-		List<ImageIcon> listImages = new ArrayList<ImageIcon>();
-		List<JButton> listImagesPrev = new ArrayList<JButton>();
+		listImages = new ArrayList<ImageIcon>();
+		listImagesPrev = new ArrayList<JButton>();
+		
+		
 
 		File folder = new File(dir);
 		Utils.search(".*\\.tiff", folder, result);
@@ -50,40 +54,46 @@ public class ImageTreePanel extends JPanel {
 			ImageIcon image = new ImageIcon(name);
 			listImages.add(image);
 		}
-		listImagesPrev = getPreview(listImages);
-
+		
+		listImagesPrev = getPreview(listImages,cont);
 		
 
 	}
-	
-	
 
+	
+	
+	
+	
 	/* devuelve una imagen de tamaño 100x100 VISTA PREVIA */
-	public List<JButton> getPreview(List<ImageIcon> listImages) {
+	public List<JButton> getPreview(List<ImageIcon> listImages, JPanel cont) {
+		
 		List<JButton> listImagesPrev = new ArrayList<JButton>();
+		
 
 		for (ImageIcon image : listImages) {
-			JButton button= new JButton(image);
+			JButton button = new JButton(image);
 			button.setSize(100, 1000);
+			
 			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) { // si se genera el click que muestre un visualizador de imagenes 
-					
-						
-						
-						
-						
-					
-					
+				public void actionPerformed(ActionEvent e) { // si se genera el click que muestre un visualizador de imagenes
+					ViewImagesBigger viewImageBig= new ViewImagesBigger();							
 				}
 			});
-			
-			
+
 			listImagesPrev.add(button);
+			
+			cont.add(button);
 		}
 		return listImagesPrev;
 
 	}
 
+	
+	
+	
+	
+	
+	
 	/*
 	 * Funcion que crea la region dividida dentro de la pestaña de visualizacion de
 	 * las imagenes
@@ -94,7 +104,10 @@ public class ImageTreePanel extends JPanel {
 		JPanel p1 = new JPanel();
 		JPanel p = new JPanel();
 
-		p1.add(); // lista de imagenes
+		p1.setLayout(new GridLayout(0, 0));
+		
+		
+		createPanelImage(p1);// lista de imagenes
 		p.add(arbol);// arbol
 
 		JSplitPane panel1 = new JSplitPane(SwingConstants.VERTICAL, p1, p);
@@ -103,6 +116,8 @@ public class ImageTreePanel extends JPanel {
 
 		tP.addTab("Images", panel1);
 	}
+	
+	
 
 	/*
 	 * Funcion que crea el arbol del directorio seleccionado
@@ -149,35 +164,6 @@ public class ImageTreePanel extends JPanel {
 
 	}
 
-	private void PhotoMouseClicked(MouseEvent evt) {
-		JFrame imageFrame = new JFrame();
-
-		JButton backBu = new JButton();
-		JButton forwardBu = new JButton();
-
-		backBu.addMouseListener(this); // de la lista de imagenes va a la imagen anterior a la actual
-		forwardBu.addMouseListener(this); // de la lista de imagenes va a la posterior a la actual
-
-		backBu.setText("<");
-		forwardBu.setText(">");
-
-		JPanel p1 = new JPanel();
-		JPanel p = new JPanel();
-
-		p1.add(); // imagenclicada guardar en otrolado al igual que la posicion para luego poder
-					// hacer lo de los botones
-		p.add(backBu);// botones
-		p.add(forwardBu);// botones
-
-		JSplitPane jsplit = new JSplitPane(SwingConstants.HORIZONTAL, p1, p);
-
-		jsplit.setOrientation(SwingConstants.HORIZONTAL);
-
-	}
-
-	@Override
-	public void valueChanged(TreeSelectionEvent e) {
-
-	}
+	
 
 }
