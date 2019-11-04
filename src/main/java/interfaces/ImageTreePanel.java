@@ -30,16 +30,13 @@ public class ImageTreePanel extends JSplitPane {
 	private String dir;
 	private List<ImageIcon> listImages;
 	private List<JButton> listImagesPrev;
-	
 
-	
-	
 	public ImageTreePanel(String directory) {
-		
+
 		this.dir = directory;
-		setDividerSize( 1 );
-        setContinuousLayout( true );
-		
+		setDividerSize(1);
+		setContinuousLayout(true);
+
 		JPanel p1 = new JPanel();
 		JPanel p = new JPanel();
 
@@ -55,11 +52,6 @@ public class ImageTreePanel extends JSplitPane {
 		this.setVisible(true);
 
 	}
-	
-	
-
-	
-	
 
 	// CREAR EL ARBOL DE DIRECTORIOS
 
@@ -72,7 +64,7 @@ public class ImageTreePanel extends JSplitPane {
 
 		// creamos las carpeta raiz del directorio
 		DefaultMutableTreeNode rootCarpet = new DefaultMutableTreeNode(dir);
-		System.out.println("la carpeta raiz va a ser " + dir);
+		// System.out.println("la carpeta raiz va a ser " + dir);
 
 		// Definimos el modelo donde se agregaran los nodos
 		DefaultTreeModel modelo = new DefaultTreeModel(rootCarpet);
@@ -80,7 +72,7 @@ public class ImageTreePanel extends JSplitPane {
 		// agregamos el modelo al arbol, donde previamente establecimos la raiz
 		arbol = new JTree(modelo);
 		// definimos los eventos
-		//arbol.getSelectionModel().addTreeSelectionListener(this);
+		// arbol.getSelectionModel().addTreeSelectionListener(this);
 
 		// creamos el resto de nodos del arbol
 		addChildTree(rootCarpet, folder, modelo);
@@ -99,7 +91,7 @@ public class ImageTreePanel extends JSplitPane {
 			DefaultMutableTreeNode child = new DefaultMutableTreeNode(f.getName());
 			modelo.insertNodeInto(child, parentNode, index);
 			index++;
-			//System.out.println(f.getParent());
+			// System.out.println(f.getParent());
 
 			if (f.isDirectory()) {
 				addChildTree(child, f, modelo);
@@ -138,12 +130,12 @@ public class ImageTreePanel extends JSplitPane {
 
 		for (ImageIcon image : listImages) {
 			JButton button = new JButton(image);
-			button.setSize(100, 1000);
+			button.setSize(100, 100);
 
 			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) { // si se genera el click que muestre un visualizador de
-																// imagenes
-					ViewImagesBigger viewImageBig = new ViewImagesBigger();
+				// si se genera el click que muestre un visualizador de imagenes
+				public void actionPerformed(ActionEvent e) {
+					ViewImagesBigger viewImageBig = new ViewImagesBigger(button.getIcon());
 				}
 			});
 
