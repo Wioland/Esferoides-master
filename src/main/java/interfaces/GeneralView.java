@@ -74,7 +74,7 @@ public class GeneralView extends JFrame {
 		}
 
 		// los de las imagenes y el arbol
-		JPanel panelImageTree = new JPanel();
+		//JPanel panelImageTree = new JPanel();
 		imageTreePanelContent(tabPanel);
 
 		// Añadimosel panel

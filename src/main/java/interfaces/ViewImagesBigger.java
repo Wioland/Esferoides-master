@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
@@ -35,33 +36,46 @@ public class ViewImagesBigger extends JFrame {
 		String pruebaMuestraImagen="C:\\Users\\yomendez\\Desktop\\Esferoides\\2x\\ctrl_2_28_pred.tiff";
 		String dire="C:\\Users\\yomendez\\Desktop\\Esferoides\\2x";
 		String nombre="ctrl_2_28_pred.tiff";
+		String pngPrueba="C:\\Users\\yomendez\\Desktop\\prueba.jpg";
 
 		IJ.open(pruebaMuestraImagen);
 		 
 		// Se aniade la imagen
 		JLabel labelImage = new JLabel();
 		//labelImage.setIcon(image);
-		labelImage.setIcon(new ImageIcon(pruebaMuestraImagen));
+		labelImage.setIcon(new ImageIcon(pngPrueba));
 		labelImage.setVisible(true);
+		
 
 		// se aniaden los botones para poder pasar las imagenes
 		JButton backBu = new JButton();
 		JButton forwardBu = new JButton();
+		JButton tryAlgoriBu = new JButton();
 		backBu.setText("<");
 		forwardBu.setText(">");
-
+		tryAlgoriBu.setText("Try other algorithm");
+		
 		// contenedor de botones y puesta en orden de estos
 		JPanel panelButtons = new JPanel();
 
 		panelButtons.setLayout(new GridLayout(0, 4));
 		panelButtons.add(backBu);
 		panelButtons.add(forwardBu);
+		panelButtons.add(tryAlgoriBu);
+		
+
 
 		JSplitPane jSp = new JSplitPane();
-		jSp.setLeftComponent(labelImage);
-		jSp.setRightComponent(panelButtons);
+		
 		jSp.setOrientation(SwingConstants.HORIZONTAL);
-
+		jSp.setTopComponent(labelImage);
+		jSp.setBottomComponent(panelButtons);
+		labelImage.setHorizontalAlignment(JLabel.CENTER);
+		labelImage.setVerticalAlignment(JLabel.CENTER);
+		jSp.setDividerLocation(900+ jSp.getInsets().top);
+		
+		
+		
 		// aniadimos las componentes al jframe
 		jSp.setVisible(true);
 		this.add(jSp);
