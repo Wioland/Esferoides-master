@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -15,6 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
+import ij.IJ;
+import ij.io.Opener;
+
 public class ViewImagesBigger extends JFrame {
 
 	/**
@@ -22,14 +26,18 @@ public class ViewImagesBigger extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public ViewImagesBigger(Icon image) {
+	public  ViewImagesBigger(Icon image , List<ImageIcon> listImages) {
 
 		setExtendedState(MAXIMIZED_BOTH);
 		setVisible(true);
 		setTitle("Image view");
 		
 		String pruebaMuestraImagen="C:\\Users\\yomendez\\Desktop\\Esferoides\\2x\\ctrl_2_28_pred.tiff";
+		String dire="C:\\Users\\yomendez\\Desktop\\Esferoides\\2x";
+		String nombre="ctrl_2_28_pred.tiff";
 
+		IJ.open(pruebaMuestraImagen);
+		 
 		// Se aniade la imagen
 		JLabel labelImage = new JLabel();
 		//labelImage.setIcon(image);

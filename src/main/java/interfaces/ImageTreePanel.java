@@ -46,8 +46,13 @@ public class ImageTreePanel extends JSplitPane {
 		createTree();
 		p.add(arbol);// arbol
 
-		this.setRightComponent(p1);
-		this.setLeftComponent(p);
+		p1.setAutoscrolls(true);
+		p.setAutoscrolls(true);
+		JScrollPane s = new JScrollPane(p);
+		JScrollPane s2 = new JScrollPane(p1);
+
+		this.setRightComponent(s2);
+		this.setLeftComponent(s);
 		this.setOrientation(SwingConstants.VERTICAL);
 		this.setVisible(true);
 
@@ -71,6 +76,7 @@ public class ImageTreePanel extends JSplitPane {
 
 		// agregamos el modelo al arbol, donde previamente establecimos la raiz
 		arbol = new JTree(modelo);
+
 		// definimos los eventos
 		// arbol.getSelectionModel().addTreeSelectionListener(this);
 
@@ -135,7 +141,7 @@ public class ImageTreePanel extends JSplitPane {
 			button.addActionListener(new ActionListener() {
 				// si se genera el click que muestre un visualizador de imagenes
 				public void actionPerformed(ActionEvent e) {
-					ViewImagesBigger viewImageBig = new ViewImagesBigger(button.getIcon());
+					ViewImagesBigger viewImageBig = new ViewImagesBigger(button.getIcon(),listImages);
 				}
 			});
 
@@ -143,6 +149,8 @@ public class ImageTreePanel extends JSplitPane {
 
 			cont.add(button);
 		}
+		
+		//System.out.println("Tamaño de la lista de imagenes "+listImages.size());
 		return listImagesPrev;
 
 	}

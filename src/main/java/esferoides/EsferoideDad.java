@@ -104,7 +104,7 @@ public  class EsferoideDad {
 			Roi[] roi = rm.getRoisAsArray();
 
 			if (roi.length != 0) {
-				if(nameClass=="EsferoideJ_") {
+				if(nameClass=="EsferoideJ_") { /// ver si esto funciona
 					
 					imp1.show();
 					rm.select(0);

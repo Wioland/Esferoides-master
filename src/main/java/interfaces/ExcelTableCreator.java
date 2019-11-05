@@ -33,7 +33,7 @@ public class ExcelTableCreator extends JTable {
 		tableModel = new DefaultTableModel();
 		try {
 			HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(file));
-			HSSFSheet sheet = wb.getSheetAt(0);// primeta hoja
+			HSSFSheet sheet = wb.getSheetAt(0);// primera hoja
 			Row row;
 			Cell cell;
 
