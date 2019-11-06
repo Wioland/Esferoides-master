@@ -41,18 +41,9 @@ public class ViewImagesBigger extends JFrame {
 		this.indexImagenList=listImages.indexOf(image);
 		
 
-		String pruebaMuestraImagen = "C:\\Users\\yomendez\\Desktop\\Esferoides\\2x\\ctrl_2_28_pred.tiff";
-//		String dire="C:\\Users\\yomendez\\Desktop\\Esferoides\\2x";
-//		String nombre="ctrl_2_28_pred.tiff";
-//		String pngPrueba="C:\\Users\\yomendez\\Desktop\\prueba.jpg";
-		String pngPrueba = "C:\\Users\\yomendez\\Desktop\\prueba2.jpg";
-
-		IJ.open(pruebaMuestraImagen);
-
 		// Se aniade la imagen
 		labelImage = new JLabel();
-		// labelImage.setIcon(image);
-		labelImage.setIcon(new ImageIcon(pngPrueba));
+		labelImage.setIcon(image);
 		labelImage.setVisible(true);
 
 		// se aniaden los botones para poder pasar las imagenes
@@ -117,7 +108,7 @@ public class ViewImagesBigger extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				indexImagenList++;
-				if(indexImagenList>=listImages.size()-1) {
+				if(indexImagenList>listImages.size()-1) {
 					indexImagenList=0;
 				}
 				

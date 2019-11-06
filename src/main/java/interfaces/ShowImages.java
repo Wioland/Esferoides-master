@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -25,13 +26,21 @@ public class ShowImages extends JPanel {
 	private List<ImageIcon> listIm;
 	private String dir;
 
+	
+	/*
+	 * Mostrar las imagenes tiff como botones
+	 */
 	public ShowImages(String directory) {
 		this.dir = directory;
+		this.setLayout(new GridLayout(0, 4));
+		
 		listImages = new ArrayList<String>();
 		listIm = new ArrayList<ImageIcon>();
 		listImagesPrev = new ArrayList<JButton>();
 		File folder = new File(dir);
 		
+		
+
 		Utils.search(".*\\.tiff", folder, listImages);
 		Collections.sort(listImages);
 
@@ -41,15 +50,17 @@ public class ShowImages extends JPanel {
 
 			listIm.add(image);
 			// aniadir a button
-
-			JButton button = new JButton(image);
-			button.setSize(100, 100);
+			// Obtiene un icono en escala con las dimensiones especificadas
+			ImageIcon iconoEscala = new ImageIcon(image.getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_DEFAULT));
+			JButton button = new JButton(iconoEscala);
+		
+			
 
 			button.addActionListener(new ActionListener() {
 				// si se genera el click que muestre un visualizador de imagenes
 				public void actionPerformed(ActionEvent e) {
 					JButton b = (JButton) e.getSource();
-					ViewImagesBigger viewImageBig = new ViewImagesBigger(b.getIcon(), listIm);
+					ViewImagesBigger viewImageBig = new ViewImagesBigger(image, listIm);
 				}
 			});
 
