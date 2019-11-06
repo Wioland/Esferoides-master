@@ -1,18 +1,23 @@
-package esferoides;
+package funtions;
+
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import ij.measure.ResultsTable;
-import org.apache.poi.hssf.usermodel.*;
 
-public class ExportToExcel {
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+import ij.measure.ResultsTable;
+
+public class ExcelActions {
 
 	private ResultsTable rt;
 	private String dir;
 
-	public ExportToExcel(ResultsTable rt, String dir) {
+	public ExcelActions(ResultsTable rt, String dir) {
 		super();
 		this.rt = rt;
 		this.dir = dir;
@@ -53,6 +58,7 @@ public class ExportToExcel {
 			fileOut = new FileOutputStream(filename);
 			workbook.write(fileOut);
 			fileOut.close();
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -62,11 +68,5 @@ public class ExportToExcel {
 		}
 
 	}
-	
-	
-	
-	
-	
-	
 
 }

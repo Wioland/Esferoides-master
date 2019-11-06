@@ -1,11 +1,8 @@
 package interfaces;
 
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,8 +14,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-import esferoides.Utils;
-import ij.io.DirectoryChooser;
+import funtions.Utils;
 
 public class ImageTreePanel extends JSplitPane {
 
@@ -28,8 +24,6 @@ public class ImageTreePanel extends JSplitPane {
 	private static final long serialVersionUID = 1L;
 	private JTree arbol;
 	private String dir;
-	private List<ImageIcon> listImages;
-	private List<JButton> listImagesPrev;
 
 	public ImageTreePanel(String directory) {
 
@@ -40,9 +34,7 @@ public class ImageTreePanel extends JSplitPane {
 		JPanel p1 = new JPanel();
 		JPanel p = new JPanel();
 
-		p1.setLayout(new GridLayout(0, 4));
-
-		createPanelImage(p1);// lista de imagenes
+		p1.add(new TabPanel(directory));// se le añade el tabpanel
 		createTree();
 		p.add(arbol);// arbol
 
@@ -103,55 +95,6 @@ public class ImageTreePanel extends JSplitPane {
 				addChildTree(child, f, modelo);
 			}
 		}
-
-	}
-
-	// CREAR LA LISTA DE IMAGENES A MOSTRAR
-
-	/*
-	 * Crea el panel donde se muestran las imagenes de resultado
-	 */
-	private void createPanelImage(JPanel cont) {
-		List<String> result = new ArrayList<String>();
-		listImages = new ArrayList<ImageIcon>();
-		listImagesPrev = new ArrayList<JButton>();
-
-		File folder = new File(dir);
-		Utils.search(".*\\.tiff", folder, result);
-		Collections.sort(result);
-
-		for (String name : result) {
-			ImageIcon image = new ImageIcon(name);
-			listImages.add(image);
-		}
-
-		listImagesPrev = getPreview(listImages, cont);
-
-	}
-
-	/* devuelve una imagen de tamaño 100x100 VISTA PREVIA */
-	public List<JButton> getPreview(List<ImageIcon> listImages, JPanel cont) {
-
-		List<JButton> listImagesPrev = new ArrayList<JButton>();
-
-		for (ImageIcon image : listImages) {
-			JButton button = new JButton(image);
-			button.setSize(100, 100);
-
-			button.addActionListener(new ActionListener() {
-				// si se genera el click que muestre un visualizador de imagenes
-				public void actionPerformed(ActionEvent e) {
-					ViewImagesBigger viewImageBig = new ViewImagesBigger(button.getIcon(),listImages);
-				}
-			});
-
-			listImagesPrev.add(button);
-
-			cont.add(button);
-		}
-		
-		//System.out.println("Tamaño de la lista de imagenes "+listImages.size());
-		return listImagesPrev;
 
 	}
 

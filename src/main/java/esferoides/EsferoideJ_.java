@@ -45,6 +45,9 @@ import org.scijava.command.Previewable;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
+import funtions.ExcelActions;
+import funtions.Utils;
+
 //@Plugin(type = Command.class, headless = true, menuPath = "Plugins>Esferoids>EsferoideJ")
 @Plugin(type = Command.class, headless = true, menuPath = "Plugins>EsferoideJ")
 public class EsferoideJ_ extends EsferoideDad implements Command  {
@@ -546,7 +549,7 @@ public class EsferoideJ_ extends EsferoideDad implements Command  {
 //			rt.saveAs(dir + "results.csv");
 			// When the process is finished, we show a message to inform the user.
 
-			ExportToExcel ete = new ExportToExcel(rt, dir);
+			ExcelActions ete = new ExcelActions(rt, dir);
 			ete.convertToExcel();
 
 			rt.reset();

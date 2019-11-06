@@ -1,11 +1,9 @@
 package interfaces;
 
-import java.awt.BorderLayout;
-import java.awt.GraphicsConfiguration;
+
 import java.awt.GridLayout;
-import java.awt.HeadlessException;
-import java.awt.event.MouseEvent;
-import java.io.File;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.Icon;
@@ -18,7 +16,6 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
 import ij.IJ;
-import ij.io.Opener;
 
 public class ViewImagesBigger extends JFrame {
 
@@ -26,26 +23,37 @@ public class ViewImagesBigger extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private List<ImageIcon> listImages;
+	private JLabel labelImage;
+	private int indexImagenList=0;
+	private Icon image;
+	
+	
 
-	public  ViewImagesBigger(Icon image , List<ImageIcon> listImages) {
+	public ViewImagesBigger(Icon image, List<ImageIcon> listImages) {
 
 		setExtendedState(MAXIMIZED_BOTH);
 		setVisible(true);
 		setTitle("Image view");
 		
-		String pruebaMuestraImagen="C:\\Users\\yomendez\\Desktop\\Esferoides\\2x\\ctrl_2_28_pred.tiff";
-		String dire="C:\\Users\\yomendez\\Desktop\\Esferoides\\2x";
-		String nombre="ctrl_2_28_pred.tiff";
-		String pngPrueba="C:\\Users\\yomendez\\Desktop\\prueba.jpg";
+		this.listImages=listImages;
+		this.image=image;
+		this.indexImagenList=listImages.indexOf(image);
+		
+
+		String pruebaMuestraImagen = "C:\\Users\\yomendez\\Desktop\\Esferoides\\2x\\ctrl_2_28_pred.tiff";
+//		String dire="C:\\Users\\yomendez\\Desktop\\Esferoides\\2x";
+//		String nombre="ctrl_2_28_pred.tiff";
+//		String pngPrueba="C:\\Users\\yomendez\\Desktop\\prueba.jpg";
+		String pngPrueba = "C:\\Users\\yomendez\\Desktop\\prueba2.jpg";
 
 		IJ.open(pruebaMuestraImagen);
-		 
+
 		// Se aniade la imagen
-		JLabel labelImage = new JLabel();
-		//labelImage.setIcon(image);
+		labelImage = new JLabel();
+		// labelImage.setIcon(image);
 		labelImage.setIcon(new ImageIcon(pngPrueba));
 		labelImage.setVisible(true);
-		
 
 		// se aniaden los botones para poder pasar las imagenes
 		JButton backBu = new JButton();
@@ -54,7 +62,9 @@ public class ViewImagesBigger extends JFrame {
 		backBu.setText("<");
 		forwardBu.setText(">");
 		tryAlgoriBu.setText("Try other algorithm");
-		
+
+		addlistenerButton(backBu, forwardBu, tryAlgoriBu);
+
 		// contenedor de botones y puesta en orden de estos
 		JPanel panelButtons = new JPanel();
 
@@ -62,20 +72,16 @@ public class ViewImagesBigger extends JFrame {
 		panelButtons.add(backBu);
 		panelButtons.add(forwardBu);
 		panelButtons.add(tryAlgoriBu);
-		
-
 
 		JSplitPane jSp = new JSplitPane();
-		
+
 		jSp.setOrientation(SwingConstants.HORIZONTAL);
 		jSp.setTopComponent(labelImage);
 		jSp.setBottomComponent(panelButtons);
 		labelImage.setHorizontalAlignment(JLabel.CENTER);
 		labelImage.setVerticalAlignment(JLabel.CENTER);
-		jSp.setDividerLocation(900+ jSp.getInsets().top);
-		
-		
-		
+		jSp.setDividerLocation(900 + jSp.getInsets().top);
+
 		// aniadimos las componentes al jframe
 		jSp.setVisible(true);
 		this.add(jSp);
@@ -84,5 +90,52 @@ public class ViewImagesBigger extends JFrame {
 	}
 
 
+
+	private void addlistenerButton(JButton backBu, JButton forwardBu, JButton tryAlgoriBu) {
+		
+		
+		
+
+		backBu.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				indexImagenList--;
+				if(indexImagenList<0) {
+					indexImagenList=listImages.size()-1;
+				}
+				
+				labelImage.setIcon(listImages.get(indexImagenList));
+				image=labelImage.getIcon();
+
+			}
+		});
+
+		forwardBu.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				indexImagenList++;
+				if(indexImagenList>=listImages.size()-1) {
+					indexImagenList=0;
+				}
+				
+				labelImage.setIcon(listImages.get(indexImagenList));
+				image=labelImage.getIcon();
+
+			}
+		});
+
+		tryAlgoriBu.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+
+			}
+		});
+
+	}
 
 }

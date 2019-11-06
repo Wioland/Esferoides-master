@@ -20,6 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
+import funtions.CreateListImageAlgori;
+
 public class AlgorithmView extends JFrame {
 
 	/**
@@ -39,7 +41,11 @@ public class AlgorithmView extends JFrame {
 		images = new ArrayList<File>();
 		String algoname = "";
 
-		createImagesAlgorithms(images); // crear las imagenes con todos los algoritmos
+		 // crear las imagenes con todos los algoritmos
+		CreateListImageAlgori cRi= new CreateListImageAlgori(image);
+		images=cRi.createImagesAlgorithms();
+		
+		
 
 		JPanel panelImage = new JPanel();
 		JPanel panelButtons = new JPanel();
@@ -91,10 +97,7 @@ public class AlgorithmView extends JFrame {
 
 	}
 
-	private void createImagesAlgorithms(List<File> images2) {
-		// TODO Auto-generated method stub
 
-	}
 
 	private void addButtonListener(JButton saveImageBt, JButton modifiSelectionBu, JButton viewBiggerBt) {
 
@@ -117,7 +120,7 @@ public class AlgorithmView extends JFrame {
 		viewBiggerBt.addActionListener(new ActionListener() {
 			// si se genera el click se lleva a otra pestaña para ver la imagen mas grande
 			public void actionPerformed(ActionEvent e) {
-				ViewImagesBigger viewImageBig = new ViewImagesBigger(label.getIcon(), listImages); // igualmenjor que se
+			//	ViewImagesBigger viewImageBig = new ViewImagesBigger(label.getIcon(), listImages); // igualmenjor que se
 																									// habra con imagej
 
 			}

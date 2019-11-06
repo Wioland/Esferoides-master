@@ -13,6 +13,7 @@ import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
+import funtions.Utils;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;

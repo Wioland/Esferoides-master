@@ -31,6 +31,9 @@ import javax.swing.border.Border;
 import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
 
+import funtions.ExcelActions;
+import funtions.Utils;
+
 //@Plugin(type = Command.class, headless = true, menuPath = "Plugins>Esferoids>EsferoideJ")
 @Plugin(type = Command.class, headless = true, menuPath = "Plugins>EsferoideJv2")
 public class EsferoideJv2_ extends EsferoideDad implements Command {
@@ -263,7 +266,7 @@ public class EsferoideJv2_ extends EsferoideDad implements Command {
 //			rt.saveAs(dir + "results.csv");
 			// When the process is finished, we show a message to inform the user.
 
-			ExportToExcel ete = new ExportToExcel(rt, dir);
+			ExcelActions ete = new ExcelActions(rt, dir);
 			ete.convertToExcel();
 
 			rt.reset();
