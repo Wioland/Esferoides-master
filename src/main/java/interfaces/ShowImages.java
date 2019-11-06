@@ -27,8 +27,11 @@ public class ShowImages extends JPanel {
 
 	public ShowImages(String directory) {
 		this.dir = directory;
-
+		listImages = new ArrayList<String>();
+		listIm = new ArrayList<ImageIcon>();
+		listImagesPrev = new ArrayList<JButton>();
 		File folder = new File(dir);
+		
 		Utils.search(".*\\.tiff", folder, listImages);
 		Collections.sort(listImages);
 

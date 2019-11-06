@@ -55,8 +55,8 @@ public class TabPanel extends JTabbedPane {
 
 				// los de las imagenes 
 				
-				//ShowImages images= new ShowImages(directory);
-				//addTab("Images", images);
+				ShowImages images= new ShowImages(directory);
+				addTab("Images", images);
 			
 
 				

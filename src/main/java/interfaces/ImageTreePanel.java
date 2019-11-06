@@ -31,20 +31,20 @@ public class ImageTreePanel extends JSplitPane {
 		setDividerSize(1);
 		setContinuousLayout(true);
 
-		JPanel p1 = new JPanel();
+	
 		JPanel p = new JPanel();
 
-		p1.add(new TabPanel(directory));// se le añade el tabpanel
+	
 		createTree();
 		p.add(arbol);// arbol
 
-		p1.setAutoscrolls(true);
+		
 		p.setAutoscrolls(true);
-		JScrollPane s = new JScrollPane(p);
-		JScrollPane s2 = new JScrollPane(p1);
+		JScrollPane s = new JScrollPane(new TabPanel(directory));// se le añade el tabpanel
+		JScrollPane s2 = new JScrollPane(p);
 
-		this.setRightComponent(s2);
-		this.setLeftComponent(s);
+		this.setRightComponent(s);
+		this.setLeftComponent(s2);
 		this.setOrientation(SwingConstants.VERTICAL);
 		this.setVisible(true);
 
