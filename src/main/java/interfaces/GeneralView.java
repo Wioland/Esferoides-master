@@ -2,6 +2,7 @@
 package interfaces;
 
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -38,6 +39,7 @@ public class GeneralView extends JFrame {
 		setExtendedState(MAXIMIZED_BOTH);
 		setVisible(true);
 		setTitle("Results");
+		setMinimumSize(new Dimension(1000,700));
 		
 		
 		ImageTreePanel imageTree = new ImageTreePanel(directory);
