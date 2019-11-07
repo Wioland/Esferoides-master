@@ -19,6 +19,9 @@ import javax.swing.tree.TreePath;
 
 import funtions.ShowTiff;
 import funtions.Utils;
+import ij.IJ;
+import ij.io.Opener;
+import ij.plugin.frame.RoiManager;
 
 public class ImageTreePanel extends JSplitPane {
 
@@ -98,6 +101,8 @@ public class ImageTreePanel extends JSplitPane {
 			if (tp.getPath().length > 1) {
 				String fileName = tp.getPath()[tp.getPathCount() - 1].toString();
 				String extension = tp.getPath()[tp.getPathCount() - 1].toString().split("\\.")[1];
+				String nameFileOnly = tp.getPath()[tp.getPathCount() - 1].toString().split("\\.")[0];
+				Opener op = new Opener();
 
 				System.out.println("la ruta es " + path);
 				System.out.println("archivo " + fileName);
@@ -105,14 +110,34 @@ public class ImageTreePanel extends JSplitPane {
 
 				switch (extension) {
 				case "tiff":
-					showImageTree(path, fileName);
+					// mostrar por el visualizador
+					// showImageTree(path, fileName);
+
+					// mostrar con imagej
+					ij.WindowManager.closeAllWindows();
+					op.open(path + fileName);
+
 					break;
 
+				// hacer que se abran en imagej
 				case "nd2":
+					IJ.open(path + fileName);
 
 					break;
+
 				case "zip":
 
+					ij.WindowManager.closeAllWindows();
+					op.open(path + nameFileOnly + "_pred.tiff");
+
+					RoiManager roi = new RoiManager();
+					roi.runCommand("Open", path + "\\" + fileName);
+
+//					if() { // si se cierra la imagen que se cierre el zip
+//						
+//						roi.close();
+//					}
+//					
 					break;
 
 				default:
@@ -134,6 +159,10 @@ public class ImageTreePanel extends JSplitPane {
 
 		for (int i = 0; i < tp.getPathCount() - 1; i++) {
 			path += tp.getPath()[i].toString();
+			if (i > 0) {
+				path += "\\";
+
+			}
 		}
 
 		return path;
@@ -146,15 +175,14 @@ public class ImageTreePanel extends JSplitPane {
 		List<ImageIcon> listIm = new ArrayList<ImageIcon>();
 
 		File folder = new File(path);
-		System.out.println("nombre del archivo "+ fileName);
-		
+
 		Utils.search(".*\\.tiff", folder, listImagesName);
 		Collections.sort(listImagesName);
 
 		for (String name : listImagesName) {
 			ImageIcon im = ShowTiff.showTiffToImageIcon(name);
 			listIm.add(im);
-			System.out.println("name "+name);
+
 			if (name.contains(fileName)) {
 				imaVer.add(im);
 			}

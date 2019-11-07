@@ -1,7 +1,6 @@
 
 package interfaces;
 
-
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -28,32 +27,23 @@ public class GeneralView extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String directory;
-	
 
 	public GeneralView(String directory) {
 
 		this.directory = directory;
-		
+
 		// Parametros ventana
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(MAXIMIZED_BOTH);
 		setVisible(true);
 		setTitle("Results");
-		setMinimumSize(new Dimension(1000,700));
-		
-		
+		setMinimumSize(new Dimension(1000, 700));
+
 		ImageTreePanel imageTree = new ImageTreePanel(directory);
 		getContentPane().add(imageTree);
-		
+
 		setVisible(true);
 	}
-	
-	
-	
-	
-	
-
-
 
 	// PRUEBAS
 
@@ -61,7 +51,9 @@ public class GeneralView extends JFrame {
 
 		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the nd2 images");
 
-		GeneralView ventana = new GeneralView(dc.getDirectory());
+		if (dc.getDirectory() != null) {
+			GeneralView ventana = new GeneralView(dc.getDirectory());
+		}
 
 	}
 }
