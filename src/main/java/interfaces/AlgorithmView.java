@@ -21,6 +21,8 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
 import funtions.CreateListImageAlgori;
+import ij.io.Opener;
+import ij.plugin.frame.RoiManager;
 
 public class AlgorithmView extends JFrame {
 
@@ -53,7 +55,7 @@ public class AlgorithmView extends JFrame {
 		JScrollPane s = new JScrollPane(panelButtons);
 
 		for (File ima : images) {
-			JLabel imageView = new JLabel();
+			JButton imageView = new JButton();
 			JLabel imageAlgori = new JLabel();
 
 			algoname = ima.getName();// esto seguramente modificar tener en cuenta que al guardar las imagenes hay
@@ -62,6 +64,18 @@ public class AlgorithmView extends JFrame {
 
 			imageAlgori.setText("Used algorithm " + algoname);
 			imageView.setIcon(new ImageIcon(ima.getAbsolutePath()));
+			
+			imageView.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			
+			
+			
 			panelImage.add(imageView);
 			panelImage.add(imageAlgori);
 
@@ -78,7 +92,7 @@ public class AlgorithmView extends JFrame {
 		modifySelectionBu.setText("Modify selected image");
 		viewBiggerBt.setText("View bigger selected image");
 
-		addButtonListener(saveImageBt, modifySelectionBu, viewBiggerBt);
+		addButtonListener(saveImageBt, modifySelectionBu, viewBiggerBt,panelImage);
 
 		panelButtons.add(saveImageBt);
 		panelButtons.add(modifySelectionBu);
@@ -99,7 +113,7 @@ public class AlgorithmView extends JFrame {
 
 
 
-	private void addButtonListener(JButton saveImageBt, JButton modifiSelectionBu, JButton viewBiggerBt) {
+	private void addButtonListener(JButton saveImageBt, JButton modifiSelectionBu, JButton viewBiggerBt,JPanel pIma) {
 
 		saveImageBt.addActionListener(new ActionListener() {
 			// si se genera el click guarda la imagen seleccionada
@@ -112,7 +126,7 @@ public class AlgorithmView extends JFrame {
 		modifiSelectionBu.addActionListener(new ActionListener() {
 			// si se genera el click se lleva a otra pestaña para modificar la seleccion
 			public void actionPerformed(ActionEvent e) {
-				modifySeclection(); // dejar que se habra con imagej
+				modifySeclection(pIma.fo); // dejar que se habra con imagej
 			}
 
 		});
@@ -134,8 +148,14 @@ public class AlgorithmView extends JFrame {
 
 	}
 
-	private void modifySeclection() {
-		// TODO Auto-generated method stub
+	private void modifySeclection(String filename,String fileRoi) {
+	
+		ij.WindowManager.closeAllWindows();
+		Opener op= new Opener();
+		op.open(filename);
+
+		RoiManager roi = new RoiManager();
+		roi.runCommand("Open", fileRoi);
 
 	}
 

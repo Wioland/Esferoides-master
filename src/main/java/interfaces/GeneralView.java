@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.*;
 
+import funtions.CreateListImageAlgori;
 import funtions.ExcelActions;
 import funtions.Utils;
 import ij.io.DirectoryChooser;
@@ -48,11 +49,19 @@ public class GeneralView extends JFrame {
 	// PRUEBAS
 
 	public static void main(String[] args) {
-
-		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the nd2 images");
-
-		if (dc.getDirectory() != null) {
-			GeneralView ventana = new GeneralView(dc.getDirectory());
+//		CreateListImageAlgori.listClassPackage();
+//		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the nd2 images");
+//
+//		if (dc.getDirectory() != null) {
+//			GeneralView ventana = new GeneralView(dc.getDirectory());
+//		}
+		
+		CreateListImageAlgori j= new CreateListImageAlgori();
+		try {
+			j.iniA(j.getClasses("esferoides"));
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}

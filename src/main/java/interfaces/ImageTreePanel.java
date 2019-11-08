@@ -1,27 +1,27 @@
 package interfaces;
 
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import funtions.ShowTiff;
 import funtions.Utils;
-import ij.IJ;
+import ij.ImagePlus;
 import ij.io.Opener;
 import ij.plugin.frame.RoiManager;
+import loci.formats.FormatException;
+import loci.plugins.BF;
+import loci.plugins.in.ImporterOptions;
 
 public class ImageTreePanel extends JSplitPane {
 
@@ -121,7 +121,36 @@ public class ImageTreePanel extends JSplitPane {
 
 				// hacer que se abran en imagej
 				case "nd2":
-					IJ.open(path + fileName);
+					System.out.println(path+fileName);
+					
+//					try {
+//					
+//						ImagePlus[] imps;
+//						try {
+//							imps = BF.openImagePlus(path+fileName);
+//							ImagePlus imp = imps[0];
+//							System.out.println(imps.length);
+//							imp.show();
+//						} catch (FormatException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					
+//						
+//						
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+					
+//		
+					ImagePlus j = op.openUsingBioFormats(path + fileName);
+					if (j != null) {
+						j.show();
+
+					} else {
+						System.out.println("no puedo mostrar la imagen esta es nula ");
+					}
 
 					break;
 
