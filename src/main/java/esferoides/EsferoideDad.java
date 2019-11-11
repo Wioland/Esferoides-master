@@ -1,25 +1,36 @@
 package esferoides;
 
 import java.awt.Polygon;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import org.apache.xerces.impl.xpath.regex.REUtil;
+
+import funtions.ExcelActions;
+import funtions.Utils;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
+import ij.io.DirectoryChooser;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.filter.Analyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.ImageStatistics;
+import interfaces.OurProgressBar;
+import loci.formats.FormatException;
+import loci.plugins.in.ImporterOptions;
 
-public  class EsferoideDad {
-	
+public class EsferoideDad {
+
 	protected static ArrayList<Integer> goodRows;
 
 	// Method to keep the ROI with the biggest area stored in the ROIManager, the
-		// rest of ROIs are
-		// deleted.
+	// rest of ROIs are
+	// deleted.
 	protected static void keepBiggestROI(RoiManager rm) {
 
 		Roi[] rois = rm.getRoisAsArray();
@@ -44,7 +55,7 @@ public  class EsferoideDad {
 		}
 
 	}
-	
+
 	// Method to obtain the area from a polygon. Probably, there is a most direct
 	// method to do this.
 	public static final double getArea(Polygon p) {
@@ -61,15 +72,13 @@ public  class EsferoideDad {
 		return (Math.abs(carea / 2.0));
 	}
 
-	
-	
-	
 	// Method to draw the results stored in the roi manager into the image, and then
 	// save the
 	// image in a given directory. Since we know that there is only one esferoide
 	// per image, we
 	// only keep the ROI with the biggest area stored in the ROI Manager.
-	protected static void showResultsAndSave(String dir, ImagePlus imp1, RoiManager rm, String nameClass) throws IOException {
+	protected static void showResultsAndSave(String dir, ImagePlus imp1, RoiManager rm, String nameClass)
+			throws IOException {
 		IJ.run(imp1, "RGB Color", "");
 
 		String name = imp1.getTitle();
@@ -104,20 +113,18 @@ public  class EsferoideDad {
 			Roi[] roi = rm.getRoisAsArray();
 
 			if (roi.length != 0) {
-				if(nameClass=="EsferoideJ_") { /// ver si esto funciona
-					
+				if (nameClass == "EsferoideJ_") { /// ver si esto funciona
+
 					imp1.show();
 					rm.select(0);
 					IJ.run(imp1, "Fit Spline", "");
 					rm.addRoi(imp1.getRoi());
 					rm.select(0);
-					rm.runCommand(imp1,"Delete");
-					
+					rm.runCommand(imp1, "Delete");
+
 					roi = rm.getRoisAsArray();
 				}
-				
-				
-				
+
 				rm.runCommand(imp1, "Draw");
 				rm.runCommand("Save", dir + name + ".zip");
 				rm.close();
@@ -172,7 +179,84 @@ public  class EsferoideDad {
 		IJ.saveAs(imp1, "Tiff", dir + name + "_pred.tiff");
 	}
 
+	public static String getByFormat(String format, List<String> result) {
+		// We ask the user for a directory with nd2 images.
+
+		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the " + format + " images");
+		
+		if (dc.getDirectory() != null) {
+			String dir = dc.getDirectory();
+			// We store the list of nd2 files in the result list.
+			File folder = new File(dir);
+
+			Utils.search(".*\\." + format, folder, result);
+			Collections.sort(result);
+			return dir;
+		}
+
+		return null;
+
+	}
 	
+	public static void createResultTable(List<String> result, String dir, String className) {
+		ImporterOptions options;
+		try {
+			options = new ImporterOptions();
+			options.setWindowless(true);
+			OurProgressBar pb= new OurProgressBar();
+			
+			ResultsTable rt = new ResultsTable();
+			// For each nd2 file, we detect the esferoide. Currently, this means that it
+			// creates
+			// a new image with the detected region marked in red.
+			for (String name : result) {
+				detectEsferoide(options, dir, name);
+			}
+			rt = ResultsTable.getResultsTable();
+			/// Remove empty rows
+			int rows = rt.getCounter();
+			for (int i = rows; i > 0; i--) {
+				if (!(goodRows.contains(i - 1))) {
+					rt.deleteRow(i - 1);
+				}
+			}
+			
+			if(className.equals("EsferoideJ_")) {
+				/// Remove unnecessary columns
+				rt.deleteColumn("Mean");
+				rt.deleteColumn("Min");
+				rt.deleteColumn("Max");
+				rt.deleteColumn("Circ.");
+				rt.deleteColumn("Median");
+				rt.deleteColumn("Skew");
+				rt.deleteColumn("Kurt");
+//				rt.deleteColumn("AR");
+//				rt.deleteColumn("Round");
+//				rt.deleteColumn("Solidity");
+			}
 	
+
+//			rt.saveAs(dir + "results.csv");
+			// When the process is finished, we show a message to inform the user.
+
+			ExcelActions ete = new ExcelActions(rt, dir);
+			ete.convertToExcel();
+
+			rt.reset();
+
+			pb.setVisible(false);
+			pb.dispose();
+			IJ.showMessage("Process finished");
+		} catch (IOException | FormatException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+		
+	}
 	
+	private static void detectEsferoide(ImporterOptions options, String dir, String name) throws FormatException, IOException {
+	}
+
 }

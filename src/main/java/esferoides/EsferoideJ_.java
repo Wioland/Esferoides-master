@@ -4,6 +4,7 @@ import ij.IJ;
 
 import ij.ImagePlus;
 import ij.Prefs;
+import ij.gui.ProgressBar;
 import ij.gui.Roi;
 import ij.io.DirectoryChooser;
 import ij.io.FileInfo;
@@ -15,6 +16,7 @@ import ij.plugin.filter.Analyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
+import interfaces.OurProgressBar;
 import loci.formats.FormatException;
 import loci.plugins.BF;
 import loci.plugins.in.ImporterOptions;
@@ -50,15 +52,13 @@ import funtions.Utils;
 
 //@Plugin(type = Command.class, headless = true, menuPath = "Plugins>Esferoids>EsferoideJ")
 @Plugin(type = Command.class, headless = true, menuPath = "Plugins>EsferoideJ")
-public class EsferoideJ_ extends EsferoideDad implements Command  {
+public class EsferoideJ_ extends EsferoideDad implements Command {
 
 //	@Parameter
 //	private ImagePlus imp;
 
 //	@Parameter
 //	private static boolean twox = true;
-
-	
 
 	// Method to count the number of pixels whose value is below a threshold.
 	private int countBelowThreshold(ImagePlus imp1, int threshold) {
@@ -106,10 +106,6 @@ public class EsferoideJ_ extends EsferoideDad implements Command  {
 		return false;
 
 	}
-
-
-	
-
 
 	private void processBlackHoles(ImagePlus imp2, boolean dilate) {
 		IJ.setThreshold(imp2, 0, 2300);
@@ -393,7 +389,7 @@ public class EsferoideJ_ extends EsferoideDad implements Command  {
 		 * resultado. // ¿Cómo se define mejor resultado? } }
 		 */
 		showResultsAndSave(dir, imp, rm, this.getClass().getName());
-		System.out.println("El nombre de la clase es "+this.getClass().getName());
+		System.out.println("El nombre de la clase es " + this.getClass().getName());
 		imp.close();
 
 	}
@@ -485,85 +481,19 @@ public class EsferoideJ_ extends EsferoideDad implements Command  {
 	public void run() {
 		IJ.setForegroundColor(255, 0, 0);
 		goodRows = new ArrayList<>();
-		try {
 
-			// Since we are working with nd2 images that are imported with the Bio-formats
-			// plugins, we must set to true the option windowless to avoid that the program
-			// shows us a confirmation dialog every time.
-			ImporterOptions options = new ImporterOptions();
-			options.setWindowless(true);
+		// Since we are working with nd2 images that are imported with the Bio-formats
+		// plugins, we must set to true the option windowless to avoid that the program
+		// shows us a confirmation dialog every time.
 
-			// We ask the user for a directory with nd2 images.
-			DirectoryChooser dc = new DirectoryChooser("Select the folder containing the nd2 images");
-			String dir = dc.getDirectory();
+		// We ask the user for a directory with nd2 images.
+		List<String> result = new ArrayList<String>();
+		String dir = EsferoideDad.getByFormat("nd2", result);
 
-			JFrame frame = new JFrame("Work in progress");
-			JProgressBar progressBar = new JProgressBar();
-			progressBar.setValue(0);
-			progressBar.setString("");
-			progressBar.setStringPainted(true);
-			progressBar.setIndeterminate(true);
-			Border border = BorderFactory.createTitledBorder("Processing...");
-			progressBar.setBorder(border);
-			Container content = frame.getContentPane();
-			content.add(progressBar, BorderLayout.NORTH);
-			frame.setSize(300, 100);
-			frame.setVisible(true);
+		if (dir != null) {
 
-			// We store the list of nd2 files in the result list.
-			File folder = new File(dir);
-			List<String> result = new ArrayList<String>();
+			createResultTable(result, dir, this.getClass().getName());
 
-			Utils.search(".*\\.nd2", folder, result);
-			Collections.sort(result);
-			// We initialize the ResultsTable
-			ResultsTable rt = new ResultsTable();
-//			rt.show("Results");
-
-			// For each nd2 file, we detect the esferoide. Currently, this means that it
-			// creates
-			// a new image with the detected region marked in red.
-			for (String name : result) {
-				detectEsferoide(options, dir, name);
-			}
-			rt = ResultsTable.getResultsTable();
-			/// Remove empty rows
-			int rows = rt.getCounter();
-			for (int i = rows; i > 0; i--) {
-				if (!(goodRows.contains(i - 1))) {
-					rt.deleteRow(i - 1);
-				}
-			}
-			/// Remove unnecessary columns
-			rt.deleteColumn("Mean");
-			rt.deleteColumn("Min");
-			rt.deleteColumn("Max");
-			rt.deleteColumn("Circ.");
-			rt.deleteColumn("Median");
-			rt.deleteColumn("Skew");
-			rt.deleteColumn("Kurt");
-//			rt.deleteColumn("AR");
-//			rt.deleteColumn("Round");
-//			rt.deleteColumn("Solidity");
-
-//			rt.saveAs(dir + "results.csv");
-			// When the process is finished, we show a message to inform the user.
-
-			ExcelActions ete = new ExcelActions(rt, dir);
-			ete.convertToExcel();
-
-			rt.reset();
-
-			frame.setVisible(false);
-			frame.dispose();
-			IJ.showMessage("Process finished");
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 
 	}

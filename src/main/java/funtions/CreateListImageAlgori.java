@@ -44,7 +44,7 @@ public class CreateListImageAlgori {
 		for (Class class1 : listClass) {
 		System.out.println(class1.getName()+"    fgfdghdfjkghdfjkghfkjdghfkjghfkjghfjkghfjkghfjk  ");
 			
-			Method[] metClass=class1.getMethods();
+			Method[] metClass=class1.getDeclaredMethods();
 			
 			
 			for (Method method : metClass) {

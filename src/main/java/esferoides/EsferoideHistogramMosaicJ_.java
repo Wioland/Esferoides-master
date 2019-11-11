@@ -220,16 +220,9 @@ public class EsferoideHistogramMosaicJ_  implements Command {
 
 			options.setWindowless(true);
 
-			// We ask the user for a directory with nd2 images.
-			DirectoryChooser dc = new DirectoryChooser("Select the folder containing the nd2 images");
-			String dir = dc.getDirectory();
-
-			// We store the list of nd2 files in the result list.
-			File folder = new File(dir);
 			List<String> result = new ArrayList<String>();
 
-			Utils.search(".*\\.nd2", folder, result);
-			Collections.sort(result);
+			String dir= EsferoideDad.getByFormat("nd2", result);
 //		rt.show("Results");
 
 			// For each nd2 file, we detect the esferoide. Currently, this means that it
