@@ -1,23 +1,13 @@
 package funtions;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import org.testng.internal.InvokedMethod;
-
 import esferoides.EsferoideDad;
 import ij.ImagePlus;
-import ij.gui.Roi;
 import ij.plugin.frame.RoiManager;
 
 public class CreateListImageAlgori {
@@ -25,7 +15,15 @@ public class CreateListImageAlgori {
 	private List<Method> algorithms;
 	private File imaSelected;
 	private String path;
-	private File temporalFolder;
+	private static File temporalFolder;
+
+	public static File getTemporalFolder() {
+		return temporalFolder;
+	}
+
+	public void setTemporalFolder(File temporalFol) {
+		temporalFolder = temporalFol;
+	}
 
 	public CreateListImageAlgori() {
 
@@ -34,7 +32,19 @@ public class CreateListImageAlgori {
 	public CreateListImageAlgori(File image) {
 
 		// Seleccionar un path para la carpeta temporal
-		path = "C:\\Users\\yomendez\\Desktop";
+		
+		try {
+			
+			String[] j= image.getCanonicalPath().split("\\\\");
+			String p=image.getCanonicalPath().replace(j[j.length-1], "");
+			path=p+"temporal";
+			System.out.println(path);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
 		this.imaSelected = image;
 		temporalFolder = new File(path);
 		temporalFolder.mkdir();
@@ -119,7 +129,7 @@ public class CreateListImageAlgori {
 		for (Method m : algorithms) {
 			//imagen selected va a tener todo el path de la imagen original a la que ya se le ha aplicado un algoritmo, por loq ue hay que quitarle la ruta y sol quedarme con el nombre del archivo
 			String[] splitName=this.imaSelected.getName().split("\\\\");
-			String newImageName=splitName[splitName.length-1].replace(".tiff", "_"+m.getName()+".tiff");
+			String newImageName=splitName[splitName.length-1].replace(".tiff", "_"+m.getName()+"_"+".tiff");
 			
 		
 			
@@ -151,6 +161,7 @@ public class CreateListImageAlgori {
 
 		try {
 			EsferoideDad.showResultsAndSave(saveDir, new ImagePlus(selectedFile.getAbsolutePath()), roi, algoritmClassName);
+			deleteTemporalFolder();
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -162,7 +173,7 @@ public class CreateListImageAlgori {
 	}
 
 	// si se sale de la app o para borrar la carpeta tras seleccionar una imagen
-	public void deleteTemporalFolder() {
+	public static void deleteTemporalFolder() {
 
 		if (temporalFolder.delete())
 			System.out.println(temporalFolder + " ha sido borrado correctamente");

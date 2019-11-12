@@ -2,24 +2,14 @@
 package interfaces;
 
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Pattern;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
 import funtions.CreateListImageAlgori;
-import funtions.ExcelActions;
-import funtions.Utils;
 import ij.io.DirectoryChooser;
-import ij.measure.ResultsTable;
 
 public class GeneralView extends JFrame {
 
@@ -44,6 +34,55 @@ public class GeneralView extends JFrame {
 		getContentPane().add(imageTree);
 
 		setVisible(true);
+		addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+				File folder =CreateListImageAlgori.getTemporalFolder();
+				if(folder!=null) {
+					folder.delete();
+				}
+				
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 	// PRUEBAS

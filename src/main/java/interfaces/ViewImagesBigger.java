@@ -16,9 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
-import ij.IJ;
-import ij.ImagePlus;
-
 public class ViewImagesBigger extends JFrame {
 
 	/**
