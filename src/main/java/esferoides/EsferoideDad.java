@@ -77,7 +77,7 @@ public class EsferoideDad {
 	// image in a given directory. Since we know that there is only one esferoide
 	// per image, we
 	// only keep the ROI with the biggest area stored in the ROI Manager.
-	protected static void showResultsAndSave(String dir, ImagePlus imp1, RoiManager rm, String nameClass)
+	public static void showResultsAndSave(String dir, ImagePlus imp1, RoiManager rm, String nameClass)
 			throws IOException {
 		IJ.run(imp1, "RGB Color", "");
 
@@ -220,6 +220,8 @@ public class EsferoideDad {
 					rt.deleteRow(i - 1);
 				}
 			}
+			
+			System.out.println("El  nombre de la clase es "+ className);
 			
 			if(className.equals("EsferoideJ_")) {
 				/// Remove unnecessary columns

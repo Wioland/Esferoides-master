@@ -4,51 +4,19 @@ import ij.IJ;
 
 import ij.ImagePlus;
 import ij.Prefs;
-import ij.gui.ProgressBar;
-import ij.gui.Roi;
-import ij.io.DirectoryChooser;
-import ij.io.FileInfo;
-import ij.measure.Calibration;
-import ij.measure.ResultsTable;
 import ij.plugin.ImageCalculator;
-import ij.plugin.Thresholder;
-import ij.plugin.filter.Analyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
-import interfaces.OurProgressBar;
 import loci.formats.FormatException;
 import loci.plugins.BF;
 import loci.plugins.in.ImporterOptions;
-import net.imagej.Dataset;
-import net.imagej.ImageJ;
-import net.imagej.axis.Axes;
-import net.imagej.axis.AxisType;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Polygon;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JProgressBar;
-import javax.swing.border.Border;
-
 import org.scijava.command.Command;
-import org.scijava.command.Previewable;
-import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-
-import funtions.ExcelActions;
-import funtions.Utils;
 
 //@Plugin(type = Command.class, headless = true, menuPath = "Plugins>Esferoids>EsferoideJ")
 @Plugin(type = Command.class, headless = true, menuPath = "Plugins>EsferoideJ")

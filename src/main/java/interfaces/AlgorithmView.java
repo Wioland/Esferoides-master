@@ -1,9 +1,5 @@
 package interfaces;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.GraphicsConfiguration;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -12,7 +8,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -37,21 +32,25 @@ public class AlgorithmView extends JFrame {
 	private List<File> images;
 	private JButton selectedBu;
 	private List<ImageIcon> imageIcoList;
+	private String directory;
+	private CreateListImageAlgori cLa;
 
-	public AlgorithmView(File image) {
+	public AlgorithmView(File image, String dir) {
 		// Parametros ventana
 
 		setExtendedState(MAXIMIZED_BOTH);
 		setVisible(true);
 		setTitle("Algorithm view selecter");
 
-		images = new ArrayList<File>();
+		cLa = new CreateListImageAlgori(image);
+
+		
 		imageIcoList = new ArrayList<ImageIcon>();
 		String algoname = "";
+		this.directory = dir;
 
 		// crear las imagenes con todos los algoritmos
-		CreateListImageAlgori cRi = new CreateListImageAlgori(image);
-		images = cRi.createImagesAlgorithms();
+		images = cLa.createImagesAlgorithms();
 
 		JPanel panelImage = new JPanel();
 		JPanel panelButtons = new JPanel();
@@ -61,15 +60,15 @@ public class AlgorithmView extends JFrame {
 		for (File ima : images) {
 			JButton imageView = new JButton();
 			JLabel imageAlgori = new JLabel();
+			JPanel butLab = new JPanel();
 
 			imageIcoList.add(new ImageIcon(ima.getAbsolutePath()));
 
-			algoname = ima.getName();// esto seguramente modificar tener en cuenta que al guardar las imagenes hay
-										// que poer el nombre + nel algoritmo utilizado en ese momento de ahi pillar
-										// para aqui
+			algoname = getAlgorithmName(ima);
 
 			imageAlgori.setText("Used algorithm " + algoname);
 			imageView.setIcon(new ImageIcon(ima.getAbsolutePath()));
+			imageView.setName(ima.getAbsolutePath());
 
 			imageView.addMouseListener(new MouseAdapter() {
 
@@ -79,11 +78,12 @@ public class AlgorithmView extends JFrame {
 						switch (me.getClickCount()) {
 						case 1:
 							selectedBu = (JButton) me.getSource();
+							selectedBu.setName(((JButton) me.getSource()).getName());
 							break;
 						case 2:
 							me.consume();
 							ViewImagesBigger vi = new ViewImagesBigger(((JButton) me.getSource()).getIcon(),
-									imageIcoList);
+									imageIcoList,directory);
 
 							break;
 
@@ -96,8 +96,9 @@ public class AlgorithmView extends JFrame {
 				}
 			});
 
-			panelImage.add(imageView);
-			panelImage.add(imageAlgori);
+			butLab.add(imageView);
+			butLab.add(imageAlgori);
+			panelImage.add(butLab);
 
 			imageView.setAlignmentX(CENTER_ALIGNMENT);
 			imageView.setAlignmentY(CENTER_ALIGNMENT);
@@ -106,7 +107,6 @@ public class AlgorithmView extends JFrame {
 
 		JButton saveImageBt = new JButton();
 		JButton modifySelectionBu = new JButton();
-	
 
 		saveImageBt.setText("Save selected image");
 		modifySelectionBu.setText("Modify selected image");
@@ -136,7 +136,7 @@ public class AlgorithmView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (selectedBu != null) {
 
-					SaveImageAndDelete();
+					SaveImageAndDelete(selectedBu.getName() ); 
 				} else {
 					JOptionPane.showMessageDialog(pIma, "Not image selected", "Warning", JOptionPane.WARNING_MESSAGE);
 				}
@@ -150,28 +150,34 @@ public class AlgorithmView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (selectedBu != null) {
 
-					modifySeclection(selectedBu); // dejar que se habra con imagej
-					// pasarle la imagen original coger y mirar el index de este elemento en su
-					// lista y coger el indez de la otra lista
+				 modifySeclection(selectedBu.getName());
+		
 				} else {
 					JOptionPane.showMessageDialog(pIma, "Not image selected", "Warning", JOptionPane.WARNING_MESSAGE);
 				}
 
-				
 			}
 
 		});
 
-	
-
 	}
 
-	private void SaveImageAndDelete() {
-		// TODO Auto-generated method stub
+	private String getAlgorithmName(File ima) {
 
+		String[] splitNameIma = ima.getName().split("_");
+		String algoritmNameString = splitNameIma[splitNameIma.length - 1].replace(".tiff", "");
+		return algoritmNameString;
 	}
 
-	private void modifySeclection(String filename, String fileRoi) {
+	private void SaveImageAndDelete(String filePath) {
+		File ima = new File(filePath);
+		String algoritmNameString = getAlgorithmName(ima);
+
+		cLa.saveSelectedImage(ima, this.directory, algoritmNameString);
+	}
+
+	private void modifySeclection(String filename) {
+		String fileRoi = filename.replace("tiff", "zip");
 
 		ij.WindowManager.closeAllWindows();
 		Opener op = new Opener();

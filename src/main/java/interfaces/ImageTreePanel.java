@@ -1,8 +1,16 @@
 package interfaces;
 
+import java.awt.Component;
 import java.awt.Image;
+import java.awt.MenuBar;
+import java.awt.PopupMenu;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,14 +22,17 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import com.sleepycat.je.rep.elections.Protocol.Result;
+
 import funtions.ShowTiff;
 import funtions.Utils;
+import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.Roi;
 import ij.io.Opener;
+import ij.measure.ResultsTable;
 import ij.plugin.frame.RoiManager;
-import loci.formats.FormatException;
-import loci.plugins.BF;
-import loci.plugins.in.ImporterOptions;
+
 
 public class ImageTreePanel extends JSplitPane {
 
@@ -121,8 +132,8 @@ public class ImageTreePanel extends JSplitPane {
 
 				// hacer que se abran en imagej
 				case "nd2":
-					System.out.println(path+fileName);
-					
+					System.out.println(path + fileName);
+
 //					try {
 //					
 //						ImagePlus[] imps;
@@ -142,7 +153,7 @@ public class ImageTreePanel extends JSplitPane {
 //						// TODO Auto-generated catch block
 //						e.printStackTrace();
 //					}
-					
+
 //		
 					ImagePlus j = op.openUsingBioFormats(path + fileName);
 					if (j != null) {
@@ -161,11 +172,23 @@ public class ImageTreePanel extends JSplitPane {
 
 					RoiManager roi = new RoiManager();
 					roi.runCommand("Open", path + "\\" + fileName);
+					//roi.runCommand("Measure");
+					
+				//roi.actionPerformed(new ActionEvent(roi, 7, "Measure"));
+						//ResultsTable rt = ij.plugin.filter.Analyzer.getResultsTable();
+						//rt.show("Measures");
+		
 
+					// ij.measure.ResultsTable();
+					// ResultsTable roiResults = new ResultsTable();
 //					if() { // si se cierra la imagen que se cierre el zip
 //						
 //						roi.close();
 //					}
+					
+					ResultsTable jh=new ResultsTable();   
+					
+					
 //					
 					break;
 
@@ -175,6 +198,7 @@ public class ImageTreePanel extends JSplitPane {
 			} else {
 				if (!path.equals(dir)) { // si no es el directorio en el que nos encontramos que
 					System.out.println("se ha clicado en una carpeta"); // cambie a ese
+					
 
 				}
 			}
@@ -217,7 +241,7 @@ public class ImageTreePanel extends JSplitPane {
 			}
 		}
 
-		ViewImagesBigger vIb = new ViewImagesBigger(imaVer.get(0), listIm);
+		ViewImagesBigger vIb = new ViewImagesBigger(imaVer.get(0), listIm,dir);
 
 	}
 

@@ -4,6 +4,7 @@ package interfaces;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.List;
 
 import javax.swing.Icon;
@@ -16,6 +17,7 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
 import ij.IJ;
+import ij.ImagePlus;
 
 public class ViewImagesBigger extends JFrame {
 
@@ -27,10 +29,11 @@ public class ViewImagesBigger extends JFrame {
 	private JLabel labelImage;
 	private int indexImagenList=0;
 	private Icon image;
+	private String dir;
 	
 	
 
-	public ViewImagesBigger(Icon image, List<ImageIcon> listImages) {
+	public ViewImagesBigger(Icon image, List<ImageIcon> listImages,String directory) {
 
 		setExtendedState(MAXIMIZED_BOTH);
 		setVisible(true);
@@ -39,6 +42,7 @@ public class ViewImagesBigger extends JFrame {
 		this.listImages=listImages;
 		this.image=image;
 		this.indexImagenList=listImages.indexOf(image);
+		dir= directory;
 		
 
 		// Se aniade la imagen
@@ -123,6 +127,10 @@ public class ViewImagesBigger extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
+				ImageIcon i=listImages.get(listImages.indexOf(image));
+				File f= new File(i.getDescription());
+				
+				AlgorithmView alg= new AlgorithmView(f, dir);
 
 			}
 		});
