@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -19,6 +20,7 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
 import funtions.CreateListImageAlgori;
+import funtions.ShowTiff;
 import ij.io.Opener;
 import ij.plugin.frame.RoiManager;
 
@@ -52,17 +54,18 @@ public class AlgorithmView extends JFrame {
 		// crear las imagenes con todos los algoritmos
 		images = cLa.createImagesAlgorithms();
 
-		JPanel panelImage = new JPanel();
-		JPanel panelButtons = new JPanel();
+		JPanel panelImage = new JPanel(new GridLayout(0, 4));
+		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 		panelImage.setAutoscrolls(true);
-		JScrollPane s = new JScrollPane(panelButtons);
+		JScrollPane s = new JScrollPane(panelImage);
+		
 
 		for (File ima : images) {
 			JButton imageView = new JButton();
 			JLabel imageAlgori = new JLabel();
 			JPanel butLab = new JPanel();
 
-			imageIcoList.add(new ImageIcon(ima.getAbsolutePath()));
+			imageIcoList.add(ShowTiff.showTiffToImageIcon(ima.getAbsolutePath()));
 
 			algoname = getAlgorithmName(ima);
 
@@ -119,8 +122,9 @@ public class AlgorithmView extends JFrame {
 		JSplitPane jSp = new JSplitPane();
 
 		jSp.setOrientation(SwingConstants.VERTICAL);
-		jSp.setLeftComponent(panelImage);
-		jSp.setRightComponent(s);
+		jSp.setLeftComponent(s);
+		jSp.setRightComponent(panelButtons);
+		jSp.setDividerLocation(1100 + jSp.getInsets().left);
 
 		// aniadimos las componentes al jframe
 		jSp.setVisible(true);
