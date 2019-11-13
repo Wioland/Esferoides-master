@@ -53,6 +53,7 @@ public class TabPanel extends JTabbedPane {
 
 		ShowImages images = new ShowImages(directory);
 		addTab("Images", images);
+		
 
 	}
 

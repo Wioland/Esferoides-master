@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,16 +39,71 @@ public class AlgorithmView extends JFrame {
 	private String directory;
 	private CreateListImageAlgori cLa;
 
+
 	public AlgorithmView(File image, String dir) {
 		// Parametros ventana
-
+		
 		setExtendedState(MAXIMIZED_BOTH);
-		setVisible(true);
 		setTitle("Algorithm view selecter");
-
+		this.setVisible(true);
+		
+		addWindowListener(new  WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+				File folder =CreateListImageAlgori.getTemporalFolder();
+				if(folder!=null) {
+					folder.delete();
+				}
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+				
+			}
+		});
+		
+		
+		
+		
+		
+	
+		OurProgressBar pb= new OurProgressBar(this);
 		cLa = new CreateListImageAlgori(image);
 
-		
 		imageIcoList = new ArrayList<ImageIcon>();
 		String algoname = "";
 		this.directory = dir;
@@ -54,48 +111,32 @@ public class AlgorithmView extends JFrame {
 		// crear las imagenes con todos los algoritmos
 		images = cLa.createImagesAlgorithms();
 
-		JPanel panelImage = new JPanel(new GridLayout(0, 4));
+		JPanel panelImage = new JPanel(new GridLayout(0, 3));
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 		panelImage.setAutoscrolls(true);
 		JScrollPane s = new JScrollPane(panelImage);
-		
 
 		for (File ima : images) {
 			JButton imageView = new JButton();
 			JLabel imageAlgori = new JLabel();
-			JPanel butLab = new JPanel();
+			JPanel butLab = new JPanel(new GridLayout(2, 1));
+			ImageIcon imageIcon = new ImageIcon(ShowTiff.showTiffToImageIcon(ima.getAbsolutePath()).getImage()
+					.getScaledInstance(200, 200, java.awt.Image.SCALE_DEFAULT));
 
-			imageIcoList.add(ShowTiff.showTiffToImageIcon(ima.getAbsolutePath()));
+			imageIcoList.add(imageIcon);
 
 			algoname = getAlgorithmName(ima);
 
 			imageAlgori.setText("Used algorithm " + algoname);
-			imageView.setIcon(new ImageIcon(ima.getAbsolutePath()));
+			imageAlgori.setAlignmentX(CENTER_ALIGNMENT);
+			imageAlgori.setAlignmentY(TOP_ALIGNMENT);
+
+			imageView.setIcon(imageIcon);
 			imageView.setName(ima.getAbsolutePath());
-
+		
 			imageView.addMouseListener(new MouseAdapter() {
-
-				public void actionPerformed(MouseEvent me) {
-
-					if (!me.isConsumed()) {
-						switch (me.getClickCount()) {
-						case 1:
-							selectedBu = (JButton) me.getSource();
-							selectedBu.setName(((JButton) me.getSource()).getName());
-							break;
-						case 2:
-							me.consume();
-							ViewImagesBigger vi = new ViewImagesBigger(((JButton) me.getSource()).getIcon(),
-									imageIcoList,directory);
-
-							break;
-
-						default:
-							break;
-						}
-
-					}
-
+				public void mouseClicked(MouseEvent me) {
+					mouseClicked(me);
 				}
 			});
 
@@ -129,7 +170,30 @@ public class AlgorithmView extends JFrame {
 		// aniadimos las componentes al jframe
 		jSp.setVisible(true);
 		this.add(jSp);
-		this.setVisible(true);
+		pb.setVisible(false);
+		pb.dispose();
+		pack();
+
+	}
+
+	public void mouseClicked(MouseEvent me) {
+		if (!me.isConsumed()) {
+			switch (me.getClickCount()) {
+			case 1:
+				selectedBu = (JButton) me.getSource();
+				selectedBu.setName(((JButton) me.getSource()).getName());
+				break;
+			case 2:
+				me.consume();
+				ViewImagesBigger vi = new ViewImagesBigger(((JButton) me.getSource()).getIcon(), imageIcoList,
+						directory); //poner la imagen en grande y hacer que la lista de ima no se a nula ademas de tratar distinto si se lllam des de aqui
+				break;
+
+			default:
+				break;
+			}
+
+		}
 
 	}
 
@@ -140,7 +204,7 @@ public class AlgorithmView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (selectedBu != null) {
 
-					SaveImageAndDelete(selectedBu.getName() ); 
+					SaveImageAndDelete(selectedBu.getName());
 				} else {
 					JOptionPane.showMessageDialog(pIma, "Not image selected", "Warning", JOptionPane.WARNING_MESSAGE);
 				}
@@ -154,8 +218,8 @@ public class AlgorithmView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (selectedBu != null) {
 
-				 modifySeclection(selectedBu.getName());
-		
+					modifySeclection(selectedBu.getName());
+
 				} else {
 					JOptionPane.showMessageDialog(pIma, "Not image selected", "Warning", JOptionPane.WARNING_MESSAGE);
 				}

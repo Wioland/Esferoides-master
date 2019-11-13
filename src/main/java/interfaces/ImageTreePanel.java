@@ -241,7 +241,7 @@ public class ImageTreePanel extends JSplitPane {
 			}
 		}
 
-		ViewImagesBigger vIb = new ViewImagesBigger(imaVer.get(0), listIm,dir);
+		//ViewImagesBigger vIb = new ViewImagesBigger(imaVer.get(0), listIm,dir);
 
 	}
 

@@ -64,6 +64,7 @@ public class ShowImages extends JPanel {
 
 			this.add(button);
 		}
+		
 
 	}
 

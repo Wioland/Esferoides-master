@@ -203,7 +203,7 @@ public class EsferoideDad {
 		try {
 			options = new ImporterOptions();
 			options.setWindowless(true);
-			OurProgressBar pb= new OurProgressBar();
+			OurProgressBar pb= new OurProgressBar(null);
 			
 			ResultsTable rt = new ResultsTable();
 			// For each nd2 file, we detect the esferoide. Currently, this means that it

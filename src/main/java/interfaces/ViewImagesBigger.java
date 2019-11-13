@@ -1,6 +1,7 @@
 package interfaces;
 
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +14,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
@@ -35,6 +38,8 @@ public class ViewImagesBigger extends JFrame {
 		setExtendedState(MAXIMIZED_BOTH);
 		setVisible(true);
 		setTitle("Image view");
+		setMinimumSize(new Dimension(1000,800));
+		
 		
 		this.listImages=listImages;
 		this.image=image;
@@ -46,6 +51,7 @@ public class ViewImagesBigger extends JFrame {
 		labelImage = new JLabel();
 		labelImage.setIcon(image);
 		labelImage.setVisible(true);
+		
 
 		// se aniaden los botones para poder pasar las imagenes
 		JButton backBu = new JButton();
@@ -64,6 +70,7 @@ public class ViewImagesBigger extends JFrame {
 		panelButtons.add(backBu);
 		panelButtons.add(forwardBu);
 		panelButtons.add(tryAlgoriBu);
+		
 
 		JSplitPane jSp = new JSplitPane();
 
@@ -73,10 +80,11 @@ public class ViewImagesBigger extends JFrame {
 		labelImage.setHorizontalAlignment(JLabel.CENTER);
 		labelImage.setVerticalAlignment(JLabel.CENTER);
 		jSp.setDividerLocation(900 + jSp.getInsets().top);
-
+		JScrollPane s = new JScrollPane(jSp);
 		// aniadimos las componentes al jframe
 		jSp.setVisible(true);
-		this.add(jSp);
+		this.pack();
+		this.add(s);
 		this.setVisible(true);
 
 	}
@@ -84,9 +92,6 @@ public class ViewImagesBigger extends JFrame {
 
 
 	private void addlistenerButton(JButton backBu, JButton forwardBu, JButton tryAlgoriBu) {
-		
-		
-		
 
 		backBu.addActionListener(new ActionListener() {
 

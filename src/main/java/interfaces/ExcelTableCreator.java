@@ -27,6 +27,7 @@ public class ExcelTableCreator extends JTable {
 	public ExcelTableCreator(File excel) {
 		this.excel = excel;
 		readXLSX(excel);
+		
 	}
 
 	private void readXLSX(File file) {
