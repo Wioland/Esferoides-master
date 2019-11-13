@@ -83,7 +83,7 @@ public class GeneralView extends JFrame {
 		ImageTreePanel imageTree = new ImageTreePanel(directory);
 		getContentPane().add(imageTree);
 
-		this.pack();
+	
 		setVisible(true);
 		pb.setVisible(false);
 		pb.dispose();

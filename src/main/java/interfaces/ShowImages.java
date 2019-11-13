@@ -56,7 +56,7 @@ public class ShowImages extends JPanel {
 				// si se genera el click que muestre un visualizador de imagenes
 				public void actionPerformed(ActionEvent e) {
 					JButton b = (JButton) e.getSource();
-					ViewImagesBigger viewImageBig = new ViewImagesBigger(image, listIm, dir);
+					ViewImagesBigger viewImageBig = new ViewImagesBigger(image, listIm, dir,false);
 				}
 			});
 

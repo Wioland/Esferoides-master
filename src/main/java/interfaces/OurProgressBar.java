@@ -34,7 +34,7 @@ public class OurProgressBar extends JFrame {
 		setAlwaysOnTop(true);
 		setUndecorated(true);
 		setVisible(true);
-		pack();
+		
 	}
 
 }

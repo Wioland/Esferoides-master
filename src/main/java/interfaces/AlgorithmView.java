@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +24,7 @@ import javax.swing.SwingConstants;
 
 import funtions.CreateListImageAlgori;
 import funtions.ShowTiff;
+import ij.ImagePlus;
 import ij.io.Opener;
 import ij.plugin.frame.RoiManager;
 
@@ -46,6 +48,7 @@ public class AlgorithmView extends JFrame {
 		setExtendedState(MAXIMIZED_BOTH);
 		setTitle("Algorithm view selecter");
 		this.setVisible(true);
+		setMinimumSize(new Dimension(1000,300));
 		
 		addWindowListener(new  WindowListener() {
 			
@@ -102,6 +105,8 @@ public class AlgorithmView extends JFrame {
 		
 	
 		OurProgressBar pb= new OurProgressBar(this);
+		
+		
 		cLa = new CreateListImageAlgori(image);
 
 		imageIcoList = new ArrayList<ImageIcon>();
@@ -114,38 +119,40 @@ public class AlgorithmView extends JFrame {
 		JPanel panelImage = new JPanel(new GridLayout(0, 3));
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 		panelImage.setAutoscrolls(true);
-		JScrollPane s = new JScrollPane(panelImage);
+		
 
 		for (File ima : images) {
 			JButton imageView = new JButton();
 			JLabel imageAlgori = new JLabel();
 			JPanel butLab = new JPanel(new GridLayout(2, 1));
-			ImageIcon imageIcon = new ImageIcon(ShowTiff.showTiffToImageIcon(ima.getAbsolutePath()).getImage()
-					.getScaledInstance(200, 200, java.awt.Image.SCALE_DEFAULT));
+			
+			ImageIcon imagi=ShowTiff.showTiffToImageIcon(ima.getAbsolutePath());
+			
+			ImageIcon imageIcon = new ImageIcon(imagi.getImage()
+					.getScaledInstance(200,200, java.awt.Image.SCALE_DEFAULT));
 
-			imageIcoList.add(imageIcon);
+			imageIcoList.add(imagi);
 
 			algoname = getAlgorithmName(ima);
 
 			imageAlgori.setText("Used algorithm " + algoname);
-			imageAlgori.setAlignmentX(CENTER_ALIGNMENT);
+			imageAlgori.setAlignmentX(TOP_ALIGNMENT);
 			imageAlgori.setAlignmentY(TOP_ALIGNMENT);
+			
 
 			imageView.setIcon(imageIcon);
 			imageView.setName(ima.getAbsolutePath());
 		
 			imageView.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent me) {
-					mouseClicked(me);
+					mouseClick(me,imagi);
 				}
 			});
 
 			butLab.add(imageView);
 			butLab.add(imageAlgori);
 			panelImage.add(butLab);
-
-			imageView.setAlignmentX(CENTER_ALIGNMENT);
-			imageView.setAlignmentY(CENTER_ALIGNMENT);
+	
 
 		}
 
@@ -159,7 +166,7 @@ public class AlgorithmView extends JFrame {
 
 		panelButtons.add(saveImageBt);
 		panelButtons.add(modifySelectionBu);
-
+		JScrollPane s = new JScrollPane(panelImage);
 		JSplitPane jSp = new JSplitPane();
 
 		jSp.setOrientation(SwingConstants.VERTICAL);
@@ -169,14 +176,14 @@ public class AlgorithmView extends JFrame {
 
 		// aniadimos las componentes al jframe
 		jSp.setVisible(true);
-		this.add(jSp);
+		getContentPane().add(jSp);
 		pb.setVisible(false);
 		pb.dispose();
-		pack();
+	
 
 	}
 
-	public void mouseClicked(MouseEvent me) {
+	public void mouseClick(MouseEvent me,ImageIcon imageIcon) {
 		if (!me.isConsumed()) {
 			switch (me.getClickCount()) {
 			case 1:
@@ -185,8 +192,8 @@ public class AlgorithmView extends JFrame {
 				break;
 			case 2:
 				me.consume();
-				ViewImagesBigger vi = new ViewImagesBigger(((JButton) me.getSource()).getIcon(), imageIcoList,
-						directory); //poner la imagen en grande y hacer que la lista de ima no se a nula ademas de tratar distinto si se lllam des de aqui
+				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList,
+						directory,true); //poner la imagen en grande y hacer que la lista de ima no se a nula ademas de tratar distinto si se lllam des de aqui
 				break;
 
 			default:

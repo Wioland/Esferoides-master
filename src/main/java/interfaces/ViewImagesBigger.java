@@ -33,14 +33,15 @@ public class ViewImagesBigger extends JFrame {
 	
 	
 
-	public ViewImagesBigger(Icon image, List<ImageIcon> listImages,String directory) {
+	public ViewImagesBigger(Icon image, List<ImageIcon> listImages,String directory,boolean onlreadyAlgo) {
 
 		setExtendedState(MAXIMIZED_BOTH);
 		setVisible(true);
 		setTitle("Image view");
 		setMinimumSize(new Dimension(1000,800));
 		
-		
+		JSplitPane jSp = new JSplitPane();
+		//JScrollPane s = new JScrollPane(jSp);
 		this.listImages=listImages;
 		this.image=image;
 		this.indexImagenList=listImages.indexOf(image);
@@ -59,9 +60,8 @@ public class ViewImagesBigger extends JFrame {
 		JButton tryAlgoriBu = new JButton();
 		backBu.setText("<");
 		forwardBu.setText(">");
-		tryAlgoriBu.setText("Try other algorithm");
-
-		addlistenerButton(backBu, forwardBu, tryAlgoriBu);
+	
+		
 
 		// contenedor de botones y puesta en orden de estos
 		JPanel panelButtons = new JPanel();
@@ -69,10 +69,19 @@ public class ViewImagesBigger extends JFrame {
 		panelButtons.setLayout(new GridLayout(0, 4));
 		panelButtons.add(backBu);
 		panelButtons.add(forwardBu);
-		panelButtons.add(tryAlgoriBu);
 		
+		
+		
+		if(!onlreadyAlgo) {
+			tryAlgoriBu.setText("Try other algorithm");
 
-		JSplitPane jSp = new JSplitPane();
+			addlistenerButton(backBu, forwardBu, tryAlgoriBu);
+			panelButtons.add(tryAlgoriBu);
+			
+		}else {
+			addlistenerButton(backBu, forwardBu);
+		}
+		
 
 		jSp.setOrientation(SwingConstants.HORIZONTAL);
 		jSp.setTopComponent(labelImage);
@@ -80,19 +89,18 @@ public class ViewImagesBigger extends JFrame {
 		labelImage.setHorizontalAlignment(JLabel.CENTER);
 		labelImage.setVerticalAlignment(JLabel.CENTER);
 		jSp.setDividerLocation(900 + jSp.getInsets().top);
-		JScrollPane s = new JScrollPane(jSp);
+		
 		// aniadimos las componentes al jframe
 		jSp.setVisible(true);
-		this.pack();
-		this.add(s);
+	
+		getContentPane().add(jSp);
 		this.setVisible(true);
 
 	}
+	
 
-
-
-	private void addlistenerButton(JButton backBu, JButton forwardBu, JButton tryAlgoriBu) {
-
+	private void addlistenerButton(JButton backBu, JButton forwardBu) {
+		// TODO Auto-generated method stub
 		backBu.addActionListener(new ActionListener() {
 
 			@Override
@@ -123,6 +131,10 @@ public class ViewImagesBigger extends JFrame {
 
 			}
 		});
+	}
+	private void addlistenerButton(JButton backBu, JButton forwardBu, JButton tryAlgoriBu) {
+
+		addlistenerButton( backBu,  forwardBu);
 
 		tryAlgoriBu.addActionListener(new ActionListener() {
 
