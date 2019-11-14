@@ -7,6 +7,7 @@ import java.awt.event.WindowListener;
 import java.io.File;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import funtions.CreateListImageAlgori;
 import ij.io.DirectoryChooser;
@@ -83,7 +84,6 @@ public class GeneralView extends JFrame {
 		ImageTreePanel imageTree = new ImageTreePanel(directory);
 		getContentPane().add(imageTree);
 
-	
 		setVisible(true);
 		pb.setVisible(false);
 		pb.dispose();
@@ -96,7 +96,24 @@ public class GeneralView extends JFrame {
 		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the nd2 images");
 
 		if (dc.getDirectory() != null) {
-			GeneralView ventana = new GeneralView(dc.getDirectory());
+			int selection = JOptionPane.showOptionDialog(null, "Select an option", "Option selecter",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, // null para icono por
+																					// defecto.
+					new Object[] { "Use algoritm", "View results" }, // null para YES, NO y CANCEL
+					"Use algoritm");
+
+			switch (selection) {
+			case 0:
+				SelectAlgoritm seletAl= new SelectAlgoritm();
+				break;
+			case 1:
+				GeneralView ventana = new GeneralView(dc.getDirectory());
+				break;
+			default:
+				break;
+			}
+
+			
 		}
 
 //		CreateListImageAlgori j= new CreateListImageAlgori();

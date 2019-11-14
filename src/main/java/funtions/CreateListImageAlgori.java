@@ -16,6 +16,17 @@ public class CreateListImageAlgori {
 	private File imaSelected;
 	private String path;
 	private static File temporalFolder;
+	
+	
+	
+	
+	public List<Method> getAlgorithms() {
+		return algorithms;
+	}
+
+	public void setAlgorithms(List<Method> algorithms) {
+		this.algorithms = algorithms;
+	}
 
 	public static File getTemporalFolder() {
 		return temporalFolder;
@@ -26,8 +37,19 @@ public class CreateListImageAlgori {
 	}
 
 	public CreateListImageAlgori() {
-
+		try {
+			iniA(getClasses("esferoides"));
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+	
+	
+	
+	
+	
+	
 
 	public CreateListImageAlgori(File image) {
 
@@ -121,6 +143,7 @@ public class CreateListImageAlgori {
 	// guardarlas en la carpeta y en la lista
 	public List<File> createImagesAlgorithms() {
 		List<File> ima = new ArrayList<File>();
+		
 
 		// se llama a los algoritmos de la lista de algoritmos y se aplican estos sobre
 		// la imagen seleccionada
@@ -129,6 +152,11 @@ public class CreateListImageAlgori {
 			// imagen selected va a tener todo el path de la imagen original a la que ya se
 			// le ha aplicado un algoritmo, por loq ue hay que quitarle la ruta y sol
 			// quedarme con el nombre del archivo
+			
+			
+			String[] splitnameMethod = m.toString().split("\\.");
+			String s = splitnameMethod[1]+"  -->  "+m.getName();
+			
 			String[] splitName = this.imaSelected.getName().split("\\\\");
 			String newImageName = splitName[splitName.length - 1].replace(".tiff", "_" + m.getName()  + ".tiff");
 

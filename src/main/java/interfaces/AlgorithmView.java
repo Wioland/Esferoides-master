@@ -1,7 +1,10 @@
 package interfaces;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -22,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
+import edu.mines.jtk.sgl.BoundingBox;
 import funtions.CreateListImageAlgori;
 import funtions.ShowTiff;
 import ij.ImagePlus;
@@ -120,11 +124,15 @@ public class AlgorithmView extends JFrame {
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 		panelImage.setAutoscrolls(true);
 		
+		int i=0;
 
 		for (File ima : images) {
 			JButton imageView = new JButton();
 			JLabel imageAlgori = new JLabel();
-			JPanel butLab = new JPanel(new GridLayout(2, 1));
+			//JPanel butLab = new JPanel(new GridLayout(2, 1));
+			JPanel butLab = new JPanel(new GridBagLayout());
+			//butLab.getLayout(). // ver alguna mejor para que esten bien los botones
+			
 			
 			ImageIcon imagi=ShowTiff.showTiffToImageIcon(ima.getAbsolutePath());
 			
@@ -136,8 +144,17 @@ public class AlgorithmView extends JFrame {
 			algoname = getAlgorithmName(ima);
 
 			imageAlgori.setText("Used algorithm " + algoname);
-			imageAlgori.setAlignmentX(TOP_ALIGNMENT);
-			imageAlgori.setAlignmentY(TOP_ALIGNMENT);
+			
+			
+			if(i%2==0) {
+				
+				butLab.setBackground(Color.blue);
+			
+			}else {
+				butLab.setBackground(Color.green);
+			}
+			i++;
+		
 			
 
 			imageView.setIcon(imageIcon);
@@ -155,6 +172,7 @@ public class AlgorithmView extends JFrame {
 	
 
 		}
+		
 
 		JButton saveImageBt = new JButton();
 		JButton modifySelectionBu = new JButton();
@@ -193,7 +211,7 @@ public class AlgorithmView extends JFrame {
 			case 2:
 				me.consume();
 				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList,
-						directory,true); //poner la imagen en grande y hacer que la lista de ima no se a nula ademas de tratar distinto si se lllam des de aqui
+						directory,true); 
 				break;
 
 			default:
