@@ -89,40 +89,5 @@ public class GeneralView extends JFrame {
 		pb.dispose();
 	}
 
-	// PRUEBAS
 
-	public static void main(String[] args) {
-
-		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the nd2 images");
-
-		if (dc.getDirectory() != null) {
-			int selection = JOptionPane.showOptionDialog(null, "Select an option", "Option selecter",
-					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, // null para icono por
-																					// defecto.
-					new Object[] { "Use algoritm", "View results" }, // null para YES, NO y CANCEL
-					"Use algoritm");
-
-			switch (selection) {
-			case 0:
-				SelectAlgoritm seletAl= new SelectAlgoritm();
-				break;
-			case 1:
-				GeneralView ventana = new GeneralView(dc.getDirectory());
-				break;
-			default:
-				break;
-			}
-
-			
-		}
-
-//		CreateListImageAlgori j= new CreateListImageAlgori();
-//		try {
-//			j.iniA(j.getClasses("esferoides"));
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
-	}
 }

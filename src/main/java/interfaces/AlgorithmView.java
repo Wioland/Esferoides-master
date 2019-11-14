@@ -44,73 +44,79 @@ public class AlgorithmView extends JFrame {
 	private List<ImageIcon> imageIcoList;
 	private String directory;
 	private CreateListImageAlgori cLa;
-
+	private List<ViewImagesBigger> openWindows;
 
 	public AlgorithmView(File image, String dir) {
 		// Parametros ventana
-		
+
 		setExtendedState(MAXIMIZED_BOTH);
 		setTitle("Algorithm view selecter");
 		this.setVisible(true);
-		setMinimumSize(new Dimension(1000,300));
-		
-		addWindowListener(new  WindowListener() {
-			
+		setMinimumSize(new Dimension(1000, 300));
+
+		addWindowListener(new WindowListener() {
+
 			@Override
 			public void windowOpened(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void windowIconified(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void windowDeiconified(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void windowDeactivated(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				File folder =CreateListImageAlgori.getTemporalFolder();
-				if(folder!=null) {
+				File folder = CreateListImageAlgori.getTemporalFolder();
+				if (folder != null) {
 					folder.delete();
 				}
+
+				// Cerrar el resto de ventanas que se hayan abierto a partir de esta
+				ij.WindowManager.closeAllWindows(); // esto cierra todas las ventanas abiertas con imagej solamente
+				if(openWindows!=null) {         // quedan las de visualizacion de las imagenes en grande 
+					if(openWindows.size()>0) {
+						for (ViewImagesBigger wind : openWindows) {
+							wind.dispose();
+						}
+					}
+				}									
+
 			}
-			
+
 			@Override
 			public void windowClosed(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void windowActivated(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
-				
+
 			}
 		});
 		
-		
-		
-		
-		
-	
-		OurProgressBar pb= new OurProgressBar(this);
-		
-		
+		openWindows= new ArrayList<ViewImagesBigger>();
+
+		OurProgressBar pb = new OurProgressBar(this);
+
 		cLa = new CreateListImageAlgori(image);
 
 		imageIcoList = new ArrayList<ImageIcon>();
@@ -123,56 +129,50 @@ public class AlgorithmView extends JFrame {
 		JPanel panelImage = new JPanel(new GridLayout(0, 3));
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 		panelImage.setAutoscrolls(true);
-		
-		int i=0;
+
+		int i = 0;
 
 		for (File ima : images) {
 			JButton imageView = new JButton();
 			JLabel imageAlgori = new JLabel();
-			//JPanel butLab = new JPanel(new GridLayout(2, 1));
+			// JPanel butLab = new JPanel(new GridLayout(2, 1));
 			JPanel butLab = new JPanel(new GridBagLayout());
-			//butLab.getLayout(). // ver alguna mejor para que esten bien los botones
-			
-			
-			ImageIcon imagi=ShowTiff.showTiffToImageIcon(ima.getAbsolutePath());
-			
-			ImageIcon imageIcon = new ImageIcon(imagi.getImage()
-					.getScaledInstance(200,200, java.awt.Image.SCALE_DEFAULT));
+			// butLab.getLayout(). // ver alguna mejor para que esten bien los botones
+
+			ImageIcon imagi = ShowTiff.showTiffToImageIcon(ima.getAbsolutePath());
+
+			ImageIcon imageIcon = new ImageIcon(
+					imagi.getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_DEFAULT));
 
 			imageIcoList.add(imagi);
 
 			algoname = getAlgorithmName(ima);
 
 			imageAlgori.setText("Used algorithm " + algoname);
-			
-			
-			if(i%2==0) {
-				
+
+			if (i % 2 == 0) {
+
 				butLab.setBackground(Color.blue);
-			
-			}else {
+
+			} else {
 				butLab.setBackground(Color.green);
 			}
 			i++;
-		
-			
 
 			imageView.setIcon(imageIcon);
 			imageView.setName(ima.getAbsolutePath());
-		
+
 			imageView.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent me) {
-					mouseClick(me,imagi);
+					mouseClick(me, imagi);
 				}
 			});
 
 			butLab.add(imageView);
 			butLab.add(imageAlgori);
 			panelImage.add(butLab);
-	
 
 		}
-		
 
 		JButton saveImageBt = new JButton();
 		JButton modifySelectionBu = new JButton();
@@ -197,11 +197,10 @@ public class AlgorithmView extends JFrame {
 		getContentPane().add(jSp);
 		pb.setVisible(false);
 		pb.dispose();
-	
 
 	}
 
-	public void mouseClick(MouseEvent me,ImageIcon imageIcon) {
+	public void mouseClick(MouseEvent me, ImageIcon imageIcon) {
 		if (!me.isConsumed()) {
 			switch (me.getClickCount()) {
 			case 1:
@@ -210,8 +209,8 @@ public class AlgorithmView extends JFrame {
 				break;
 			case 2:
 				me.consume();
-				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList,
-						directory,true); 
+				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList, directory, true);
+				this.openWindows.add(vi);
 				break;
 
 			default:
@@ -267,6 +266,8 @@ public class AlgorithmView extends JFrame {
 		String algoritmNameString = getAlgorithmName(ima);
 
 		cLa.saveSelectedImage(ima, this.directory, algoritmNameString);
+		this.dispose();
+		CreateListImageAlgori.deleteTemporalFolder();
 	}
 
 	private void modifySeclection(String filename) {

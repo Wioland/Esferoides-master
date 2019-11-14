@@ -7,13 +7,18 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import funtions.CreateListImageAlgori;
+import funtions.Main;
 
 public class SelectAlgoritm {
 
 	private Object selection;
 	private Object[] options;
+	private String dir;
 
-	public SelectAlgoritm() {
+	public SelectAlgoritm(String directory) {
+		
+		this.dir=directory;
+		
 		CreateListImageAlgori cLiA = new CreateListImageAlgori();
 		List<Method> methods = cLiA.getAlgorithms();
 		options = new Object[methods.size()];
@@ -35,32 +40,38 @@ public class SelectAlgoritm {
 		selection = JOptionPane.showInputDialog(null, "Select an option", "Algorithm selecter",
 				JOptionPane.QUESTION_MESSAGE, null, options, methods.get(0));
 
-	
-		 i=findIndexOfSelection();
-		
-		System.out.println(" la posicion del elemento dentro de la lista es "+ i
-				+ " la seleccion es " + selection.toString() );
-		// selectedMethod=methods.get(index);
+		if (selection != null) {
+			i = findIndexOfSelection();
 
-		// segun el algoritmo seleccionado llamar a su metodo y crear las imagenes,
-		// luego mostrar en la carpeta por medio de view images
+			selectedMethod = methods.get(i);
+
+			// segun el algoritmo seleccionado llamar a su metodo y crear las imagenes,
+			// luego mostrar en la carpeta por medio de view images
+
+			selectedMethod.invoke(obj, args);
+			
+			GeneralView gb= new GeneralView(this.dir);
+
+		}else {
+			Main.callProgram(dir);
+		}
 
 	}
 
 	private int findIndexOfSelection() {
-		boolean find=false;
-		int i=0;
-		
-		while(!find || i<options.length) {
-			if(options[i].equals(selection)) {
-				find=true;
+		boolean find = false;
+		int i = 0;
+
+		while (!find || i < options.length) {
+			if (options[i].equals(selection)) {
+				find = true;
 				break;
 			}
 			i++;
 		}
-		
+
 		return i;
-		
+
 	}
 
 }
