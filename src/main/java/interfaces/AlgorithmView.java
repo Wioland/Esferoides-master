@@ -18,7 +18,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -90,13 +90,13 @@ public class AlgorithmView extends JFrame {
 
 				// Cerrar el resto de ventanas que se hayan abierto a partir de esta
 				ij.WindowManager.closeAllWindows(); // esto cierra todas las ventanas abiertas con imagej solamente
-				if(openWindows!=null) {         // quedan las de visualizacion de las imagenes en grande 
-					if(openWindows.size()>0) {
+				if (openWindows != null) { // quedan las de visualizacion de las imagenes en grande
+					if (openWindows.size() > 0) {
 						for (ViewImagesBigger wind : openWindows) {
 							wind.dispose();
 						}
 					}
-				}									
+				}
 
 			}
 
@@ -112,8 +112,8 @@ public class AlgorithmView extends JFrame {
 
 			}
 		});
-		
-		openWindows= new ArrayList<ViewImagesBigger>();
+
+		openWindows = new ArrayList<ViewImagesBigger>();
 
 		OurProgressBar pb = new OurProgressBar(this);
 
@@ -134,30 +134,12 @@ public class AlgorithmView extends JFrame {
 
 		for (File ima : images) {
 			JButton imageView = new JButton();
-			JLabel imageAlgori = new JLabel();
-			// JPanel butLab = new JPanel(new GridLayout(2, 1));
-			JPanel butLab = new JPanel(new GridBagLayout());
-			// butLab.getLayout(). // ver alguna mejor para que esten bien los botones
 
 			ImageIcon imagi = ShowTiff.showTiffToImageIcon(ima.getAbsolutePath());
-
 			ImageIcon imageIcon = new ImageIcon(
 					imagi.getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_DEFAULT));
 
 			imageIcoList.add(imagi);
-
-			algoname = getAlgorithmName(ima);
-
-			imageAlgori.setText("Used algorithm " + algoname);
-
-			if (i % 2 == 0) {
-
-				butLab.setBackground(Color.blue);
-
-			} else {
-				butLab.setBackground(Color.green);
-			}
-			i++;
 
 			imageView.setIcon(imageIcon);
 			imageView.setName(ima.getAbsolutePath());
@@ -168,9 +150,7 @@ public class AlgorithmView extends JFrame {
 				}
 			});
 
-			butLab.add(imageView);
-			butLab.add(imageAlgori);
-			panelImage.add(butLab);
+			panelImage.add(imageView);
 
 		}
 

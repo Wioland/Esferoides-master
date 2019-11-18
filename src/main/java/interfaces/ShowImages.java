@@ -31,7 +31,7 @@ public class ShowImages extends JPanel {
 	 */
 	public ShowImages(String directory) {
 		this.dir = directory;
-		this.setLayout(new GridLayout(0, 4));
+		this.setLayout(new GridLayout(0,1));
 
 		listImages = new ArrayList<String>();
 		listIm = new ArrayList<ImageIcon>();
@@ -49,7 +49,7 @@ public class ShowImages extends JPanel {
 			// aniadir a button
 			// Obtiene un icono en escala con las dimensiones especificadas
 			ImageIcon iconoEscala = new ImageIcon(
-					image.getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_DEFAULT));
+					image.getImage().getScaledInstance(800, 800, java.awt.Image.SCALE_DEFAULT));
 			JButton button = new JButton(iconoEscala);
 
 			button.addActionListener(new ActionListener() {

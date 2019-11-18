@@ -272,6 +272,7 @@ public class EsferoideJ_ extends EsferoideDad implements Command {
 		return rm.getRoisAsArray().length;
 	}
 
+	
 	// Method to detect esferoides.
 	private void detectEsferoide(ImporterOptions options, String dir, String name) throws FormatException, IOException {
 		options.setId(name);

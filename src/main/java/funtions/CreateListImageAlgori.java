@@ -159,7 +159,7 @@ public class CreateListImageAlgori {
 			// le ha aplicado un algoritmo, por loq ue hay que quitarle la ruta y sol
 			// quedarme con el nombre del archivo
 			
-			m.invoke(obj, args);
+			//m.invoke(obj, args);
 
 			boolean done = renameFile(m, ima);
 

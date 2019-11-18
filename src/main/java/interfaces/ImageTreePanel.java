@@ -1,38 +1,32 @@
 package interfaces;
 
-import java.awt.Component;
-import java.awt.Image;
-import java.awt.MenuBar;
-import java.awt.PopupMenu;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTree;
+import javax.swing.SwingConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import com.sleepycat.je.rep.elections.Protocol.Result;
+import com.sleepycat.persist.model.DeleteAction;
 
+import funtions.Main;
 import funtions.ShowTiff;
 import funtions.Utils;
-import ij.IJ;
 import ij.ImagePlus;
-import ij.gui.Roi;
-import ij.io.Opener;
-import ij.measure.ResultsTable;
-import ij.plugin.frame.RoiManager;
-
+import loci.formats.FormatException;
+import loci.plugins.BF;
 
 public class ImageTreePanel extends JSplitPane {
 
@@ -42,6 +36,8 @@ public class ImageTreePanel extends JSplitPane {
 	private static final long serialVersionUID = 1L;
 	private JTree tree;
 	private String dir;
+	private TabPanel folderView;
+	private JScrollPane s;
 
 	public ImageTreePanel(String directory) {
 
@@ -55,8 +51,9 @@ public class ImageTreePanel extends JSplitPane {
 		p.add(tree);// tree
 		p.setAutoscrolls(true);
 
+		folderView = new TabPanel(directory);
 		// se crean los scrolls
-		JScrollPane s = new JScrollPane(new TabPanel(directory));// se le añade el tabpanel
+		s = new JScrollPane(folderView);// se le añade el tabpanel
 		JScrollPane s2 = new JScrollPane(p); // se le aniade el tree
 
 		// propiedades del jsplitpane
@@ -109,110 +106,147 @@ public class ImageTreePanel extends JSplitPane {
 
 			System.out.println("Path de treepath " + tp.toString());
 
-			if (tp.getPath().length > 1) {
-				String fileName = tp.getPath()[tp.getPathCount() - 1].toString();
-				String extension = tp.getPath()[tp.getPathCount() - 1].toString().split("\\.")[1];
-				String nameFileOnly = tp.getPath()[tp.getPathCount() - 1].toString().split("\\.")[0];
-				Opener op = new Opener();
+			if (tp.getPath().length > 0) {
+				File fileSelected = new File(path);
 
-				System.out.println("la ruta es " + path);
-				System.out.println("archivo " + fileName);
-				System.out.println("extension del archivo " + extension);
+				if (fileSelected.isFile()) {
 
-				switch (extension) {
-				case "tiff":
-					// mostrar por el visualizador
-					// showImageTree(path, fileName);
+					String fileName = tp.getPath()[tp.getPathCount() - 1].toString();
+					String extension = tp.getPath()[tp.getPathCount() - 1].toString().split("\\.")[1];
+					String nameFileOnly = tp.getPath()[tp.getPathCount() - 1].toString().split("\\.")[0];
+					// Opener op = new Opener();
 
-					// mostrar con imagej
-					ij.WindowManager.closeAllWindows();
-					op.open(path + fileName);
+//					System.out.println("la ruta es " + path);
+//					System.out.println("archivo " + fileName);
+//					System.out.println("extension del archivo " + extension);
 
-					break;
+					if (extension.equals("nd2")) {
+						// hacer que se abran en imagej
+						System.out.println(path);
 
-				// hacer que se abran en imagej
-				case "nd2":
-					System.out.println(path + fileName);
+						ImagePlus[] imps;
+						try {
+//							ImporterOptions options =new ImporterOptions();
+//							options.setWindowless(true);
+//							options.setId(path);
+//							options.setOpenAllSeries(true);
+//							imps = BF.openImagePlus(options);
+							imps = BF.openImagePlus(path);
+							ImagePlus imp = imps[0];
+							imp.show();
+						} catch (FormatException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 
-//					try {
-//					
-//						ImagePlus[] imps;
-//						try {
-//							imps = BF.openImagePlus(path+fileName);
-//							ImagePlus imp = imps[0];
-//							System.out.println(imps.length);
-//							imp.show();
-//						} catch (FormatException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
+//			
+//						ImagePlus j = op.openUsingBioFormats(path + fileName);
+//						if (j != null) {
+//							j.show();
+//
+//						} else {
+//							System.out.println("no puedo mostrar la imagen esta es nula ");
 //						}
-//					
-//						
-//						
-//					} catch (IOException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
 
-//		
-					ImagePlus j = op.openUsingBioFormats(path + fileName);
-					if (j != null) {
-						j.show();
+//						IJ.run("Bio-Formats Importer",
+//								"open=C:/Users/yomendez/Desktop/Esferoides/2x/ctrl_1_14.nd2 autoscale color_mode=Default rois_import=[ROI manager] view=Hyperstack stack_order=XYCZT");
 
-					} else {
-						System.out.println("no puedo mostrar la imagen esta es nula ");
+						ij.WindowManager.closeAllWindows();
+						// op.open(path + nameFileOnly + "_pred.tiff");
+						// IJ.run("Bio-Formats Windowless Importer",
+						// "open=C:/Users/yomendez/Desktop/Esferoides/2x/ctrl_1_14.nd2");
+
+//						IJ.setTool("freehand");
+//						RoiManager roi = new RoiManager();
+//						// roi.runCommand("Open", path + "\\" + fileName);
+//						ImagePlus imp = new ImagePlus(path + "\\" + fileName);
+//						roi.runCommand(imp, "Measure");
+//						// roi.runCommand("Measure");
+
+						// roi.actionPerformed(new ActionEvent(roi, 7, "Measure"));
+						// ResultsTable rt = ij.plugin.filter.Analyzer.getResultsTable();
+						// rt.show("Measures");
+
+						// ij.measure.ResultsTable();
+						// ResultsTable roiResults = new ResultsTable();
+//						if() { // si se cierra la imagen que se cierre el zip
+//							
+//							roi.close();
+//						}
+
+					}
+				} else {
+					if (!path.equals(dir)) { // si no es el directorio en el que nos encontramos que
+
+						File folder = new File(path);
+						List<String> result = new ArrayList<String>();
+						String oldPath = this.dir;
+						boolean switchFolder = true;
+						this.dir = path;
+
+						Utils.search(".*\\.tiff", folder, result);
+						if (result.size() == 0) {
+							Utils.search(".*\\.nd2", folder, result);
+							if (result.size() != 0) { // si solo tiene imagenes nd2 mostrar el selector de algoritmos
+
+								int n = JOptionPane.showConfirmDialog(this,
+										"The folder only contains ND2 files do you want to use an Algorithm?",
+										"ND2 files detected", JOptionPane.YES_NO_OPTION);
+
+								if (n == 0) {
+									SelectAlgoritm sAl = new SelectAlgoritm(dir, this);
+								} else {
+									JOptionPane.showMessageDialog(this,
+											"Nothing to be done. Not changing to de selected folder");
+									this.dir = oldPath;
+									switchFolder = false;
+								}
+
+							} else {// mostrar en la vista que no hay datos que mostrar quitar el tab panel
+
+								repaintTabPanel();
+							}
+
+						} else { // si tiene imagenes tiff decirle que quiere realizar
+							JOptionPane.showMessageDialog(this, "Detected Tiff files");
+							Main.callProgram(dir, this);
+
+						}
+
+						if (switchFolder) {
+							JOptionPane.showMessageDialog(this, "Changed the folder to " + dir);
+
+						}
+
 					}
 
-					break;
-
-				case "zip":
-
-					ij.WindowManager.closeAllWindows();
-					op.open(path + nameFileOnly + "_pred.tiff");
-
-					RoiManager roi = new RoiManager();
-					roi.runCommand("Open", path + "\\" + fileName);
-					//roi.runCommand("Measure");
-					
-				//roi.actionPerformed(new ActionEvent(roi, 7, "Measure"));
-						//ResultsTable rt = ij.plugin.filter.Analyzer.getResultsTable();
-						//rt.show("Measures");
-		
-
-					// ij.measure.ResultsTable();
-					// ResultsTable roiResults = new ResultsTable();
-//					if() { // si se cierra la imagen que se cierre el zip
-//						
-//						roi.close();
-//					}
-					
-					ResultsTable jh=new ResultsTable();   
-					
-					
-//					
-					break;
-
-				default:
-					break;
 				}
-			} else {
-				if (!path.equals(dir)) { // si no es el directorio en el que nos encontramos que
-					System.out.println("se ha clicado en una carpeta"); // cambie a ese
-					
 
-				}
 			}
 
 		}
 
 	}
 
+	public void repaintTabPanel() {
+		folderView = new TabPanel(this.dir);
+		// se crean los scrolls
+		s.setViewportView(folderView);
+		s.revalidate();
+		s.repaint();
+
+	}
+
 	private String getPathSelectedTreeFile(TreePath tp) {
 		String path = "";
 
-		for (int i = 0; i < tp.getPathCount() - 1; i++) {
+		for (int i = 0; i < tp.getPathCount(); i++) {
 			path += tp.getPath()[i].toString();
-			if (i > 0) {
+			if (i > 0 && i != (tp.getPathCount() - 1)) {
+
 				path += "\\";
 
 			}
@@ -241,7 +275,7 @@ public class ImageTreePanel extends JSplitPane {
 			}
 		}
 
-		//ViewImagesBigger vIb = new ViewImagesBigger(imaVer.get(0), listIm,dir);
+		// ViewImagesBigger vIb = new ViewImagesBigger(imaVer.get(0), listIm,dir);
 
 	}
 
@@ -254,14 +288,19 @@ public class ImageTreePanel extends JSplitPane {
 		int index = 0;
 
 		for (File f : parent.listFiles()) {
-			DefaultMutableTreeNode child = new DefaultMutableTreeNode(f.getName());
-			modelo.insertNodeInto(child, parentNode, index);
-			index++;
-			// System.out.println(f.getParent());
-
-			if (f.isDirectory()) {
-				addChildTree(child, f, modelo);
+			if (f.isFile() && f.getName().endsWith("nd2")) {
+				DefaultMutableTreeNode child = new DefaultMutableTreeNode(f.getName());
+				modelo.insertNodeInto(child, parentNode, index);
+				index++;
+			} else {
+				if (f.isDirectory()) {
+					DefaultMutableTreeNode child = new DefaultMutableTreeNode(f.getName());
+					modelo.insertNodeInto(child, parentNode, index);
+					index++;
+					addChildTree(child, f, modelo);
+				}
 			}
+
 		}
 
 	}

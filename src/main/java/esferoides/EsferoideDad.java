@@ -81,6 +81,9 @@ public class EsferoideDad {
 			throws IOException {
 		IJ.run(imp1, "RGB Color", "");
 
+		File folder= new File(dir+"\\predictions");
+		folder.mkdir();
+		
 		String name = imp1.getTitle();
 		// FileInfo f = imp1.getFileInfo();
 		name = name.substring(0, name.indexOf("."));
@@ -126,7 +129,7 @@ public class EsferoideDad {
 				}
 
 				rm.runCommand(imp1, "Draw");
-				rm.runCommand("Save", dir + name + ".zip");
+				rm.runCommand("Save", folder.getAbsolutePath() + name + ".zip");
 				rm.close();
 				// saving the roi
 				// compute the statistics (without calibrate)
@@ -176,7 +179,7 @@ public class EsferoideDad {
 			}
 		}
 
-		IJ.saveAs(imp1, "Tiff", dir + name + "_pred.tiff");
+		IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + name + "_pred.tiff");
 	}
 
 	public static String getByFormat(String format, List<String> result) {
