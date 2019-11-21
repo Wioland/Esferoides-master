@@ -19,14 +19,13 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import com.sleepycat.persist.model.DeleteAction;
-
 import funtions.Main;
 import funtions.ShowTiff;
 import funtions.Utils;
 import ij.ImagePlus;
 import loci.formats.FormatException;
 import loci.plugins.BF;
+import loci.plugins.in.ImporterOptions;
 
 public class ImageTreePanel extends JSplitPane {
 
@@ -123,14 +122,20 @@ public class ImageTreePanel extends JSplitPane {
 					if (extension.equals("nd2")) {
 						// hacer que se abran en imagej
 						System.out.println(path);
+//
+//						System.getProperties().setProperty("plugins.dir",
+//								"C:\\Users\\yomendez\\Desktop\\Fiji.app\\plugins");
+//						//new ImageJ();
+//						IJ.run("Bio-Formats Windowless Importer",
+//								"open=C:/Users/yomendez/Desktop/Esferoides/2x/ctrl_1_14.nd2");
 
 						ImagePlus[] imps;
 						try {
-//							ImporterOptions options =new ImporterOptions();
-//							options.setWindowless(true);
-//							options.setId(path);
-//							options.setOpenAllSeries(true);
-//							imps = BF.openImagePlus(options);
+							ImporterOptions options =new ImporterOptions();
+							options.setWindowless(true);
+							options.setId(path);
+							options.setOpenAllSeries(true);
+							imps = BF.openImagePlus(options);
 							imps = BF.openImagePlus(path);
 							ImagePlus imp = imps[0];
 							imp.show();
@@ -154,7 +159,7 @@ public class ImageTreePanel extends JSplitPane {
 //						IJ.run("Bio-Formats Importer",
 //								"open=C:/Users/yomendez/Desktop/Esferoides/2x/ctrl_1_14.nd2 autoscale color_mode=Default rois_import=[ROI manager] view=Hyperstack stack_order=XYCZT");
 
-						ij.WindowManager.closeAllWindows();
+//						ij.WindowManager.closeAllWindows();
 						// op.open(path + nameFileOnly + "_pred.tiff");
 						// IJ.run("Bio-Formats Windowless Importer",
 						// "open=C:/Users/yomendez/Desktop/Esferoides/2x/ctrl_1_14.nd2");

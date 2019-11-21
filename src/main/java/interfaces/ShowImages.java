@@ -49,7 +49,7 @@ public class ShowImages extends JPanel {
 			// aniadir a button
 			// Obtiene un icono en escala con las dimensiones especificadas
 			ImageIcon iconoEscala = new ImageIcon(
-					image.getImage().getScaledInstance(800, 800, java.awt.Image.SCALE_DEFAULT));
+					image.getImage().getScaledInstance(700, 700, java.awt.Image.SCALE_DEFAULT));
 			JButton button = new JButton(iconoEscala);
 
 			button.addActionListener(new ActionListener() {

@@ -1,10 +1,7 @@
 package interfaces;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -18,18 +15,18 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
-import edu.mines.jtk.sgl.BoundingBox;
 import funtions.CreateListImageAlgori;
 import funtions.ShowTiff;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.io.Opener;
+import ij.measure.ResultsTable;
 import ij.plugin.frame.RoiManager;
 
 public class AlgorithmView extends JFrame {
@@ -255,11 +252,31 @@ public class AlgorithmView extends JFrame {
 
 		ij.WindowManager.closeAllWindows();
 		Opener op = new Opener();
-		op.open(filename);
+		//op.open(filename);
+		//op.openImage(filename);
+
+		ImagePlus imp=op.openImage(filename);
+		imp.show();
 
 		RoiManager roi = new RoiManager();
 		roi.runCommand("Open", fileRoi);
+		roi.runCommand(imp, "Measure");
+		ResultsTable r = ResultsTable.getResultsTable(); 
+		//ij.WindowManager.addWindow(ij.measure.ResultsTable.getResultsWindow());
+		
+	
+	r.show("Results");
+	IJ.renameResults("d");
+	System.out.println(IJ.isResultsWindow());
+	r.show("d");
+	//IJ.renameResults("d","Results");
+	//roi.multiMeasure(imp);
 
+	//ij.WindowManager.getWindow("Results").show();;
+
+
+	
+	
 	}
 
 }

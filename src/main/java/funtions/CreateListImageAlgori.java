@@ -2,6 +2,7 @@ package funtions;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,68 @@ public class CreateListImageAlgori {
 	private String path;
 	private static File temporalFolder;
 	private List<String> noValidMethods;
+
+	public CreateListImageAlgori() {
+		initAlgo("esferoides.Methods");
+	}
+
+	public CreateListImageAlgori(File image) {
+
+		String[] j;
+		try {
+			j = image.getCanonicalPath().split("\\\\");
+			String p = image.getCanonicalPath().replace(j[j.length - 1], "");
+			path = p + "temporal";
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		this.imaSelected = image;
+		temporalFolder = new File(path);
+		temporalFolder.mkdir();
+		initAlgo("esferoides.Methods");
+		
+
+	}
+
+//	public CreateListImageAlgori() {
+//		iniNoValidMethods();
+//		try {
+//			iniA(getClasses("esferoides"));
+//		} catch (ClassNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+//
+//	public CreateListImageAlgori(File image) {
+//
+//		// Seleccionar un path para la carpeta temporal
+//		iniNoValidMethods();
+//		try {
+//
+//			String[] j = image.getCanonicalPath().split("\\\\");
+//			String p = image.getCanonicalPath().replace(j[j.length - 1], "");
+//			path = p + "temporal";
+//			// System.out.println(path);
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//
+//		this.imaSelected = image;
+//		temporalFolder = new File(path);
+//		temporalFolder.mkdir();
+//		try {
+//			iniA(getClasses("esferoides"));
+//		} catch (ClassNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//	}
+//	
 
 	public List<Method> getAlgorithms() {
 		return algorithms;
@@ -34,117 +97,96 @@ public class CreateListImageAlgori {
 		temporalFolder = temporalFol;
 	}
 
-	public CreateListImageAlgori() {
-		iniNoValidMethods();
+	public void initAlgo(String className) {
+		algorithms= new ArrayList<Method>();
+		Class class1;
 		try {
-			iniA(getClasses("esferoides"));
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public CreateListImageAlgori(File image) {
-
-		// Seleccionar un path para la carpeta temporal
-		iniNoValidMethods();
-		try {
-
-			String[] j = image.getCanonicalPath().split("\\\\");
-			String p = image.getCanonicalPath().replace(j[j.length - 1], "");
-			path = p + "temporal";
-			// System.out.println(path);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		this.imaSelected = image;
-		temporalFolder = new File(path);
-		temporalFolder.mkdir();
-		try {
-			iniA(getClasses("esferoides"));
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	public void iniA(Class[] listClass) {
-		algorithms = new ArrayList<Method>();
-		for (Class class1 : listClass) {
-
+			class1 = Class.forName(className);
 			Method[] metClass = class1.getDeclaredMethods();
-			// Method[] metClass = class1.getMethods();
-
-			if (!class1.getName().equals("esferoides.EsferoideDad")) {
-				for (Method method : metClass) {
-					if (!validMethod(method.getName())) {
-						algorithms.add(method);
-						// se realiza el metodo, se guarda la imagen con el nombre del la clase_metodo y
-						// me muestra por pantalla
-					}
-
-				}
-
+			for (Method method : metClass) {
+				algorithms.add(method);
 			}
-
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
+		
 	}
 
-	private void iniNoValidMethods() {
-		this.noValidMethods = new ArrayList<String>();
+//
+//	public void iniA(Class[] listClass) {
+//		algorithms = new ArrayList<Method>();
+//		for (Class class1 : listClass) {
+//
+//			Method[] metClass = class1.getDeclaredMethods();
+//		
+//			if (!class1.getName().equals("esferoides.EsferoideDad")) {
+//				for (Method method : metClass) {
+//					if (!validMethod(method.getName())) {
+//						algorithms.add(method);
+//
+//					}
+//
+//				}
+//
+//			}
+//
+//		}
+//
+//	}
 
-		noValidMethods.add("main");
-		noValidMethods.add("draw");
-		noValidMethods.add("keepBiggestROI");
-		noValidMethods.add("analyzeParticles");
-		noValidMethods.add("findLocalMaxima");
-		noValidMethods.add("analyzeSmallPArticles");
-		noValidMethods.add("getArea");
+//	
+//	private void iniNoValidMethods() {
+//		this.noValidMethods = new ArrayList<String>();
+//
+//		noValidMethods.add("main");
+//		noValidMethods.add("draw");
+//		noValidMethods.add("keepBiggestROI");
+//		noValidMethods.add("analyzeParticles");
+//		noValidMethods.add("findLocalMaxima");
+//		noValidMethods.add("analyzeSmallPArticles");
+//		noValidMethods.add("getArea");
+//
+//		// noValidMethods.add("run");
+//		// noValidMethods.add("");
+//
+//	}
+//
+//	private boolean validMethod(String name) {
+//		return this.noValidMethods.contains(name);
+//
+//	}
 
-		// noValidMethods.add("run");
-		// noValidMethods.add("");
-
-	}
-
-	private boolean validMethod(String name) {
-		return this.noValidMethods.contains(name);
-
-	}
-
-	public static Class[] getClasses(String pckgname) throws ClassNotFoundException {
-		ArrayList classes = new ArrayList();
-		File directory = null;
-		try {
-			directory = new File(
-					Thread.currentThread().getContextClassLoader().getResource(pckgname.replace('.', '/')).getFile());
-		} catch (NullPointerException x) {
-			throw new ClassNotFoundException(pckgname + " does not appear to be a valid package");
-		}
-		if (directory.exists()) {
-			// Get the list of the files contained in the package
-			String[] files = directory.list();
-			for (int i = 0; i < files.length; i++) {
-				// we are only interested in .class files
-				if (files[i].endsWith(".class")) {
-					// removes the .class extension
-					try {
-						Class cl = Class.forName(pckgname + '.' + files[i].substring(0, files[i].length() - 6));
-						classes.add(cl);
-					} catch (ClassNotFoundException ex) {
-					}
-				}
-			}
-		} else {
-			throw new ClassNotFoundException(pckgname + " does not appear to be a valid package");
-		}
-		Class[] classesA = new Class[classes.size()];
-		classes.toArray(classesA);
-		return classesA;
-	}
+//	public static Class[] getClasses(String pckgname) throws ClassNotFoundException {
+//		ArrayList classes = new ArrayList();
+//		File directory = null;
+//		try {
+//			directory = new File(
+//					Thread.currentThread().getContextClassLoader().getResource(pckgname.replace('.', '/')).getFile());
+//		} catch (NullPointerException x) {
+//			throw new ClassNotFoundException(pckgname + " does not appear to be a valid package");
+//		}
+//		if (directory.exists()) {
+//			// Get the list of the files contained in the package
+//			String[] files = directory.list();
+//			for (int i = 0; i < files.length; i++) {
+//				// we are only interested in .class files
+//				if (files[i].endsWith(".class")) {
+//					// removes the .class extension
+//					try {
+//						Class cl = Class.forName(pckgname + '.' + files[i].substring(0, files[i].length() - 6));
+//						classes.add(cl);
+//					} catch (ClassNotFoundException ex) {
+//					}
+//				}
+//			}
+//		} else {
+//			throw new ClassNotFoundException(pckgname + " does not appear to be a valid package");
+//		}
+//		Class[] classesA = new Class[classes.size()];
+//		classes.toArray(classesA);
+//		return classesA;
+//	}
 
 	// crear las imagenes con los distintos algoritmos de la imagen seleccionada
 	// guardarlas en la carpeta y en la lista
@@ -158,8 +200,23 @@ public class CreateListImageAlgori {
 			// imagen selected va a tener todo el path de la imagen original a la que ya se
 			// le ha aplicado un algoritmo, por loq ue hay que quitarle la ruta y sol
 			// quedarme con el nombre del archivo
+
+			// String imagePath,String format
+			try {
+				m.invoke(null, this.imaSelected.getAbsolutePath(), "tiff");
 			
-			//m.invoke(obj, args);
+			
+			
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			boolean done = renameFile(m, ima);
 
@@ -188,8 +245,8 @@ public class CreateListImageAlgori {
 		String[] splitName = this.imaSelected.getName().split("\\\\");
 		String newImageName = splitName[splitName.length - 1].replace(".tiff", "_" + s + ".tiff");
 
-		// File newImage = new File(path + "\\" + newImageName);
-		File newImage = new File("C:\\Users\\yomendez\\Desktop\\prueba.tiff");
+		File newImage = new File(path + "\\" + newImageName);
+		// File newImage = new File("C:\\Users\\yomendez\\Desktop\\prueba.tiff");
 
 		File folderFile = new File(path + imaSelected.getName());
 		ima.add(newImage);
@@ -219,7 +276,7 @@ public class CreateListImageAlgori {
 		System.out.println(pattern);
 		System.out.println(originalName);
 
-		Utils.search(pattern, new File(imaSelected.getAbsolutePath().replace(imaSelected.getName(), " ")),
+		Utils.search(pattern, new File(imaSelected.getAbsolutePath().replace(imaSelected.getName(), "")),
 				temporalFiles);
 
 		pattern = pattern.replace(algoritmClassName, "");

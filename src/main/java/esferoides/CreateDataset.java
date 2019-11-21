@@ -22,7 +22,7 @@ import loci.plugins.in.ImporterOptions;
 //@Plugin(type = Command.class, headless = true, menuPath = "Plugins>Esferoids>CreateDataset")
 public class CreateDataset implements Command {
 
-	public void saveImageAndMask(ImporterOptions options, String dir, String name) throws FormatException, IOException {
+	public static void saveImageAndMask(ImporterOptions options, String dir, String name) throws FormatException, IOException {
 		System.out.println(name);
 		options.setId(name);
 

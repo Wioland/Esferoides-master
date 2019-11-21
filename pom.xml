@@ -52,7 +52,6 @@
 		<argLine />
 	</properties>
 	<dependencies>
-
 		<dependency>
 			<groupId>io.github.joheras</groupId>
 			<artifactId>IJ-OpenCV</artifactId>
@@ -63,7 +62,6 @@
 			<artifactId>MorphoLibJ</artifactId>
 			<version>v1.4.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>ome</groupId>
 			<artifactId>formats-api</artifactId>
@@ -94,5 +92,6 @@
 			<artifactId>poi</artifactId>
 			<version>3.7</version>
 		</dependency>
+		
 	</dependencies>
 </project>

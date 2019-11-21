@@ -30,8 +30,7 @@ import loci.plugins.in.ImporterOptions;
 import net.imagej.ImageJ;
 
 //@Plugin(type = Command.class, headless = true, menuPath = "Plugins>Esferoids>EsferoideHistogramMosaicJ")
-public class EsferoideHistogramMosaicJ_  implements Command {
-
+public class EsferoideHistogramMosaicJ_ implements Command {
 
 	private void processEsferoidesGeneralCase(ImagePlus imp2) {
 		IJ.run(imp2, "Convolve...",
@@ -122,7 +121,6 @@ public class EsferoideHistogramMosaicJ_  implements Command {
 		return rm;
 	}
 
-
 	private static void keepBiggestROI(RoiManager rm) {
 
 		Roi[] rois = rm.getRoisAsArray();
@@ -202,11 +200,9 @@ public class EsferoideHistogramMosaicJ_  implements Command {
 		impHist.close();
 		IJ.run(impStack, "Make Montage...", "columns=2 rows=3 scale=0.5");
 		imp = IJ.getImage();
-		IJ.saveAs(imp, "Tiff",  name + "_hist.tiff");
+		IJ.saveAs(imp, "Tiff", name + "_hist.tiff");
 		impStack.close();
-		
-		
-		
+
 		imp.close();
 
 	}
@@ -222,7 +218,7 @@ public class EsferoideHistogramMosaicJ_  implements Command {
 
 			List<String> result = new ArrayList<String>();
 
-			String dir= EsferoideDad.getByFormat("nd2", result);
+			String dir = EsferoideDad.getByFormat("nd2", result);
 //		rt.show("Results");
 
 			// For each nd2 file, we detect the esferoide. Currently, this means that it

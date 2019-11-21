@@ -28,7 +28,7 @@ public class GeneralView extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(MAXIMIZED_BOTH);
 		setVisible(true);
-		setTitle("Results");
+		setTitle("Main Frame");
 		setMinimumSize(new Dimension(1000, 700));
 		addWindowListener(new WindowListener() {
 
