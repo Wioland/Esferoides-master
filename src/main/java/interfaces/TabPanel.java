@@ -51,11 +51,11 @@ public class TabPanel extends JTabbedPane {
 					panelExcel.add(noFileLb);
 				}
 
-				String[] j = path.split("\\\\");
-				String name = j[j.length - 2] + "\\" + j[j.length - 1];
+//				String[] j = path.split("\\\\");
+//				String name = j[j.length - 2] + "\\" + j[j.length - 1];
 
 				// System.out.println(name);
-				addTab("Excel " + name, panelExcel);
+//				addTab("Excel " + name, panelExcel);
 
 			}
 

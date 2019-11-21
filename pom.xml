@@ -64,14 +64,10 @@
 		</dependency>
 		<dependency>
 			<groupId>ome</groupId>
-			<artifactId>formats-api</artifactId>
-			<version>${bioformats.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>ome</groupId>
 			<artifactId>bio-formats</artifactId>
 			<version>5.0.0-rc2</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>ome</groupId>
 			<artifactId>loci_plugins</artifactId>
