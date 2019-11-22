@@ -272,94 +272,105 @@ public class EsferoideJ_ extends EsferoideDad implements Command {
 		return rm.getRoisAsArray().length;
 	}
 
-	
+	@Override
+
 	// Method to detect esferoides.
-	private void detectEsferoide(ImporterOptions options, String dir, String name) throws FormatException, IOException {
-		options.setId(name);
+	public void detectEsferoide(ImporterOptions options, String dir, String name) {
+	
+		ImagePlus[] imps;
+		try {
+			options.setId(name);
+			options.setOpenAllSeries(true);
+			imps = BF.openImagePlus(options);
+			ImagePlus imp = imps[0];
+			ImagePlus imp2 = imp.duplicate();
+			imp2.show();
 
-		ImagePlus[] imps = BF.openImagePlus(options);
-		ImagePlus imp = imps[0];
-		ImagePlus imp2 = imp.duplicate();
+			/// We consider two cases, when there is a "black hole" in the image (the first
+			/// case), there is a lot of pixels below a given threshold, and those pixels
+			/// belong to the Esferoide. In addition to be a black hole, there must be a
+			/// difference between that region and the rest of the image.
+//			int count = countBelowThreshold(imp2, 1100);
+//			boolean realBlackHole = countBetweenThresholdOver(imp2, 1100, 2000, 1500);
+//			System.out.println(realBlackHole);
+			RoiManager rm;
 
-		/// We consider two cases, when there is a "black hole" in the image (the first
-		/// case), there is a lot of pixels below a given threshold, and those pixels
-		/// belong to the Esferoide. In addition to be a black hole, there must be a
-		/// difference between that region and the rest of the image.
-//		int count = countBelowThreshold(imp2, 1100);
-//		boolean realBlackHole = countBetweenThresholdOver(imp2, 1100, 2000, 1500);
-//		System.out.println(realBlackHole);
-		RoiManager rm;
-
-		processEsferoidEdges(imp2, 0);
-		rm = analyzeParticles(imp2, false);
-
-		int iters = 1;
-		while (rm == null || rm.getRoisAsArray().length == 0) {
-			processEsferoidEdges(imp2, iters);
+			processEsferoidEdges(imp2, 0);
 			rm = analyzeParticles(imp2, false);
-			iters++;
-		}
 
-		/*
-		 * Old version. Several options
-		 * 
-		 * if (count > 100 && realBlackHole) { if (count > 10000) {
-		 * processBlackHoles(imp2, false); } else { processBlackHoles(imp2, true); }
-		 * 
-		 * rm = analyzeParticles(imp2, true);
-		 * 
-		 * } else { processEsferoidesGeneralCase(imp2);
-		 * 
-		 * rm = analyzeParticles(imp2, false);
-		 * 
-		 * if (rm != null) {
-		 * 
-		 * Roi[] r = rm.getRoisAsArray(); rm.runCommand("Select All");
-		 * rm.runCommand("Delete");
-		 * 
-		 * int smallParticles = analyzeSmallParticles(imp2); if (smallParticles > 20) {
-		 * rm.runCommand("Select All"); rm.runCommand("Delete"); imp2 = imp.duplicate();
-		 * processEsferoidUsingFindEdges(imp2); imp2 = IJ.getImage(); imp2.changes =
-		 * false;
-		 * 
-		 * rm = analyzeParticles(imp2, false);
-		 * 
-		 * } else { for (int i = 0; i < r.length; i++) { rm.addRoi(r[i]); } }
-		 * 
-		 * }
-		 * 
-		 * // We have to check whether the program has detected something (that is,
-		 * whether // the RoiManager is not null). If the ROIManager is empty, we try a
-		 * different // approach using a threshold. if (rm == null ||
-		 * rm.getRoisAsArray().length == 0) {
-		 * 
-		 * // We try to find the esferoide using a threshold directly. imp2 =
-		 * imp.duplicate(); imp2 = processEsferoidUsingThresholdCombination(imp2); rm =
-		 * analyzeParticles(imp2, false); }
-		 * 
-		 * // We have to check whether the program has detected something (that is,
-		 * whether // the RoiManager is not null). If the ROIManager is empty, we try a
-		 * different // approach using a threshold combined with watershed. if (rm ==
-		 * null || rm.getRoisAsArray().length == 0) {
-		 * 
-		 * // We try to find the esferoide using a threshold directly. imp2 =
-		 * imp.duplicate(); processEsferoidUsingThresholdWithWatershed(imp2); rm =
-		 * analyzeParticles(imp2, false);
-		 * 
-		 * }
-		 * 
-		 * if (rm == null || rm.getRoisAsArray().length == 0) { imp2 = imp.duplicate();
-		 * processEsferoidUsingFindEdges(imp2); imp2 = IJ.getImage(); imp2.changes =
-		 * false; rm = analyzeParticles(imp2, false);
-		 * 
-		 * }
-		 * 
-		 * // Idea: Probar varias alternativas y ver cuál es la que produce mejor //
-		 * resultado. // ¿Cómo se define mejor resultado? } }
-		 */
-		showResultsAndSave(dir, imp, rm, this.getClass().getName());
-		System.out.println("El nombre de la clase es " + this.getClass().getName());
-		imp.close();
+			int iters = 1;
+			while (rm == null || rm.getRoisAsArray().length == 0) {
+				processEsferoidEdges(imp2, iters);
+				rm = analyzeParticles(imp2, false);
+				iters++;
+			}
+
+			/*
+			 * Old version. Several options
+			 * 
+			 * if (count > 100 && realBlackHole) { if (count > 10000) {
+			 * processBlackHoles(imp2, false); } else { processBlackHoles(imp2, true); }
+			 * 
+			 * rm = analyzeParticles(imp2, true);
+			 * 
+			 * } else { processEsferoidesGeneralCase(imp2);
+			 * 
+			 * rm = analyzeParticles(imp2, false);
+			 * 
+			 * if (rm != null) {
+			 * 
+			 * Roi[] r = rm.getRoisAsArray(); rm.runCommand("Select All");
+			 * rm.runCommand("Delete");
+			 * 
+			 * int smallParticles = analyzeSmallParticles(imp2); if (smallParticles > 20) {
+			 * rm.runCommand("Select All"); rm.runCommand("Delete"); imp2 = imp.duplicate();
+			 * processEsferoidUsingFindEdges(imp2); imp2 = IJ.getImage(); imp2.changes =
+			 * false;
+			 * 
+			 * rm = analyzeParticles(imp2, false);
+			 * 
+			 * } else { for (int i = 0; i < r.length; i++) { rm.addRoi(r[i]); } }
+			 * 
+			 * }
+			 * 
+			 * // We have to check whether the program has detected something (that is,
+			 * whether // the RoiManager is not null). If the ROIManager is empty, we try a
+			 * different // approach using a threshold. if (rm == null ||
+			 * rm.getRoisAsArray().length == 0) {
+			 * 
+			 * // We try to find the esferoide using a threshold directly. imp2 =
+			 * imp.duplicate(); imp2 = processEsferoidUsingThresholdCombination(imp2); rm =
+			 * analyzeParticles(imp2, false); }
+			 * 
+			 * // We have to check whether the program has detected something (that is,
+			 * whether // the RoiManager is not null). If the ROIManager is empty, we try a
+			 * different // approach using a threshold combined with watershed. if (rm ==
+			 * null || rm.getRoisAsArray().length == 0) {
+			 * 
+			 * // We try to find the esferoide using a threshold directly. imp2 =
+			 * imp.duplicate(); processEsferoidUsingThresholdWithWatershed(imp2); rm =
+			 * analyzeParticles(imp2, false);
+			 * 
+			 * }
+			 * 
+			 * if (rm == null || rm.getRoisAsArray().length == 0) { imp2 = imp.duplicate();
+			 * processEsferoidUsingFindEdges(imp2); imp2 = IJ.getImage(); imp2.changes =
+			 * false; rm = analyzeParticles(imp2, false);
+			 * 
+			 * }
+			 * 
+			 * // Idea: Probar varias alternativas y ver cuál es la que produce mejor //
+			 * resultado. // ¿Cómo se define mejor resultado? } }
+			 */
+			showResultsAndSave(dir, imp, rm, this.getClass().getName());
+			imp.close();
+		} catch (FormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 

@@ -129,7 +129,7 @@ public class EsferoideJv2_ extends EsferoideDad implements Command {
 	}
 
 	// Method to detect esferoides.
-	private void detectEsferoide(ImporterOptions options, String dir, String name) throws FormatException, IOException {
+	public void detectEsferoide(ImporterOptions options, String dir, String name) {
 		ImagePlus impb = IJ.openImage(name);
 
 		ImagePlus imp = impb.duplicate();
@@ -181,7 +181,12 @@ public class EsferoideJv2_ extends EsferoideDad implements Command {
 
 		System.out.println("El nombre de la clase es " + this.getClass().getName());
 
-		showResultsAndSave(dir, imp, rm, this.getClass().getName());
+		try {
+			showResultsAndSave(dir, imp, rm, this.getClass().getName());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		imp.close();
 
 	}

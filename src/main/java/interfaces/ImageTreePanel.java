@@ -22,7 +22,9 @@ import javax.swing.tree.TreePath;
 import funtions.Main;
 import funtions.ShowTiff;
 import funtions.Utils;
+import ij.IJ;
 import ij.ImagePlus;
+import ij.plugin.frame.RoiManager;
 import loci.formats.FormatException;
 import loci.plugins.BF;
 import loci.plugins.in.ImporterOptions;
@@ -121,13 +123,7 @@ public class ImageTreePanel extends JSplitPane {
 
 					if (extension.equals("nd2")) {
 						// hacer que se abran en imagej
-						System.out.println(path);
-//
-//						System.getProperties().setProperty("plugins.dir",
-//								"C:\\Users\\yomendez\\Desktop\\Fiji.app\\plugins");
-//						//new ImageJ();
-//						IJ.run("Bio-Formats Windowless Importer",
-//								"open=C:/Users/yomendez/Desktop/Esferoides/2x/ctrl_1_14.nd2");
+						System.out.println(path);					
 
 						ImagePlus[] imps;
 						try {
@@ -136,9 +132,17 @@ public class ImageTreePanel extends JSplitPane {
 							options.setId(path);
 							options.setOpenAllSeries(true);
 							imps = BF.openImagePlus(options);
-							imps = BF.openImagePlus(path);
+					//		imps = BF.openImagePlus(path);
 							ImagePlus imp = imps[0];
 							imp.show();
+						
+							new IJ();
+							//System.out.println(IJ.getToolName());
+						//IJ.setTool("freehand");
+							RoiManager roi = new RoiManager();
+							IJ.openImage(path.replace("nd2", "zip"));
+							
+							
 						} catch (FormatException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -147,29 +151,11 @@ public class ImageTreePanel extends JSplitPane {
 							e.printStackTrace();
 						}
 
-//			
-//						ImagePlus j = op.openUsingBioFormats(path + fileName);
-//						if (j != null) {
-//							j.show();
-//
-//						} else {
-//							System.out.println("no puedo mostrar la imagen esta es nula ");
-//						}
 
-//						IJ.run("Bio-Formats Importer",
-//								"open=C:/Users/yomendez/Desktop/Esferoides/2x/ctrl_1_14.nd2 autoscale color_mode=Default rois_import=[ROI manager] view=Hyperstack stack_order=XYCZT");
+						
 
-//						ij.WindowManager.closeAllWindows();
-						// op.open(path + nameFileOnly + "_pred.tiff");
-						// IJ.run("Bio-Formats Windowless Importer",
-						// "open=C:/Users/yomendez/Desktop/Esferoides/2x/ctrl_1_14.nd2");
-
-//						IJ.setTool("freehand");
-//						RoiManager roi = new RoiManager();
-//						// roi.runCommand("Open", path + "\\" + fileName);
-//						ImagePlus imp = new ImagePlus(path + "\\" + fileName);
-//						roi.runCommand(imp, "Measure");
-//						// roi.runCommand("Measure");
+					
+						// roi.runCommand("Measure");
 
 						// roi.actionPerformed(new ActionEvent(roi, 7, "Measure"));
 						// ResultsTable rt = ij.plugin.filter.Analyzer.getResultsTable();
@@ -178,9 +164,7 @@ public class ImageTreePanel extends JSplitPane {
 						// ij.measure.ResultsTable();
 						// ResultsTable roiResults = new ResultsTable();
 //						if() { // si se cierra la imagen que se cierre el zip
-//							
-//							roi.close();
-//						}
+
 
 					}
 				} else {
@@ -252,7 +236,7 @@ public class ImageTreePanel extends JSplitPane {
 			path += tp.getPath()[i].toString();
 			if (i > 0 && i != (tp.getPathCount() - 1)) {
 
-				path += "\\";
+				path += File.separator;
 
 			}
 		}

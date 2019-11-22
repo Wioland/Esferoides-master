@@ -1,15 +1,12 @@
 package funtions;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import esferoides.EsferoideDad;
-import ij.ImagePlus;
-import ij.plugin.frame.RoiManager;
+import ij.ImageJ;
 
 public class CreateListImageAlgori {
 
@@ -25,21 +22,13 @@ public class CreateListImageAlgori {
 
 	public CreateListImageAlgori(File image) {
 
-		String[] j;
-		try {
-			j = image.getCanonicalPath().split("\\\\");
-			String p = image.getCanonicalPath().replace(j[j.length - 1], "");
-			path = p + "temporal";
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		String p = image.getAbsolutePath().replace(image.getName(), "");
+		path = p + "temporal";
 
 		this.imaSelected = image;
 		temporalFolder = new File(path);
 		temporalFolder.mkdir();
 		initAlgo("esferoides.Methods");
-		
 
 	}
 
@@ -59,7 +48,7 @@ public class CreateListImageAlgori {
 //		iniNoValidMethods();
 //		try {
 //
-//			String[] j = image.getCanonicalPath().split("\\\\");
+//			String[] j = image.getCanonicalPath().split(File.separator);
 //			String p = image.getCanonicalPath().replace(j[j.length - 1], "");
 //			path = p + "temporal";
 //			// System.out.println(path);
@@ -98,7 +87,7 @@ public class CreateListImageAlgori {
 	}
 
 	public void initAlgo(String className) {
-		algorithms= new ArrayList<Method>();
+		algorithms = new ArrayList<Method>();
 		Class class1;
 		try {
 			class1 = Class.forName(className);
@@ -110,7 +99,7 @@ public class CreateListImageAlgori {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 //
@@ -200,13 +189,11 @@ public class CreateListImageAlgori {
 			// imagen selected va a tener todo el path de la imagen original a la que ya se
 			// le ha aplicado un algoritmo, por loq ue hay que quitarle la ruta y sol
 			// quedarme con el nombre del archivo
-
+new ImageJ();
 			// String imagePath,String format
 			try {
-				m.invoke(null, this.imaSelected.getAbsolutePath(), "tiff");
-			
-			
-			
+				m.invoke(null, this.imaSelected.getAbsolutePath().replace("_pred.tiff", ".nd2"), "nd2");
+
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -218,19 +205,19 @@ public class CreateListImageAlgori {
 				e.printStackTrace();
 			}
 
-			boolean done = renameFile(m, ima);
-
-			if (done) {
-				System.out.println("El renombrado ha sido correcto");
-
-				// En lugar de cear una nueva imagen, a la hora de realizar el algoritm, este ya
-				// crea los archivos solo hayq ue cambiar el nombre añadiendole el nombre del
-				// algoritmo
-			}
-
-			else {
-				System.out.println("El renombrado no se ha podido realizar");
-			}
+//			boolean done = renameFile(m, ima);
+//
+//			if (done) {
+//				System.out.println("El renombrado ha sido correcto");
+//
+//				// En lugar de cear una nueva imagen, a la hora de realizar el algoritm, este ya
+//				// crea los archivos solo hayq ue cambiar el nombre añadiendole el nombre del
+//				// algoritmo
+//			}
+//
+//			else {
+//				System.out.println("El renombrado no se ha podido realizar");
+//			}
 
 		}
 
@@ -242,10 +229,10 @@ public class CreateListImageAlgori {
 		String[] splitnameMethod = m.toString().split("\\.");
 		String s = "_" + splitnameMethod[1] + "_" + m.getName();
 
-		String[] splitName = this.imaSelected.getName().split("\\\\");
+		String[] splitName = this.imaSelected.getName().split(File.separator);
 		String newImageName = splitName[splitName.length - 1].replace(".tiff", "_" + s + ".tiff");
 
-		File newImage = new File(path + "\\" + newImageName);
+		File newImage = new File(path + File.separator + newImageName);
 		// File newImage = new File("C:\\Users\\yomendez\\Desktop\\prueba.tiff");
 
 		File folderFile = new File(path + imaSelected.getName());

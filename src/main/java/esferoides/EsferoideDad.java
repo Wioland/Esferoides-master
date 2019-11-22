@@ -19,12 +19,19 @@ import ij.plugin.filter.Analyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.ImageStatistics;
 import interfaces.OurProgressBar;
-import loci.formats.FormatException;
 import loci.plugins.in.ImporterOptions;
 
-public class EsferoideDad {
+public abstract class EsferoideDad {
 
 	protected static ArrayList<Integer> goodRows;
+
+	public static ArrayList<Integer> getGoodRows() {
+		return goodRows;
+	}
+
+	public static void setGoodRows(ArrayList<Integer> goodRows) {
+		EsferoideDad.goodRows = goodRows;
+	}
 
 	// Method to keep the ROI with the biggest area stored in the ROIManager, the
 	// rest of ROIs are
@@ -79,7 +86,7 @@ public class EsferoideDad {
 			throws IOException {
 		IJ.run(imp1, "RGB Color", "");
 
-		File folder= new File(dir+"\\predictions");
+		File folder= new File(dir+File.separator+"predictions");
 		folder.mkdir();
 		
 		String name = imp1.getTitle();
@@ -152,12 +159,8 @@ public class EsferoideDad {
 				double perim = perimeter * pw;
 
 				ResultsTable rt = ResultsTable.getResultsTable();
-//            if (rt == null) {
-//
-//                rt = new ResultsTable();
-//            }
 				int nrows = Analyzer.getResultsTable().getCounter();
-				goodRows.add(nrows - 1);
+ 				goodRows.add(nrows - 1);
 
 				rt.setPrecision(2);
 				rt.setLabel(name, nrows - 1);
@@ -203,7 +206,7 @@ public class EsferoideDad {
 
 	
 	
-	public static void createResultTable(List<String> result, String dir, String className) {
+	public void createResultTable(List<String> result, String dir, String className) {
 		ImporterOptions options;
 		try {
 			options = new ImporterOptions();
@@ -226,7 +229,6 @@ public class EsferoideDad {
 				}
 			}
 			
-			System.out.println("El  nombre de la clase es "+ className);
 			
 			if(className.equals("EsferoideJ_")) {
 				/// Remove unnecessary columns
@@ -254,7 +256,7 @@ public class EsferoideDad {
 			pb.setVisible(false);
 			pb.dispose();
 			IJ.showMessage("Process finished");
-		} catch (IOException | FormatException e1) {
+		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -263,7 +265,6 @@ public class EsferoideDad {
 		
 	}
 	
-	private static void detectEsferoide(ImporterOptions options, String dir, String name) throws FormatException, IOException {
-	}
+	public abstract void detectEsferoide(ImporterOptions options, String dir, String name) ;
 
 }

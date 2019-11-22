@@ -30,7 +30,7 @@ public class SelectAlgoritm {
 		Method selectedMethod;
 
 		for (Method m : methods) {
-			// System.out.println(m.toString());
+			 //System.out.println(m.toString());
 			splitnameMethod = m.toString().split("\\.");
 			s = splitnameMethod[1] + "  -->  " + m.getName();
 			options[i] = s;

@@ -1,5 +1,7 @@
 package interfaces;
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +20,7 @@ public class TabPanel extends JTabbedPane {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private Map<int,long> excelModificationIndexTab;
 
 	public TabPanel(String directory) {
 
@@ -46,20 +49,19 @@ public class TabPanel extends JTabbedPane {
 					excelPanelContent(panelExcel, excel);
 
 				} else {
-					JLabel noFileLb = new JLabel();
-					noFileLb.setText("There is no such file in this folder");
-					panelExcel.add(noFileLb);
+					noFileText("Excel");
 				}
 
-//				String[] j = path.split("\\\\");
-//				String name = j[j.length - 2] + "\\" + j[j.length - 1];
-
+				
+				String name =excel.getName(); 
 				// System.out.println(name);
-//				addTab("Excel " + name, panelExcel);
+				addTab("Excel " + name, panelExcel);
 
 			}
 
 		}
+		
+		
 
 		// los de las imagenes
 
@@ -89,7 +91,32 @@ public class TabPanel extends JTabbedPane {
 		j.setText("There is no such file in this folder");
 		j.enable(false);
 		addTab(tabName, j);
-
 	}
+	
+	
+	private void addListenersPanelExcel() {
+		
+		for (int i=0; i<this.getTabCount()-1;i++) {
+			
+			this.getTabComponentAt(i).addFocusListener(new FocusListener() {
+				
+				@Override
+				public void focusLost(FocusEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void focusGained(FocusEvent e) {
+					/* si ya habia un excel mostrandose comprueba si este se ha modificado o si ese ha desaparecido
+					 *  si no habia excel comprueba si ahora hay excel, se borrar su componente label y se cambia por el excel
+					 *  ademas se le cambia el nombre a la pestaña 
+					*/
+					
+				}
+			});
+		}
+	}
+	
 
 }

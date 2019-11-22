@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import bsh.This;
 import funtions.Utils;
 import ij.IJ;
 import loci.formats.FormatException;
@@ -56,29 +57,35 @@ public class Methods {
 					// ha pasado una imagen o es solo una carpeta
 			File folder = new File(imagePath);
 			if (folder.isDirectory()) {
-				path = imagePath+"\\temporal";
+				path = imagePath+File.separator+"temporal";
 
 				Utils.search(".*\\." + format, folder, result);
 				Collections.sort(result);
 			} else {
 				path = imagePath.replace(folder.getName(), "temporal");
 				imageName = folder.getName();
-				result.add(imageName);
+				result.add(imagePath);
 			}
 		}
 
+		EsferoideDad j = null;
+		
 		if (imagePath.endsWith(".nd2") || format == "nd2") {
 			className = "EsferoideJ_";
+			j= new EsferoideJ_();
 		} else {
 			if (imagePath.endsWith(".tiff") || format == "tiff") {
 				className = "EsferoideJv2_";
+				j= new EsferoideJv2_();
 			}
 
 		}
 		if (path != null && !className.contentEquals("")) {
 
-			EsferoideDad.createResultTable(result, path, className);
-
+			//EsferoideDad.createResultTable(result, path, className);
+			EsferoideDad.setGoodRows(goodRows);
+			j.createResultTable(result, path.replace("temporal", ""), className);
+			ij.WindowManager.closeAllWindows();
 		}
 	}
 //
