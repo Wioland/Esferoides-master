@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.awt.Component;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
@@ -43,8 +44,7 @@ public class TabPanel extends JTabbedPane {
 
 		// Creamos los paneles, creamos los componentes dentro de estos y aniadimos el
 		// nombre a la pestania
-		
-		
+
 		// los de las imagenes
 
 		ShowImages images = new ShowImages(directory);
@@ -53,7 +53,6 @@ public class TabPanel extends JTabbedPane {
 		} else {
 			addTab("Images", images);
 		}
-		
 
 		// los del excel
 
@@ -75,9 +74,6 @@ public class TabPanel extends JTabbedPane {
 			}
 
 		}
-		addListenersPanelExcel();
-	
-
 	}
 
 	/*
@@ -97,10 +93,11 @@ public class TabPanel extends JTabbedPane {
 		j.enable(false);
 		j.setName(tabName);
 		addTab(tabName, j);
-		if(tabName.equals("Excel")) { // igual hay que cambiarlo por el nombre
+		if (tabName.equals("Excel")) { // igual hay que cambiarlo por el nombre
 			excelModificationIndexTab.put(this.indexOfTab(tabName), 0L);
+			addListenersPanelExcel(j);
 		}
-		
+
 	}
 
 	private void addExcelPanel(File excel) {
@@ -112,10 +109,9 @@ public class TabPanel extends JTabbedPane {
 		addTab("Excel " + name, panelExcel);
 		excelModificationIndexTab.put(this.indexOfTab("Excel " + name), excel.lastModified());
 		IndexTabExcel.put(this.indexOfTab("Excel " + name), excel);
+		addListenersPanelExcel(panelExcel);
 	}
-	
-	
-	
+
 	private void checkExcelTab(MouseEvent e) {
 
 		/*
@@ -124,16 +120,21 @@ public class TabPanel extends JTabbedPane {
 		 * componente label y se cambia por el excel ademas se le cambia el nombre a la
 		 * pestaña
 		 */
-	
-		int indexComponent =((TabPanel)e.getComponent().getParent()).indexOfTab(e.getComponent().getName());;
+
+		int indexComponent = ((TabPanel) e.getComponent().getParent()).indexOfTab(e.getComponent().getName());
 		File excel = IndexTabExcel.get(indexComponent);
 
 		if (excel != null) { // si tiene excel
 			if (excel.exists()) { // si sigue existiendo
 				if (!excelModificationIndexTab.get(indexComponent).equals(excel.lastModified())) { // si se
-					JOptionPane.showMessageDialog(null, "The excel was modified. Updating this tab");																				// ha  modificado
-					
-					
+					JOptionPane.showMessageDialog(null, "The excel was modified. Updating this tab"); // ha modificado
+					 JPanel jP=(JPanel)e.getComponent();
+					 ExcelTableCreator eTC=(ExcelTableCreator)jP.getComponent(0);
+					 jP.remove(eTC);
+					 eTC= new ExcelTableCreator(excel);
+					 jP.add(eTC);
+					 jP.repaint();
+					 excelModificationIndexTab.put(indexComponent, excel.lastModified());
 				}
 			} else {
 				remove(e.getComponent());
@@ -146,7 +147,7 @@ public class TabPanel extends JTabbedPane {
 		} else { // se comprueba si la carpeta tiene ahora mismo un excel
 			File folder = new File(dir);
 			List<String> result = new ArrayList<String>();
-			
+
 			Utils.search(".*\\.xls", folder, result);
 			Collections.sort(result);
 			if (result.size() != 0) { // si lo tiene
@@ -156,58 +157,48 @@ public class TabPanel extends JTabbedPane {
 				for (String string : result) {
 					addExcelPanel(new File(string));
 				}
-				
+
 			}
 
 		}
 
-	
 	}
-	
-	
 
-	private void addListenersPanelExcel() {
+	private void addListenersPanelExcel(Component component) {
 
+		component.addMouseListener(new MouseListener() {
 
-		for (int i = 0; i < this.getTabCount() ; i++) {
-			
-			
-			
-			getComponent(i).addMouseListener(new MouseListener() {
-				
-				@Override
-				public void mouseReleased(MouseEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void mousePressed(MouseEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void mouseExited(MouseEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void mouseEntered(MouseEvent e) {
-					// TODO Auto-generated method stub
-					checkExcelTab(e);
-				}
-				
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
 
-			
-		}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				checkExcelTab(e);
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
 	}
 
 }
