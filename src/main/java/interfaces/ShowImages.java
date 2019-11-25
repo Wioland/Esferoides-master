@@ -29,7 +29,7 @@ public class ShowImages extends JPanel {
 	/*
 	 * Mostrar las imagenes tiff como botones
 	 */
-	public ShowImages(String directory) {
+	public ShowImages(String directory, TabPanel tp) {
 		this.dir = directory;
 		this.setLayout(new GridLayout(0,1));
 
@@ -56,7 +56,11 @@ public class ShowImages extends JPanel {
 				// si se genera el click que muestre un visualizador de imagenes
 				public void actionPerformed(ActionEvent e) {
 					JButton b = (JButton) e.getSource();
-					ViewImagesBigger viewImageBig = new ViewImagesBigger(image, listIm, dir,false);
+					if(tp!=null) {
+						ViewImagesBigger viewImageBig = new ViewImagesBigger(image, listIm, dir,false,tp);
+					
+					}
+					
 				}
 			});
 

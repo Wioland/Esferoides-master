@@ -1,6 +1,10 @@
 package interfaces;
 
 import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
@@ -12,6 +16,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -47,7 +55,7 @@ public class TabPanel extends JTabbedPane {
 
 		// los de las imagenes
 
-		ShowImages images = new ShowImages(directory);
+		ShowImages images = new ShowImages(directory,this);
 		if (images.countComponents() == 0) {
 			noFileText("Images");
 		} else {
@@ -101,16 +109,22 @@ public class TabPanel extends JTabbedPane {
 	}
 
 	private void addExcelPanel(File excel) {
-		JPanel panelExcel = new JPanel();
+		JPanel panelExcel = new JPanel(new GridBagLayout());
 		String name = excel.getName();
 		// System.out.println(name);
 		excelPanelContent(panelExcel, excel);
 		panelExcel.setName("Excel " + name);
-		addTab("Excel " + name, panelExcel);
+		
+		
+		
+		addTab("Excel " + name ,panelExcel);
 		excelModificationIndexTab.put(this.indexOfTab("Excel " + name), excel.lastModified());
 		IndexTabExcel.put(this.indexOfTab("Excel " + name), excel);
 		addListenersPanelExcel(panelExcel);
+		
 	}
+	
+	
 
 	private void checkExcelTab(MouseEvent e) {
 

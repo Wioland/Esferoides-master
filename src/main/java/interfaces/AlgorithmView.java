@@ -90,7 +90,7 @@ public class AlgorithmView extends JFrame {
 				if (openWindows != null) { // quedan las de visualizacion de las imagenes en grande
 					if (openWindows.size() > 0) {
 						for (ViewImagesBigger wind : openWindows) {
-							wind.dispose();
+							//wind.dispose();
 						}
 					}
 				}
@@ -186,7 +186,7 @@ public class AlgorithmView extends JFrame {
 				break;
 			case 2:
 				me.consume();
-				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList, directory, true);
+				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList, directory, true,null);
 				this.openWindows.add(vi);
 				break;
 
