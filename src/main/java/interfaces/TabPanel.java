@@ -109,13 +109,11 @@ public class TabPanel extends JTabbedPane {
 	}
 
 	private void addExcelPanel(File excel) {
-		JPanel panelExcel = new JPanel(new GridBagLayout());
+		JPanel panelExcel = new JPanel();
 		String name = excel.getName();
 		// System.out.println(name);
 		excelPanelContent(panelExcel, excel);
 		panelExcel.setName("Excel " + name);
-		
-		
 		
 		addTab("Excel " + name ,panelExcel);
 		excelModificationIndexTab.put(this.indexOfTab("Excel " + name), excel.lastModified());

@@ -1,6 +1,9 @@
 package interfaces;
 
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +13,6 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -66,8 +68,37 @@ public class ViewImagesBigger extends JPanel {
 
 			addlistenerButton(backBu, forwardBu, tryAlgoriBu);
 			panelButtons.add(tryAlgoriBu);
-			tp.add(listImages.get(indexImagenList).getDescription(), this);
-			tp.setSelectedIndex(tp.indexOfTab(listImages.get(indexImagenList).getDescription()));
+			String title = listImages.get(indexImagenList).getDescription();
+			tp.add(title, this);
+			tp.setSelectedIndex(tp.indexOfTab(title));
+
+			int index = tp.indexOfTab(title);
+			JPanel pnlTab = new JPanel(new GridBagLayout());
+			pnlTab.setOpaque(false);
+			JLabel lblTitle = new JLabel(title);
+			JButton btnClose = new JButton("x");
+
+			GridBagConstraints gbc = new GridBagConstraints();
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			gbc.weightx = 1;
+
+			pnlTab.add(lblTitle, gbc);
+
+			gbc.gridx++;
+			gbc.weightx = 0;
+			pnlTab.add(btnClose, gbc);
+
+			tp.setTabComponentAt(index, pnlTab);
+
+			btnClose.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					closeTab(e);
+				}
+			});
 
 		} else {
 			addlistenerButton(backBu, forwardBu);
@@ -86,6 +117,14 @@ public class ViewImagesBigger extends JPanel {
 		add(jSp);
 		this.setVisible(true);
 
+	}
+
+	public void closeTab(ActionEvent evt) {
+		JButton bu = (JButton) evt.getSource();
+		if (bu.getParent() != null) {
+
+			tp.remove(tp.indexOfTabComponent(bu.getParent()));
+		}
 	}
 
 	private void addlistenerButton(JButton backBu, JButton forwardBu) {
