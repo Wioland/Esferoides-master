@@ -82,16 +82,26 @@ public abstract class EsferoideDad {
 	// image in a given directory. Since we know that there is only one esferoide
 	// per image, we
 	// only keep the ROI with the biggest area stored in the ROI Manager.
-	public static void showResultsAndSave(String dir, ImagePlus imp1, RoiManager rm, String nameClass)
+	public static void showResultsAndSave(String dir, ImagePlus imp1, RoiManager rm, String nameClass, boolean temp)
 			throws IOException {
 		IJ.run(imp1, "RGB Color", "");
-
-		File folder= new File(dir+File.separator+"predictions");
-		folder.mkdir();
+		File folder;
 		
 		String name = imp1.getTitle();
 		// FileInfo f = imp1.getFileInfo();
+		dir=dir.replace(name, "");
 		name = name.substring(0, name.indexOf("."));
+		folder = new File(dir +  "predictions");
+		
+		if (!temp && !folder.exists()) {
+			folder.mkdir();
+		} else {
+			folder = new File(dir +  "temporal");
+			name+="_"+nameClass.substring(nameClass.indexOf(".")+1);
+			folder.mkdir();
+		}
+
+		
 
 		ImageStatistics stats = null;
 		double[] vFeret;// = 0;
@@ -134,7 +144,7 @@ public abstract class EsferoideDad {
 				}
 
 				rm.runCommand(imp1, "Draw");
-				rm.runCommand("Save", folder.getAbsolutePath() + name + ".zip");
+				rm.runCommand("Save", folder.getAbsolutePath() + File.separator + name + ".zip");
 				rm.close();
 				// saving the roi
 				// compute the statistics (without calibrate)
@@ -160,7 +170,7 @@ public abstract class EsferoideDad {
 
 				ResultsTable rt = ResultsTable.getResultsTable();
 				int nrows = Analyzer.getResultsTable().getCounter();
- 				goodRows.add(nrows - 1);
+				goodRows.add(nrows - 1);
 
 				rt.setPrecision(2);
 				rt.setLabel(name, nrows - 1);
@@ -180,14 +190,14 @@ public abstract class EsferoideDad {
 			}
 		}
 
-		IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + name + "_pred.tiff");
+		IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + File.separator + name + "_pred.tiff");
 	}
 
 	public static String getByFormat(String format, List<String> result) {
 		// We ask the user for a directory with nd2 images.
 
 		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the " + format + " images");
-		
+
 		if (dc.getDirectory() != null) {
 			String dir = dc.getDirectory();
 			// We store the list of nd2 files in the result list.
@@ -201,24 +211,27 @@ public abstract class EsferoideDad {
 		return null;
 
 	}
-	
-	
 
-	
-	
-	public void createResultTable(List<String> result, String dir, String className) {
+	public void createResultTable(List<String> result, String className) {
 		ImporterOptions options;
 		try {
 			options = new ImporterOptions();
 			options.setWindowless(true);
-			OurProgressBar pb= new OurProgressBar(null);
-			
+			OurProgressBar pb = new OurProgressBar(null);
+			File f= new File(result.get(0));
+			String dir=f.getAbsolutePath().replace(f.getName(), "");
+
 			ResultsTable rt = new ResultsTable();
 			// For each nd2 file, we detect the esferoide. Currently, this means that it
 			// creates
 			// a new image with the detected region marked in red.
+			boolean temp=false;
+			if(result.size()==1) {
+				temp=true;
+			}
+			
 			for (String name : result) {
-				detectEsferoide(options, dir, name);
+				detectEsferoide(options, name,temp);
 			}
 			rt = ResultsTable.getResultsTable();
 			/// Remove empty rows
@@ -228,9 +241,8 @@ public abstract class EsferoideDad {
 					rt.deleteRow(i - 1);
 				}
 			}
-			
-			
-			if(className.equals("EsferoideJ_")) {
+
+			if (className.equals("EsferoideJ_")) {
 				/// Remove unnecessary columns
 				rt.deleteColumn("Mean");
 				rt.deleteColumn("Min");
@@ -243,7 +255,6 @@ public abstract class EsferoideDad {
 //				rt.deleteColumn("Round");
 //				rt.deleteColumn("Solidity");
 			}
-	
 
 //			rt.saveAs(dir + "results.csv");
 			// When the process is finished, we show a message to inform the user.
@@ -260,11 +271,9 @@ public abstract class EsferoideDad {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		
-		
+
 	}
-	
-	public abstract void detectEsferoide(ImporterOptions options, String dir, String name) ;
+
+	public abstract void detectEsferoide(ImporterOptions options, String FilePath, boolean temp);
 
 }

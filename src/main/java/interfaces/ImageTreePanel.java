@@ -23,7 +23,9 @@ import funtions.Main;
 import funtions.ShowTiff;
 import funtions.Utils;
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
+import ij.gui.Toolbar;
 import ij.plugin.frame.RoiManager;
 import loci.formats.FormatException;
 import loci.plugins.BF;
@@ -64,6 +66,14 @@ public class ImageTreePanel extends JSplitPane {
 		this.setVisible(true);
 
 	}
+	
+	public TabPanel getFolderView() {
+		return folderView;
+	}
+
+	public void setFolderView(TabPanel folderView) {
+		this.folderView = folderView;
+	}
 
 	// CREAR EL tree DE DIRECTORIOS
 
@@ -94,121 +104,98 @@ public class ImageTreePanel extends JSplitPane {
 		// componentes de l arbol
 		tree.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
-				doubleClickAction(me);
+				ClickAction(me);
 			}
 		});
 	}
 
-	private void doubleClickAction(MouseEvent me) {
-		if (me.getClickCount() == 2 && !me.isConsumed()) {
-			me.consume();
-			TreePath tp = tree.getPathForLocation(me.getX(), me.getY());
-			String path = getPathSelectedTreeFile(tp);
+	private void ClickAction(MouseEvent me) {
+		TreePath tp = tree.getPathForLocation(me.getX(), me.getY());
+		String path = getPathSelectedTreeFile(tp);
 
-			System.out.println("Path de treepath " + tp.toString());
+		// System.out.println("Path de treepath " + tp.toString());
 
-			if (tp.getPath().length > 0) {
-				File fileSelected = new File(path);
+		if (tp.getPath().length > 0) {
+			File fileSelected = new File(path);
 
-				if (fileSelected.isFile()) {
+			if (fileSelected.isFile()) {
 
-					String fileName = tp.getPath()[tp.getPathCount() - 1].toString();
-					String extension = tp.getPath()[tp.getPathCount() - 1].toString().split("\\.")[1];
-					String nameFileOnly = tp.getPath()[tp.getPathCount() - 1].toString().split("\\.")[0];
-					// Opener op = new Opener();
+				String fileName = fileSelected.getName();
+				String extension = fileName.split("\\.")[1];
+				String nameFileOnly = fileName.toString().split("\\.")[0];
 
-//					System.out.println("la ruta es " + path);
-//					System.out.println("archivo " + fileName);
-//					System.out.println("extension del archivo " + extension);
+				if (extension.equals("nd2")) {
+					// hacer que se abran en imagej
+					// System.out.println(path);
 
-					if (extension.equals("nd2")) {
-						// hacer que se abran en imagej
-						System.out.println(path);					
+					ImagePlus[] imps;
+					try {
+						ImporterOptions options = new ImporterOptions();
+						options.setWindowless(true);
+						options.setId(path);
+						options.setOpenAllSeries(true);
+						imps = BF.openImagePlus(options);
 
-						ImagePlus[] imps;
-						try {
-							ImporterOptions options =new ImporterOptions();
-							options.setWindowless(true);
-							options.setId(path);
-							options.setOpenAllSeries(true);
-							imps = BF.openImagePlus(options);
-					//		imps = BF.openImagePlus(path);
-							ImagePlus imp = imps[0];
-							imp.show();
+						ImagePlus imp = imps[0];
+						imp.show();
+
+						ij.gui.Toolbar toolBarImageJ = new Toolbar();
 						
-							new IJ();
-							//System.out.println(IJ.getToolName());
-						//IJ.setTool("freehand");
-							RoiManager roi = new RoiManager();
-							IJ.openImage(path.replace("nd2", "zip"));
-							
-							
-						} catch (FormatException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						//toolBarImageJ.show(); // esto no hace que se muestre el toolbar en pantalla
+						// System.out.println(IJ.getToolName());
+						IJ.setTool("freehand");
+						RoiManager roi = new RoiManager();
+						IJ.openImage(path.replace("nd2", "zip"));
 
-
-						
-
-					
-						// roi.runCommand("Measure");
-
-						// roi.actionPerformed(new ActionEvent(roi, 7, "Measure"));
-						// ResultsTable rt = ij.plugin.filter.Analyzer.getResultsTable();
-						// rt.show("Measures");
-
-						// ij.measure.ResultsTable();
-						// ResultsTable roiResults = new ResultsTable();
-//						if() { // si se cierra la imagen que se cierre el zip
-
-
+					} catch (FormatException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-				} else {
-					if (!path.equals(dir)) { // si no es el directorio en el que nos encontramos que
 
-						File folder = new File(path);
-						List<String> result = new ArrayList<String>();
-						String oldPath = this.dir;
-						boolean switchFolder = true;
-						this.dir = path;
+				}
+			} else {
+				if (!path.equals(dir)) { // si no es el directorio en el que nos encontramos que
 
-						Utils.search(".*\\.tiff", folder, result);
-						if (result.size() == 0) {
-							Utils.search(".*\\.nd2", folder, result);
-							if (result.size() != 0) { // si solo tiene imagenes nd2 mostrar el selector de algoritmos
+					File folder = new File(path);
+					List<String> result = new ArrayList<String>();
+					String oldPath = this.dir;
+					boolean switchFolder = true;
+					this.dir = path;
 
-								int n = JOptionPane.showConfirmDialog(this,
-										"The folder only contains ND2 files do you want to use an Algorithm?",
-										"ND2 files detected", JOptionPane.YES_NO_OPTION);
+					Utils.search(".*\\.tiff", folder, result);
+					if (result.size() == 0) {
+						Utils.search(".*\\.nd2", folder, result);
+						if (result.size() != 0) { // si solo tiene imagenes nd2 mostrar el selector de algoritmos
 
-								if (n == 0) {
-									SelectAlgoritm sAl = new SelectAlgoritm(dir, this);
-								} else {
-									JOptionPane.showMessageDialog(this,
-											"Nothing to be done. Not changing to de selected folder");
-									this.dir = oldPath;
-									switchFolder = false;
-								}
+							int n = JOptionPane.showConfirmDialog(this,
+									"The folder only contains ND2 files do you want to use an Algorithm?",
+									"ND2 files detected", JOptionPane.YES_NO_OPTION);
 
-							} else {// mostrar en la vista que no hay datos que mostrar quitar el tab panel
-
-								repaintTabPanel();
+							if (n == 0) {
+								SelectAlgoritm sAl = new SelectAlgoritm(dir, this);
+							} else {
+								JOptionPane.showMessageDialog(this,
+										"Nothing to be done. Not changing to de selected folder");
+								this.dir = oldPath;
+								switchFolder = false;
 							}
 
-						} else { // si tiene imagenes tiff decirle que quiere realizar
-							JOptionPane.showMessageDialog(this, "Detected Tiff files");
-							Main.callProgram(dir, this);
+						} else {// mostrar en la vista que no hay datos que mostrar quitar el tab panel
 
+							repaintTabPanel();
 						}
 
-						if (switchFolder) {
-							JOptionPane.showMessageDialog(this, "Changed the folder to " + dir);
+					} else { // si tiene imagenes tiff decirle que quiere realizar
+						JOptionPane.showMessageDialog(this, "Detected Tiff files");
+						Main.callProgram(dir, this);
 
-						}
+					}
+
+					if (switchFolder) {
+						JOptionPane.showMessageDialog(this, "Changed the folder to " + dir);
 
 					}
 
@@ -217,7 +204,6 @@ public class ImageTreePanel extends JSplitPane {
 			}
 
 		}
-
 	}
 
 	public void repaintTabPanel() {

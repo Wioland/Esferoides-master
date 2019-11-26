@@ -57,12 +57,12 @@ public class Methods {
 					// ha pasado una imagen o es solo una carpeta
 			File folder = new File(imagePath);
 			if (folder.isDirectory()) {
-				path = imagePath+File.separator+"temporal";
+				path = imagePath;
 
 				Utils.search(".*\\." + format, folder, result);
 				Collections.sort(result);
 			} else {
-				path = imagePath.replace(folder.getName(), "temporal");
+				path = imagePath;
 				imageName = folder.getName();
 				result.add(imagePath);
 			}
@@ -84,8 +84,8 @@ public class Methods {
 
 			//EsferoideDad.createResultTable(result, path, className);
 			EsferoideDad.setGoodRows(goodRows);
-			j.createResultTable(result, path.replace("temporal", ""), className);
-			ij.WindowManager.closeAllWindows();
+			j.createResultTable(result, className);
+			
 		}
 	}
 //

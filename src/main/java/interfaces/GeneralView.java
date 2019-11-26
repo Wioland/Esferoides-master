@@ -1,15 +1,19 @@
 
 package interfaces;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import funtions.CreateListImageAlgori;
+import funtions.Utils;
 import ij.io.DirectoryChooser;
 
 public class GeneralView extends JFrame {
@@ -87,6 +91,16 @@ public class GeneralView extends JFrame {
 		setVisible(true);
 		pb.setVisible(false);
 		pb.dispose();
+		
+		
+		if (imageTree.getFolderView().isNd2Ima()) {
+			int op = JOptionPane.showConfirmDialog((Component) null,
+					"There aren´t Tiff files in this folder, but we detected Nd2 files. Do you want to detect the esferoid of this images?", "alert",
+					JOptionPane.YES_NO_OPTION);
+			if(op==0) {
+				SelectAlgoritm seletAl = new SelectAlgoritm(this.directory, imageTree);
+			}
+		}
 	}
 
 

@@ -36,6 +36,7 @@ public class TabPanel extends JTabbedPane {
 	private Map<Integer, Long> excelModificationIndexTab;
 	private Map<Integer, File> IndexTabExcel;
 	private String dir;
+	private boolean nd2Ima;
 
 	public TabPanel(String directory) {
 
@@ -46,6 +47,7 @@ public class TabPanel extends JTabbedPane {
 		excelModificationIndexTab = new HashMap<Integer, Long>();
 		IndexTabExcel = new HashMap<Integer, File>();
 		this.dir = directory;
+		nd2Ima = false;
 
 		Utils.search(".*\\.xls", folder, result);
 		Collections.sort(result);
@@ -55,9 +57,15 @@ public class TabPanel extends JTabbedPane {
 
 		// los de las imagenes
 
-		ShowImages images = new ShowImages(directory,this);
+		ShowImages images = new ShowImages(directory, this);
 		if (images.countComponents() == 0) {
 			noFileText("Images");
+			// Comprobar si en la carpeta hay imagenes nd2
+			List<String> listImages = new ArrayList<String>();
+			Utils.search(".*\\.nd2", folder, listImages);
+			if (listImages != null) {
+				nd2Ima = true;
+			}
 		} else {
 			addTab("Images", images);
 		}
@@ -84,6 +92,14 @@ public class TabPanel extends JTabbedPane {
 		}
 	}
 
+	public boolean isNd2Ima() {
+		return nd2Ima;
+	}
+
+	public void setNd2Ima(boolean nd2Ima) {
+		this.nd2Ima = nd2Ima;
+	}
+
 	/*
 	 * Funcion que aniade la vista del excel
 	 */
@@ -100,10 +116,13 @@ public class TabPanel extends JTabbedPane {
 		j.setText("There is no such file in this folder");
 		j.enable(false);
 		j.setName(tabName);
-		addTab(tabName, j);
+
 		if (tabName.equals("Excel")) { // igual hay que cambiarlo por el nombre
+			insertTab(tabName, null, j, null, 1);
 			excelModificationIndexTab.put(this.indexOfTab(tabName), 0L);
 			addListenersPanelExcel(j);
+		} else {
+			addTab(tabName, j);
 		}
 
 	}
@@ -114,15 +133,13 @@ public class TabPanel extends JTabbedPane {
 		// System.out.println(name);
 		excelPanelContent(panelExcel, excel);
 		panelExcel.setName("Excel " + name);
-		
-		addTab("Excel " + name ,panelExcel);
+
+		insertTab("Excel " + name, null, panelExcel, null, 1);
 		excelModificationIndexTab.put(this.indexOfTab("Excel " + name), excel.lastModified());
 		IndexTabExcel.put(this.indexOfTab("Excel " + name), excel);
 		addListenersPanelExcel(panelExcel);
-		
+
 	}
-	
-	
 
 	private void checkExcelTab(MouseEvent e) {
 
@@ -140,13 +157,13 @@ public class TabPanel extends JTabbedPane {
 			if (excel.exists()) { // si sigue existiendo
 				if (!excelModificationIndexTab.get(indexComponent).equals(excel.lastModified())) { // si se
 					JOptionPane.showMessageDialog(null, "The excel was modified. Updating this tab"); // ha modificado
-					 JPanel jP=(JPanel)e.getComponent();
-					 ExcelTableCreator eTC=(ExcelTableCreator)jP.getComponent(0);
-					 jP.remove(eTC);
-					 eTC= new ExcelTableCreator(excel);
-					 jP.add(eTC);
-					 jP.repaint();
-					 excelModificationIndexTab.put(indexComponent, excel.lastModified());
+					JPanel jP = (JPanel) e.getComponent();
+					ExcelTableCreator eTC = (ExcelTableCreator) jP.getComponent(0);
+					jP.remove(eTC);
+					eTC = new ExcelTableCreator(excel);
+					jP.add(eTC);
+					jP.repaint();
+					excelModificationIndexTab.put(indexComponent, excel.lastModified());
 				}
 			} else {
 				remove(e.getComponent());

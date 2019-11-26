@@ -30,6 +30,7 @@ public class ViewImagesBigger extends JPanel {
 	private Icon image;
 	private String dir;
 	private TabPanel tp;
+	private String indexImageView;
 
 	public ViewImagesBigger(Icon image, List<ImageIcon> listImages, String directory, boolean onlreadyAlgo,
 			TabPanel tp) {
@@ -43,6 +44,7 @@ public class ViewImagesBigger extends JPanel {
 		this.indexImagenList = listImages.indexOf(image);
 		dir = directory;
 		this.tp = tp;
+		indexImageView = "ImageViewer ";
 
 		// Se aniade la imagen
 		labelImage = new JLabel();
@@ -68,7 +70,9 @@ public class ViewImagesBigger extends JPanel {
 
 			addlistenerButton(backBu, forwardBu, tryAlgoriBu);
 			panelButtons.add(tryAlgoriBu);
-			String title = listImages.get(indexImagenList).getDescription();
+			String nombreImagen = (new File(listImages.get(indexImagenList).getDescription())).getName();	
+			String title = indexImageView + nombreImagen;
+
 			tp.add(title, this);
 			tp.setSelectedIndex(tp.indexOfTab(title));
 
@@ -122,7 +126,6 @@ public class ViewImagesBigger extends JPanel {
 	public void closeTab(ActionEvent evt) {
 		JButton bu = (JButton) evt.getSource();
 		if (bu.getParent() != null) {
-
 			tp.remove(tp.indexOfTabComponent(bu.getParent()));
 		}
 	}
@@ -142,8 +145,8 @@ public class ViewImagesBigger extends JPanel {
 				labelImage.setIcon(listImages.get(indexImagenList));
 				image = labelImage.getIcon();
 				if (tp != null) {
-
-					tp.setTitleAt(tp.indexOfTab(listImages.get(prevImaIndex).getDescription()),
+					String nombreImagen = (new File(listImages.get(prevImaIndex).getDescription())).getName();
+					tp.setTitleAt(tp.indexOfTab(indexImageView + nombreImagen),
 							listImages.get(indexImagenList).getDescription());
 				}
 
@@ -163,7 +166,8 @@ public class ViewImagesBigger extends JPanel {
 				labelImage.setIcon(listImages.get(indexImagenList));
 				image = labelImage.getIcon();
 				if (tp != null) {
-					tp.setTitleAt(tp.indexOfTab(listImages.get(prevImaIndex).getDescription()),
+					String nombreImagen = (new File(listImages.get(prevImaIndex).getDescription())).getName();
+					tp.setTitleAt(tp.indexOfTab(indexImageView + nombreImagen),
 							listImages.get(indexImagenList).getDescription());
 				}
 

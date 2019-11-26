@@ -167,7 +167,6 @@ public class EsferoideJ_ extends EsferoideDad implements Command {
 		IJ.setAutoThreshold(imp2, "Otsu");
 		IJ.run(imp2, "Convert to Mask", "");
 		IJ.run(imp2, "Dilate", "");
-		IJ.run(imp2, "Dilate", "");
 		IJ.run(imp2, "Fill Holes", "");
 		IJ.run(imp2, "Erode", "");
 		IJ.run(imp2, "Erode", "");
@@ -275,16 +274,15 @@ public class EsferoideJ_ extends EsferoideDad implements Command {
 	@Override
 
 	// Method to detect esferoides.
-	public void detectEsferoide(ImporterOptions options, String dir, String name) {
+	public void detectEsferoide(ImporterOptions options, String dir, boolean temp) {
 	
 		ImagePlus[] imps;
 		try {
-			options.setId(name);
+			options.setId(dir);
 			options.setOpenAllSeries(true);
 			imps = BF.openImagePlus(options);
 			ImagePlus imp = imps[0];
 			ImagePlus imp2 = imp.duplicate();
-			imp2.show();
 
 			/// We consider two cases, when there is a "black hole" in the image (the first
 			/// case), there is a lot of pixels below a given threshold, and those pixels
@@ -362,7 +360,7 @@ public class EsferoideJ_ extends EsferoideDad implements Command {
 			 * // Idea: Probar varias alternativas y ver cuál es la que produce mejor //
 			 * resultado. // ¿Cómo se define mejor resultado? } }
 			 */
-			showResultsAndSave(dir, imp, rm, this.getClass().getName());
+			showResultsAndSave(dir, imp, rm, this.getClass().getName(),temp);
 			imp.close();
 		} catch (FormatException e) {
 			// TODO Auto-generated catch block
@@ -468,11 +466,11 @@ public class EsferoideJ_ extends EsferoideDad implements Command {
 
 		// We ask the user for a directory with nd2 images.
 		List<String> result = new ArrayList<String>();
-		String dir = EsferoideDad.getByFormat("nd2", result);
+		EsferoideDad.getByFormat("nd2", result);
 
-		if (dir != null) {
+		if (result.size()!=0) {
 
-			createResultTable(result, dir, this.getClass().getName());
+			createResultTable(result, this.getClass().getName());
 
 		}
 

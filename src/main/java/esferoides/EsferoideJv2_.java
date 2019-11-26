@@ -129,8 +129,8 @@ public class EsferoideJv2_ extends EsferoideDad implements Command {
 	}
 
 	// Method to detect esferoides.
-	public void detectEsferoide(ImporterOptions options, String dir, String name) {
-		ImagePlus impb = IJ.openImage(name);
+	public void detectEsferoide(ImporterOptions options, String filepath, boolean temp) {
+		ImagePlus impb = IJ.openImage(filepath);
 
 		ImagePlus imp = impb.duplicate();
 		IJ.run(imp, "8-bit", "");
@@ -182,7 +182,9 @@ public class EsferoideJv2_ extends EsferoideDad implements Command {
 		System.out.println("El nombre de la clase es " + this.getClass().getName());
 
 		try {
-			showResultsAndSave(dir, imp, rm, this.getClass().getName());
+			File f= new File(filepath);
+			String dir=f.getAbsolutePath().replace(f.getName(), "");
+			showResultsAndSave(dir, imp, rm, this.getClass().getName(),temp);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -202,10 +204,10 @@ public class EsferoideJv2_ extends EsferoideDad implements Command {
 
 		// We ask the user for a directory with nd2 images.
 		List<String> result = new ArrayList<String>();
-		String dir = EsferoideDad.getByFormat("tiff", result);
+		EsferoideDad.getByFormat("tiff", result);
 
-		if (dir != null) {
-			createResultTable(result, dir, this.getClass().getName());
+		if (result.size()!=0) {
+			createResultTable(result, this.getClass().getName());
 
 		}
 

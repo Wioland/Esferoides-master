@@ -179,20 +179,26 @@ public class CreateListImageAlgori {
 
 	// crear las imagenes con los distintos algoritmos de la imagen seleccionada
 	// guardarlas en la carpeta y en la lista
-	public List<File> createImagesAlgorithms() {
-		List<File> ima = new ArrayList<File>();
+	public List<String> createImagesAlgorithms() {
+		List<String> ima = new ArrayList<String>();
+		File folder = null;
 
 		// se llama a los algoritmos de la lista de algoritmos y se aplican estos sobre
 		// la imagen seleccionada
-
+		ImageJ imageJFrame = new ImageJ();
+		imageJFrame.setVisible(false);
 		for (Method m : algorithms) {
 			// imagen selected va a tener todo el path de la imagen original a la que ya se
 			// le ha aplicado un algoritmo, por loq ue hay que quitarle la ruta y sol
 			// quedarme con el nombre del archivo
-new ImageJ();
+
 			// String imagePath,String format
 			try {
-				m.invoke(null, this.imaSelected.getAbsolutePath().replace("_pred.tiff", ".nd2"), "nd2");
+				String path = this.imaSelected.getAbsolutePath().replace("_pred.tiff", ".nd2");
+				path = path.replace(File.separator + "predictions", "");
+				m.invoke(null, path, "nd2");
+				folder = new File(path);
+				folder = new File(path.replace(folder.getName(), "") + "temporal");
 
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
@@ -205,40 +211,13 @@ new ImageJ();
 				e.printStackTrace();
 			}
 
-//			boolean done = renameFile(m, ima);
-//
-//			if (done) {
-//				System.out.println("El renombrado ha sido correcto");
-//
-//				// En lugar de cear una nueva imagen, a la hora de realizar el algoritm, este ya
-//				// crea los archivos solo hayq ue cambiar el nombre añadiendole el nombre del
-//				// algoritmo
-//			}
-//
-//			else {
-//				System.out.println("El renombrado no se ha podido realizar");
-//			}
-
+		}
+		if (folder != null) {
+			Utils.search(".*\\.tiff", folder, ima);
 		}
 
+		imageJFrame.dispose();
 		return ima;
-
-	}
-
-	private boolean renameFile(Method m, List<File> ima) {
-		String[] splitnameMethod = m.toString().split("\\.");
-		String s = "_" + splitnameMethod[1] + "_" + m.getName();
-
-		String[] splitName = this.imaSelected.getName().split(File.separator);
-		String newImageName = splitName[splitName.length - 1].replace(".tiff", "_" + s + ".tiff");
-
-		File newImage = new File(path + File.separator + newImageName);
-		// File newImage = new File("C:\\Users\\yomendez\\Desktop\\prueba.tiff");
-
-		File folderFile = new File(path + imaSelected.getName());
-		ima.add(newImage);
-
-		return folderFile.renameTo(newImage);
 
 	}
 

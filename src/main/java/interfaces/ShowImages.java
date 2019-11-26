@@ -31,7 +31,7 @@ public class ShowImages extends JPanel {
 	 */
 	public ShowImages(String directory, TabPanel tp) {
 		this.dir = directory;
-		this.setLayout(new GridLayout(0,1));
+		this.setLayout(new GridLayout(0, 1));
 
 		listImages = new ArrayList<String>();
 		listIm = new ArrayList<ImageIcon>();
@@ -56,11 +56,11 @@ public class ShowImages extends JPanel {
 				// si se genera el click que muestre un visualizador de imagenes
 				public void actionPerformed(ActionEvent e) {
 					JButton b = (JButton) e.getSource();
-					if(tp!=null) {
-						ViewImagesBigger viewImageBig = new ViewImagesBigger(image, listIm, dir,false,tp);
-					
+					String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
+					if (tp != null && tp.indexOfTab(nombreTab) == -1) {
+						ViewImagesBigger viewImageBig = new ViewImagesBigger(image, listIm, dir, false, tp);
+
 					}
-					
 				}
 			});
 
@@ -68,7 +68,6 @@ public class ShowImages extends JPanel {
 
 			this.add(button);
 		}
-		
 
 	}
 

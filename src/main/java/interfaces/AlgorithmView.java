@@ -36,7 +36,7 @@ public class AlgorithmView extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private List<File> images;
+	private List<String> images;
 	private JButton selectedBu;
 	private List<ImageIcon> imageIcoList;
 	private String directory;
@@ -117,7 +117,6 @@ public class AlgorithmView extends JFrame {
 		cLa = new CreateListImageAlgori(image);
 
 		imageIcoList = new ArrayList<ImageIcon>();
-		String algoname = "";
 		this.directory = dir;
 
 		// crear las imagenes con todos los algoritmos
@@ -127,19 +126,17 @@ public class AlgorithmView extends JFrame {
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 		panelImage.setAutoscrolls(true);
 
-		int i = 0;
-
-		for (File ima : images) {
+		for (String ima : images) {
 			JButton imageView = new JButton();
 
-			ImageIcon imagi = ShowTiff.showTiffToImageIcon(ima.getAbsolutePath());
+			ImageIcon imagi = ShowTiff.showTiffToImageIcon(ima);
 			ImageIcon imageIcon = new ImageIcon(
 					imagi.getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_DEFAULT));
 
 			imageIcoList.add(imagi);
 
 			imageView.setIcon(imageIcon);
-			imageView.setName(ima.getAbsolutePath());
+			imageView.setName(ima);
 
 			imageView.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent me) {
@@ -170,10 +167,12 @@ public class AlgorithmView extends JFrame {
 		jSp.setDividerLocation(1100 + jSp.getInsets().left);
 
 		// aniadimos las componentes al jframe
-		jSp.setVisible(true);
-		getContentPane().add(jSp);
 		pb.setVisible(false);
 		pb.dispose();
+		jSp.setVisible(true);
+		getContentPane().add(jSp);
+		repaint();
+		
 
 	}
 
