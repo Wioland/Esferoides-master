@@ -164,15 +164,15 @@ public class AlgorithmView extends JFrame {
 		jSp.setOrientation(SwingConstants.VERTICAL);
 		jSp.setLeftComponent(s);
 		jSp.setRightComponent(panelButtons);
-		jSp.setDividerLocation(1100 + jSp.getInsets().left);
+		//jSp.setDividerLocation(1100 + jSp.getInsets().left);
 
 		// aniadimos las componentes al jframe
 		pb.setVisible(false);
 		pb.dispose();
 		jSp.setVisible(true);
 		getContentPane().add(jSp);
-		repaint();
-		
+	
+	pack();
 
 	}
 
