@@ -20,6 +20,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import funtions.Main;
+import funtions.RoiFuntions;
 import funtions.ShowTiff;
 import funtions.Utils;
 import ij.IJ;
@@ -127,33 +128,8 @@ public class ImageTreePanel extends JSplitPane {
 				if (extension.equals("nd2")) {
 					// hacer que se abran en imagej
 					// System.out.println(path);
-
-					ImagePlus[] imps;
-					try {
-						ImporterOptions options = new ImporterOptions();
-						options.setWindowless(true);
-						options.setId(path);
-						options.setOpenAllSeries(true);
-						imps = BF.openImagePlus(options);
-
-						ImagePlus imp = imps[0];
-						imp.show();
-
-						ij.gui.Toolbar toolBarImageJ = new Toolbar();
-						
-						//toolBarImageJ.show(); // esto no hace que se muestre el toolbar en pantalla
-						// System.out.println(IJ.getToolName());
-						IJ.setTool("freehand");
-						RoiManager roi = new RoiManager();
-						IJ.openImage(path.replace("nd2", "zip"));
-
-					} catch (FormatException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					String roiPath=RoiFuntions.getRoiPathPredicctions(path);
+					RoiFuntions.showNd2FilePlusRoi(path, roiPath);
 
 				}
 			} else {
@@ -205,6 +181,8 @@ public class ImageTreePanel extends JSplitPane {
 
 		}
 	}
+	
+
 
 	public void repaintTabPanel() {
 		folderView = new TabPanel(this.dir);
@@ -231,28 +209,28 @@ public class ImageTreePanel extends JSplitPane {
 
 	}
 
-	private void showImageTree(String path, String fileName) {
-		List<ImageIcon> imaVer = new ArrayList<ImageIcon>();
-		List<String> listImagesName = new ArrayList<String>();
-		List<ImageIcon> listIm = new ArrayList<ImageIcon>();
-
-		File folder = new File(path);
-
-		Utils.search(".*\\.tiff", folder, listImagesName);
-		Collections.sort(listImagesName);
-
-		for (String name : listImagesName) {
-			ImageIcon im = ShowTiff.showTiffToImageIcon(name);
-			listIm.add(im);
-
-			if (name.contains(fileName)) {
-				imaVer.add(im);
-			}
-		}
-
-		// ViewImagesBigger vIb = new ViewImagesBigger(imaVer.get(0), listIm,dir);
-
-	}
+//	private void showImageTree(String path, String fileName) {
+//		List<ImageIcon> imaVer = new ArrayList<ImageIcon>();
+//		List<String> listImagesName = new ArrayList<String>();
+//		List<ImageIcon> listIm = new ArrayList<ImageIcon>();
+//
+//		File folder = new File(path);
+//
+//		Utils.search(".*\\.tiff", folder, listImagesName);
+//		Collections.sort(listImagesName);
+//
+//		for (String name : listImagesName) {
+//			ImageIcon im = ShowTiff.showTiffToImageIcon(name);
+//			listIm.add(im);
+//
+//			if (name.contains(fileName)) {
+//				imaVer.add(im);
+//			}
+//		}
+//
+//		// ViewImagesBigger vIb = new ViewImagesBigger(imaVer.get(0), listIm,dir);
+//
+//	}
 
 	/*
 	 * Funcion que aniade los nodos al tree

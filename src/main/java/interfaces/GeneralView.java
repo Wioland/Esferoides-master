@@ -92,7 +92,6 @@ public class GeneralView extends JFrame {
 		pb.setVisible(false);
 		pb.dispose();
 		
-		
 		if (imageTree.getFolderView().isNd2Ima()) {
 			int op = JOptionPane.showConfirmDialog((Component) null,
 					"There aren´t Tiff files in this folder, but we detected Nd2 files. Do you want to detect the esferoid of this images?", "alert",

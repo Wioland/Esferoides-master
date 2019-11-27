@@ -105,6 +105,11 @@ public class ViewImagesBigger extends JPanel {
 			});
 
 		} else {
+//			JLabel originalImaLb= new JLabel();
+//			String path= this.dir+listImages(indexImagenList).get
+//			System.out.println(path);
+//			originalImaLb.setIcon(image);
+//			originalImaLb.setVisible(true);
 			addlistenerButton(backBu, forwardBu);
 		}
 
@@ -120,6 +125,7 @@ public class ViewImagesBigger extends JPanel {
 
 		add(jSp);
 		this.setVisible(true);
+		
 
 	}
 

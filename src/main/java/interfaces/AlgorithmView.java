@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +23,16 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
 import funtions.CreateListImageAlgori;
+import funtions.RoiFuntions;
 import funtions.ShowTiff;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.measure.ResultsTable;
 import ij.plugin.frame.RoiManager;
+import loci.formats.FormatException;
+import loci.plugins.BF;
+import loci.plugins.in.ImporterOptions;
 
 public class AlgorithmView extends JFrame {
 
@@ -90,7 +95,7 @@ public class AlgorithmView extends JFrame {
 				if (openWindows != null) { // quedan las de visualizacion de las imagenes en grande
 					if (openWindows.size() > 0) {
 						for (ViewImagesBigger wind : openWindows) {
-							//wind.dispose();
+							// wind.dispose();
 						}
 					}
 				}
@@ -164,15 +169,15 @@ public class AlgorithmView extends JFrame {
 		jSp.setOrientation(SwingConstants.VERTICAL);
 		jSp.setLeftComponent(s);
 		jSp.setRightComponent(panelButtons);
-		//jSp.setDividerLocation(1100 + jSp.getInsets().left);
+		// jSp.setDividerLocation(1100 + jSp.getInsets().left);
 
 		// aniadimos las componentes al jframe
 		pb.setVisible(false);
 		pb.dispose();
 		jSp.setVisible(true);
 		getContentPane().add(jSp);
-	
-	pack();
+
+		pack();
 
 	}
 
@@ -185,7 +190,7 @@ public class AlgorithmView extends JFrame {
 				break;
 			case 2:
 				me.consume();
-				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList, directory, true,null);
+				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList, directory, true, null);
 				this.openWindows.add(vi);
 				break;
 
@@ -247,35 +252,16 @@ public class AlgorithmView extends JFrame {
 	}
 
 	private void modifySeclection(String filename) {
-		String fileRoi = filename.replace("tiff", "zip");
-
-		ij.WindowManager.closeAllWindows();
-		Opener op = new Opener();
-		//op.open(filename);
-		//op.openImage(filename);
-
-		ImagePlus imp=op.openImage(filename);
-		imp.show();
-
-		RoiManager roi = new RoiManager();
-		roi.runCommand("Open", fileRoi);
-		roi.runCommand(imp, "Measure");
-		ResultsTable r = ResultsTable.getResultsTable(); 
-		//ij.WindowManager.addWindow(ij.measure.ResultsTable.getResultsWindow());
+		String fileRoi = filename.replace("_pred.tiff", ".zip");
 		
-	
-	r.show("Results");
-	IJ.renameResults("d");
-	System.out.println(IJ.isResultsWindow());
-	r.show("d");
-	//IJ.renameResults("d","Results");
-	//roi.multiMeasure(imp);
-
-	//ij.WindowManager.getWindow("Results").show();;
-
-
-	
-	
+		String nd2Path=RoiFuntions.getNd2FilePathFromTempralTiff(filename);
+		
+		ij.WindowManager.closeAllWindows();
+		
+		RoiFuntions.showNd2FilePlusRoi(nd2Path, fileRoi);
+			
 	}
+
+	
 
 }
