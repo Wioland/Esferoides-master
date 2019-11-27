@@ -55,8 +55,9 @@ public class FileFuntions {
 			List<String> temporalFiles = new ArrayList<String>();
 			List<String> originalFiles = new ArrayList<String>();
 			File saveDir = new File(saveDirPath);
-			String pattern = selectedFile.getName().replace("tiff", "*");
+			
 			String originalName = selectedFile.getName().replace(algoritmClassName, "");
+			String pattern = originalName.replace("_pred.tiff", "*");
 
 			System.out.println(pattern);
 			System.out.println(originalName);

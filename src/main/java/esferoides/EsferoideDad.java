@@ -219,16 +219,23 @@ public abstract class EsferoideDad {
 			options.setWindowless(true);
 			OurProgressBar pb = new OurProgressBar(null);
 			File f= new File(result.get(0));
-			String dir=f.getAbsolutePath().replace(f.getName(), "");
+			String dir=f.getAbsolutePath().replace(f.getName(), "");;
+			boolean temp=false;
+			
+			if(result.size()==1) {
+				temp=true;
+			}
+			
+			if(temp) {
+				dir+="temporal"+File.separator;
+			}
+			
 
 			ResultsTable rt = new ResultsTable();
 			// For each nd2 file, we detect the esferoide. Currently, this means that it
 			// creates
 			// a new image with the detected region marked in red.
-			boolean temp=false;
-			if(result.size()==1) {
-				temp=true;
-			}
+			
 			
 			for (String name : result) {
 				detectEsferoide(options, name,temp);

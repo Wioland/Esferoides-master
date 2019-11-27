@@ -2,11 +2,9 @@ package interfaces;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 
 import funtions.CreateListImageAlgori;
 import funtions.Main;

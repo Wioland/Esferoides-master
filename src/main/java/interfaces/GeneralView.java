@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import funtions.CreateListImageAlgori;
+import funtions.FileFuntions;
 import funtions.Utils;
 import ij.io.DirectoryChooser;
 
@@ -64,10 +65,7 @@ public class GeneralView extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
 
-				File folder = CreateListImageAlgori.getTemporalFolder();
-				if (folder != null) {
-					folder.delete();
-				}
+				FileFuntions.deleteTemporalFolder(new File(directory+File.separator+"temporal"));
 
 			}
 

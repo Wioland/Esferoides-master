@@ -56,56 +56,32 @@ public class ShowImages extends JPanel {
 			JButton imageView = new JButton(iconoEscala);
 			imageView.setIcon(iconoEscala);
 			imageView.setName(name);
-			
-			
+
 			imageView.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					AlgorithmView al = null;
 					TabPanel tap = null;
+
 					if (tp.getClass().equals(TabPanel.class)) {
 						tap = (TabPanel) tp;
+						String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
+						if (tap != null && tap.indexOfTab(nombreTab) == -1) {
+							ViewImagesBigger viewImageBig = new ViewImagesBigger(image, listIm, dir, false, tap);
+
+						}
 					} else {
 						if (tp.getClass().equals(AlgorithmView.class)) {
 							al = (AlgorithmView) tp;
+							al.mouseClick(e, image);
 						}
 					}
-					String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
-					if (tap != null && tap.indexOfTab(nombreTab) == -1) {
-						ViewImagesBigger viewImageBig = new ViewImagesBigger(image, listIm, dir, false, tap);
 
-					} else {
-
-						mouseClick(e, image, al);
-					}
 				}
 			});
 
 			listImagesPrev.add(imageView);
 
 			this.add(imageView);
-		}
-
-	}
-
-	public void mouseClick(MouseEvent me, ImageIcon imageIcon, AlgorithmView al) {
-		if (!me.isConsumed()) {
-			switch (me.getClickCount()) {
-			case 1:
-				al.setSelectedBu((JButton) me.getSource());
-				al.getSelectedBu().setName(((JButton) me.getSource()).getName());
-				System.out.println(((JButton) me.getSource()).getName());
-				break;
-			case 2:
-				me.consume();
-				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, al.getImageIcoList(), al.getDirectory(), true,
-						null);
-				al.getOpenWindows().add(vi);
-				break;
-
-			default:
-				break;
-			}
-
 		}
 
 	}
