@@ -179,9 +179,8 @@ public class CreateListImageAlgori {
 
 	// crear las imagenes con los distintos algoritmos de la imagen seleccionada
 	// guardarlas en la carpeta y en la lista
-	public List<String> createImagesAlgorithms() {
-		List<String> ima = new ArrayList<String>();
-		File folder = null;
+	public void createImagesAlgorithms() {
+	
 
 		// se llama a los algoritmos de la lista de algoritmos y se aplican estos sobre
 		// la imagen seleccionada
@@ -194,11 +193,11 @@ public class CreateListImageAlgori {
 
 			// String imagePath,String format
 			try {
-				String path = this.imaSelected.getAbsolutePath().replace("_pred.tiff", ".nd2");
-				path = path.replace(File.separator + "predictions", "");
+				
+				path=RoiFuntions.getNd2FilePathFromPredictions(this.imaSelected.getAbsolutePath());
+				
 				m.invoke(null, path, "nd2");
-				folder = new File(path);
-				folder = new File(path.replace(folder.getName(), "") + "temporal");
+				
 
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
@@ -212,66 +211,12 @@ public class CreateListImageAlgori {
 			}
 
 		}
-		if (folder != null) {
-			Utils.search(".*\\.tiff", folder, ima);
-		}
 
 		imageJFrame.dispose();
-		return ima;
+
 
 	}
 
-	// guardar la imagen del algoritmo no solo el tiff tambien el zip
-	// generados
-	public void saveSelectedImage(File selectedFile, String saveDirPath, String algoritmClassName) {
-		this.imaSelected = selectedFile;
-		// se bucan los archivos tif y zip con el mismo nombre dentro de la carpeta
-		// temporal
-
-		// se coge el nombre del archivo creado y se le quita el nombre del algoritmo
-		// utilizado
-
-		// Se sobre escriben los archivos de la carpeta general con el mismo nombre
-
-		List<String> temporalFiles = new ArrayList<String>();
-		List<String> originalFiles = new ArrayList<String>();
-		File saveDir = new File(saveDirPath);
-		String pattern = selectedFile.getName().replace("tiff", "*");
-		String originalName = selectedFile.getName().replace(algoritmClassName, "");
-
-		System.out.println(pattern);
-		System.out.println(originalName);
-
-		Utils.search(pattern, new File(imaSelected.getAbsolutePath().replace(imaSelected.getName(), "")),
-				temporalFiles);
-
-		pattern = pattern.replace(algoritmClassName, "");
-		Utils.search(pattern, saveDir, originalFiles);
-
-		for (String s : temporalFiles) {
-			File f = new File(s);
-			File newpath = new File(saveDirPath + f.getName());
-			if (f.renameTo(newpath)) {
-
-				File fOld = new File(f.getAbsolutePath().replace(algoritmClassName, ""));
-				if (fOld.exists()) {
-					if (fOld.delete()) {
-						f.renameTo(fOld);
-					}
-				}
-
-			}
-		}
-
-	}
-
-	// si se sale de la app o para borrar la carpeta tras seleccionar una imagen
-	public static void deleteTemporalFolder() {
-
-		if (temporalFolder.delete())
-			System.out.println(temporalFolder + " ha sido borrado correctamente");
-		else
-			System.out.println(temporalFolder + " no se ha podido borrar");
-	}
+	
 
 }

@@ -19,6 +19,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import funtions.FileFuntions;
 import funtions.Main;
 import funtions.RoiFuntions;
 import funtions.ShowTiff;
@@ -112,7 +113,7 @@ public class ImageTreePanel extends JSplitPane {
 
 	private void ClickAction(MouseEvent me) {
 		TreePath tp = tree.getPathForLocation(me.getX(), me.getY());
-		String path = getPathSelectedTreeFile(tp);
+		String path = FileFuntions.getPathSelectedTreeFile(tp);
 
 		// System.out.println("Path de treepath " + tp.toString());
 
@@ -123,7 +124,7 @@ public class ImageTreePanel extends JSplitPane {
 
 				String fileName = fileSelected.getName();
 				String extension = fileName.split("\\.")[1];
-				String nameFileOnly = fileName.toString().split("\\.")[0];
+				//String nameFileOnly = fileName.toString().split("\\.")[0];
 
 				if (extension.equals("nd2")) {
 					// hacer que se abran en imagej
@@ -193,21 +194,7 @@ public class ImageTreePanel extends JSplitPane {
 
 	}
 
-	private String getPathSelectedTreeFile(TreePath tp) {
-		String path = "";
-
-		for (int i = 0; i < tp.getPathCount(); i++) {
-			path += tp.getPath()[i].toString();
-			if (i > 0 && i != (tp.getPathCount() - 1)) {
-
-				path += File.separator;
-
-			}
-		}
-
-		return path;
-
-	}
+	
 
 //	private void showImageTree(String path, String fileName) {
 //		List<ImageIcon> imaVer = new ArrayList<ImageIcon>();

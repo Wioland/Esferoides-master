@@ -1,8 +1,11 @@
 package interfaces;
 
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +32,7 @@ public class ShowImages extends JPanel {
 	/*
 	 * Mostrar las imagenes tiff como botones
 	 */
-	public ShowImages(String directory, TabPanel tp) {
+	public ShowImages(String directory, Component tp) {
 		this.dir = directory;
 		this.setLayout(new GridLayout(0, 1));
 
@@ -50,23 +53,59 @@ public class ShowImages extends JPanel {
 			// Obtiene un icono en escala con las dimensiones especificadas
 			ImageIcon iconoEscala = new ImageIcon(
 					image.getImage().getScaledInstance(700, 700, java.awt.Image.SCALE_DEFAULT));
-			JButton button = new JButton(iconoEscala);
-
-			button.addActionListener(new ActionListener() {
-				// si se genera el click que muestre un visualizador de imagenes
-				public void actionPerformed(ActionEvent e) {
-					JButton b = (JButton) e.getSource();
+			JButton imageView = new JButton(iconoEscala);
+			imageView.setIcon(iconoEscala);
+			imageView.setName(name);
+			
+			
+			imageView.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					AlgorithmView al = null;
+					TabPanel tap = null;
+					if (tp.getClass().equals(TabPanel.class)) {
+						tap = (TabPanel) tp;
+					} else {
+						if (tp.getClass().equals(AlgorithmView.class)) {
+							al = (AlgorithmView) tp;
+						}
+					}
 					String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
-					if (tp != null && tp.indexOfTab(nombreTab) == -1) {
-						ViewImagesBigger viewImageBig = new ViewImagesBigger(image, listIm, dir, false, tp);
+					if (tap != null && tap.indexOfTab(nombreTab) == -1) {
+						ViewImagesBigger viewImageBig = new ViewImagesBigger(image, listIm, dir, false, tap);
 
+					} else {
+
+						mouseClick(e, image, al);
 					}
 				}
 			});
 
-			listImagesPrev.add(button);
+			listImagesPrev.add(imageView);
 
-			this.add(button);
+			this.add(imageView);
+		}
+
+	}
+
+	public void mouseClick(MouseEvent me, ImageIcon imageIcon, AlgorithmView al) {
+		if (!me.isConsumed()) {
+			switch (me.getClickCount()) {
+			case 1:
+				al.setSelectedBu((JButton) me.getSource());
+				al.getSelectedBu().setName(((JButton) me.getSource()).getName());
+				System.out.println(((JButton) me.getSource()).getName());
+				break;
+			case 2:
+				me.consume();
+				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, al.getImageIcoList(), al.getDirectory(), true,
+						null);
+				al.getOpenWindows().add(vi);
+				break;
+
+			default:
+				break;
+			}
+
 		}
 
 	}

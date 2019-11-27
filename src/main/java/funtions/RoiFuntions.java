@@ -91,6 +91,13 @@ public class RoiFuntions {
 		return nd2Name;
 	}
 
+	public static String getNd2FilePathFromPredictions(String tiffPredictionsPath) {
+		String path = tiffPredictionsPath.replace("_pred.tiff", ".nd2");
+		path = path.replace(File.separator + "predictions", "");
+		
+		return path;
+	}
+
 
 
 }

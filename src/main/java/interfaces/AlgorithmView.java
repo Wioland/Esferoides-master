@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -9,7 +10,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,16 +23,9 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
 import funtions.CreateListImageAlgori;
+import funtions.FileFuntions;
 import funtions.RoiFuntions;
 import funtions.ShowTiff;
-import ij.IJ;
-import ij.ImagePlus;
-import ij.io.Opener;
-import ij.measure.ResultsTable;
-import ij.plugin.frame.RoiManager;
-import loci.formats.FormatException;
-import loci.plugins.BF;
-import loci.plugins.in.ImporterOptions;
 
 public class AlgorithmView extends JFrame {
 
@@ -42,11 +35,11 @@ public class AlgorithmView extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	private List<String> images;
-	private JButton selectedBu;
-	private List<ImageIcon> imageIcoList;
-	private String directory;
+	private static JButton selectedBu;
+	private static List<ImageIcon> imageIcoList;
+	private static String directory;
 	private CreateListImageAlgori cLa;
-	private List<ViewImagesBigger> openWindows;
+	private static List<ViewImagesBigger> openWindows;
 
 	public AlgorithmView(File image, String dir) {
 		// Parametros ventana
@@ -92,9 +85,9 @@ public class AlgorithmView extends JFrame {
 
 				// Cerrar el resto de ventanas que se hayan abierto a partir de esta
 				ij.WindowManager.closeAllWindows(); // esto cierra todas las ventanas abiertas con imagej solamente
-				if (openWindows != null) { // quedan las de visualizacion de las imagenes en grande
-					if (openWindows.size() > 0) {
-						for (ViewImagesBigger wind : openWindows) {
+				if (getOpenWindows() != null) { // quedan las de visualizacion de las imagenes en grande
+					if (getOpenWindows().size() > 0) {
+						for (ViewImagesBigger wind : getOpenWindows()) {
 							// wind.dispose();
 						}
 					}
@@ -115,43 +108,24 @@ public class AlgorithmView extends JFrame {
 			}
 		});
 
-		openWindows = new ArrayList<ViewImagesBigger>();
+		setOpenWindows(new ArrayList<ViewImagesBigger>());
 
 		OurProgressBar pb = new OurProgressBar(this);
 
 		cLa = new CreateListImageAlgori(image);
 
-		imageIcoList = new ArrayList<ImageIcon>();
-		this.directory = dir;
+		setImageIcoList(new ArrayList<ImageIcon>());
+		this.setDirectory(dir);
 
 		// crear las imagenes con todos los algoritmos
-		images = cLa.createImagesAlgorithms();
+		cLa.createImagesAlgorithms();
 
-		JPanel panelImage = new JPanel(new GridLayout(0, 3));
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
+		
+		ShowImages panelImage= new ShowImages(dir+"temporal", this);
 		panelImage.setAutoscrolls(true);
 
-		for (String ima : images) {
-			JButton imageView = new JButton();
 
-			ImageIcon imagi = ShowTiff.showTiffToImageIcon(ima);
-			ImageIcon imageIcon = new ImageIcon(
-					imagi.getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_DEFAULT));
-
-			imageIcoList.add(imagi);
-
-			imageView.setIcon(imageIcon);
-			imageView.setName(ima);
-
-			imageView.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent me) {
-					mouseClick(me, imagi);
-				}
-			});
-
-			panelImage.add(imageView);
-
-		}
 
 		JButton saveImageBt = new JButton();
 		JButton modifySelectionBu = new JButton();
@@ -181,35 +155,16 @@ public class AlgorithmView extends JFrame {
 
 	}
 
-	public void mouseClick(MouseEvent me, ImageIcon imageIcon) {
-		if (!me.isConsumed()) {
-			switch (me.getClickCount()) {
-			case 1:
-				selectedBu = (JButton) me.getSource();
-				selectedBu.setName(((JButton) me.getSource()).getName());
-				break;
-			case 2:
-				me.consume();
-				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList, directory, true, null);
-				this.openWindows.add(vi);
-				break;
 
-			default:
-				break;
-			}
-
-		}
-
-	}
 
 	private void addButtonListener(JButton saveImageBt, JButton modifiSelectionBu, JPanel pIma) {
 
 		saveImageBt.addActionListener(new ActionListener() {
 			// si se genera el click guarda la imagen seleccionada
 			public void actionPerformed(ActionEvent e) {
-				if (selectedBu != null) {
+				if (getSelectedBu() != null) {
 
-					SaveImageAndDelete(selectedBu.getName());
+					SaveImageAndDelete(getSelectedBu().getName());
 				} else {
 					JOptionPane.showMessageDialog(pIma, "Not image selected", "Warning", JOptionPane.WARNING_MESSAGE);
 				}
@@ -221,9 +176,10 @@ public class AlgorithmView extends JFrame {
 		modifiSelectionBu.addActionListener(new ActionListener() {
 			// si se genera el click se lleva a otra pestaña para modificar la seleccion
 			public void actionPerformed(ActionEvent e) {
-				if (selectedBu != null) {
-
-					modifySeclection(selectedBu.getName());
+				if (getSelectedBu() != null) {
+					JButton h = getSelectedBu();
+		
+					modifySeclection(getSelectedBu().getName());
 
 				} else {
 					JOptionPane.showMessageDialog(pIma, "Not image selected", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -235,33 +191,70 @@ public class AlgorithmView extends JFrame {
 
 	}
 
-	private String getAlgorithmName(File ima) {
-
-		String[] splitNameIma = ima.getName().split("_");
-		String algoritmNameString = splitNameIma[splitNameIma.length - 1].replace(".tiff", "");
-		return algoritmNameString;
-	}
-
 	private void SaveImageAndDelete(String filePath) {
 		File ima = new File(filePath);
-		String algoritmNameString = getAlgorithmName(ima);
-
-		cLa.saveSelectedImage(ima, this.directory, algoritmNameString);
+		FileFuntions.saveSelectedImage(ima, this.getDirectory());
 		this.dispose();
-		CreateListImageAlgori.deleteTemporalFolder();
+		FileFuntions.deleteTemporalFolder(new File(this.getDirectory() + "temporal"));
 	}
 
 	private void modifySeclection(String filename) {
 		String fileRoi = filename.replace("_pred.tiff", ".zip");
-		
-		String nd2Path=RoiFuntions.getNd2FilePathFromTempralTiff(filename);
-		
+
+		String nd2Path = RoiFuntions.getNd2FilePathFromTempralTiff(filename);
+
 		ij.WindowManager.closeAllWindows();
-		
+
 		RoiFuntions.showNd2FilePlusRoi(nd2Path, fileRoi);
-			
+
 	}
 
-	
+
+
+	public static JButton getSelectedBu() {
+		return selectedBu;
+	}
+
+
+
+	public static void setSelectedBu(JButton selectedBu) {
+		AlgorithmView.selectedBu = selectedBu;
+	}
+
+
+
+	public static String getDirectory() {
+		return directory;
+	}
+
+
+
+	public static void setDirectory(String directory) {
+		AlgorithmView.directory = directory;
+	}
+
+
+
+	public static List<ImageIcon> getImageIcoList() {
+		return imageIcoList;
+	}
+
+
+
+	public static void setImageIcoList(List<ImageIcon> imageIcoList) {
+		AlgorithmView.imageIcoList = imageIcoList;
+	}
+
+
+
+	public static List<ViewImagesBigger> getOpenWindows() {
+		return openWindows;
+	}
+
+
+
+	public static void setOpenWindows(List<ViewImagesBigger> openWindows) {
+		AlgorithmView.openWindows = openWindows;
+	}
 
 }
