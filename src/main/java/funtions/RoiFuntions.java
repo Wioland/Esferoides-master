@@ -52,13 +52,6 @@ public class RoiFuntions {
 			// ij.WindowManager.addWindow(ij.measure.ResultsTable.getResultsWindow());
 
 			r.show("Results");
-			IJ.renameResults("d");
-			//System.out.println(IJ.isResultsWindow());
-			r.show("d");
-			// IJ.renameResults("d","Results");
-			// roi.multiMeasure(imp);
-
-			// ij.WindowManager.getWindow("Results").show();;
 
 		} catch (FormatException e) {
 			// TODO Auto-generated catch block

@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import funtions.CreateListImageAlgori;
 import funtions.FileFuntions;
 import funtions.Utils;
+import ij.ImageJ;
 import ij.io.DirectoryChooser;
 
 public class GeneralView extends JFrame {
@@ -26,7 +27,8 @@ public class GeneralView extends JFrame {
 	private String directory;
 
 	public GeneralView(String directory) {
-
+		ImageJ imageJFrame = new ImageJ();
+		imageJFrame.setVisible(false);
 		this.directory = directory;
 
 		// Parametros ventana
@@ -65,7 +67,9 @@ public class GeneralView extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
 
-				FileFuntions.deleteTemporalFolder(new File(directory+File.separator+"temporal"));
+				File deleteFile = new File(directory + File.separator + "temporal");
+				FileFuntions.deleteTemporalFolder(deleteFile);
+				imageJFrame.dispose();
 
 			}
 
@@ -89,16 +93,15 @@ public class GeneralView extends JFrame {
 		setVisible(true);
 		pb.setVisible(false);
 		pb.dispose();
-		
+
 		if (imageTree.getFolderView().isNd2Ima()) {
 			int op = JOptionPane.showConfirmDialog((Component) null,
-					"There aren´t Tiff files in this folder, but we detected Nd2 files. Do you want to detect the esferoid of this images?", "alert",
-					JOptionPane.YES_NO_OPTION);
-			if(op==0) {
+					"There aren´t Tiff files in this folder, but we detected Nd2 files. Do you want to detect the esferoid of this images?",
+					"alert", JOptionPane.YES_NO_OPTION);
+			if (op == 0) {
 				SelectAlgoritm seletAl = new SelectAlgoritm(this.directory, imageTree);
 			}
 		}
 	}
-
 
 }

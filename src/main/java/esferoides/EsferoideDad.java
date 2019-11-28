@@ -130,9 +130,8 @@ public abstract class EsferoideDad {
 
 			Roi[] roi = rm.getRoisAsArray();
 
-			if (roi.length != 0) {
-				if (nameClass == "EsferoideJ_") { /// ver si esto funciona
-
+			if (roi.length != 0) { 
+				if (nameClass == "esferoides.EsferoideJ_") { 
 					imp1.show();
 					rm.select(0);
 					IJ.run(imp1, "Fit Spline", "");

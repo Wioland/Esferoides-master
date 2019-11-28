@@ -14,7 +14,7 @@ public class CreateListImageAlgori {
 	private File imaSelected;
 	private String path;
 	private static File temporalFolder;
-	private List<String> noValidMethods;
+	// private List<String> noValidMethods;
 
 	public CreateListImageAlgori() {
 		initAlgo("esferoides.Methods");
@@ -23,11 +23,9 @@ public class CreateListImageAlgori {
 	public CreateListImageAlgori(File image) {
 
 		String p = image.getAbsolutePath().replace(image.getName(), "");
-		path = p + "temporal";
+		path = p.replace("predictions", "") + "temporal";
 
 		this.imaSelected = image;
-		temporalFolder = new File(path);
-		temporalFolder.mkdir();
 		initAlgo("esferoides.Methods");
 
 	}
@@ -180,12 +178,10 @@ public class CreateListImageAlgori {
 	// crear las imagenes con los distintos algoritmos de la imagen seleccionada
 	// guardarlas en la carpeta y en la lista
 	public void createImagesAlgorithms() {
-	
 
 		// se llama a los algoritmos de la lista de algoritmos y se aplican estos sobre
 		// la imagen seleccionada
-		ImageJ imageJFrame = new ImageJ();
-		imageJFrame.setVisible(false);
+
 		for (Method m : algorithms) {
 			// imagen selected va a tener todo el path de la imagen original a la que ya se
 			// le ha aplicado un algoritmo, por loq ue hay que quitarle la ruta y sol
@@ -193,11 +189,10 @@ public class CreateListImageAlgori {
 
 			// String imagePath,String format
 			try {
-				
-				path=RoiFuntions.getNd2FilePathFromPredictions(this.imaSelected.getAbsolutePath());
-				
+
+				path = RoiFuntions.getNd2FilePathFromPredictions(this.imaSelected.getAbsolutePath());
+
 				m.invoke(null, path, "nd2");
-				
 
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
@@ -212,11 +207,6 @@ public class CreateListImageAlgori {
 
 		}
 
-		imageJFrame.dispose();
-
-
 	}
-
-	
 
 }

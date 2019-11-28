@@ -15,6 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
@@ -72,8 +73,8 @@ public class ViewImagesBigger extends JPanel {
 			panelButtons.add(tryAlgoriBu);
 			String nombreImagen = (new File(listImages.get(indexImagenList).getDescription())).getName();	
 			String title = indexImageView + nombreImagen;
-
-			tp.add(title, this);
+			JScrollPane s= new JScrollPane(this);
+			tp.add(title, s);
 			tp.setSelectedIndex(tp.indexOfTab(title));
 
 			int index = tp.indexOfTab(title);
@@ -92,7 +93,7 @@ public class ViewImagesBigger extends JPanel {
 			gbc.gridx++;
 			gbc.weightx = 0;
 			pnlTab.add(btnClose, gbc);
-
+			
 			tp.setTabComponentAt(index, pnlTab);
 
 			btnClose.addActionListener(new ActionListener() {
@@ -118,13 +119,14 @@ public class ViewImagesBigger extends JPanel {
 		jSp.setBottomComponent(panelButtons);
 		labelImage.setHorizontalAlignment(JLabel.CENTER);
 		labelImage.setVerticalAlignment(JLabel.CENTER);
-		jSp.setDividerLocation(900 + jSp.getInsets().top);
+		//jSp.setDividerLocation(900 + jSp.getInsets().top);
 
 		// aniadimos las componentes al jframe
 		jSp.setVisible(true);
 
 		add(jSp);
 		this.setVisible(true);
+		
 		
 
 	}

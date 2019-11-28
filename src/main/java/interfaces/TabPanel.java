@@ -1,12 +1,6 @@
 package interfaces;
 
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -16,12 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
@@ -58,6 +50,7 @@ public class TabPanel extends JTabbedPane {
 		// los de las imagenes
 
 		ShowImages images = new ShowImages(directory, this);
+		
 		if (images.countComponents() == 0) {
 			noFileText("Images");
 			// Comprobar si en la carpeta hay imagenes nd2
@@ -67,7 +60,8 @@ public class TabPanel extends JTabbedPane {
 				nd2Ima = true;
 			}
 		} else {
-			addTab("Images", images);
+			JScrollPane s= new JScrollPane(images);
+			addTab("Images", s);
 		}
 
 		// los del excel
@@ -134,7 +128,9 @@ public class TabPanel extends JTabbedPane {
 		excelPanelContent(panelExcel, excel);
 		panelExcel.setName("Excel " + name);
 
-		insertTab("Excel " + name, null, panelExcel, null, 1);
+		JScrollPane s= new JScrollPane(panelExcel);
+		
+		insertTab("Excel " + name, null, s, null, 1);
 		excelModificationIndexTab.put(this.indexOfTab("Excel " + name), excel.lastModified());
 		IndexTabExcel.put(this.indexOfTab("Excel " + name), excel);
 		addListenersPanelExcel(panelExcel);
@@ -150,7 +146,7 @@ public class TabPanel extends JTabbedPane {
 		 * pestaña
 		 */
 
-		int indexComponent = ((TabPanel) e.getComponent().getParent()).indexOfTab(e.getComponent().getName());
+		int indexComponent = ((TabPanel) e.getComponent().getParent().getParent().getParent()).indexOfTab(e.getComponent().getName());
 		File excel = IndexTabExcel.get(indexComponent);
 
 		if (excel != null) { // si tiene excel
