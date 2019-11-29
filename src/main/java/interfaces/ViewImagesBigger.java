@@ -60,9 +60,8 @@ public class ViewImagesBigger extends JPanel {
 		forwardBu.setText(">");
 
 		// contenedor de botones y puesta en orden de estos
-		JPanel panelButtons = new JPanel();
+		JPanel panelButtons = new JPanel(new GridLayout(1, 3));
 
-		panelButtons.setLayout(new GridLayout(0, 4));
 		panelButtons.add(backBu);
 		panelButtons.add(forwardBu);
 
@@ -73,9 +72,10 @@ public class ViewImagesBigger extends JPanel {
 			panelButtons.add(tryAlgoriBu);
 			String nombreImagen = (new File(listImages.get(indexImagenList).getDescription())).getName();	
 			String title = indexImageView + nombreImagen;
-			JScrollPane s= new JScrollPane(this);
-			tp.add(title, s);
+			tp.add(title, this);
 			tp.setSelectedIndex(tp.indexOfTab(title));
+			
+			
 
 			int index = tp.indexOfTab(title);
 			JPanel pnlTab = new JPanel(new GridBagLayout());
@@ -115,11 +115,16 @@ public class ViewImagesBigger extends JPanel {
 		}
 
 		jSp.setOrientation(SwingConstants.HORIZONTAL);
-		jSp.setTopComponent(labelImage);
-		jSp.setBottomComponent(panelButtons);
 		labelImage.setHorizontalAlignment(JLabel.CENTER);
 		labelImage.setVerticalAlignment(JLabel.CENTER);
-		//jSp.setDividerLocation(900 + jSp.getInsets().top);
+		JScrollPane scrollIma= new JScrollPane(labelImage);
+		jSp.setTopComponent(scrollIma);
+		
+		
+	jSp.setSize(jSp.getWidth(), this.getHeight());
+		jSp.setBottomComponent(panelButtons);
+
+		jSp.setDividerLocation(700);
 
 		// aniadimos las componentes al jframe
 		jSp.setVisible(true);

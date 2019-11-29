@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -35,7 +36,6 @@ public class AlgorithmView extends JFrame {
 	private List<ImageIcon> imageIcoList;
 	private String directory;
 	private CreateListImageAlgori cLa;
-	private static List<ViewImagesBigger> openWindows;
 
 	public AlgorithmView(File image, String dir) {
 		// Parametros ventana
@@ -79,16 +79,6 @@ public class AlgorithmView extends JFrame {
 					folder.delete();
 				}
 
-				// Cerrar el resto de ventanas que se hayan abierto a partir de esta
-				ij.WindowManager.closeAllWindows(); // esto cierra todas las ventanas abiertas con imagej solamente
-				if (openWindows != null) { // quedan las de visualizacion de las imagenes en grande
-					if (openWindows.size() > 0) {
-						for (ViewImagesBigger wind : openWindows) {
-							 //wind.disable();
-						}
-					}
-				}
-
 			}
 
 			@Override
@@ -103,8 +93,6 @@ public class AlgorithmView extends JFrame {
 
 			}
 		});
-
-		openWindows = new ArrayList<ViewImagesBigger>();
 
 		OurProgressBar pb = new OurProgressBar(this);
 
@@ -159,7 +147,10 @@ public class AlgorithmView extends JFrame {
 			case 2:
 				me.consume();
 				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList, directory, true, null);
-				openWindows.add(vi);
+				JDialog g = new JDialog(this);
+				g.add(vi);
+				g.show();
+				g.pack();
 				break;
 
 			default:

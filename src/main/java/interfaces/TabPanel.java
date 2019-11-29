@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
@@ -60,8 +61,14 @@ public class TabPanel extends JTabbedPane {
 				nd2Ima = true;
 			}
 		} else {
+			JSplitPane splitPane= new JSplitPane(HORIZONTAL);
+			LensMEnuButtons lens= new LensMEnuButtons(images.getListImagesPrev());
 			JScrollPane s= new JScrollPane(images);
-			addTab("Images", s);
+			
+			splitPane.setTopComponent(lens);
+			splitPane.setBottomComponent(s);
+			
+			addTab("Images", splitPane);
 		}
 
 		// los del excel

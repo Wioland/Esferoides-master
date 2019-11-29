@@ -1,15 +1,19 @@
 package interfaces;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,8 +29,7 @@ public class ShowImages extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private List<String> listImages;
-	private List<JButton> listImagesPrev;
-	private List<ImageIcon> listIm;
+	private Map<JButton, ImageIcon> listImagesPrev;
 	private String dir;
 
 	/*
@@ -37,9 +40,26 @@ public class ShowImages extends JPanel {
 		this.setLayout(new GridLayout(0, 1));
 
 		listImages = new ArrayList<String>();
-		listIm = new ArrayList<ImageIcon>();
-		listImagesPrev = new ArrayList<JButton>();
+		listImagesPrev = new HashMap<JButton, ImageIcon>();
+
 		File folder = new File(dir);
+		createImageButton(folder, tp);
+
+	}
+	
+	
+	public Map<JButton, ImageIcon> getListImagesPrev() {
+		return listImagesPrev;
+	}
+
+
+
+	public void setListImagesPrev(Map<JButton, ImageIcon> listImagesPrev) {
+		this.listImagesPrev = listImagesPrev;
+	}
+
+
+	public void createImageButton(File folder, Component tp) {
 
 		Utils.search(".*\\.tiff", folder, listImages);
 		Collections.sort(listImages);
@@ -48,7 +68,7 @@ public class ShowImages extends JPanel {
 			// convertir a formato que se pueda ver
 			ImageIcon image = ShowTiff.showTiffToImageIcon(name);
 			image.setDescription(name);
-			listIm.add(image);
+
 			// aniadir a button
 			// Obtiene un icono en escala con las dimensiones especificadas
 			ImageIcon iconoEscala = new ImageIcon(
@@ -66,7 +86,8 @@ public class ShowImages extends JPanel {
 						tap = (TabPanel) tp;
 						String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
 						if (tap != null && tap.indexOfTab(nombreTab) == -1) {
-							ViewImagesBigger viewImageBig = new ViewImagesBigger(image, listIm, dir, false, tap);
+							ViewImagesBigger viewImageBig = new ViewImagesBigger(image,
+									new ArrayList(listImagesPrev.values()), dir, false, tap);
 
 						}
 					} else {
@@ -79,11 +100,10 @@ public class ShowImages extends JPanel {
 				}
 			});
 
-			listImagesPrev.add(imageView);
+			listImagesPrev.put(imageView, image);
 
 			this.add(imageView);
 		}
-
 	}
 
 }
