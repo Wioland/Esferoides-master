@@ -150,7 +150,8 @@ public class AlgorithmView extends JFrame {
 				JDialog g = new JDialog(this);
 				g.add(vi);
 				g.show();
-				g.pack();
+				g.setSize(g.getToolkit().getScreenSize());  
+				//g.pack();
 				break;
 
 			default:
