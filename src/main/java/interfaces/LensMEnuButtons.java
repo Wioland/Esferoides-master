@@ -74,7 +74,6 @@ public class LensMEnuButtons extends JPanel {
 			}
 		}
 
-		// TODO Auto-generated method stub
 		if ((!minSizeIma && typeAction.equals("minus")) || (subtract == -subtractAddSize)) {
 
 			for (JButton bu : listImagesPrev.keySet()) {
@@ -84,22 +83,27 @@ public class LensMEnuButtons extends JPanel {
 				bu.repaint();
 
 			}
+			heightSize = ((JButton) listImagesPrev.keySet().toArray()[0]).getIcon().getIconHeight();
+			widthSize = ((JButton) listImagesPrev.keySet().toArray()[0]).getIcon().getIconWidth();
 
 			if (heightSize < minimunSize) {
 				minSizeIma = true;
 				minSizeBu.setEnabled(false);
-			}
-			if (maxSizeIma) {
-				maxSizeIma = false;
-				pluSizeBu.setEnabled(true);
-			}
-			if (heightSize > maximunSize) {
-				maxSizeIma = true;
-				pluSizeBu.setEnabled(false);
-			}
-			if (minSizeIma) {
-				minSizeIma = false;
-				minSizeBu.setEnabled(true);
+			} else {
+				if (heightSize > maximunSize) {
+					maxSizeIma = true;
+					pluSizeBu.setEnabled(false);
+				} else {
+					if (maxSizeIma) {
+						maxSizeIma = false;
+						pluSizeBu.setEnabled(true);
+					}
+
+					if (minSizeIma) {
+						minSizeIma = false;
+						minSizeBu.setEnabled(true);
+					}
+				}
 			}
 
 		}

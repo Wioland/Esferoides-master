@@ -24,6 +24,7 @@ import javax.swing.SwingConstants;
 import funtions.CreateListImageAlgori;
 import funtions.FileFuntions;
 import funtions.RoiFuntions;
+import funtions.Utils;
 
 public class AlgorithmView extends JFrame {
 
@@ -98,7 +99,7 @@ public class AlgorithmView extends JFrame {
 
 		cLa = new CreateListImageAlgori(image);
 
-		imageIcoList = new ArrayList<ImageIcon>();
+		
 		this.directory = dir;
 
 		// crear las imagenes con todos los algoritmos
@@ -107,6 +108,7 @@ public class AlgorithmView extends JFrame {
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 
 		ShowImages panelImage = new ShowImages(dir + "temporal", this);
+		imageIcoList=new ArrayList(panelImage.getListImagesPrev().values());
 		panelImage.setAutoscrolls(true);
 
 		JButton saveImageBt = new JButton();
@@ -146,9 +148,11 @@ public class AlgorithmView extends JFrame {
 				break;
 			case 2:
 				me.consume();
+				
 				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList, directory, true, null);
 				JDialog g = new JDialog(this);
-				g.add(vi);
+				g.getContentPane().add(vi);
+				//g.add(vi);
 				g.show();
 				g.setSize(g.getToolkit().getScreenSize());  
 				//g.pack();

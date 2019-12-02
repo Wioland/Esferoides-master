@@ -126,8 +126,8 @@ public class ViewImagesBigger extends JPanel {
 		}
 
 		jSp.setOrientation(SwingConstants.HORIZONTAL);
-		labelImage.setHorizontalAlignment(JLabel.CENTER);
-		labelImage.setVerticalAlignment(JLabel.CENTER);
+		//labelImage.setHorizontalAlignment(JLabel.CENTER);
+		//labelImage.setVerticalAlignment(JLabel.CENTER);
 		JScrollPane scrollIma = new JScrollPane(labelImage);
 		jSp.setTopComponent(scrollIma);
 
@@ -135,7 +135,7 @@ public class ViewImagesBigger extends JPanel {
 
 		jSp.setBottomComponent(panelButtons);
 
-		jSp.setDividerLocation(700);
+		jSp.setDividerLocation(800);
 
 		// aniadimos las componentes al jframe
 		jSp.setVisible(true);
