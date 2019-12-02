@@ -203,7 +203,7 @@ public class AlgorithmView extends JFrame {
 		File ima = new File(filePath);
 		FileFuntions.saveSelectedImage(ima, this.directory + "predictions");
 		//FileFuntions.deleteTemporalFolder(new File(this.directory + "temporal"));
-		this.dispose();
+		//this.dispose();
 	}
 
 	private void modifySeclection(String filename) {

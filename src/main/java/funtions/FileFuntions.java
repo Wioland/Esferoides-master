@@ -1,10 +1,18 @@
 package funtions;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
+
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
 
 public class FileFuntions {
 
@@ -48,30 +56,69 @@ public class FileFuntions {
 		String originalPath = RoiFuntions.getNd2FilePathFromTempralTiff(selectedFile.getAbsolutePath());
 		File fOld = new File(originalPath);
 		String originalName = fOld.getName();
-		String pattern = originalName.replace(".nd2",".*\\.*");
-
-		System.out.println(pattern);
-		System.out.println(originalName);
+		String pattern = originalName.replace(".nd2", ".*\\.*");
 
 		File oldFolder = new File(selectedFile.getAbsolutePath().replace(selectedFile.getName(), ""));
 
-		Utils.search(pattern , oldFolder, temporalFiles);
-
+		Utils.search(pattern, oldFolder, temporalFiles);
 		Utils.search(pattern, saveDir, originalFiles);
 
-		for (String s : temporalFiles) {
-			File f = new File(s);
-			File newpath = new File(saveDirPath + f.getName());
-			if (f.renameTo(newpath)) {
+		try {
+			for (String s : temporalFiles) {
+				File f = new File(s);
+				if (!f.getName().endsWith("xls")) {
+					File newpath = new File(saveDirPath + File.separator + f.getName());
+					if (f.renameTo(newpath)) {
 
-				if (fOld.exists()) {
-					if (fOld.delete()) {
-						f.renameTo(fOld);
+						/*
+						 * si se a movido el archivo nuevo a la carpeta predicctions se comprueba que el
+						 * archivo original existe y en ese caso se borra y se renombra el nuevo, si no
+						 * solo se renombra el nuevo
+						 */
+						for (String oriFilePath : originalFiles) {
+							String extension = f.getName().split("\\.")[1];
+							if (oriFilePath.endsWith(extension)) {
+								File orFile= new File(oriFilePath);
+								if (orFile.exists()) {
+									if (orFile.delete()) {
+										f.renameTo(orFile);
+									}
+								}
+								break;
+							}
+						}
+					}
+				} else {
+
+					// cambiar la fila del excel por la nueva
+					try {
+
+						HSSFWorkbook modifyExcel = new HSSFWorkbook(
+								new FileInputStream(new File(originalPath.replace(originalName, "") + "results.xls")));
+						HSSFWorkbook newdataExcel = new HSSFWorkbook(new FileInputStream(new File(s)));
+
+						HSSFSheet sheetResult = modifyExcel.getSheet("Results");
+						HSSFRow newRow = newdataExcel.getSheet("Results").getRow(1);
+
+						int rowIndex = ExcelActions.findRow(sheetResult, newRow.getCell(0).getStringCellValue());
+						ExcelActions.changeRow(rowIndex, sheetResult, newRow);
+						FileOutputStream out = new FileOutputStream(
+								new File(originalPath.replace(originalName, "") + "results.xls"));
+						modifyExcel.write(out);
+
+						out.close();
+
+					} catch (Exception e) {
+						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Error changing the excel row");
 					}
 				}
-
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error saving the files");
 		}
+		JOptionPane.showMessageDialog(null, "The files were successfully saved");
 
 	}
 

@@ -9,6 +9,8 @@ import java.io.IOException;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 
 import ij.measure.ResultsTable;
 
@@ -25,7 +27,7 @@ public class ExcelActions {
 
 	public void convertToExcel() {
 
-		String filename = this.dir + "results.xls";
+		
 
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet("Results");
@@ -55,6 +57,10 @@ public class ExcelActions {
 
 		FileOutputStream fileOut;
 		try {
+			String filename = this.dir + "results.xls";
+			if(dir.endsWith("temporal\\")) {
+				filename=this.dir + sheet.getRow(1).getCell(0).getStringCellValue()+"results.xls";
+			}
 			fileOut = new FileOutputStream(filename);
 			workbook.write(fileOut);
 			fileOut.close();
@@ -68,5 +74,30 @@ public class ExcelActions {
 		}
 
 	}
+	
+	
+	public static int findRow(HSSFSheet sheet, String cellContent) {
+	    for (Row row : sheet) {
+	        for (Cell cell : row) {
+	            if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+	                if (cell.getRichStringCellValue().getString().trim().equals(cellContent)) {
+	                    return row.getRowNum();  
+	                }
+	            }
+	        }
+	    }               
+	    return 0;
+	}
+	
+	
+	public static void changeRow(int rowIndex, HSSFSheet sheet, Row newRow) {
+		
+		for (int i = 1; i <sheet.getRow(rowIndex).getLastCellNum(); i++) {
+			Cell cell2Update = sheet.getRow(rowIndex).getCell(i);
+			//cell2Update.setCellValue(newRow.getCell(i).getStringCellValue());
+			cell2Update.setCellValue(49);
+		}	
+	}
+	
 
 }
