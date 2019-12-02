@@ -3,9 +3,14 @@ package funtions;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
 
@@ -63,30 +68,37 @@ public class FileFuntions {
 		Utils.search(pattern, oldFolder, temporalFiles);
 		Utils.search(pattern, saveDir, originalFiles);
 
-		try {
+	
 			for (String s : temporalFiles) {
 				File f = new File(s);
 				if (!f.getName().endsWith("xls")) {
-					File newpath = new File(saveDirPath + File.separator + f.getName());
-					if (f.renameTo(newpath)) {
 
-						/*
-						 * si se a movido el archivo nuevo a la carpeta predicctions se comprueba que el
-						 * archivo original existe y en ese caso se borra y se renombra el nuevo, si no
-						 * solo se renombra el nuevo
-						 */
-						for (String oriFilePath : originalFiles) {
-							String extension = f.getName().split("\\.")[1];
-							if (oriFilePath.endsWith(extension)) {
-								File orFile= new File(oriFilePath);
-								if (orFile.exists()) {
-									if (orFile.delete()) {
-										f.renameTo(orFile);
-									}
+					/*
+					 * si se a movido el archivo nuevo a la carpeta predicctions se comprueba que el
+					 * archivo original existe y en ese caso se borra y se renombra el nuevo, si no
+					 * solo se renombra el nuevo
+					 */
+					for (String oriFilePath : originalFiles) {
+						String extension = f.getName().split("\\.")[1];
+						if (oriFilePath.endsWith(extension)) {
+							File orFile = new File(oriFilePath);
+							if (orFile.exists()) {
+								//f.renameTo(new File(f.getAbsolutePath().replace(f.getName(), orFile.getName())));
+								Path from=f.toPath();
+								Path to=orFile.toPath();
+								try {
+									Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
+									
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
 								}
-								break;
+
 							}
+							
+							break;
 						}
+
 					}
 				} else {
 
@@ -114,12 +126,8 @@ public class FileFuntions {
 					}
 				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error saving the files");
-		}
-		JOptionPane.showMessageDialog(null, "The files were successfully saved");
-
+	
+		
 	}
 
 	// si se sale de la app o para borrar la carpeta tras seleccionar una imagen

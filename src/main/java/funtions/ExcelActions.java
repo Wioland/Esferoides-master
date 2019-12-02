@@ -94,8 +94,8 @@ public class ExcelActions {
 		
 		for (int i = 1; i <sheet.getRow(rowIndex).getLastCellNum(); i++) {
 			Cell cell2Update = sheet.getRow(rowIndex).getCell(i);
-			//cell2Update.setCellValue(newRow.getCell(i).getStringCellValue());
-			cell2Update.setCellValue(49);
+			cell2Update.setCellValue(newRow.getCell(i).getStringCellValue());
+			
 		}	
 	}
 	

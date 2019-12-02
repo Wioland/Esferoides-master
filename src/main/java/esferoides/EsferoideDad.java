@@ -131,16 +131,16 @@ public abstract class EsferoideDad {
 			Roi[] roi = rm.getRoisAsArray();
 
 			if (roi.length != 0) { 
-				if (nameClass == "esferoides.EsferoideJ_") { 
-					imp1.show();
-					rm.select(0);
-					IJ.run(imp1, "Fit Spline", "");
-					rm.addRoi(imp1.getRoi());
-					rm.select(0);
-					rm.runCommand(imp1, "Delete");
-
-					roi = rm.getRoisAsArray();
-				}
+//				if (nameClass == "esferoides.EsferoideJ_") { 
+//					imp1.show();
+//					rm.select(0);
+//					IJ.run(imp1, "Fit Spline", "");
+//					rm.addRoi(imp1.getRoi());
+//					rm.select(0);
+//					rm.runCommand(imp1, "Delete");
+//
+//					roi = rm.getRoisAsArray();
+//				}
 
 				rm.runCommand(imp1, "Draw");
 				rm.runCommand("Save", folder.getAbsolutePath() + File.separator + name + ".zip");
