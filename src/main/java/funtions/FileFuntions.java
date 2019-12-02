@@ -48,13 +48,14 @@ public class FileFuntions {
 		String originalPath = RoiFuntions.getNd2FilePathFromTempralTiff(selectedFile.getAbsolutePath());
 		File fOld = new File(originalPath);
 		String originalName = fOld.getName();
-		String pattern = originalName.replace(".nd2", "*");
+		String pattern = originalName.replace(".nd2",".*\\.*");
 
 		System.out.println(pattern);
 		System.out.println(originalName);
 
-		Utils.search(pattern, new File(selectedFile.getAbsolutePath().replace(selectedFile.getName(), "")),
-				temporalFiles);
+		File oldFolder = new File(selectedFile.getAbsolutePath().replace(selectedFile.getName(), ""));
+
+		Utils.search(pattern , oldFolder, temporalFiles);
 
 		Utils.search(pattern, saveDir, originalFiles);
 
@@ -77,7 +78,7 @@ public class FileFuntions {
 	// si se sale de la app o para borrar la carpeta tras seleccionar una imagen
 	public static void deleteTemporalFolder(File temporalFolder) {
 
-		if(temporalFolder.exists()) {
+		if (temporalFolder.exists()) {
 			File[] files = temporalFolder.listFiles();
 			for (File file : files) {
 				if (file.isDirectory()) {
@@ -89,7 +90,6 @@ public class FileFuntions {
 			}
 			temporalFolder.delete();
 		}
-		
 
 	}
 }

@@ -202,7 +202,7 @@ public class AlgorithmView extends JFrame {
 	private void SaveImageAndDelete(String filePath) {
 		File ima = new File(filePath);
 		FileFuntions.saveSelectedImage(ima, this.directory + "predictions");
-		FileFuntions.deleteTemporalFolder(new File(this.directory + "temporal"));
+		//FileFuntions.deleteTemporalFolder(new File(this.directory + "temporal"));
 		this.dispose();
 	}
 
