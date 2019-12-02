@@ -54,21 +54,27 @@ public class FileFuntions {
 
 		// Se sobre escriben los archivos de la carpeta general con el mismo nombre
 
-		List<String> temporalFiles = new ArrayList<String>();
-		List<String> originalFiles = new ArrayList<String>();
-		File saveDir = new File(saveDirPath);
+		int resp = JOptionPane.showConfirmDialog(null,
+				"This action will delete the current images in predition folder. Are you sure you want to proceed to save?",
+				"Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+		if(resp==0) {
+			
+			JOptionPane.showMessageDialog(null, "Saving the images");
+			
+			List<String> temporalFiles = new ArrayList<String>();
+			List<String> originalFiles = new ArrayList<String>();
+			File saveDir = new File(saveDirPath);
 
-		String originalPath = RoiFuntions.getNd2FilePathFromTempralTiff(selectedFile.getAbsolutePath());
-		File fOld = new File(originalPath);
-		String originalName = fOld.getName();
-		String pattern = originalName.replace(".nd2", ".*\\.*");
+			String originalPath = RoiFuntions.getNd2FilePathFromTempralTiff(selectedFile.getAbsolutePath());
+			File fOld = new File(originalPath);
+			String originalName = fOld.getName();
+			String pattern = originalName.replace(".nd2", ".*\\.*");
 
-		File oldFolder = new File(selectedFile.getAbsolutePath().replace(selectedFile.getName(), ""));
+			File oldFolder = new File(selectedFile.getAbsolutePath().replace(selectedFile.getName(), ""));
 
-		Utils.search(pattern, oldFolder, temporalFiles);
-		Utils.search(pattern, saveDir, originalFiles);
+			Utils.search(pattern, oldFolder, temporalFiles);
+			Utils.search(pattern, saveDir, originalFiles);
 
-	
 			for (String s : temporalFiles) {
 				File f = new File(s);
 				if (!f.getName().endsWith("xls")) {
@@ -83,19 +89,22 @@ public class FileFuntions {
 						if (oriFilePath.endsWith(extension)) {
 							File orFile = new File(oriFilePath);
 							if (orFile.exists()) {
-								//f.renameTo(new File(f.getAbsolutePath().replace(f.getName(), orFile.getName())));
-								Path from=f.toPath();
-								Path to=orFile.toPath();
+								// f.renameTo(new File(f.getAbsolutePath().replace(f.getName(),
+								// orFile.getName())));
+								Path from = f.toPath();
+								Path to = orFile.toPath();
 								try {
 									Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
-									
+
 								} catch (IOException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
+									JOptionPane.showMessageDialog(null, "And error ocurred and the files couldn´t be saved",
+											"Error saving", JOptionPane.ERROR_MESSAGE);
 								}
 
 							}
-							
+
 							break;
 						}
 
@@ -122,11 +131,15 @@ public class FileFuntions {
 
 					} catch (Exception e) {
 						e.printStackTrace();
-						JOptionPane.showMessageDialog(null, "Error changing the excel row");
+						JOptionPane.showMessageDialog(null, "Error changing the excel row", "Error saving",
+								JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
-	
+
+			JOptionPane.showMessageDialog(null, "Save files in prediccion folder succed");
+		}
+
 		
 	}
 
