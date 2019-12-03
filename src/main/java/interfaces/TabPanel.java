@@ -93,6 +93,16 @@ public class TabPanel extends JTabbedPane {
 		}
 	}
 
+	
+	public String getDir() {
+		return dir;
+	}
+
+	public void setDir(String dir) {
+		this.dir = dir;
+	}
+	
+	
 	public boolean isNd2Ima() {
 		return nd2Ima;
 	}

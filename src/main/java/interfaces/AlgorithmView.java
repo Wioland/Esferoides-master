@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -24,7 +25,6 @@ import javax.swing.SwingConstants;
 import funtions.CreateListImageAlgori;
 import funtions.FileFuntions;
 import funtions.RoiFuntions;
-import funtions.Utils;
 
 public class AlgorithmView extends JFrame {
 
@@ -37,6 +37,9 @@ public class AlgorithmView extends JFrame {
 	private List<ImageIcon> imageIcoList;
 	private String directory;
 	private CreateListImageAlgori cLa;
+	private File image;
+
+	
 
 	public AlgorithmView(File image, String dir) {
 		// Parametros ventana
@@ -95,13 +98,13 @@ public class AlgorithmView extends JFrame {
 			}
 		});
 
+		this.image=image;
+		this.directory = dir;
 		OurProgressBar pb = new OurProgressBar(this);
 
-		cLa = new CreateListImageAlgori(image);
+		cLa = new CreateListImageAlgori(this.image);
 
-		
-		this.directory = dir;
-
+	
 		// crear las imagenes con todos los algoritmos
 		cLa.createImagesAlgorithms();
 
@@ -138,7 +141,21 @@ public class AlgorithmView extends JFrame {
 		pack();
 
 	}
+	public String getDirectory() {
+		return directory;
+	}
 
+	public void setDirectory(String directory) {
+		this.directory = directory;
+	}
+
+	public File getImage() {
+		return image;
+	}
+
+	public void setImage(File image) {
+		this.image = image;
+	}
 	public void mouseClick(MouseEvent me, ImageIcon imageIcon) {
 		if (!me.isConsumed()) {
 			switch (me.getClickCount()) {
@@ -149,13 +166,12 @@ public class AlgorithmView extends JFrame {
 			case 2:
 				me.consume();
 				
-				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList, directory, true, null);
-				JDialog g = new JDialog(this);
-				g.getContentPane().add(vi);
-				//g.add(vi);
-				g.show();
-				g.setSize(g.getToolkit().getScreenSize());  
-				//g.pack();
+				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList,this );
+				JFrame frame= new JFrame("Image comparator");
+				frame.getContentPane().add(vi);
+				frame.setExtendedState(MAXIMIZED_BOTH);
+				frame.show();
+				
 				break;
 
 			default:

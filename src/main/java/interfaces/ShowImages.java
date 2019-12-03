@@ -87,7 +87,7 @@ public class ShowImages extends JPanel {
 						String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
 						if (tap != null && tap.indexOfTab(nombreTab) == -1) {
 							ViewImagesBigger viewImageBig = new ViewImagesBigger(image,
-									new ArrayList(listImagesPrev.values()), dir, false, tap);
+									new ArrayList(listImagesPrev.values()),tap);
 
 						}
 					} else {

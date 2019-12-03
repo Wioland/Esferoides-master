@@ -8,17 +8,21 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
+
+import funtions.ShowTiff;
 
 public class ViewImagesBigger extends JPanel {
 
@@ -33,22 +37,29 @@ public class ViewImagesBigger extends JPanel {
 	private String dir;
 	private TabPanel tp;
 	private String indexImageView;
+	private AlgorithmView al;
 
-	public ViewImagesBigger(Icon image, List<ImageIcon> listImages, String directory, boolean onlreadyAlgo,
-			TabPanel tp) {
+	public ViewImagesBigger(Icon image, List<ImageIcon> listImages, Component tp) {
 
-		//setMinimumSize(new Dimension(1000, 800));
+		// setMinimumSize(new Dimension(1000, 800));
 
 		JSplitPane jSp = new JSplitPane();
 		// JScrollPane s = new JScrollPane(jSp);
 
 		this.listImages = listImages;
-
 		this.image = image;
 		this.indexImagenList = listImages.indexOf(image);
-		dir = directory;
-		this.tp = tp;
 		indexImageView = "ImageViewer ";
+
+		if (tp.getClass().equals(TabPanel.class)) {
+			this.tp = (TabPanel) tp;
+			dir = this.tp.getDir();
+		} else {
+			if (tp.getClass().equals(AlgorithmView.class)) {
+				al = (AlgorithmView) tp;
+				dir = al.getDirectory();
+			}
+		}
 
 		// Se aniade la imagen
 		labelImage = new JLabel();
@@ -76,8 +87,19 @@ public class ViewImagesBigger extends JPanel {
 
 		panelButtons.add(backBu);
 		panelButtons.add(forwardBu);
+		
+		jSp.setOrientation(SwingConstants.HORIZONTAL);
+		JScrollPane scrollIma = new JScrollPane(labelImage);
+		
+		jSp.setTopComponent(scrollIma);
+		jSp.setBottomComponent(panelButtons);
 
-		if (!onlreadyAlgo) {
+		jSp.setDividerLocation(800);
+		
+	
+		
+
+		if (this.tp != null) {
 			tryAlgoriBu.setText("Try other algorithm");
 
 			addlistenerButton(backBu, forwardBu, tryAlgoriBu);
@@ -85,10 +107,10 @@ public class ViewImagesBigger extends JPanel {
 			panelButtons.add(tryAlgoriBu);
 			String nombreImagen = (new File(listImages.get(indexImagenList).getDescription())).getName();
 			String title = indexImageView + nombreImagen;
-			tp.add(title, this);
-			tp.setSelectedIndex(tp.indexOfTab(title));
+			this.tp.add(title, this);
+			this.tp.setSelectedIndex(this.tp.indexOfTab(title));
 
-			int index = tp.indexOfTab(title);
+			int index = this.tp.indexOfTab(title);
 			JPanel pnlTab = new JPanel(new GridBagLayout());
 			pnlTab.setOpaque(false);
 			JLabel lblTitle = new JLabel(title);
@@ -105,7 +127,7 @@ public class ViewImagesBigger extends JPanel {
 			gbc.weightx = 0;
 			pnlTab.add(btnClose, gbc);
 
-			tp.setTabComponentAt(index, pnlTab);
+			this.tp.setTabComponentAt(index, pnlTab);
 
 			btnClose.addActionListener(new ActionListener() {
 
@@ -117,29 +139,23 @@ public class ViewImagesBigger extends JPanel {
 			});
 
 		} else {
-//			JLabel originalImaLb= new JLabel();
-//			String path= this.dir+listImages(indexImagenList).get
-//			System.out.println(path);
-//			originalImaLb.setIcon(image);
-//			originalImaLb.setVisible(true);
+			JSplitPane splitPa = new JSplitPane();
+			splitPa.setOrientation(javax.swing.JSplitPane.HORIZONTAL_SPLIT);
+
+			JLabel originalImaLb = new JLabel();
+			ImageIcon ico = ShowTiff.showTiffToImageIcon(al.getImage().getAbsolutePath());
+			originalImaLb.setIcon(ico);
+			originalImaLb.setVisible(true);
+
+			splitPa.setLeftComponent(originalImaLb);
+			splitPa.setRightComponent(labelImage);
+			JScrollPane scroll= new JScrollPane(splitPa);
+			jSp.setTopComponent(scroll);
+		
 			addlistenerButton(backBu, forwardBu);
 		}
 
-		jSp.setOrientation(SwingConstants.HORIZONTAL);
-		//labelImage.setHorizontalAlignment(JLabel.CENTER);
-		//labelImage.setVerticalAlignment(JLabel.CENTER);
-		JScrollPane scrollIma = new JScrollPane(labelImage);
-		jSp.setTopComponent(scrollIma);
-
-		// jSp.setSize(jSp.getWidth(), this.getHeight());
-
-		jSp.setBottomComponent(panelButtons);
-
-		jSp.setDividerLocation(800);
-
-		// aniadimos las componentes al jframe
 		jSp.setVisible(true);
-
 		add(jSp);
 		this.setVisible(true);
 
