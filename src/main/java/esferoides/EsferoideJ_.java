@@ -20,9 +20,18 @@ public class EsferoideJ_ implements Command {
 
 	@Parameter(label = "Select type of images", choices = { "suspension", "colageno", "Hector no fluo v1",
 			"Hector no fluo v2", "Teodora v1" })
+	
 	private String type = "suspension";
-
 	private static ArrayList<Integer> goodRows;
+	private String dir;
+
+	public String getDir() {
+		return dir;
+	}
+
+	public void setDir(String dir) {
+		this.dir = dir;
+	}
 
 	@Override
 	public void run() {
@@ -38,18 +47,9 @@ public class EsferoideJ_ implements Command {
 
 		// We first read the list of files
 		List<String> result = esferoidProcessor.getSearchFiles().apply();;
-		String dir = result.get(0);
+		dir = result.get(0);
 		result.remove(0);
 		
-		boolean temp=false;
-		
-		if(result.size()==1) {
-			temp=true;
-		}
-		
-		if(temp) {
-			dir+="temporal"+File.separator;
-		}
 		
 //		// ProgressBar
 //		
@@ -72,7 +72,7 @@ public class EsferoideJ_ implements Command {
 
 		// For each file in the folder we detect the esferoid on it.
 		for (String name : result) {
-			esferoidProcessor.getDetectEsferoid().apply(options, dir, name, goodRows,temp);
+			esferoidProcessor.getDetectEsferoid().apply(options, dir, name, goodRows,false);
 		}
 
 		rt = ResultsTable.getResultsTable();

@@ -19,7 +19,21 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 
+import esferoides.EsferoideJ_;
+import ij.ImageJ;
+
 public class FileFuntions {
+	
+	public static void chargePlugins() {
+		Class<?> clazz = EsferoideJ_.class;
+		String url = clazz.getResource("/" + clazz.getName().replace('.', '/') + ".class").toString();
+		String pluginsDir = url.substring("file:".length(), url.length() - clazz.getName().length() - ".class".length());
+		System.setProperty("plugins.dir", pluginsDir);
+		
+		ImageJ imageJFrame = new ImageJ();
+		imageJFrame.setVisible(false);
+		
+	}
 
 	public static String getPathSelectedTreeFile(TreePath tp) {
 		String path = "";

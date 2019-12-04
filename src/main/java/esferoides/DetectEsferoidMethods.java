@@ -8,7 +8,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.ImageCalculator;
 import ij.plugin.frame.RoiManager;
-import ij.process.ImageStatistics;
 import loci.formats.FormatException;
 import loci.plugins.BF;
 import loci.plugins.in.ImporterOptions;

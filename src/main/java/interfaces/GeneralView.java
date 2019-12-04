@@ -27,8 +27,7 @@ public class GeneralView extends JFrame {
 	private String directory;
 
 	public GeneralView(String directory) {
-		ImageJ imageJFrame = new ImageJ();
-		imageJFrame.setVisible(false);
+
 		this.directory = directory;
 
 		// Parametros ventana
@@ -69,7 +68,7 @@ public class GeneralView extends JFrame {
 
 				File deleteFile = new File(directory + File.separator + "temporal");
 				FileFuntions.deleteTemporalFolder(deleteFile);
-				imageJFrame.dispose();
+				
 
 			}
 

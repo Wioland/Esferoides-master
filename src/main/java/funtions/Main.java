@@ -45,6 +45,7 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
+		FileFuntions.chargePlugins();
 		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the images");
 		callProgram(dc.getDirectory(), null);
 	}
