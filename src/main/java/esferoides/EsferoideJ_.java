@@ -1,34 +1,18 @@
 package esferoides;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Polygon;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JProgressBar;
-import javax.swing.border.Border;
 
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
+import funtions.ExcelActions;
 import ij.IJ;
-import ij.ImagePlus;
-import ij.gui.Roi;
-import ij.io.DirectoryChooser;
-import ij.measure.Calibration;
 import ij.measure.ResultsTable;
-import ij.plugin.ImageCalculator;
-import ij.plugin.filter.Analyzer;
-import ij.plugin.frame.RoiManager;
-import ij.process.ImageStatistics;
-import loci.formats.FormatException;
+import interfaces.OurProgressBar;
 import loci.plugins.in.ImporterOptions;
 
 @Plugin(type = Command.class, headless = true, menuPath = "Plugins>EsferoideJ")
@@ -57,29 +41,38 @@ public class EsferoideJ_ implements Command {
 		String dir = result.get(0);
 		result.remove(0);
 		
+		boolean temp=false;
 		
-		// ProgressBar
+		if(result.size()==1) {
+			temp=true;
+		}
 		
-		IJ.setForegroundColor(255, 0, 0);
-		goodRows = new ArrayList<>();
-		JFrame frame = new JFrame("Work in progress");
-		JProgressBar progressBar = new JProgressBar();
-		progressBar.setValue(0);
-		progressBar.setString("");
-		progressBar.setStringPainted(true);
-		progressBar.setIndeterminate(true);
-		Border border = BorderFactory.createTitledBorder("Processing...");
-		progressBar.setBorder(border);
-		Container content = frame.getContentPane();
-		content.add(progressBar, BorderLayout.NORTH);
-		frame.setSize(300, 100);
-		frame.setVisible(true);
+		if(temp) {
+			dir+="temporal"+File.separator;
+		}
 		
-		
+//		// ProgressBar
+//		
+//		IJ.setForegroundColor(255, 0, 0);
+//		goodRows = new ArrayList<>();
+//		JFrame frame = new JFrame("Work in progress");
+//		JProgressBar progressBar = new JProgressBar();
+//		progressBar.setValue(0);
+//		progressBar.setString("");
+//		progressBar.setStringPainted(true);
+//		progressBar.setIndeterminate(true);
+//		Border border = BorderFactory.createTitledBorder("Processing...");
+//		progressBar.setBorder(border);
+//		Container content = frame.getContentPane();
+//		content.add(progressBar, BorderLayout.NORTH);
+//		frame.setSize(300, 100);
+//		frame.setVisible(true);
+//		
+		OurProgressBar pb= new OurProgressBar(null);
 
 		// For each file in the folder we detect the esferoid on it.
 		for (String name : result) {
-			esferoidProcessor.getDetectEsferoid().apply(options, dir, name, goodRows);
+			esferoidProcessor.getDetectEsferoid().apply(options, dir, name, goodRows,temp);
 		}
 
 		rt = ResultsTable.getResultsTable();
@@ -92,13 +85,13 @@ public class EsferoideJ_ implements Command {
 			}
 		}
 
-		ExportToExcel ete = new ExportToExcel(rt, dir);
+		ExcelActions ete = new ExcelActions(rt, dir);
 		ete.convertToExcel();
 
 		rt.reset();
 
-		frame.setVisible(false);
-		frame.dispose();
+		pb.setVisible(false);
+		pb.dispose();
 		IJ.showMessage("Process finished");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -16,9 +16,8 @@ import javax.swing.border.Border;
 
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
 
-import esferoides.ExportToExcel;
+import funtions.ExcelActions;
 import funtions.Utils;
 import ij.IJ;
 import ij.ImagePlus;
@@ -30,6 +29,7 @@ import ij.plugin.ImageCalculator;
 import ij.plugin.filter.Analyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.ImageStatistics;
+import interfaces.OurProgressBar;
 import loci.formats.FormatException;
 import loci.plugins.in.ImporterOptions;
 
@@ -293,19 +293,20 @@ public class EsferoideJFluo_ implements Command {
 			DirectoryChooser dc = new DirectoryChooser("Select the folder containing the images");
 			String dir = dc.getDirectory();
 
-			JFrame frame = new JFrame("Work in progress");
-			JProgressBar progressBar = new JProgressBar();
-			progressBar.setValue(0);
-			progressBar.setString("");
-			progressBar.setStringPainted(true);
-			progressBar.setIndeterminate(true);
-			Border border = BorderFactory.createTitledBorder("Processing...");
-			progressBar.setBorder(border);
-			Container content = frame.getContentPane();
-			content.add(progressBar, BorderLayout.NORTH);
-			frame.setSize(300, 100);
-			frame.setVisible(true);
-
+//			JFrame frame = new JFrame("Work in progress");
+//			JProgressBar progressBar = new JProgressBar();
+//			progressBar.setValue(0);
+//			progressBar.setString("");
+//			progressBar.setStringPainted(true);
+//			progressBar.setIndeterminate(true);
+//			Border border = BorderFactory.createTitledBorder("Processing...");
+//			progressBar.setBorder(border);
+//			Container content = frame.getContentPane();
+//			content.add(progressBar, BorderLayout.NORTH);
+//			frame.setSize(300, 100);
+//			frame.setVisible(true);
+			
+			OurProgressBar pb= new OurProgressBar(null);
 			// We store the list of tiff files in the result list.
 			File folder = new File(dir);
 			List<String> result = new ArrayList<String>();
@@ -347,13 +348,13 @@ public class EsferoideJFluo_ implements Command {
 //			rt.saveAs(dir + "results.csv");
 			// When the process is finished, we show a message to inform the user.
 
-			ExportToExcel ete = new ExportToExcel(rt, dir);
+			ExcelActions ete = new ExcelActions(rt, dir);
 			ete.convertToExcel();
 
 			rt.reset();
 
-			frame.setVisible(false);
-			frame.dispose();
+			pb.setVisible(false);
+			pb.dispose();
 			IJ.showMessage("Process finished");
 
 		} catch (IOException e) {

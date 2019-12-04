@@ -1,13 +1,11 @@
 package funtions;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 
 import ij.io.DirectoryChooser;
 import interfaces.GeneralView;
 import interfaces.ImageTreePanel;
 import interfaces.SelectAlgoritm;
-import interfaces.TabPanel;
 
 public class Main {
 	// PRUEBAS

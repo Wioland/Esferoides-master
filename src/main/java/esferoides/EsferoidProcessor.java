@@ -34,5 +34,5 @@ interface searchFilesFunction {
 
 @FunctionalInterface
 interface detectEsferoidFunction {
-    public void apply(ImporterOptions options, String dir, String name,ArrayList<Integer> goodRows);
+    public void apply(ImporterOptions options, String dir, String name,ArrayList<Integer> goodRows, boolean temp);
 }

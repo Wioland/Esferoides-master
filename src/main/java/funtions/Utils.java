@@ -4,11 +4,13 @@ import java.awt.Polygon;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
+import ij.io.DirectoryChooser;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.filter.Analyzer;
@@ -37,98 +39,119 @@ public class Utils {
 	}
 
 	// Method to draw the results stored in the roi manager into the image, and then
-	// save the
-	// image in a given directory. Since we know that there is only one esferoide
-	// per image, we
-	// only keep the ROI with the biggest area stored in the ROI Manager.
-	// Method to draw the results stored in the roi manager into the image, and then
-	// save the
-	// image in a given directory. Since we know that there is only one esferoide
-	// per image, we
-	// only keep the ROI with the biggest area stored in the ROI Manager.
-	public static void showResultsAndSave(String dir, ImagePlus imp1, RoiManager rm,ArrayList<Integer> goodRows) throws IOException {
-		IJ.run(imp1, "RGB Color", "");
-
-		String name = imp1.getTitle();
-
-		// FileInfo f = imp1.getFileInfo();
-		name = name.substring(0, name.indexOf("."));
-
-		ImageStatistics stats = null;
-		double[] vFeret;// = 0;
-		double perimeter = 0;
-		if (rm != null) {
-			rm.setVisible(false);
-			keepBiggestROI(rm);
-			rm.runCommand("Show None");
-			rm.runCommand("Show All");
-
-			Roi[] roi = rm.getRoisAsArray();
-
-			if (roi.length != 0) {
-
-				imp1.show();
-				rm.select(0);
-				IJ.run(imp1, "Fit Spline", "");
-				rm.addRoi(imp1.getRoi());
-				rm.select(0);
-				rm.runCommand(imp1, "Delete");
-
-				roi = rm.getRoisAsArray();
-
-				rm.runCommand(imp1, "Draw");
-				rm.runCommand("Save", dir + name + ".zip");
-				rm.close();
-				// saving the roi
-				// compute the statistics (without calibrate)
-				stats = roi[0].getStatistics();
-
-				vFeret = roi[0].getFeretValues();// .getFeretsDiameter();
-				perimeter = roi[0].getLength();
-				Calibration cal = imp1.getCalibration();
-				double pw, ph;
-				if (cal != null) {
-					pw = cal.pixelWidth;
-					ph = cal.pixelHeight;
-				} else {
-					pw = 1.0;
-					ph = 1.0;
-				}
-				// calibrate the measures
-				double area = stats.area * pw * ph;
-				double w = imp1.getWidth() * pw;
-				double h = imp1.getHeight() * ph;
-				double aFraction = area / (w * h) * 100;
-				double perim = perimeter * pw;
-
-				ResultsTable rt = ResultsTable.getResultsTable();
-//		            if (rt == null) {
-				//
-//		                rt = new ResultsTable();
-//		            }
-				int nrows = Analyzer.getResultsTable().getCounter();
-				goodRows.add(nrows - 1);
-
-				rt.setPrecision(2);
-				rt.setLabel(name, nrows - 1);
-				rt.addValue("Area", area);
-				rt.addValue("Area Fraction", aFraction);
-				rt.addValue("Perimeter", perim);
-				double circularity = perimeter == 0.0 ? 0.0 : 4.0 * Math.PI * (area / (perim * perim));
-				if (circularity > 1.0) {
-					circularity = 1.0;
-				}
-				rt.addValue("Circularity", circularity);
-				rt.addValue("Diam. Feret", vFeret[0]);
-				rt.addValue("Angle. Feret", vFeret[1]);
-				rt.addValue("Min. Feret", vFeret[2]);
-				rt.addValue("X Feret", vFeret[3]);
-				rt.addValue("Y Feret", vFeret[4]);
+		// save the
+		// image in a given directory. Since we know that there is only one esferoide
+		// per image, we
+		// only keep the ROI with the biggest area stored in the ROI Manager.
+		public static void showResultsAndSave(String dir, ImagePlus imp1, RoiManager rm, ArrayList<Integer> goodRows, String nameClass, boolean temp)
+				throws IOException {
+			IJ.run(imp1, "RGB Color", "");
+			File folder;
+			
+			String name = imp1.getTitle();
+			// FileInfo f = imp1.getFileInfo();
+			dir=dir.replace(name, "");
+			name = name.substring(0, name.indexOf("."));
+			folder = new File(dir +  "predictions");
+			
+			if (!temp && !folder.exists()) {
+				folder.mkdir();
+			} else {
+				folder = new File(dir +  "temporal");
+				name+="_"+nameClass.substring(nameClass.indexOf(".")+1);
+				folder.mkdir();
 			}
-		}
 
-		IJ.saveAs(imp1, "Tiff", dir + name + "_pred.tiff");
-	}
+			
+
+			ImageStatistics stats = null;
+			double[] vFeret;// = 0;
+			double perimeter = 0;
+			if (rm != null) {
+				rm.setVisible(false);
+				keepBiggestROI(rm);
+				rm.runCommand("Show None");
+				rm.runCommand("Show All");
+//				boolean smooth = false;
+//				if (smooth) {
+//					ImagePlus impN = IJ.createImage("Untitled", "16-bit white", imp1.getWidth(), imp1.getHeight(), 1);
+//					rm.select(0);
+//					rm.runCommand(impN, "Fill");
+//					rm.runCommand("Delete");
+//					IJ.setAutoThreshold(impN, "Default");
+//					IJ.run(impN, "Convert to Mask", "");
+//					IJ.run(impN, "Shape Smoothing",
+//							"relative_proportion_fds=5 absolute_number_fds=2 keep=[Relative_proportion of FDs]");
+//					IJ.run(impN, "Analyze Particles...", "exclude add");
+//					impN.close();
+//					rm = RoiManager.getInstance();
+//					rm.runCommand("Show None");
+//					rm.runCommand("Show All");
+//				}
+
+				Roi[] roi = rm.getRoisAsArray();
+
+				if (roi.length != 0) { 
+					
+						imp1.show();
+						rm.select(0);
+						IJ.run(imp1, "Fit Spline", "");
+						rm.addRoi(imp1.getRoi());
+						rm.select(0);
+						rm.runCommand(imp1, "Delete");
+
+						roi = rm.getRoisAsArray();
+					
+
+					rm.runCommand(imp1, "Draw");
+					rm.runCommand("Save", folder.getAbsolutePath() + File.separator + name + ".zip");
+					rm.close();
+					// saving the roi
+					// compute the statistics (without calibrate)
+					stats = roi[0].getStatistics();
+
+					vFeret = roi[0].getFeretValues();// .getFeretsDiameter();
+					perimeter = roi[0].getLength();
+					Calibration cal = imp1.getCalibration();
+					double pw, ph;
+					if (cal != null) {
+						pw = cal.pixelWidth;
+						ph = cal.pixelHeight;
+					} else {
+						pw = 1.0;
+						ph = 1.0;
+					}
+					// calibrate the measures
+					double area = stats.area * pw * ph;
+					double w = imp1.getWidth() * pw;
+					double h = imp1.getHeight() * ph;
+					double aFraction = area / (w * h) * 100;
+					double perim = perimeter * pw;
+
+					ResultsTable rt = ResultsTable.getResultsTable();
+					int nrows = Analyzer.getResultsTable().getCounter();
+					goodRows.add(nrows - 1);
+
+					rt.setPrecision(2);
+					rt.setLabel(name, nrows - 1);
+					rt.addValue("Area", area);
+					rt.addValue("Area Fraction", aFraction);
+					rt.addValue("Perimeter", perim);
+					double circularity = perimeter == 0.0 ? 0.0 : 4.0 * Math.PI * (area / (perim * perim));
+					if (circularity > 1.0) {
+						circularity = 1.0;
+					}
+					rt.addValue("Circularity", circularity);
+					rt.addValue("Diam. Feret", vFeret[0]);
+					rt.addValue("Angle. Feret", vFeret[1]);
+					rt.addValue("Min. Feret", vFeret[2]);
+					rt.addValue("X Feret", vFeret[3]);
+					rt.addValue("Y Feret", vFeret[4]);
+				}
+			}
+
+			IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + File.separator + name + "_pred.tiff");
+		}
 
 	// Method to obtain the area from a polygon. Probably, there is a most direct
 	// method to do this.
@@ -171,6 +194,26 @@ public class Utils {
 			rm.addRoi(biggestROI);
 
 		}
+
+	}
+	
+	
+	public static String getByFormat(String format, List<String> result) {
+		// We ask the user for a directory with nd2 images.
+
+		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the " + format + " images");
+
+		if (dc.getDirectory() != null) {
+			String dir = dc.getDirectory();
+			// We store the list of nd2 files in the result list.
+			File folder = new File(dir);
+
+			Utils.search(".*\\." + format, folder, result);
+			Collections.sort(result);
+			return dir;
+		}
+
+		return null;
 
 	}
 

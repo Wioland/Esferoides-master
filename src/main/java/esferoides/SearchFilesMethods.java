@@ -48,16 +48,17 @@ public class SearchFilesMethods {
 			ImporterOptions options = new ImporterOptions();
 
 			options.setWindowless(true);
-			// We ask the user for a directory with nd2 images.
-			DirectoryChooser dc = new DirectoryChooser("Select the folder containing the nd2 images");
-			String dir = dc.getDirectory();
-
-			// We store the list of tiff files in the result list.
-			File folder = new File(dir);
-			
-
-			Utils.search(".*\\.nd2", folder, result);
-			Collections.sort(result);
+//			// We ask the user for a directory with nd2 images.
+//			DirectoryChooser dc = new DirectoryChooser("Select the folder containing the nd2 images");
+//			String dir = dc.getDirectory();
+//
+//			// We store the list of tiff files in the result list.
+//			File folder = new File(dir);
+//			
+//
+//			Utils.search(".*\\.nd2", folder, result);
+//			Collections.sort(result);
+			String dir=Utils.getByFormat( "nd2", result);
 			result.add(0,dir);
 			return result;
 		} catch (IOException e) {

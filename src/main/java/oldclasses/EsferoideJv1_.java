@@ -1,53 +1,33 @@
 package oldclasses;
 
-import ij.IJ;
+import java.awt.Polygon;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import org.scijava.command.Command;
+
+import esferoides.AnalyseParticleMethods;
+import funtions.ExcelActions;
+import funtions.Utils;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.Roi;
 import ij.io.DirectoryChooser;
-import ij.io.FileInfo;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.ImageCalculator;
-import ij.plugin.Thresholder;
 import ij.plugin.filter.Analyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
+import interfaces.OurProgressBar;
 import loci.formats.FormatException;
 import loci.plugins.BF;
 import loci.plugins.in.ImporterOptions;
-import net.imagej.Dataset;
-import net.imagej.ImageJ;
-import net.imagej.axis.Axes;
-import net.imagej.axis.AxisType;
-
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Polygon;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JProgressBar;
-import javax.swing.border.Border;
-
-import org.scijava.command.Command;
-import org.scijava.command.Previewable;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
-
-import esferoides.AnalyseParticleMethods;
-import esferoides.ExportToExcel;
-import funtions.Utils;
 
 //@Plugin(type = Command.class, headless = true, menuPath = "Plugins>EsferoideJ")
 public class EsferoideJv1_ implements Command {
@@ -599,28 +579,30 @@ public class EsferoideJv1_ implements Command {
 			options.setWindowless(true);
 
 			// We ask the user for a directory with nd2 images.
-			DirectoryChooser dc = new DirectoryChooser("Select the folder containing the nd2 images");
-			String dir = dc.getDirectory();
+//			DirectoryChooser dc = new DirectoryChooser("Select the folder containing the nd2 images");
+//			String dir = dc.getDirectory();
 
-			JFrame frame = new JFrame("Work in progress");
-			JProgressBar progressBar = new JProgressBar();
-			progressBar.setValue(0);
-			progressBar.setString("");
-			progressBar.setStringPainted(true);
-			progressBar.setIndeterminate(true);
-			Border border = BorderFactory.createTitledBorder("Processing...");
-			progressBar.setBorder(border);
-			Container content = frame.getContentPane();
-			content.add(progressBar, BorderLayout.NORTH);
-			frame.setSize(300, 100);
-			frame.setVisible(true);
+//			JFrame frame = new JFrame("Work in progress");
+//			JProgressBar progressBar = new JProgressBar();
+//			progressBar.setValue(0);
+//			progressBar.setString("");
+//			progressBar.setStringPainted(true);
+//			progressBar.setIndeterminate(true);
+//			Border border = BorderFactory.createTitledBorder("Processing...");
+//			progressBar.setBorder(border);
+//			Container content = frame.getContentPane();
+//			content.add(progressBar, BorderLayout.NORTH);
+//			frame.setSize(300, 100);
+//			frame.setVisible(true);
+			
+			OurProgressBar pb= new OurProgressBar(null);
 
 			// We store the list of nd2 files in the result list.
-			File folder = new File(dir);
+//			File folder = new File(dir);
 			List<String> result = new ArrayList<String>();
-
-			Utils.search(".*\\.nd2", folder, result);
-			Collections.sort(result);
+			String dir=Utils.getByFormat( "nd2", result);
+//			Utils.search(".*\\.nd2", folder, result);
+//			Collections.sort(result);
 			// We initialize the ResultsTable
 			ResultsTable rt = new ResultsTable();
 //			rt.show("Results");
@@ -654,13 +636,13 @@ public class EsferoideJv1_ implements Command {
 //			rt.saveAs(dir + "results.csv");
 			// When the process is finished, we show a message to inform the user.
 
-			ExportToExcel ete = new ExportToExcel(rt, dir);
+			ExcelActions ete = new ExcelActions(rt, dir);
 			ete.convertToExcel();
 
 			rt.reset();
 
-			frame.setVisible(false);
-			frame.dispose();
+			pb.setVisible(false);
+			pb.dispose();
 			IJ.showMessage("Process finished");
 
 		} catch (IOException e) {

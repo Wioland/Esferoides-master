@@ -61,16 +61,16 @@ public class CreateDataset implements Command {
 
 			options.setWindowless(true);
 
-			// We ask the user for a directory with nd2 images.
-			DirectoryChooser dc = new DirectoryChooser("Select the folder containing the nd2 images");
-			String dir = dc.getDirectory();
-
-			// We store the list of nd2 files in the result list.
-			File folder = new File(dir);
+//			// We ask the user for a directory with nd2 images.
+//			DirectoryChooser dc = new DirectoryChooser("Select the folder containing the nd2 images");
+//			String dir = dc.getDirectory();
+//
+//			// We store the list of nd2 files in the result list.
+//			File folder = new File(dir);
 			List<String> result = new ArrayList<String>();
-
-			Utils.search(".*\\.nd2", folder, result);
-			Collections.sort(result);
+			String dir=Utils.getByFormat( "nd2", result);
+//			Utils.search(".*\\.nd2", folder, result);
+//			Collections.sort(result);
 			RoiManager rm = RoiManager.getRoiManager();
 			
 		

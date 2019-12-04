@@ -17,7 +17,7 @@ public class DetectEsferoidMethods {
 
 	// Method to detect esferoides.
 	public static void detectEsferoideFluoColageno(ImporterOptions options, String dir, String name,
-			ArrayList<Integer> goodRows) {
+			ArrayList<Integer> goodRows, boolean temp) {
 
 		ImagePlus impFluo = IJ.openImage(name);
 
@@ -40,7 +40,8 @@ public class DetectEsferoidMethods {
 		impFluo.close();
 		impNoFluo.close();
 		try {
-			Utils.showResultsAndSave(dir, imp, rm, goodRows);
+			String nameClass="FluoColageno";
+			Utils.showResultsAndSave(dir, imp, rm, goodRows,nameClass, temp);
 			imp.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -51,7 +52,7 @@ public class DetectEsferoidMethods {
 
 	// Method to detect esferoides.
 	public static void detectEsferoideFluoSuspension(ImporterOptions options, String dir, String name,
-			ArrayList<Integer> goodRows) {
+			ArrayList<Integer> goodRows, boolean temp) {
 
 		ImagePlus impFluo = IJ.openImage(name);
 
@@ -64,7 +65,8 @@ public class DetectEsferoidMethods {
 		impFluo.close();
 
 		try {
-			Utils.showResultsAndSave(dir, impNoFluo, rm, goodRows);
+			String nameClass="FluoSuspension";
+			Utils.showResultsAndSave(dir, impNoFluo, rm, goodRows,nameClass, temp);
 			impNoFluo.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -75,7 +77,7 @@ public class DetectEsferoidMethods {
 
 	// Method to detect esferoides.
 	public static void detectEsferoideHectorv2(ImporterOptions options, String dir, String name,
-			ArrayList<Integer> goodRows) {
+			ArrayList<Integer> goodRows , boolean temp) {
 		ImagePlus impb = IJ.openImage(name);
 		String title = impb.getTitle();
 
@@ -94,7 +96,8 @@ public class DetectEsferoidMethods {
 		}
 
 		try {
-			Utils.showResultsAndSave(dir, imp, rm, goodRows);
+			String nameClass="Hectorv2";
+			Utils.showResultsAndSave(dir, imp, rm, goodRows,nameClass, temp);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -105,7 +108,7 @@ public class DetectEsferoidMethods {
 
 	// Method to detect esferoides.
 	public static void detectEsferoideHectorv1(ImporterOptions options, String dir, String name,
-			ArrayList<Integer> goodRows) {
+			ArrayList<Integer> goodRows , boolean temp) {
 		ImagePlus impb = IJ.openImage(name);
 		String title = impb.getTitle();
 
@@ -162,7 +165,8 @@ public class DetectEsferoidMethods {
 		}
 
 		try {
-			Utils.showResultsAndSave(dir, imp, rm, goodRows);
+			String nameClass="Hectorv1";
+			Utils.showResultsAndSave(dir, imp, rm, goodRows,nameClass, temp);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -172,7 +176,7 @@ public class DetectEsferoidMethods {
 	}
 
 	// Method to detect esferoides.
-	public static void detectEsferoideTeodora(ImporterOptions options, String dir, String name, ArrayList<Integer> goodRows) {
+	public static void detectEsferoideTeodora(ImporterOptions options, String dir, String name, ArrayList<Integer> goodRows, boolean temp) {
 		options.setId(name);
 
 		ImagePlus[] imps;
@@ -201,7 +205,8 @@ public class DetectEsferoidMethods {
 				iters++;
 			}
 
-			Utils.showResultsAndSave(dir, imp, rm, goodRows);
+			String nameClass="Teodora";
+			Utils.showResultsAndSave(dir, imp, rm, goodRows,nameClass, temp);
 			imp.close();
 		} catch (FormatException | IOException e) {
 			// TODO Auto-generated catch block
