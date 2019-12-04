@@ -1,4 +1,4 @@
-package esferoides;
+package funtions;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,6 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import bsh.This;
-import funtions.Utils;
 import ij.IJ;
 import loci.formats.FormatException;
 import loci.plugins.in.ImporterOptions;

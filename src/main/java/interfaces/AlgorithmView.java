@@ -230,7 +230,7 @@ public class AlgorithmView extends JFrame {
 		ij.WindowManager.closeAllWindows();
 
 		RoiFuntions.showNd2FilePlusRoi(nd2Path, fileRoi);
-
+		
 	}
 
 }

@@ -52,6 +52,7 @@ public class TabPanel extends JTabbedPane {
 
 		ShowImages images = new ShowImages(directory, this);
 		
+		
 		if (images.countComponents() == 0) {
 			noFileText("Images");
 			// Comprobar si en la carpeta hay imagenes nd2
@@ -110,6 +111,11 @@ public class TabPanel extends JTabbedPane {
 	public void setNd2Ima(boolean nd2Ima) {
 		this.nd2Ima = nd2Ima;
 	}
+	
+	
+	
+	
+	
 
 	/*
 	 * Funcion que aniade la vista del excel
@@ -123,34 +129,39 @@ public class TabPanel extends JTabbedPane {
 	}
 
 	private void noFileText(String tabName) {
+		
 		JTextArea j = new JTextArea();
 		j.setText("There is no such file in this folder");
 		j.enable(false);
 		j.setName(tabName);
-
+		
+		JScrollPane s= new JScrollPane(j);
+		
 		if (tabName.equals("Excel")) { // igual hay que cambiarlo por el nombre
-			insertTab(tabName, null, j, null, 1);
+			insertTab(tabName, null, s, null, 1);
 			excelModificationIndexTab.put(this.indexOfTab(tabName), 0L);
-			addListenersPanelExcel(j);
+			addListenersPanelExcel(s);
 		} else {
-			addTab(tabName, j);
+			addTab(tabName, s);
 		}
 
 	}
 
 	private void addExcelPanel(File excel) {
-		JPanel panelExcel = new JPanel();
-		String name = excel.getName();
-		// System.out.println(name);
-		excelPanelContent(panelExcel, excel);
-		panelExcel.setName("Excel " + name);
-
-		JScrollPane s= new JScrollPane(panelExcel);
 		
+		String name = excel.getName();
+		ExcelTableCreator excelPanel = new ExcelTableCreator(excel);
+		JScrollPane s= new JScrollPane(excelPanel);
+		
+		s.setName("Excel " + name);
 		insertTab("Excel " + name, null, s, null, 1);
+		
 		excelModificationIndexTab.put(this.indexOfTab("Excel " + name), excel.lastModified());
 		IndexTabExcel.put(this.indexOfTab("Excel " + name), excel);
-		addListenersPanelExcel(panelExcel);
+		setSelectedIndex(this.indexOfTab("Excel " + name));
+		
+		
+		addListenersPanelExcel(s);
 
 	}
 
@@ -162,8 +173,8 @@ public class TabPanel extends JTabbedPane {
 		 * componente label y se cambia por el excel ademas se le cambia el nombre a la
 		 * pestaña
 		 */
-
-		int indexComponent = ((TabPanel) e.getComponent().getParent().getParent().getParent()).indexOfTab(e.getComponent().getName());
+		TabPanel tp=(TabPanel) e.getComponent().getParent();
+		int indexComponent = tp.indexOfTab(e.getComponent().getName());
 		File excel = IndexTabExcel.get(indexComponent);
 
 		if (excel != null) { // si tiene excel
@@ -179,7 +190,7 @@ public class TabPanel extends JTabbedPane {
 					excelModificationIndexTab.put(indexComponent, excel.lastModified());
 				}
 			} else {
-				remove(e.getComponent());
+				//remove(e.getComponent());
 				JOptionPane.showMessageDialog(null, "The excel that this tab was showing was deleted");
 				noFileText("Excel");
 				IndexTabExcel.remove(indexComponent);

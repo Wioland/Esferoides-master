@@ -1,4 +1,4 @@
-package esferoides;
+package funtions;
 
 import java.awt.Polygon;
 import java.io.File;
@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import funtions.ExcelActions;
-import funtions.Utils;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
