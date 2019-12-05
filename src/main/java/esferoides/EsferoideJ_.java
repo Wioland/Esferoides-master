@@ -1,6 +1,5 @@
 package esferoides;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,24 +17,14 @@ import loci.plugins.in.ImporterOptions;
 @Plugin(type = Command.class, headless = true, menuPath = "Plugins>EsferoideJ")
 public class EsferoideJ_ implements Command {
 
-	@Parameter(label = "Select type of images", choices = { "suspension", "colageno", "Hector no fluo v1",
-			"Hector no fluo v2", "Teodora v1" })
-	
+	@Parameter(label = "Select type of images", choices = { "suspension", "colageno", "Hector no fluo v1","Hector no fluo v2", "Teodora v1" })
 	private String type = "suspension";
+	
 	private static ArrayList<Integer> goodRows;
-	private String dir;
-
-	public String getDir() {
-		return dir;
-	}
-
-	public void setDir(String dir) {
-		this.dir = dir;
-	}
-
+	
 	@Override
 	public void run() {
-
+		
 		try {
 		// We initialize the ResultsTable
 		ResultsTable rt = new ResultsTable();
@@ -47,14 +36,14 @@ public class EsferoideJ_ implements Command {
 
 		// We first read the list of files
 		List<String> result = esferoidProcessor.getSearchFiles().apply();;
-		dir = result.get(0);
+		String dir = result.get(0);
 		result.remove(0);
 		
 		
 //		// ProgressBar
 //		
 //		IJ.setForegroundColor(255, 0, 0);
-//		goodRows = new ArrayList<>();
+		goodRows = new ArrayList<>();
 //		JFrame frame = new JFrame("Work in progress");
 //		JProgressBar progressBar = new JProgressBar();
 //		progressBar.setValue(0);

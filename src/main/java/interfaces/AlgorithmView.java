@@ -1,6 +1,5 @@
 package interfaces;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -14,7 +13,6 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -22,7 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
-import funtions.CreateListImageAlgori;
+import esferoides.Methods;
 import funtions.FileFuntions;
 import funtions.RoiFuntions;
 
@@ -36,7 +34,6 @@ public class AlgorithmView extends JFrame {
 	private JButton selectedBu;
 	private List<ImageIcon> imageIcoList;
 	private String directory;
-	private CreateListImageAlgori cLa;
 	private File image;
 
 	
@@ -78,7 +75,7 @@ public class AlgorithmView extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				File folder = CreateListImageAlgori.getTemporalFolder();
+				File folder = Methods.getTemporalFolder();
 				if (folder != null) {
 					folder.delete();
 				}
@@ -102,11 +99,15 @@ public class AlgorithmView extends JFrame {
 		this.directory = dir;
 		OurProgressBar pb = new OurProgressBar(this);
 
-		cLa = new CreateListImageAlgori(this.image);
+		String path = RoiFuntions.getNd2FilePathFromPredictions(this.image.getAbsolutePath());
+
+		String directory=path.replace(image.getName(), "");
+		List<String> result = new ArrayList<String>();
+		result.add(path);
+		Methods executeMethods= new Methods( directory, result);
 
 	
-		// crear las imagenes con todos los algoritmos
-		cLa.createImagesAlgorithms();
+		
 
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 

@@ -6,17 +6,11 @@ import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import funtions.CreateListImageAlgori;
 import funtions.FileFuntions;
-import funtions.Utils;
-import ij.ImageJ;
-import ij.io.DirectoryChooser;
 
 public class GeneralView extends JFrame {
 
