@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import funtions.ExcelActions;
+import funtions.FileFuntions;
 import ij.IJ;
 import ij.measure.ResultsTable;
 import interfaces.OurProgressBar;
@@ -15,7 +16,7 @@ import loci.plugins.in.ImporterOptions;
 
 public class Methods {
 	private static ArrayList<Integer> goodRows;
-	private String[] algorithms = { "suspension", "colageno", "Hector no fluo v1", "Hector no fluo v2", "Teodora v1" };
+	private static String[] algorithms = { "suspension", "colageno", "Hector no fluo v1", "Hector no fluo v2", "Teodora v1" };
 	private static File temporalFolder;
 
 	public Methods(String directory, List<String> result) {
@@ -27,11 +28,11 @@ public class Methods {
 				}
 
 			} else {
-				if ((type.contains("Hector") && isExtension(result, "tif"))
-						|| (type.equals("Teodora v1") && isExtension(result, "nd2"))) {
+				if ((type.contains("Hector") && FileFuntions.isExtension(result, "tif"))
+						|| (type.equals("Teodora v1") && FileFuntions.isExtension(result, "nd2"))) {
 					createImagesMetods(result, directory, type);
 				}
-				
+
 			}
 
 		}
@@ -45,29 +46,27 @@ public class Methods {
 		this.temporalFolder = temporalFolder;
 	}
 
-	private boolean isExtension(List<String> result, String extension) {
-		boolean isTif = true;
-		for (String name : result) {
-			if (!name.endsWith(extension)) {
-				isTif = false;
-				break;
-			}
-		}
-		return isTif;
+	public static String[] getAlgorithms() {
+		return algorithms;
 	}
 
+	public void setAlgorithms(String[] algorithms) {
+		this.algorithms = algorithms;
+	}
 
+	
+	
+	
+	
 
 	private boolean checkIfFluoImages(List<String> result) {
 		boolean haveFluo = true;
 		File faux;
-		String fileName;
 		String nameNoextension;
 
 		for (String name : result) {
 			faux = new File(name);
-			fileName = faux.getName();
-			nameNoextension = fileName.split("\\.")[0];
+			nameNoextension=FileFuntions.namewithoutExtension(name);
 			faux = new File(faux.getAbsolutePath().replace(nameNoextension, nameNoextension + "fluo"));
 
 			if (!faux.exists()) {
@@ -108,7 +107,7 @@ public class Methods {
 					rt.deleteRow(i - 1);
 				}
 			}
-directory+="temporal"+File.separator;
+			directory += "temporal" + File.separator;
 			ExcelActions ete = new ExcelActions(rt, directory);
 			ete.convertToExcel();
 

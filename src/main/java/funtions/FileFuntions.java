@@ -51,9 +51,9 @@ public class FileFuntions {
 
 	}
 
-	public static File getTemporalFolderFromNd2Path(String nd2Path) {
-		File folder = new File(nd2Path);
-		folder = new File(nd2Path.replace(folder.getName(), "") + "temporal");
+	public static File getTemporalFolderFromOriginalPath(String OriginalPath) {
+		File folder = new File(OriginalPath);
+		folder = new File(OriginalPath.replace(folder.getName(), "") + "temporal");
 		return folder;
 	}
 
@@ -79,10 +79,11 @@ public class FileFuntions {
 			List<String> originalFiles = new ArrayList<String>();
 			File saveDir = new File(saveDirPath);
 
-			String originalPath = RoiFuntions.getNd2FilePathFromTempralTiff(selectedFile.getAbsolutePath());
+			String originalPath = RoiFuntions.getoriginalFilePathFromTempralTiff(selectedFile.getAbsolutePath());
 			File fOld = new File(originalPath);
 			String originalName = fOld.getName();
-			String pattern = originalName.replace(".nd2", ".*\\.*");
+			String extension=FileFuntions.extensionwithoutName(originalPath);
+			String pattern = originalName.replace(extension, ".*\\.*");
 
 			File oldFolder = new File(selectedFile.getAbsolutePath().replace(selectedFile.getName(), ""));
 
@@ -99,7 +100,7 @@ public class FileFuntions {
 					 * solo se renombra el nuevo
 					 */
 					for (String oriFilePath : originalFiles) {
-						String extension = f.getName().split("\\.")[1];
+						extension = extensionwithoutName(s);
 						if (oriFilePath.endsWith(extension)) {
 							File orFile = new File(oriFilePath);
 							if (orFile.exists()) {
@@ -135,7 +136,7 @@ public class FileFuntions {
 						HSSFSheet sheetResult = modifyExcel.getSheet("Results");
 						HSSFRow newRow = newdataExcel.getSheet("Results").getRow(1);
 
-						int rowIndex = ExcelActions.findRow(sheetResult, originalName.replace(".nd2", ""));
+						int rowIndex = ExcelActions.findRow(sheetResult, originalName.replace("."+extension, ""));
 						ExcelActions.changeRow(rowIndex, sheetResult, newRow);
 						FileOutputStream out = new FileOutputStream(
 								new File(originalPath.replace(originalName, "") + "results.xls"));
@@ -173,5 +174,28 @@ public class FileFuntions {
 			temporalFolder.delete();
 		}
 
+	}
+	
+	public static boolean isExtension(List<String> result, String extension) {
+		boolean isTif = true;
+		for (String name : result) {
+			if (!name.endsWith(extension)) {
+				isTif = false;
+				break;
+			}
+		}
+		return isTif;
+	}
+	
+	public static String namewithoutExtension(String filePath) {
+		File faux = new File(filePath);
+		String fileName = faux.getName();
+		String nameNoextension = fileName.split("\\.")[0];
+		return nameNoextension;
+	}
+	
+	public static String extensionwithoutName(String filePath) {
+		File f= new File(filePath);
+		return f.getName().split("\\.")[1];
 	}
 }

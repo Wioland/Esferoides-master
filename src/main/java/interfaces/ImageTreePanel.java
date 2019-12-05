@@ -123,17 +123,11 @@ public class ImageTreePanel extends JSplitPane {
 
 				if (fileSelected.isFile()) {
 
-					String fileName = fileSelected.getName();
-					String extension = fileName.split("\\.")[1];
-					// String nameFileOnly = fileName.toString().split("\\.")[0];
+					// hacer que se abran en imagej
 
-					if (extension.equals("nd2")) {
-						// hacer que se abran en imagej
-						// System.out.println(path);
-						String roiPath = RoiFuntions.getRoiPathPredicctions(path);
-						RoiFuntions.showNd2FilePlusRoi(path, roiPath);
+					String roiPath = RoiFuntions.getRoiPathPredicctions(path);
+					RoiFuntions.showOriginalFilePlusRoi(path, roiPath);
 
-					}
 				} else {
 					if (!path.equals(dir)) { // si no es el directorio en el que nos encontramos que
 
@@ -143,7 +137,7 @@ public class ImageTreePanel extends JSplitPane {
 						boolean switchFolder = true;
 						this.dir = path;
 
-						Utils.search(".*\\.tiff", folder, result);
+						Utils.search(".*\\.tif", folder, result);
 						if (result.size() == 0) {
 							Utils.search(".*\\.nd2", folder, result);
 							if (result.size() != 0) { // si solo tiene imagenes nd2 mostrar el selector de algoritmos
@@ -226,12 +220,12 @@ public class ImageTreePanel extends JSplitPane {
 		int index = 0;
 
 		for (File f : parent.listFiles()) {
-			if (f.isFile() && f.getName().endsWith("nd2")) {
+			if (f.isFile() && !f.getName().endsWith("xls")) {
 				DefaultMutableTreeNode child = new DefaultMutableTreeNode(f.getName());
 				modelo.insertNodeInto(child, parentNode, index);
 				index++;
 			} else {
-				if (f.isDirectory()) {
+				if (f.isDirectory() && !f.getName().contentEquals("predictions")) {
 					DefaultMutableTreeNode child = new DefaultMutableTreeNode(f.getName());
 					modelo.insertNodeInto(child, parentNode, index);
 					index++;

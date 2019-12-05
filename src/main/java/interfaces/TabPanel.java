@@ -29,7 +29,7 @@ public class TabPanel extends JTabbedPane {
 	private Map<Integer, Long> excelModificationIndexTab;
 	private Map<Integer, File> IndexTabExcel;
 	private String dir;
-	private boolean nd2Ima;
+	private boolean originalIma;
 
 	public TabPanel(String directory) {
 
@@ -40,7 +40,7 @@ public class TabPanel extends JTabbedPane {
 		excelModificationIndexTab = new HashMap<Integer, Long>();
 		IndexTabExcel = new HashMap<Integer, File>();
 		this.dir = directory;
-		nd2Ima = false;
+		originalIma = false;
 
 		Utils.search(".*\\.xls", folder, result);
 		Collections.sort(result);
@@ -58,8 +58,13 @@ public class TabPanel extends JTabbedPane {
 			// Comprobar si en la carpeta hay imagenes nd2
 			List<String> listImages = new ArrayList<String>();
 			Utils.search(".*\\.nd2", folder, listImages);
-			if (listImages != null) {
-				nd2Ima = true;
+			if (listImages.size()!=0) {
+				originalIma = true;
+			}else {
+				Utils.search(".*\\.tif", folder, listImages);
+				if (listImages.size() != 0) {
+					originalIma = true;
+				}
 			}
 		} else {
 			JSplitPane splitPane= new JSplitPane(HORIZONTAL);
@@ -104,12 +109,12 @@ public class TabPanel extends JTabbedPane {
 	}
 	
 	
-	public boolean isNd2Ima() {
-		return nd2Ima;
+	public boolean isOriginalIma() {
+		return originalIma;
 	}
 
-	public void setNd2Ima(boolean nd2Ima) {
-		this.nd2Ima = nd2Ima;
+	public void setOriginalIma(boolean originalIma) {
+		this.originalIma = originalIma;
 	}
 	
 	

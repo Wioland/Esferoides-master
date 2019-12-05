@@ -14,10 +14,14 @@ import loci.plugins.in.ImporterOptions;
 
 public class RoiFuntions {
 	
-	public static String getRoiPathPredicctions(String pathNd2) {
-		String roiPath=pathNd2.replace("nd2", "zip");
-		File f = new File(roiPath);
+	public static String getRoiPathPredicctions(String pathOriginal) {
+			
+		String extension=FileFuntions.extensionwithoutName(pathOriginal);
+		String roiPath=pathOriginal.replace(extension, "zip");
+	
 		
+		File f = new File(roiPath);
+
 		String dir=f.getAbsolutePath().replace(f.getName(), "");
 		
 		
@@ -25,7 +29,7 @@ public class RoiFuntions {
 		return roiPath;
 	}
 	
-	public static void showNd2FilePlusRoi(String path, String roiPath) {
+	public static void showOriginalFilePlusRoi(String path, String roiPath) {
 		ImagePlus[] imps;
 		try {
 			ImporterOptions options = new ImporterOptions();
@@ -63,28 +67,30 @@ public class RoiFuntions {
 	}
 	
 	
-	public static String getNd2FilePathFromTempralTiff(String pathTemporalTiff) {
+	public static String getoriginalFilePathFromTempralTiff(String pathTemporalTiff) {
 
 		File f = new File(pathTemporalTiff.replace("temporal" + File.separator, ""));
 		String tiffName = f.getName();
 		f = new File(f.getAbsolutePath().replace(f.getName(), ""));
 		String[] listFiles = f.list();
-		String nd2Name = "";
+		String originalName = "";
+		
 
 		for (String name : listFiles) {
-			if(name.endsWith(".nd2")) {
-				if (tiffName.contains(name.replace(".nd2", ""))) {
-					nd2Name = name;
+			if(!name.endsWith(".xls")) {
+				String extension=FileFuntions.extensionwithoutName(name);
+				if (tiffName.contains(name.replace("."+extension, ""))) {
+					originalName = name;
 					break;
 				}
 			}
 			
 		}
-		nd2Name = f.getAbsolutePath() + File.separator + nd2Name;
-		return nd2Name;
+		originalName = f.getAbsolutePath() + File.separator + originalName;
+		return originalName;
 	}
 
-	public static String getNd2FilePathFromPredictions(String tiffPredictionsPath) {
+	public static String getOriginalFilePathFromPredictions(String tiffPredictionsPath) {
 		String path = tiffPredictionsPath.replace("_pred.tiff", ".nd2");
 		path = path.replace(File.separator + "predictions", "");
 		

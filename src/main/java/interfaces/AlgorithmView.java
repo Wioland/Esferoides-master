@@ -100,7 +100,7 @@ public class AlgorithmView extends JFrame {
 		OurProgressBar pb = new OurProgressBar(this);
 		//directory=dir+"temporal"+File.separator;
 		
-		String path = RoiFuntions.getNd2FilePathFromPredictions(this.image.getAbsolutePath());
+		String path = RoiFuntions.getOriginalFilePathFromPredictions(this.image.getAbsolutePath());
 
 		
 		List<String> result = new ArrayList<String>();
@@ -227,11 +227,11 @@ public class AlgorithmView extends JFrame {
 	private void modifySeclection(String filename) {
 		String fileRoi = filename.replace("_pred.tiff", ".zip");
 
-		String nd2Path = RoiFuntions.getNd2FilePathFromTempralTiff(filename);
+		String originalPath = RoiFuntions.getoriginalFilePathFromTempralTiff(filename);
 
 		ij.WindowManager.closeAllWindows();
 
-		RoiFuntions.showNd2FilePlusRoi(nd2Path, fileRoi);
+		RoiFuntions.showOriginalFilePlusRoi(originalPath, fileRoi);
 		
 	}
 
