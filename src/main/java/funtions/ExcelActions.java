@@ -1,6 +1,7 @@
 package funtions;
 
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -58,8 +59,8 @@ public class ExcelActions {
 		FileOutputStream fileOut;
 		try {
 			String filename = this.dir + "results.xls";
-			if(dir.endsWith("temporal\\")) {
-				filename=this.dir + sheet.getRow(1).getCell(0).getStringCellValue()+"results.xls";
+			if(dir.endsWith("temporal"+File.separator)) {
+				filename=this.dir + sheet.getRow(1).getCell(0).getStringCellValue()+"_results.xls";
 			}
 			fileOut = new FileOutputStream(filename);
 			workbook.write(fileOut);

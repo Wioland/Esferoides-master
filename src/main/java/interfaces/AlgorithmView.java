@@ -98,10 +98,11 @@ public class AlgorithmView extends JFrame {
 		this.image=image;
 		this.directory = dir;
 		OurProgressBar pb = new OurProgressBar(this);
-
+		//directory=dir+"temporal"+File.separator;
+		
 		String path = RoiFuntions.getNd2FilePathFromPredictions(this.image.getAbsolutePath());
 
-		String directory=path.replace(image.getName(), "");
+		
 		List<String> result = new ArrayList<String>();
 		result.add(path);
 		Methods executeMethods= new Methods( directory, result);

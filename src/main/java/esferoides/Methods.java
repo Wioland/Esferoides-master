@@ -108,7 +108,7 @@ public class Methods {
 					rt.deleteRow(i - 1);
 				}
 			}
-
+directory+="temporal"+File.separator;
 			ExcelActions ete = new ExcelActions(rt, directory);
 			ete.convertToExcel();
 
