@@ -22,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
+import funtions.FileFuntions;
 import funtions.ShowTiff;
 
 public class ViewImagesBigger extends JPanel {
@@ -228,6 +229,8 @@ public class ViewImagesBigger extends JPanel {
 
 				ImageIcon i = listImages.get(listImages.indexOf(image));
 				File f = new File(i.getDescription());
+				
+				
 
 				AlgorithmView alg = new AlgorithmView(f, dir);
 

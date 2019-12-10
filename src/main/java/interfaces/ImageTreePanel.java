@@ -168,7 +168,7 @@ public class ImageTreePanel extends JSplitPane {
 
 						if (switchFolder) {
 							JOptionPane.showMessageDialog(this, "Changed the folder to " + dir);
-
+							FileFuntions.addModificationDirectory(dir);
 						}
 
 					}

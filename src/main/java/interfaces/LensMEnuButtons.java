@@ -20,11 +20,11 @@ public class LensMEnuButtons extends JPanel {
 	private int maximunSize = 900;
 	private int minimunSize = 400;
 	private int subtractAddSize = 200;
-	private Map<JButton, ImageIcon> listImagesPrev;
+	private Map<String, JButton> listImagesPrev;
 	private JButton pluSizeBu;
 	private JButton minSizeBu;
 
-	public LensMEnuButtons(Map<JButton, ImageIcon> listImagesPrev) {
+	public LensMEnuButtons(Map<String, JButton> listImagesPrev) {
 
 		minSizeIma = false;
 		maxSizeIma = false;
@@ -76,8 +76,10 @@ public class LensMEnuButtons extends JPanel {
 
 		if ((!minSizeIma && typeAction.equals("minus")) || (subtract == -subtractAddSize)) {
 
-			for (JButton bu : listImagesPrev.keySet()) {
-				ImageIcon iconoEscala = new ImageIcon(listImagesPrev.get(bu).getImage()
+			for (String path : listImagesPrev.keySet()) {
+				JButton bu=listImagesPrev.get(path);
+				ImageIcon iaux=new ImageIcon(bu.getName());
+				ImageIcon iconoEscala = new ImageIcon(iaux.getImage()
 						.getScaledInstance(widthSize - subtract, heightSize - subtract, java.awt.Image.SCALE_DEFAULT));
 				bu.setIcon(iconoEscala);
 				bu.repaint();

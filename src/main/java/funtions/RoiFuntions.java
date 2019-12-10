@@ -93,6 +93,15 @@ public class RoiFuntions {
 	public static String getOriginalFilePathFromPredictions(String tiffPredictionsPath) {
 		String path = tiffPredictionsPath.replace("_pred.tiff", ".nd2");
 		path = path.replace(File.separator + "predictions", "");
+		File faux= new File(path);
+		
+		if(!faux.exists()) {
+			path = path.replace("nd2", "fluo.tif");
+			faux= new File(path);
+			if(!faux.exists()) {
+				path = path.replace("fluo.tif", "tif");
+			}
+		}
 		
 		return path;
 	}

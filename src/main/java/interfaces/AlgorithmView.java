@@ -113,7 +113,7 @@ public class AlgorithmView extends JFrame {
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 
 		ShowImages panelImage = new ShowImages(dir + "temporal", this);
-		imageIcoList=new ArrayList(panelImage.getListImagesPrev().values());
+		imageIcoList=panelImage.getImageIcon();
 		panelImage.setAutoscrolls(true);
 
 		JButton saveImageBt = new JButton();

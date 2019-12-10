@@ -29,8 +29,10 @@ public class ShowImages extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private List<String> listImages;
-	private Map<JButton, ImageIcon> listImagesPrev;
+	private Map<String, JButton> listImagesPrev;
+	private Map<String, Long> lastModifyImage;
 	private String dir;
+	private List<ImageIcon> imageIcon ;
 
 	/*
 	 * Mostrar las imagenes tiff como botones
@@ -40,29 +42,43 @@ public class ShowImages extends JPanel {
 		this.setLayout(new GridLayout(0, 1));
 
 		listImages = new ArrayList<String>();
-		listImagesPrev = new HashMap<JButton, ImageIcon>();
+		listImagesPrev = new HashMap<String, JButton>();
+		lastModifyImage = new HashMap<String, Long>();
 
 		File folder = new File(dir);
 		createImageButton(folder, tp);
 
 	}
-	
-	
-	public Map<JButton, ImageIcon> getListImagesPrev() {
+
+	public List<ImageIcon> getImageIcon() {
+		return imageIcon;
+	}
+
+	public void setImageIcon(List<ImageIcon> imageIcon) {
+		this.imageIcon = imageIcon;
+	}
+
+	public Map<String, Long> getLastModifyImage() {
+		return lastModifyImage;
+	}
+
+	public void setLastModifyImage(Map<String, Long> lastModifyImage) {
+		this.lastModifyImage = lastModifyImage;
+	}
+
+	public Map<String, JButton> getListImagesPrev() {
 		return listImagesPrev;
 	}
 
-
-
-	public void setListImagesPrev(Map<JButton, ImageIcon> listImagesPrev) {
+	public void setListImagesPrev(Map<String, JButton> listImagesPrev) {
 		this.listImagesPrev = listImagesPrev;
 	}
-
 
 	public void createImageButton(File folder, Component tp) {
 
 		Utils.search(".*\\.tiff", folder, listImages);
 		Collections.sort(listImages);
+		imageIcon = new ArrayList<ImageIcon>();
 
 		for (String name : listImages) {
 			// convertir a formato que se pueda ver
@@ -76,6 +92,9 @@ public class ShowImages extends JPanel {
 			JButton imageView = new JButton(iconoEscala);
 			imageView.setIcon(iconoEscala);
 			imageView.setName(name);
+			
+			imageIcon.add(image);
+			
 
 			imageView.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
@@ -86,8 +105,8 @@ public class ShowImages extends JPanel {
 						tap = (TabPanel) tp;
 						String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
 						if (tap != null && tap.indexOfTab(nombreTab) == -1) {
-							ViewImagesBigger viewImageBig = new ViewImagesBigger(image,
-									new ArrayList(listImagesPrev.values()),tap);
+
+							ViewImagesBigger viewImageBig = new ViewImagesBigger(image, imageIcon, tap);
 
 						}
 					} else {
@@ -100,7 +119,10 @@ public class ShowImages extends JPanel {
 				}
 			});
 
-			listImagesPrev.put(imageView, image);
+			listImagesPrev.put(name, imageView);
+
+			File faux = new File(name);
+			lastModifyImage.put(name, faux.lastModified());
 
 			this.add(imageView);
 		}
