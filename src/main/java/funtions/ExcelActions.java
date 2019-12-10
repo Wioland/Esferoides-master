@@ -117,7 +117,7 @@ public class ExcelActions {
 		 */
 
 		int indexComponent = tp.getSelectedIndex();
-		if (indexTab == -1) {
+		if (indexTab != -1) {
 			indexComponent = indexTab;
 		}
 		File excel = tp.getIndexTabExcel().get(indexComponent);

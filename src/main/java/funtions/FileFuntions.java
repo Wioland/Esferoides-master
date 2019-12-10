@@ -1,7 +1,10 @@
 package funtions;
 
+import java.awt.Container;
 import java.awt.Image;
 import java.awt.ScrollPane;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,7 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -21,6 +26,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JViewport;
 import javax.swing.tree.TreePath;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -30,8 +36,10 @@ import org.apache.poi.ss.usermodel.Row;
 
 import esferoides.EsferoideJ_;
 import ij.ImageJ;
+import interfaces.AlgorithmView;
 import interfaces.ShowImages;
 import interfaces.TabPanel;
+import interfaces.ViewImagesBigger;
 import task.ExcelTask;
 import task.ImagesTask;
 
@@ -219,14 +227,14 @@ public class FileFuntions {
 		if (directoryLastChange == null) {
 			directoryLastChange = new HashMap<String, Long>();
 		}
-		File faux = new File(directory);
-		directoryLastChange.put(directory, faux.lastModified());
+		File faux = new File(directory + "predictions");
+		directoryLastChange.put(directory + "predictions", faux.lastModified());
 
 	}
 
 	public static boolean directoryHasChange(String directory) {
-		File direFile = new File(directory);
-		return direFile.lastModified() != directoryLastChange.get(directory);
+		File direFile = new File(directory + "predictions");
+		return direFile.lastModified() != directoryLastChange.get(directory + "predictions");
 	}
 
 	public static void isDirectoryContentModify(String directory, TabPanel tp) {
@@ -238,29 +246,95 @@ public class FileFuntions {
 			// Se pintan de nuevo las imagenes del tab
 			JSplitPane sp = (JSplitPane) tp.getComponent(0);
 			JScrollPane s = (JScrollPane) sp.getBottomComponent();
-			ShowImages images = (ShowImages) s.getComponent(0);
+			JViewport jv = (JViewport) s.getComponent(0);
+			ShowImages images = (ShowImages) jv.getComponent(0);
 
-			for (String imageModify : images.getLastModifyImage().keySet()) {
-				File faux = new File(imageModify);
-				if (faux.lastModified() != images.getLastModifyImage().get(imageModify)) {
+			List<String> actualImages = new ArrayList<String>();
+			Utils.search(".*\\.tiff", new File(directory), actualImages);
+			Collections.sort(actualImages);
+
+			checkStillExist(images, actualImages); // se comprueban si las imagens de los botones siguen existiendo
+
+			if (actualImages.size() != 0) { // si sigue habiendo achivos en los actuales, es decir que no estabn en los
+											// botones se pasa a añadirlos
+				for (String name : actualImages) {
+					// convertir a formato que se pueda ver
+					ImageIcon image = ShowTiff.showTiffToImageIcon(name);
+					image.setDescription(name);
+
+					// aniadir a button
+					// Obtiene un icono en escala con las dimensiones especificadas
+					ImageIcon iconoEscala = new ImageIcon(
+							image.getImage().getScaledInstance(700, 700, java.awt.Image.SCALE_DEFAULT));
+					JButton imageView = new JButton(iconoEscala);
+					imageView.setIcon(iconoEscala);
+					imageView.setName(name);
+
+					images.getImageIcon().add(image);
+
+					imageView.addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent e) {
+
+							TabPanel tap = null;
+
+							String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
+							if (tap != null && tap.indexOfTab(nombreTab) == -1) {
+								ViewImagesBigger viewImageBig = new ViewImagesBigger(image, images.getImageIcon(), tap);
+							}
+
+						}
+					});
+
+					images.getListImagesPrev().put(name, imageView);
+
+					File faux = new File(name);
+					images.getLastModifyImage().put(name, faux.lastModified());
+
+					images.add(imageView);
+				}
+			}
+			images.repaint();
+		}
+	}
+
+	public static void checkStillExist(ShowImages images, List<String> actualImages) {
+		 Iterator<String> imageModify =   images.getLastModifyImage().keySet().iterator();
+		while (imageModify.hasNext()) {
+			
+			String imaPath=imageModify.next();
+			File faux = new File(imaPath);
+
+			if (faux.exists()) { // si sigue existiendo se mire si ha sido modificada
+				if (faux.lastModified() != images.getLastModifyImage().get(imaPath)) {
 
 					JOptionPane.showMessageDialog(null, "The image " + faux.getName() + " has change", "Warning",
 							JOptionPane.WARNING_MESSAGE);
 
-					JButton imageButton = images.getListImagesPrev().get(imageModify);
-					ImageIcon ima = new ImageIcon(imageModify);
+					JButton imageButton = images.getListImagesPrev().get(imaPath);
+					ImageIcon ima = new ImageIcon(imaPath);
 					imageButton.setIcon(ima);
 					imageButton.repaint();
 
-					images.getListImagesPrev().put(imageModify, imageButton);
-					images.getLastModifyImage().put(imageModify, faux.lastModified());
+					images.getListImagesPrev().put(imaPath, imageButton);
+					images.getLastModifyImage().put(imaPath, faux.lastModified());
+					
 				}
+				actualImages.remove(imaPath);
+			} else {// si no existe borrarla del map de imagenes
+
+				JButton deleteImage = images.getListImagesPrev().get(imaPath);
+				images.remove(deleteImage);
+
+				imageModify.remove();
+				imageModify.remove();
+
 			}
+
 		}
 	}
-	
+
 	public static void imagescheckWithTime(TabPanel tp, int secons) {
-		ImagesTask imatask= new ImagesTask(tp);
+		ImagesTask imatask = new ImagesTask(tp);
 		Timer temporizador = new Timer();
 
 		temporizador.scheduleAtFixedRate(imatask, 0, 1000 * secons);
