@@ -40,7 +40,7 @@ public class DetectEsferoidMethods {
 		impNoFluo.close();
 		try {
 			String nameClass="FluoColageno";
-			Utils.showResultsAndSave(dir, imp, rm, goodRows,nameClass, temp);
+			Utils.showResultsAndSave(dir,name, imp, rm, goodRows,nameClass, temp);
 			imp.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -65,7 +65,7 @@ public class DetectEsferoidMethods {
 
 		try {
 			String nameClass="FluoSuspension";
-			Utils.showResultsAndSave(dir, impNoFluo, rm, goodRows,nameClass, temp);
+			Utils.showResultsAndSave(dir,name, impNoFluo, rm, goodRows,nameClass, temp);
 			impNoFluo.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -96,7 +96,7 @@ public class DetectEsferoidMethods {
 
 		try {
 			String nameClass="Hectorv2";
-			Utils.showResultsAndSave(dir, imp, rm, goodRows,nameClass, temp);
+			Utils.showResultsAndSave(dir,name, imp, rm, goodRows,nameClass, temp);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -165,7 +165,7 @@ public class DetectEsferoidMethods {
 
 		try {
 			String nameClass="Hectorv1";
-			Utils.showResultsAndSave(dir, imp, rm, goodRows,nameClass, temp);
+			Utils.showResultsAndSave(dir,name, imp, rm, goodRows,nameClass, temp);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -205,7 +205,7 @@ public class DetectEsferoidMethods {
 			}
 
 			String nameClass="Teodora";
-			Utils.showResultsAndSave(dir, imp, rm, goodRows,nameClass, temp);
+			Utils.showResultsAndSave(dir,name, imp, rm, goodRows,nameClass, temp);
 			imp.close();
 		} catch (FormatException | IOException e) {
 			// TODO Auto-generated catch block

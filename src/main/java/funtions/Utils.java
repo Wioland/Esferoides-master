@@ -43,14 +43,14 @@ public class Utils {
 		// image in a given directory. Since we know that there is only one esferoide
 		// per image, we
 		// only keep the ROI with the biggest area stored in the ROI Manager.
-		public static void showResultsAndSave(String dir, ImagePlus imp1, RoiManager rm, ArrayList<Integer> goodRows, String nameClass, boolean temp)
+		public static void showResultsAndSave(String dir, String name, ImagePlus imp1, RoiManager rm, ArrayList<Integer> goodRows, String nameClass, boolean temp)
 				throws IOException {
 			IJ.run(imp1, "RGB Color", "");
 			File folder;
 			
-			String name = imp1.getTitle();
+			//String name = imp1.getTitle();
 			// FileInfo f = imp1.getFileInfo();
-			dir=dir.replace(name, "");
+			//dir=dir.replace(name, "");
 			name = name.substring(0, name.indexOf("."));
 			folder = new File(dir +  "predictions");
 			
@@ -72,22 +72,6 @@ public class Utils {
 				keepBiggestROI(rm);
 				rm.runCommand("Show None");
 				rm.runCommand("Show All");
-//				boolean smooth = false;
-//				if (smooth) {
-//					ImagePlus impN = IJ.createImage("Untitled", "16-bit white", imp1.getWidth(), imp1.getHeight(), 1);
-//					rm.select(0);
-//					rm.runCommand(impN, "Fill");
-//					rm.runCommand("Delete");
-//					IJ.setAutoThreshold(impN, "Default");
-//					IJ.run(impN, "Convert to Mask", "");
-//					IJ.run(impN, "Shape Smoothing",
-//							"relative_proportion_fds=5 absolute_number_fds=2 keep=[Relative_proportion of FDs]");
-//					IJ.run(impN, "Analyze Particles...", "exclude add");
-//					impN.close();
-//					rm = RoiManager.getInstance();
-//					rm.runCommand("Show None");
-//					rm.runCommand("Show All");
-//				}
 
 				Roi[] roi = rm.getRoisAsArray();
 
