@@ -96,10 +96,10 @@ public class RoiFuntions {
 		File faux= new File(path);
 		
 		if(!faux.exists()) {
-			path = path.replace("nd2", "fluo.tif");
+			path = path.replace(".nd2", "fluo.tif");
 			faux= new File(path);
 			if(!faux.exists()) {
-				path = path.replace("fluo.tif", "tif");
+				path = path.replace("fluo.tif", ".tif");
 			}
 		}
 		

@@ -67,7 +67,10 @@ public class Methods {
 		for (String name : result) {
 			faux = new File(name);
 			nameNoextension=FileFuntions.namewithoutExtension(name);
-			faux = new File(faux.getAbsolutePath().replace(nameNoextension, nameNoextension + "fluo"));
+			if(!nameNoextension.endsWith("fluo")) {
+				faux = new File(faux.getAbsolutePath().replace(nameNoextension, nameNoextension + "fluo"));
+			}
+			
 
 			if (!faux.exists()) {
 				JOptionPane.showMessageDialog(null,
@@ -83,6 +86,18 @@ public class Methods {
 
 	private void createImagesMetods(List<String> result, String directory, String type) {
 		try {
+			
+			
+			if (type.contains("Hector")){
+				for (String name : result) {
+					if(name.endsWith("fluo.tif")) {
+						name.replace("fluo.tif", ".tif");
+					}
+				}
+			}
+			
+			
+			
 			// We initialize the ResultsTable
 			ResultsTable rt = new ResultsTable();
 			ImporterOptions options = new ImporterOptions();

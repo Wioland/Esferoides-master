@@ -52,6 +52,7 @@ public class Utils {
 			// FileInfo f = imp1.getFileInfo();
 			//dir=dir.replace(name, "");
 			name = name.substring(0, name.indexOf("."));
+			name=name.replace(dir, "");
 			folder = new File(dir +  "predictions");
 			
 			if (!temp && !folder.exists()) {

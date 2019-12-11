@@ -9,6 +9,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import funtions.ShowTiff;
+
 public class LensMEnuButtons extends JPanel {
 
 	/**
@@ -64,8 +66,8 @@ public class LensMEnuButtons extends JPanel {
 
 	public void action(ActionEvent e, String typeAction) {
 
-		int heightSize = ((JButton) listImagesPrev.keySet().toArray()[0]).getIcon().getIconHeight();
-		int widthSize = ((JButton) listImagesPrev.keySet().toArray()[0]).getIcon().getIconWidth();
+		int heightSize = ((JButton) listImagesPrev.values().toArray()[0]).getIcon().getIconHeight();
+		int widthSize = ((JButton) listImagesPrev.values().toArray()[0]).getIcon().getIconWidth();
 		int subtract = subtractAddSize;
 
 		if (typeAction.equals("plus")) {
@@ -78,15 +80,15 @@ public class LensMEnuButtons extends JPanel {
 
 			for (String path : listImagesPrev.keySet()) {
 				JButton bu=listImagesPrev.get(path);
-				ImageIcon iaux=new ImageIcon(bu.getName());
+				ImageIcon iaux = ShowTiff.showTiffToImageIcon(bu.getName());
 				ImageIcon iconoEscala = new ImageIcon(iaux.getImage()
 						.getScaledInstance(widthSize - subtract, heightSize - subtract, java.awt.Image.SCALE_DEFAULT));
 				bu.setIcon(iconoEscala);
 				bu.repaint();
 
 			}
-			heightSize = ((JButton) listImagesPrev.keySet().toArray()[0]).getIcon().getIconHeight();
-			widthSize = ((JButton) listImagesPrev.keySet().toArray()[0]).getIcon().getIconWidth();
+			heightSize = ((JButton) listImagesPrev.values().toArray()[0]).getIcon().getIconHeight();
+			widthSize = ((JButton) listImagesPrev.values().toArray()[0]).getIcon().getIconWidth();
 
 			if (heightSize < minimunSize) {
 				minSizeIma = true;

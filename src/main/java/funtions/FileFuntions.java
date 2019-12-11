@@ -55,7 +55,7 @@ public class FileFuntions {
 		System.setProperty("plugins.dir", pluginsDir);
 
 		ImageJ imageJFrame = new ImageJ();
-		imageJFrame.setVisible(false);
+		//imageJFrame.setVisible(false);
 
 	}
 
