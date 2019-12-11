@@ -326,7 +326,7 @@ public class FileFuntions {
 				images.remove(deleteImage);
 
 				imageModify.remove();
-				imageModify.remove();
+				
 
 			}
 

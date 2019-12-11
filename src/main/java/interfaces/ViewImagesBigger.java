@@ -1,6 +1,7 @@
 package interfaces;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -21,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import funtions.FileFuntions;
 import funtions.ShowTiff;
@@ -175,19 +177,13 @@ public class ViewImagesBigger extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int prevImaIndex = indexImagenList;
+			
 				indexImagenList--;
 				if (indexImagenList < 0) {
 					indexImagenList = listImages.size() - 1;
 				}
 
-				labelImage.setIcon(listImages.get(indexImagenList));
-				image = labelImage.getIcon();
-				if (tp != null) {
-					String nombreImagen = (new File(listImages.get(prevImaIndex).getDescription())).getName();
-					tp.setTitleAt(tp.indexOfTab(indexImageView + nombreImagen),
-							listImages.get(indexImagenList).getDescription());
-				}
+				changetTabTitle( tp);
 
 			}
 		});
@@ -196,26 +192,34 @@ public class ViewImagesBigger extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int prevImaIndex = indexImagenList;
+		
 				indexImagenList++;
 				if (indexImagenList > listImages.size() - 1) {
 					indexImagenList = 0;
 				}
 
-				labelImage.setIcon(listImages.get(indexImagenList));
-				image = labelImage.getIcon();
-				if (tp != null) {
-					String nombreImagen = (new File(listImages.get(prevImaIndex).getDescription())).getName();
-					int indexTab = tp.indexOfTab(indexImageView + nombreImagen);
-					String title = indexImageView
-							+ (new File(listImages.get(indexImagenList).getDescription()).getName());
-					tp.setTitleAt(indexTab, title);
-					// lblTitle.settext(title);
-					tp.repaint();
-				}
+				changetTabTitle( tp);
 
 			}
 		});
+	}
+	
+	
+	public void changetTabTitle(TabPanel tp) {
+		labelImage.setIcon(listImages.get(indexImagenList));
+		image = labelImage.getIcon();
+		if (tp != null) {
+			int indexTab = tp.getSelectedIndex();
+			String title = indexImageView
+					+ (new File(listImages.get(indexImagenList).getDescription()).getName());
+			tp.setTitleAt(indexTab, title);
+			tp.repaint();
+			
+			JPanel Xpane=(JPanel)tp.getTabComponentAt(indexTab);
+			JLabel nameXpane=(JLabel) Xpane.getComponent(0);
+			nameXpane.setText(title);
+			Xpane.repaint();
+		}
 	}
 
 	private void addlistenerButton(JButton backBu, JButton forwardBu, JButton tryAlgoriBu) {
