@@ -93,7 +93,7 @@ public class EsferoideJ_ implements Command {
 
 			pb.setVisible(false);
 			pb.dispose();
-			IJ.showMessage("Process finished");
+			//IJ.showMessage("Process finished");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

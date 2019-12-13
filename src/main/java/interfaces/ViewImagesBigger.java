@@ -114,14 +114,11 @@ public class ViewImagesBigger extends JPanel {
 		constraints.gridx = 0;
 		constraints.gridy = 0;
 
-		this.add(scrollIma, constraints);
-		constraints.weightx = 0;
-		constraints.weighty = 0;
-		constraints.gridx = 0;
-		constraints.gridy = 1;
-		this.add(panelButtons, constraints);
-
 		if (this.tp != null) {
+			
+
+			this.add(scrollIma, constraints);
+			
 			tryAlgoriBu.setText("Try other algorithm");
 
 			addlistenerButton(backBu, forwardBu, tryAlgoriBu);
@@ -169,18 +166,28 @@ public class ViewImagesBigger extends JPanel {
 			originalImaLb.setIcon(ico);
 			originalImaLb.setVisible(true);
 
-			splitPa.setLeftComponent(originalImaLb);
-			splitPa.setRightComponent(labelImage);
-			JScrollPane scroll = new JScrollPane(splitPa);
-			this.remove(scrollIma);
-			this.add(scroll);
+			splitPa.setLeftComponent( new JScrollPane(originalImaLb));
+			splitPa.setRightComponent(new JScrollPane(labelImage));
+			
+			
+			//JScrollPane scroll = new JScrollPane(splitPa);
+			splitPa.setVisible(true);
+			this.add(splitPa, constraints);
+			splitPa.setDividerLocation(500);
+			this.repaint();
 
 			addlistenerButton(backBu, forwardBu);
 		}
 
 //		jSp.setVisible(true);
 //		add(jSp);
-
+		
+		constraints.weightx = 0;
+		constraints.weighty = 0;
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		this.add(panelButtons, constraints);
+		
 		this.setVisible(true);
 
 	}

@@ -108,7 +108,7 @@ public class Methods {
 
 			EsferoidProcessor esferoidProcessor = EsferoidProcessorFactory.createEsferoidProcessor(type);
 
-			OurProgressBar pb = new OurProgressBar(null);
+			//OurProgressBar pb = new OurProgressBar(null);
 			goodRows = new ArrayList<>();
 			// For each file in the folder we detect the esferoid on it.
 			for (String name : result) {
@@ -130,9 +130,9 @@ public class Methods {
 
 			rt.reset();
 
-			pb.setVisible(false);
-			pb.dispose();
-			IJ.showMessage("Process finished");
+			//pb.setVisible(false);
+			//pb.dispose();
+			//IJ.showMessage("Process finished");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

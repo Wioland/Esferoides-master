@@ -43,8 +43,6 @@ public class AlgorithmView extends JFrame {
 	private String directory;
 	private File image;
 
-	
-
 	public AlgorithmView(File image, String dir) {
 		// Parametros ventana
 
@@ -102,25 +100,21 @@ public class AlgorithmView extends JFrame {
 			}
 		});
 
-		this.image=image;
+		this.image = image;
 		this.directory = dir;
 		OurProgressBar pb = new OurProgressBar(this);
-		//directory=dir+"temporal"+File.separator;
-		
+		// directory=dir+"temporal"+File.separator;
+
 		String path = RoiFuntions.getOriginalFilePathFromPredictions(this.image.getAbsolutePath());
 
-		
 		List<String> result = new ArrayList<String>();
 		result.add(path);
-		Methods executeMethods= new Methods( directory, result);
-
-	
-		
+		Methods executeMethods = new Methods(directory, result);
 
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 
 		ShowImages panelImage = new ShowImages(dir + "temporal", this);
-		imageIcoList=panelImage.getImageIcon();
+		imageIcoList = panelImage.getImageIcon();
 		panelImage.setAutoscrolls(true);
 
 		JButton saveImageBt = new JButton();
@@ -150,7 +144,7 @@ public class AlgorithmView extends JFrame {
 		constraints.gridx = 1;
 		constraints.gridy = 0;
 		jSp.add(panelButtons, constraints);
-	
+
 		// jSp.setDividerLocation(1100 + jSp.getInsets().left);
 
 		// aniadimos las componentes al jframe
@@ -158,10 +152,11 @@ public class AlgorithmView extends JFrame {
 		pb.dispose();
 		jSp.setVisible(true);
 		getContentPane().add(jSp);
-
-		pack();
+		jSp.repaint();
+		//pack();
 
 	}
+
 	public String getDirectory() {
 		return directory;
 	}
@@ -177,6 +172,7 @@ public class AlgorithmView extends JFrame {
 	public void setImage(File image) {
 		this.image = image;
 	}
+
 	public void mouseClick(MouseEvent me, ImageIcon imageIcon) {
 		if (!me.isConsumed()) {
 			switch (me.getClickCount()) {
@@ -186,18 +182,33 @@ public class AlgorithmView extends JFrame {
 				break;
 			case 2:
 				me.consume();
-				
-				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList,this );
+
+				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList, this);
 				JPanel JPaneDad = (JPanel) selectedBu.getParent().getParent().getParent().getParent();
-				JSplitPane JSplitPaneViewBiger= new JSplitPane(VERTICAL_SPLIT);
-				
-				JScrollPane scrollIma=(JScrollPane) JPaneDad.getComponentAt(1, 0);
+				JSplitPane JSplitPaneViewBiger = new JSplitPane(VERTICAL_SPLIT);
+
+				JScrollPane scrollIma = (JScrollPane) JPaneDad.getComponentAt(1, 0);
 				JSplitPaneViewBiger.setBottomComponent(scrollIma);
 				JSplitPaneViewBiger.setTopComponent(vi);
 				
+				JSplitPaneViewBiger.setVisible(true);
 				
-				JPaneDad.repaint();;
 				
+				GridBagConstraints constraints = new GridBagConstraints();
+				constraints.fill = GridBagConstraints.BOTH;
+
+				constraints.weightx = 1;
+				constraints.weighty = 1;
+
+				constraints.gridx = 0;
+				constraints.gridy = 0;
+				
+				JPaneDad.remove(scrollIma);
+				JPaneDad.add(JSplitPaneViewBiger, constraints);
+				JSplitPaneViewBiger.setDividerLocation(500);
+				JPaneDad.repaint();
+				JSplitPaneViewBiger.repaint();
+
 				break;
 
 			default:
@@ -244,8 +255,8 @@ public class AlgorithmView extends JFrame {
 	private void SaveImageAndDelete(String filePath) {
 		File ima = new File(filePath);
 		FileFuntions.saveSelectedImage(ima, this.directory + "predictions");
-		//FileFuntions.deleteTemporalFolder(new File(this.directory + "temporal"));
-		//this.dispose();
+		// FileFuntions.deleteTemporalFolder(new File(this.directory + "temporal"));
+		// this.dispose();
 	}
 
 	private void modifySeclection(String filename) {
@@ -256,7 +267,7 @@ public class AlgorithmView extends JFrame {
 		ij.WindowManager.closeAllWindows();
 
 		RoiFuntions.showOriginalFilePlusRoi(originalPath, fileRoi);
-		
+
 	}
 
 }
