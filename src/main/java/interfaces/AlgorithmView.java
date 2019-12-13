@@ -1,7 +1,13 @@
 package interfaces;
 
+import static javax.swing.JSplitPane.VERTICAL_SPLIT;
+
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -20,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
+import edu.mines.jtk.mosaic.GridView.Horizontal;
 import esferoides.Methods;
 import funtions.FileFuntions;
 import funtions.RoiFuntions;
@@ -127,11 +134,23 @@ public class AlgorithmView extends JFrame {
 		panelButtons.add(saveImageBt);
 		panelButtons.add(modifySelectionBu);
 		JScrollPane s = new JScrollPane(panelImage);
-		JSplitPane jSp = new JSplitPane();
+		JPanel jSp = new JPanel(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
 
-		jSp.setOrientation(SwingConstants.VERTICAL);
-		jSp.setLeftComponent(s);
-		jSp.setRightComponent(panelButtons);
+		constraints.weightx = 1;
+		constraints.weighty = 1;
+
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+
+		jSp.add(s, constraints);
+		constraints.weightx = 0;
+		constraints.weighty = 0;
+		constraints.gridx = 1;
+		constraints.gridy = 0;
+		jSp.add(panelButtons, constraints);
+	
 		// jSp.setDividerLocation(1100 + jSp.getInsets().left);
 
 		// aniadimos las componentes al jframe
@@ -169,10 +188,15 @@ public class AlgorithmView extends JFrame {
 				me.consume();
 				
 				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList,this );
-				JFrame frame= new JFrame("Image comparator");
-				frame.getContentPane().add(vi);
-				frame.setExtendedState(MAXIMIZED_BOTH);
-				frame.show();
+				JPanel JPaneDad = (JPanel) selectedBu.getParent().getParent().getParent().getParent();
+				JSplitPane JSplitPaneViewBiger= new JSplitPane(VERTICAL_SPLIT);
+				
+				JScrollPane scrollIma=(JScrollPane) JPaneDad.getComponentAt(1, 0);
+				JSplitPaneViewBiger.setBottomComponent(scrollIma);
+				JSplitPaneViewBiger.setTopComponent(vi);
+				
+				
+				JPaneDad.repaint();;
 				
 				break;
 

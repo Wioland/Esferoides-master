@@ -1,11 +1,15 @@
 package interfaces;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -46,7 +50,7 @@ public class ViewImagesBigger extends JPanel {
 
 		// setMinimumSize(new Dimension(1000, 800));
 
-		JSplitPane jSp = new JSplitPane();
+		// JSplitPane jSp = new JSplitPane();
 		// JScrollPane s = new JScrollPane(jSp);
 
 		this.listImages = listImages;
@@ -82,6 +86,7 @@ public class ViewImagesBigger extends JPanel {
 		}
 
 		// contenedor de botones y puesta en orden de estos
+
 		JPanel panelButtons = new JPanel();
 
 //		panelButtons.setMaximumSize(new Dimension(200, 200));
@@ -90,17 +95,31 @@ public class ViewImagesBigger extends JPanel {
 
 		panelButtons.add(backBu);
 		panelButtons.add(forwardBu);
-		
-		jSp.setOrientation(SwingConstants.HORIZONTAL);
-		JScrollPane scrollIma = new JScrollPane(labelImage);
-		
-		jSp.setTopComponent(scrollIma);
-		jSp.setBottomComponent(panelButtons);
 
-		jSp.setDividerLocation(800);
-		
-	
-		
+//		jSp.setOrientation(SwingConstants.HORIZONTAL);
+		JScrollPane scrollIma = new JScrollPane(labelImage);
+
+//		jSp.setTopComponent(scrollIma);
+//		jSp.setBottomComponent(panelButtons);
+//
+//		jSp.setDividerLocation(800);
+
+		setLayout(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+
+		constraints.weightx = 1;
+		constraints.weighty = 1;
+
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+
+		this.add(scrollIma, constraints);
+		constraints.weightx = 0;
+		constraints.weighty = 0;
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		this.add(panelButtons, constraints);
 
 		if (this.tp != null) {
 			tryAlgoriBu.setText("Try other algorithm");
@@ -152,14 +171,16 @@ public class ViewImagesBigger extends JPanel {
 
 			splitPa.setLeftComponent(originalImaLb);
 			splitPa.setRightComponent(labelImage);
-			JScrollPane scroll= new JScrollPane(splitPa);
-			jSp.setTopComponent(scroll);
-		
+			JScrollPane scroll = new JScrollPane(splitPa);
+			this.remove(scrollIma);
+			this.add(scroll);
+
 			addlistenerButton(backBu, forwardBu);
 		}
 
-		jSp.setVisible(true);
-		add(jSp);
+//		jSp.setVisible(true);
+//		add(jSp);
+
 		this.setVisible(true);
 
 	}
@@ -177,13 +198,13 @@ public class ViewImagesBigger extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-			
+
 				indexImagenList--;
 				if (indexImagenList < 0) {
 					indexImagenList = listImages.size() - 1;
 				}
 
-				changetTabTitle( tp);
+				changetTabTitle(tp);
 
 			}
 		});
@@ -192,31 +213,29 @@ public class ViewImagesBigger extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-		
+
 				indexImagenList++;
 				if (indexImagenList > listImages.size() - 1) {
 					indexImagenList = 0;
 				}
 
-				changetTabTitle( tp);
+				changetTabTitle(tp);
 
 			}
 		});
 	}
-	
-	
+
 	public void changetTabTitle(TabPanel tp) {
 		labelImage.setIcon(listImages.get(indexImagenList));
 		image = labelImage.getIcon();
 		if (tp != null) {
 			int indexTab = tp.getSelectedIndex();
-			String title = indexImageView
-					+ (new File(listImages.get(indexImagenList).getDescription()).getName());
+			String title = indexImageView + (new File(listImages.get(indexImagenList).getDescription()).getName());
 			tp.setTitleAt(indexTab, title);
 			tp.repaint();
-			
-			JPanel Xpane=(JPanel)tp.getTabComponentAt(indexTab);
-			JLabel nameXpane=(JLabel) Xpane.getComponent(0);
+
+			JPanel Xpane = (JPanel) tp.getTabComponentAt(indexTab);
+			JLabel nameXpane = (JLabel) Xpane.getComponent(0);
 			nameXpane.setText(title);
 			Xpane.repaint();
 		}
@@ -233,8 +252,6 @@ public class ViewImagesBigger extends JPanel {
 
 				ImageIcon i = listImages.get(listImages.indexOf(image));
 				File f = new File(i.getDescription());
-				
-				
 
 				AlgorithmView alg = new AlgorithmView(f, dir);
 

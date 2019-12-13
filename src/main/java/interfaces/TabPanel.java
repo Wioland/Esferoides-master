@@ -1,19 +1,15 @@
 package interfaces;
 
-import java.awt.Component;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -25,8 +21,6 @@ import javax.swing.event.ChangeListener;
 import funtions.ExcelActions;
 import funtions.FileFuntions;
 import funtions.Utils;
-import task.ExcelTask;
-import task.ImagesTask;
 
 public class TabPanel extends JTabbedPane {
 
@@ -74,12 +68,22 @@ public class TabPanel extends JTabbedPane {
 				}
 			}
 		} else {
-			JSplitPane splitPane = new JSplitPane(HORIZONTAL);
+			JPanel splitPane = new JPanel(new GridBagLayout()) ;
 			LensMEnuButtons lens = new LensMEnuButtons(images.getListImagesPrev());
 			JScrollPane s = new JScrollPane(images);
+			GridBagConstraints constraints = new GridBagConstraints();
+			constraints.fill = GridBagConstraints.BOTH;
 
-			splitPane.setTopComponent(lens);
-			splitPane.setBottomComponent(s);
+			constraints.gridx = 0;
+			constraints.gridy = 0;
+			
+			splitPane.add(lens,constraints);
+			
+			constraints.weightx = 1;
+			constraints.weighty = 1;
+			constraints.gridx = 0;
+			constraints.gridy = 1;
+			splitPane.add(s,constraints);
 
 			addTab("Images", splitPane);
 			
@@ -171,7 +175,10 @@ public class TabPanel extends JTabbedPane {
 			if (tabName.equals("Excel")) { // igual hay que cambiarlo por el nombre
 				insertTab(tabName, null, s, null, 1);
 				excelModificationIndexTab.put(this.indexOfTab(tabName), 0L);
-				ExcelActions.excelcheckWithTime(this, dir, this.indexOfComponent(s), 60); 
+				
+				int index= indexOfComponent(s);
+				
+				ExcelActions.excelcheckWithTime(this, dir, index, 60); 
 			} else {
 				addTab(tabName, s);
 			}

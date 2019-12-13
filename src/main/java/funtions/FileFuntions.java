@@ -1,8 +1,5 @@
 package funtions;
 
-import java.awt.Container;
-import java.awt.Image;
-import java.awt.ScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -22,7 +19,6 @@ import java.util.Timer;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -32,20 +28,18 @@ import javax.swing.tree.TreePath;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Row;
 
 import esferoides.EsferoideJ_;
 import ij.ImageJ;
-import interfaces.AlgorithmView;
 import interfaces.ShowImages;
 import interfaces.TabPanel;
 import interfaces.ViewImagesBigger;
-import task.ExcelTask;
 import task.ImagesTask;
 
 public class FileFuntions {
 
 	private static Map<String, Long> directoryLastChange;
+	
 
 	public static void chargePlugins() {
 		Class<?> clazz = EsferoideJ_.class;
@@ -56,7 +50,8 @@ public class FileFuntions {
 
 		ImageJ imageJFrame = new ImageJ();
 		//imageJFrame.setVisible(false);
-
+		
+		
 	}
 
 	public static String getPathSelectedTreeFile(TreePath tp) {

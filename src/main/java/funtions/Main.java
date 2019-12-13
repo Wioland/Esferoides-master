@@ -2,6 +2,7 @@ package funtions;
 
 import javax.swing.JOptionPane;
 
+import ij.IJ;
 import ij.io.DirectoryChooser;
 import interfaces.GeneralView;
 import interfaces.ImageTreePanel;
@@ -37,7 +38,7 @@ public class Main {
 	public static void createGeneralViewOrNot(ImageTreePanel folderView, String dc) {
 		if (folderView == null) { // si no se estaba ya en un GeneralView se crea uno nuevo
 			GeneralView ventana = new GeneralView(dc);
-		} else { 
+		} else {
 			folderView.repaintTabPanel();
 
 		}
@@ -48,14 +49,10 @@ public class Main {
 		FileFuntions.chargePlugins();
 		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the images");
 		callProgram(dc.getDirectory(), null);
+	
+		
 	}
 
-//		CreateListImageAlgori j= new CreateListImageAlgori();
-//		try {
-//			j.iniA(j.getClasses("esferoides"));
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+
 
 }

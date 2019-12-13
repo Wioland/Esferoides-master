@@ -48,7 +48,7 @@ public class EsferoideJ_ implements Command {
 
 			// We first read the list of files
 			List<String> result = esferoidProcessor.getSearchFiles().apply();
-			;
+			
 			String dir = result.get(0);
 			result.remove(0);
 

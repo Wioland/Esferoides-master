@@ -89,9 +89,11 @@ public class Methods {
 			
 			
 			if (type.contains("Hector")){
+				int i=0;
 				for (String name : result) {
 					if(name.endsWith("fluo.tif")) {
-						name.replace("fluo.tif", ".tif");
+						result.set(i, name.replace("fluo.tif", ".tif"));
+						i++;
 					}
 				}
 			}
