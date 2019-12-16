@@ -1,34 +1,21 @@
 package interfaces;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
-import funtions.FileFuntions;
 import funtions.ShowTiff;
 
 public class ViewImagesBigger extends JPanel {
@@ -115,10 +102,9 @@ public class ViewImagesBigger extends JPanel {
 		constraints.gridy = 0;
 
 		if (this.tp != null) {
-			
 
 			this.add(scrollIma, constraints);
-			
+
 			tryAlgoriBu.setText("Try other algorithm");
 
 			addlistenerButton(backBu, forwardBu, tryAlgoriBu);
@@ -166,11 +152,10 @@ public class ViewImagesBigger extends JPanel {
 			originalImaLb.setIcon(ico);
 			originalImaLb.setVisible(true);
 
-			splitPa.setLeftComponent( new JScrollPane(originalImaLb));
+			splitPa.setLeftComponent(new JScrollPane(originalImaLb));
 			splitPa.setRightComponent(new JScrollPane(labelImage));
-			
-			
-			//JScrollPane scroll = new JScrollPane(splitPa);
+
+			// JScrollPane scroll = new JScrollPane(splitPa);
 			splitPa.setVisible(true);
 			this.add(splitPa, constraints);
 			splitPa.setDividerLocation(500);
@@ -181,13 +166,13 @@ public class ViewImagesBigger extends JPanel {
 
 //		jSp.setVisible(true);
 //		add(jSp);
-		
+
 		constraints.weightx = 0;
 		constraints.weighty = 0;
 		constraints.gridx = 0;
 		constraints.gridy = 1;
 		this.add(panelButtons, constraints);
-		
+
 		this.setVisible(true);
 
 	}
@@ -210,8 +195,7 @@ public class ViewImagesBigger extends JPanel {
 				if (indexImagenList < 0) {
 					indexImagenList = listImages.size() - 1;
 				}
-
-				changetTabTitle(tp);
+				moreActionChangeIndexIma();
 
 			}
 		});
@@ -226,15 +210,26 @@ public class ViewImagesBigger extends JPanel {
 					indexImagenList = 0;
 				}
 
-				changetTabTitle(tp);
+				moreActionChangeIndexIma();
 
 			}
 		});
 	}
 
-	public void changetTabTitle(TabPanel tp) {
+	private void moreActionChangeIndexIma() {
 		labelImage.setIcon(listImages.get(indexImagenList));
 		image = labelImage.getIcon();
+
+		if (al != null && tp == null) {
+			al.setSelectedBu(al.getButtonFromImage(listImages.get(indexImagenList).getDescription()));
+
+		} else {
+			changetTabTitle(tp);
+		}
+	}
+
+	public void changetTabTitle(TabPanel tp) {
+
 		if (tp != null) {
 			int indexTab = tp.getSelectedIndex();
 			String title = indexImageView + (new File(listImages.get(indexImagenList).getDescription()).getName());

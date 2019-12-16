@@ -2,12 +2,10 @@ package interfaces;
 
 import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -24,9 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
 
-import edu.mines.jtk.mosaic.GridView.Horizontal;
 import esferoides.Methods;
 import funtions.FileFuntions;
 import funtions.RoiFuntions;
@@ -42,6 +38,7 @@ public class AlgorithmView extends JFrame {
 	private List<ImageIcon> imageIcoList;
 	private String directory;
 	private File image;
+	private ShowImages panelImage;
 
 	public AlgorithmView(File image, String dir) {
 		// Parametros ventana
@@ -113,7 +110,7 @@ public class AlgorithmView extends JFrame {
 
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 
-		ShowImages panelImage = new ShowImages(dir + "temporal", this);
+		panelImage = new ShowImages(dir + "temporal", this);
 		imageIcoList = panelImage.getImageIcon();
 		panelImage.setAutoscrolls(true);
 
@@ -153,7 +150,7 @@ public class AlgorithmView extends JFrame {
 		jSp.setVisible(true);
 		getContentPane().add(jSp);
 		jSp.repaint();
-		//pack();
+		// pack();
 
 	}
 
@@ -173,6 +170,14 @@ public class AlgorithmView extends JFrame {
 		this.image = image;
 	}
 
+	public JButton getSelectedBu() {
+		return selectedBu;
+	}
+
+	public void setSelectedBu(JButton selectedBu) {
+		this.selectedBu = selectedBu;
+	}
+
 	public void mouseClick(MouseEvent me, ImageIcon imageIcon) {
 		if (!me.isConsumed()) {
 			switch (me.getClickCount()) {
@@ -184,30 +189,7 @@ public class AlgorithmView extends JFrame {
 				me.consume();
 
 				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList, this);
-				JPanel JPaneDad = (JPanel) selectedBu.getParent().getParent().getParent().getParent();
-				JSplitPane JSplitPaneViewBiger = new JSplitPane(VERTICAL_SPLIT);
-
-				JScrollPane scrollIma = (JScrollPane) JPaneDad.getComponentAt(1, 0);
-				JSplitPaneViewBiger.setBottomComponent(scrollIma);
-				JSplitPaneViewBiger.setTopComponent(vi);
-				
-				JSplitPaneViewBiger.setVisible(true);
-				
-				
-				GridBagConstraints constraints = new GridBagConstraints();
-				constraints.fill = GridBagConstraints.BOTH;
-
-				constraints.weightx = 1;
-				constraints.weighty = 1;
-
-				constraints.gridx = 0;
-				constraints.gridy = 0;
-				
-				JPaneDad.remove(scrollIma);
-				JPaneDad.add(JSplitPaneViewBiger, constraints);
-				JSplitPaneViewBiger.setDividerLocation(500);
-				JPaneDad.repaint();
-				JSplitPaneViewBiger.repaint();
+				addComparer(vi);
 
 				break;
 
@@ -219,6 +201,44 @@ public class AlgorithmView extends JFrame {
 
 	}
 
+	public void addComparer(ViewImagesBigger vi) {
+		JPanel JPaneDad = (JPanel) selectedBu.getParent().getParent().getParent().getParent();
+		JSplitPane JSplitPaneViewBiger = new JSplitPane(VERTICAL_SPLIT);
+
+		JScrollPane scrollIma = (JScrollPane) JPaneDad.getComponentAt(1, 0);
+		JSplitPaneViewBiger.setBottomComponent(scrollIma);
+		JSplitPaneViewBiger.setTopComponent(vi);
+
+		JSplitPaneViewBiger.setVisible(true);
+
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+
+		constraints.weightx = 1;
+		constraints.weighty = 1;
+
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+
+		JPaneDad.remove(scrollIma);
+		JPaneDad.add(JSplitPaneViewBiger, constraints);
+		JSplitPaneViewBiger.setDividerLocation(500);
+		JPaneDad.updateUI();
+
+	}
+
+	
+	
+	public JButton getButtonFromImage(String imagPath) {
+		
+		return panelImage.getListImagesPrev().get(imagPath);
+		
+	}
+	
+	
+	
+	
+	
 	private void addButtonListener(JButton saveImageBt, JButton modifiSelectionBu, JPanel pIma) {
 
 		saveImageBt.addActionListener(new ActionListener() {

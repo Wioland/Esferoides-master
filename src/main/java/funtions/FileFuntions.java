@@ -20,8 +20,8 @@ import java.util.Timer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JViewport;
 import javax.swing.tree.TreePath;
 
@@ -39,7 +39,6 @@ import task.ImagesTask;
 public class FileFuntions {
 
 	private static Map<String, Long> directoryLastChange;
-	
 
 	public static void chargePlugins() {
 		Class<?> clazz = EsferoideJ_.class;
@@ -50,8 +49,7 @@ public class FileFuntions {
 
 		ImageJ imageJFrame = new ImageJ();
 		imageJFrame.setVisible(false);
-		
-		
+
 	}
 
 	public static String getPathSelectedTreeFile(TreePath tp) {
@@ -239,8 +237,8 @@ public class FileFuntions {
 			addModificationDirectory(directory);
 
 			// Se pintan de nuevo las imagenes del tab
-			JSplitPane sp = (JSplitPane) tp.getComponent(0);
-			JScrollPane s = (JScrollPane) sp.getBottomComponent();
+			JPanel sp = (JPanel) tp.getComponent(0);
+			JScrollPane s = (JScrollPane) sp.getComponent(1);
 			JViewport jv = (JViewport) s.getComponent(0);
 			ShowImages images = (ShowImages) jv.getComponent(0);
 
@@ -270,11 +268,13 @@ public class FileFuntions {
 					imageView.addMouseListener(new MouseAdapter() {
 						public void mouseClicked(MouseEvent e) {
 
-							TabPanel tap = null;
-
 							String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
-							if (tap != null && tap.indexOfTab(nombreTab) == -1) {
-								ViewImagesBigger viewImageBig = new ViewImagesBigger(image, images.getImageIcon(), tap);
+							if (tp != null) {
+								if (tp.indexOfTab(nombreTab) == -1) {
+									ViewImagesBigger viewImageBig = new ViewImagesBigger(image, images.getImageIcon(),
+											tp);
+								}
+
 							}
 
 						}
@@ -293,10 +293,10 @@ public class FileFuntions {
 	}
 
 	public static void checkStillExist(ShowImages images, List<String> actualImages) {
-		 Iterator<String> imageModify =   images.getLastModifyImage().keySet().iterator();
+		Iterator<String> imageModify = images.getLastModifyImage().keySet().iterator();
 		while (imageModify.hasNext()) {
-			
-			String imaPath=imageModify.next();
+
+			String imaPath = imageModify.next();
 			File faux = new File(imaPath);
 
 			if (faux.exists()) { // si sigue existiendo se mire si ha sido modificada
@@ -312,7 +312,7 @@ public class FileFuntions {
 
 					images.getListImagesPrev().put(imaPath, imageButton);
 					images.getLastModifyImage().put(imaPath, faux.lastModified());
-					
+
 				}
 				actualImages.remove(imaPath);
 			} else {// si no existe borrarla del map de imagenes
@@ -321,7 +321,6 @@ public class FileFuntions {
 				images.remove(deleteImage);
 
 				imageModify.remove();
-				
 
 			}
 
