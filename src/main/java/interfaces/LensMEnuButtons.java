@@ -1,6 +1,7 @@
 package interfaces;
 
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
@@ -87,31 +88,65 @@ public class LensMEnuButtons extends JPanel {
 				bu.repaint();
 
 			}
+			
+			
 			heightSize = ((JButton) listImagesPrev.values().toArray()[0]).getIcon().getIconHeight();
 			widthSize = ((JButton) listImagesPrev.values().toArray()[0]).getIcon().getIconWidth();
 
-			if (heightSize < minimunSize) {
-				minSizeIma = true;
-				minSizeBu.setEnabled(false);
-			} else {
-				if (heightSize > maximunSize) {
-					maxSizeIma = true;
-					pluSizeBu.setEnabled(false);
-				} else {
-					if (maxSizeIma) {
-						maxSizeIma = false;
-						pluSizeBu.setEnabled(true);
-					}
-
-					if (minSizeIma) {
-						minSizeIma = false;
-						minSizeBu.setEnabled(true);
-					}
-				}
-			}
-
+			
+			isMAxorMinSizeIma( heightSize);
+			numberOfImagesPerRow( heightSize,(ShowImages) ((JButton) listImagesPrev.values().toArray()[0]).getParent() );
+		
+	
 		}
 
+	}
+	
+	public void isMAxorMinSizeIma(int heightSize) {
+		if (heightSize < minimunSize) {
+			minSizeIma = true;
+			minSizeBu.setEnabled(false);
+		} else {
+			if (heightSize > maximunSize) {
+				maxSizeIma = true;
+				pluSizeBu.setEnabled(false);
+			} else {
+				if (maxSizeIma) {
+					maxSizeIma = false;
+					pluSizeBu.setEnabled(true);
+				}
+
+				if (minSizeIma) {
+					minSizeIma = false;
+					minSizeBu.setEnabled(true);
+				}
+			}
+		}
+	}
+	
+	
+	public void numberOfImagesPerRow(int heightSize, ShowImages buttonParentPane) {
+		
+		GridLayout grid=(GridLayout) buttonParentPane.getLayout();
+		int colums=grid.getColumns();
+		
+		if(heightSize>= 700 ) {
+			if(colums!=1) {
+				grid.setColumns(1);
+			}
+		}else {
+			if(heightSize>400 && heightSize<700 ) {
+				if(colums!=2){
+					grid.setColumns(2);
+				}
+				
+			}else {
+				if(colums!=3) {
+					grid.setColumns(3);
+				}
+				
+			}
+		}
 	}
 
 }

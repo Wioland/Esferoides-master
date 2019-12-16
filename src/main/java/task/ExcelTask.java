@@ -28,7 +28,7 @@ public class ExcelTask extends TimerTask {
 		LOGGER.log(Level.INFO, "Numero de ejecución " + counter);
 		counter++;
 
-		//ExcelActions.checkExcelTab(tp, dir, indezTab);
+		ExcelActions.checkExcelTab(tp, dir, indezTab);
 	}
 
 }
