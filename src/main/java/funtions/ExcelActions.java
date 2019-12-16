@@ -106,31 +106,6 @@ public class ExcelActions {
 
 		}
 	}
-	
-	
-	public static void inicialiceListExcelFolder(List<String> result, String dir ) {
-		
-		File folder = new File(dir);
-		
-		Utils.search(".*\\.xls", folder, result);
-		Collections.sort(result);
-		
-		Iterator< String> iter=result.iterator();
-		
-		String pattern = Pattern.quote(System.getProperty("file.separator"));
-		
-		
-		String[] splitdir = dir.split(pattern);
-		String[] splitpath;
-		
-		while (iter.hasNext()) {
-			String path = (String) iter.next();	
-			splitpath = path.split(pattern);
-			if(splitdir.length+1!=splitpath.length) {
-				iter.remove();
-			}
-		}
-	}
 
 	public static void checkExcelTab(TabPanel tp, String dir, int indexTab) {
 
@@ -145,15 +120,14 @@ public class ExcelActions {
 		if (indexTab != -1) {
 			indexComponent = indexTab;
 		}
-		
+
 		File excel = tp.getIndexTabExcel().get(indexComponent);
 		List<String> result = new ArrayList<String>();
 
-		inicialiceListExcelFolder(result, dir) ;
-		
-		
-		
-		
+		File folder = new File(dir);
+
+		Utils.searchDirectory(".*\\.xls", folder, result);
+		Collections.sort(result);
 
 		if (excel != null) { // si tiene excel ese tab
 			if (excel.exists()) { // si sigue existiendo

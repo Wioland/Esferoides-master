@@ -37,6 +37,20 @@ public class Utils {
 
 		}
 	}
+	// Method to search the list of files that satisfies a pattern in a folder. The
+	// list of files
+	// is stored in the result list.
+	public static void searchDirectory(final String pattern, final File folder, List<String> result) {
+		for (final File f : folder.listFiles()) {
+
+			if (f.isFile()) {
+				if (f.getName().matches(pattern)) {
+					result.add(f.getAbsolutePath());
+				}
+			}
+			
+		}
+	}
 
 	// Method to draw the results stored in the roi manager into the image, and then
 		// save the
