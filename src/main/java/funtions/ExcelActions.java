@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
-import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -69,7 +69,8 @@ public class ExcelActions {
 		try {
 			String filename = this.dir + "results.xls";
 			if (dir.endsWith("temporal" + File.separator)) {
-				filename = this.dir + sheet.getRow(1).getCell(0).getStringCellValue() + "_results.xls";
+				String name = sheet.getRow(1).getCell(0).getStringCellValue();
+				filename = this.dir + name + "_results.xls";
 			}
 			fileOut = new FileOutputStream(filename);
 			workbook.write(fileOut);
@@ -107,7 +108,7 @@ public class ExcelActions {
 		}
 	}
 
-	public static void checkExcelTab(TabPanel tp, String dir, int indexTab) {
+	public static void checkAllExcelTab(TabPanel tp, String dir) {
 
 		/*
 		 * si ya habia un excel mostrandose comprueba si este se ha modificado o si ese
@@ -116,12 +117,20 @@ public class ExcelActions {
 		 * pestaña
 		 */
 
-		int indexComponent = tp.getSelectedIndex();
-		if (indexTab != -1) {
-			indexComponent = indexTab;
+		List<Integer> lAux = new ArrayList<Integer>();
+		for (Integer tbIndex : tp.getIndexTabExcel().keySet()) {
+			lAux.add(tbIndex);
 		}
 
-		File excel = tp.getIndexTabExcel().get(indexComponent);
+		for (Integer tbIndex : lAux) {
+			checkExcelTab( tp, dir,tbIndex);
+		}
+	}
+	
+	
+	public static void checkExcelTab(TabPanel tp, String dir,int index) {
+		
+		File excel = tp.getIndexTabExcel().get(index);
 		List<String> result = new ArrayList<String>();
 
 		File folder = new File(dir);
@@ -131,10 +140,11 @@ public class ExcelActions {
 
 		if (excel != null) { // si tiene excel ese tab
 			if (excel.exists()) { // si sigue existiendo
-				if (!tp.getExcelModificationIndexTab().get(indexComponent).equals(excel.lastModified())) { // si se
-					JOptionPane.showMessageDialog(null, "The excel was modified. Updating this tab"); // ha modificado
-
-					JScrollPane sp = (JScrollPane) tp.getSelectedComponent();
+				if (!tp.getExcelModificationIndexTab().get(index).equals(excel.lastModified())) { // si se ha modificado
+					
+					JOptionPane.showMessageDialog(null, "The excel was modified. Updating this tab"); 
+					
+					JScrollPane sp = (JScrollPane) tp.getComponent(index);
 					JViewport jP = (JViewport) sp.getComponent(0);
 					ExcelTableCreator eTC = (ExcelTableCreator) jP.getComponent(0);
 					jP.remove(eTC);
@@ -142,76 +152,98 @@ public class ExcelActions {
 					jP.add(eTC);
 					jP.repaint();
 
-					tp.getExcelModificationIndexTab().put(indexComponent, excel.lastModified());
+					tp.getExcelModificationIndexTab().put(index, excel.lastModified());
 				}
 			} else {
 
-				JOptionPane.showMessageDialog(null, "The excel that this tab was showing was deleted");
-				JScrollPane sp = (JScrollPane) tp.getSelectedComponent();
+				JOptionPane.showMessageDialog(null, "The excel "+ excel.getName()+" was deleted");
+				
+				JScrollPane sp = (JScrollPane) tp.getComponentAt(index);
 				JViewport jP = (JViewport) sp.getComponent(0);
-				tp.noFileText("Excel", jP);
-				tp.setTitleAt(tp.getSelectedIndex(), "Excel ");
+				
+				if(index==1) {
+					tp.noFileText("Excel", jP);
+					tp.setTitleAt(tp.getSelectedIndex(), "Excel ");
+				}else {
+					tp.remove(index);
+					Set<Integer> list = tp.getIndexTabExcel().keySet();
+					List<Integer> auxList = new ArrayList<Integer>();
+					for (Integer integer : list) {
+						if (integer > index) {
+							auxList.add(integer);
 
-				tp.getIndexTabExcel().remove(indexComponent);
-				tp.getExcelModificationIndexTab().remove(indexComponent);
-
-				if (tp.getIndexTabExcel().size() != 0) { // se borran las pestañas noFileExcel salvo una
-					tp.remove(tp.getSelectedComponent());
-					Iterator<Integer> iter = tp.getIndexTabExcel().keySet().iterator();
-					while (iter.hasNext() || iter.next() != indexComponent) {
-
-						Integer posTab = (Integer) iter.next();
-
-						if (posTab > indexComponent) {
-							tp.getIndexTabExcel().put(posTab - 1, tp.getIndexTabExcel().get(posTab));
-							iter.remove();
-							tp.getIndexTabExcel().remove(posTab);
 						}
-
 					}
+
+					for (Integer integer : auxList) {
+						tp.getIndexTabExcel().put(integer - 1, tp.getIndexTabExcel().get(integer));
+						tp.getExcelModificationIndexTab().put(integer - 1, tp.getExcelModificationIndexTab().get(integer));
+						
+						tp.getIndexTabExcel().remove(integer);
+						tp.getExcelModificationIndexTab().remove(index);
+					}
+
+				
 				}
+				
+				
+				
+
+				
+
+			
 			}
 
-		} else { // se comprueba si la carpeta tiene ahora mismo un excel
+		} else { // si ese tab no tiene un excel
 
-			if (result.size() != 0) { // si lo tiene
-
-				tp.getExcelModificationIndexTab().remove(indexComponent);
+			if ( result.size()!=tp.getIndexTabExcel().size()) { // si lo tiene y no esta pintado
+				int resultSiz=result.size();
+				int tpSize=tp.getIndexTabExcel().size();
+				
+				tp.getExcelModificationIndexTab().remove(index);
 				JOptionPane.showMessageDialog(null, "Detected an excel file");
-				for (String string : result) {
-					if (string.equals(result.get(0))) { // el primer excel se pone en el noFileExcel
-						JScrollPane sp = (JScrollPane) tp.getSelectedComponent();
-						JViewport jP = (JViewport) sp.getComponent(0);
-						jP.remove(jP.getComponent(0));
-						File ex = new File(string);
-						ExcelTableCreator eTC = new ExcelTableCreator(ex);
-						jP.add(eTC);
-						jP.repaint();
+				boolean firstCheck=false;
+				
+				for (String path : result) {
+					if(!tp.getIndexTabExcel().containsValue(new File(path))) {
+						if(!firstCheck) {
+							JScrollPane sp = (JScrollPane) tp.getComponent(1);
+							JViewport jP = (JViewport) sp.getComponent(0);
+							jP.remove(jP.getComponent(0));
+							
+							File ex = new File(path);
+							ExcelTableCreator eTC = new ExcelTableCreator(ex);
+							
+							jP.add(eTC);
+							jP.repaint();
 
-						String name = ex.getName();
-						tp.getExcelModificationIndexTab().put(tp.getSelectedIndex(), ex.lastModified());
-						tp.getIndexTabExcel().put(tp.getSelectedIndex(), ex);
-						tp.setTitleAt(tp.getSelectedIndex(), "Excel " + name);
-
-					} else {
-						addExcelPanel(new File(string), tp); // para el resto se crean nuevas pestañas
+							String name = ex.getName();
+							tp.getExcelModificationIndexTab().put(tp.getSelectedIndex(), ex.lastModified());
+							tp.getIndexTabExcel().put(tp.getSelectedIndex(), ex);
+							tp.setTitleAt(tp.getSelectedIndex(), "Excel " + name);
+							
+							firstCheck=true;
+						}else {
+							addExcelPanel(new File(path), tp); // para el resto se crean nuevas pestañas
+						}
 					}
+				
 				}
 
 			}
 
 		}
 
-		// se comprueba si se han añadido nuevos excels a la carpeta
-		if (result.size() != tp.getIndexTabExcel().size()) {
-			for (String string : result) {
-				if (!tp.getIndexTabExcel().containsValue(new File(string))) {
-					addExcelPanel(new File(string), tp);
-				}
-
-			}
-		}
-
+//		// se comprueba si se han añadido nuevos excels a la carpeta
+//		if (result.size() != tp.getIndexTabExcel().size()) {
+//			for (String string : result) {
+//				if (!tp.getIndexTabExcel().containsValue(new File(string))) {
+//					addExcelPanel(new File(string), tp);
+//				}
+//
+//			}
+//		}
+		
 	}
 
 	public static void addExcelPanel(File excel, TabPanel tp) {
@@ -229,12 +261,12 @@ public class ExcelActions {
 
 		int index = tp.indexOfComponent(s);
 
-		excelcheckWithTime(tp, tp.getDir(), index, 60);
+		// excelcheckWithTime(tp, tp.getDir(), index, 60);
 
 	}
 
-	public static void excelcheckWithTime(TabPanel tp, String directory, int indexTab, int secons) {
-		ExcelTask exTask = new ExcelTask(tp, directory, indexTab);
+	public static void excelcheckWithTime(TabPanel tp, String directory, int secons) {
+		ExcelTask exTask = new ExcelTask(tp, directory);
 		Timer temporizador = new Timer();
 
 		temporizador.scheduleAtFixedRate(exTask, 0, 1000 * secons);

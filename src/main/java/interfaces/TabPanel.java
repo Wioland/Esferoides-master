@@ -11,7 +11,6 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JViewport;
@@ -117,7 +116,7 @@ public class TabPanel extends JTabbedPane {
 				TabPanel tab = (TabPanel) e.getSource();
 
 				if (tab.getTitleAt(tab.getSelectedIndex()).contains("Excel")) {
-					ExcelActions.checkExcelTab(tab,dir,-1);
+					ExcelActions.checkExcelTab(tab, dir,tab.getSelectedIndex()) ;
 				}else {
 					if (tab.getTitleAt(tab.getSelectedIndex()).contains("Images")) {
 						FileFuntions.isDirectoryContentModify(dir, tab);
@@ -126,8 +125,12 @@ public class TabPanel extends JTabbedPane {
 
 			}
 		});
+		
+		
 		FileFuntions.addModificationDirectory(dir);
 		FileFuntions.imagescheckWithTime(this, 60);
+		
+		ExcelActions.excelcheckWithTime(this, dir, 60);
 
 	}
 
@@ -176,9 +179,9 @@ public class TabPanel extends JTabbedPane {
 				insertTab(tabName, null, s, null, 1);
 				excelModificationIndexTab.put(this.indexOfTab(tabName), 0L);
 				
-				int index= indexOfComponent(s);
+				//int index= indexOfComponent(s);
 				
-				ExcelActions.excelcheckWithTime(this, dir, index, 60); 
+				//ExcelActions.excelcheckWithTime(this, dir, index, 60); 
 			} else {
 				addTab(tabName, s);
 			}

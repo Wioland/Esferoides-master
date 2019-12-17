@@ -24,8 +24,8 @@ public class ImagesTask extends TimerTask {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		LOGGER.log(Level.INFO, "ImageTask    Numero de ejecución " + counter);
-		counter++;
+//		LOGGER.log(Level.INFO, "ImageTask    Numero de ejecución " + counter);
+//		counter++;
 
 		FileFuntions.isDirectoryContentModify(dir,tp);
 	}

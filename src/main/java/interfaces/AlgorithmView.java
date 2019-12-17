@@ -124,6 +124,7 @@ public class AlgorithmView extends JFrame {
 
 		panelButtons.add(saveImageBt);
 		panelButtons.add(modifySelectionBu);
+		
 		JScrollPane s = new JScrollPane(panelImage);
 		JPanel jSp = new JPanel(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -131,11 +132,11 @@ public class AlgorithmView extends JFrame {
 
 		constraints.weightx = 1;
 		constraints.weighty = 1;
-
 		constraints.gridx = 0;
 		constraints.gridy = 0;
 
 		jSp.add(s, constraints);
+
 		constraints.weightx = 0;
 		constraints.weighty = 0;
 		constraints.gridx = 1;
@@ -227,18 +228,12 @@ public class AlgorithmView extends JFrame {
 
 	}
 
-	
-	
 	public JButton getButtonFromImage(String imagPath) {
-		
+
 		return panelImage.getListImagesPrev().get(imagPath);
-		
+
 	}
-	
-	
-	
-	
-	
+
 	private void addButtonListener(JButton saveImageBt, JButton modifiSelectionBu, JPanel pIma) {
 
 		saveImageBt.addActionListener(new ActionListener() {

@@ -15,11 +15,11 @@ public class ExcelTask extends TimerTask {
 	private String dir;
 	private int indezTab;
 
-	public ExcelTask(TabPanel tabpane, String directory, int indexTab) {
+	public ExcelTask(TabPanel tabpane, String directory) {
 		counter = 0;
 		this.tp=tabpane;
 		this.dir=directory;
-		this.indezTab=indexTab;
+	
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class ExcelTask extends TimerTask {
 		LOGGER.log(Level.INFO, "Numero de ejecución " + counter);
 		counter++;
 
-		ExcelActions.checkExcelTab(tp, dir, indezTab);
+		ExcelActions.checkAllExcelTab(tp, dir);
 	}
 
 }
