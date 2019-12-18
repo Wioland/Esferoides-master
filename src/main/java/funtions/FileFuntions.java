@@ -153,8 +153,10 @@ public class FileFuntions {
 
 						HSSFSheet sheetResult = modifyExcel.getSheet("Results");
 						HSSFRow newRow = newdataExcel.getSheet("Results").getRow(1);
-
-						int rowIndex = ExcelActions.findRow(sheetResult, originalName.replace("." + extension, ""));
+						extension = extensionwithoutName(originalName);
+						String auxOriginal=originalName.replace("." + extension, "");
+						
+						int rowIndex = ExcelActions.findRow(sheetResult, auxOriginal);
 						ExcelActions.changeRow(rowIndex, sheetResult, newRow);
 						FileOutputStream out = new FileOutputStream(
 								new File(originalPath.replace(originalName, "") + "results.xls"));

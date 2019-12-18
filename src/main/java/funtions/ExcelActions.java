@@ -124,12 +124,15 @@ public class ExcelActions {
 		for (Integer tbIndex : lAux) {
 			checkExcelTab(tp, dir, tbIndex);
 		}
+		
 		List<String> result = new ArrayList<String>();
 
 		File folder = new File(dir);
 
 		Utils.searchDirectory(".*\\.xls", folder, result);
 		Collections.sort(result);
+		
+		
 		addedExcelToTheTab(result, tp);
 	}
 
@@ -154,7 +157,7 @@ public class ExcelActions {
 					if (!modTab.equals(excelMod)) { // si se ha
 													// modificado
 
-						JOptionPane.showMessageDialog(null, "The excel was modified. Updating this tab");
+						JOptionPane.showMessageDialog(null, "The excel "+excel.getName() +" was modified. Updating it´s tab");
 
 						JScrollPane sp = (JScrollPane) tp.getComponent(index);
 						JViewport jP = (JViewport) sp.getComponent(0);
@@ -216,8 +219,8 @@ public class ExcelActions {
 
 	public static void addedExcelToTheTab(List<String> result, TabPanel tp) {
 
-		int resultSiz = result.size();
-		int tpSize = tp.getIndexTabExcel().size();
+//		int resultSiz = result.size();
+//		int tpSize = tp.getIndexTabExcel().size();
 		if (result.size() > tp.getIndexTabExcel().size()) { // si lo tiene y no esta pintado
 
 			JOptionPane.showMessageDialog(null, "Detected an excel file");
@@ -268,7 +271,7 @@ public class ExcelActions {
 		tp.getIndexTabExcel().put(tp.indexOfTab("Excel " + name), excel);
 		tp.setSelectedIndex(tp.indexOfTab("Excel " + name));
 
-		int index = tp.indexOfComponent(s);
+		//int index = tp.indexOfComponent(s);
 
 		// excelcheckWithTime(tp, tp.getDir(), index, 60);
 

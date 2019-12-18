@@ -73,9 +73,9 @@ public class Methods {
 			
 
 			if (!faux.exists()) {
-				JOptionPane.showMessageDialog(null,
-						"One or more images doesn´t have their fluo image or it isn´t in the same folder. This method needs a fluo image. Try it later when a fluo image is in the folder",
-						"No fluo image. Can´t do the method", JOptionPane.WARNING_MESSAGE);
+//				JOptionPane.showMessageDialog(null,
+//						"One or more images doesn´t have their fluo image or it isn´t in the same folder. This method needs a fluo image. Try it later when a fluo image is in the folder",
+//						"No fluo image. Can´t do the method", JOptionPane.WARNING_MESSAGE);
 				haveFluo = false;
 				break;
 			}
