@@ -132,37 +132,41 @@ public class ImageTreePanel extends JSplitPane {
 					if (!path.equals(dir)) { // si no es el directorio en el que nos encontramos que
 
 						File folder = new File(path);
-						List<String> result = new ArrayList<String>();
+						List<String> resultTif = new ArrayList<String>();
+						List<String> resultNd2 = new ArrayList<String>();
+						List<String> resultTiff = new ArrayList<String>();
 						String oldPath = this.dir;
+						String detectedFiles= "";
 						boolean switchFolder = true;
 						this.dir = path;
 
-						Utils.search(".*\\.tif", folder, result);
-						if (result.size() == 0) {
-							Utils.search(".*\\.nd2", folder, result);
-							if (result.size() != 0) { // si solo tiene imagenes nd2 mostrar el selector de algoritmos
-
-								int n = JOptionPane.showConfirmDialog(this,
-										"The folder only contains ND2 files do you want to use an Algorithm?",
-										"ND2 files detected", JOptionPane.YES_NO_OPTION);
-
-								if (n == 0) {
-									SelectAlgoritm sAl = new SelectAlgoritm(dir, this);
-								} else {
-									JOptionPane.showMessageDialog(this,
-											"Nothing to be done. Not changing to de selected folder");
-									this.dir = oldPath;
-									switchFolder = false;
-								}
-
-							} else {// mostrar en la vista que no hay datos que mostrar quitar el tab panel
-
-								repaintTabPanel();
-							}
-
-						} else { // si tiene imagenes tiff decirle que quiere realizar
-							JOptionPane.showMessageDialog(this, "Detected Tiff files");
+						Utils.search(".*\\.tif", folder, resultTif);
+						Utils.search(".*\\.tiff", folder, resultTiff);
+						Utils.search(".*\\.nd2", folder, resultNd2);
+						
+						if (resultTiff.size() != 0) {
+							detectedFiles+= "Tiff ";
+						}
+						if (resultTif.size() != 0) {
+							detectedFiles+= "Tif ";
+						}
+						if (resultNd2.size() != 0) {
+							detectedFiles+= "ND2 ";
+						}
+						
+						
+						
+						
+						
+						if (resultTif.size() != 0 || resultNd2.size() != 0 ) {
+							JOptionPane.showMessageDialog(this, "Detected image files with the requered extension");
 							Main.callProgram(dir, this);
+							changeDirActions( resultTiff, detectedFiles, oldPath, switchFolder);
+						} else { 
+							JOptionPane.showMessageDialog(this,
+									"Nothing to be done. Not changing to de selected folder");
+							this.dir = oldPath;
+							switchFolder = false;
 
 						}
 
@@ -178,13 +182,39 @@ public class ImageTreePanel extends JSplitPane {
 			}
 		}
 	}
+	
+	
+	
+	public void changeDirActions(List<String> result, String extensionFile,String oldPath,boolean switchFolder) {
+		if (result.size() == 0) { // si no tiene imagenes tiff, es decir no se han hecho predicciones
+
+			int n = JOptionPane.showConfirmDialog(this,
+					"The folder contains " + extensionFile +" files do you want to use an Algorithm?",
+					extensionFile+" files detected", JOptionPane.YES_NO_OPTION);
+
+			if (n == 0) {
+				SelectAlgoritm sAl = new SelectAlgoritm(dir, this);
+			} else {
+				JOptionPane.showMessageDialog(this,
+						"Nothing to be done. Not changing to the selected folder");
+				this.dir = oldPath;
+				switchFolder = false;
+			}
+
+		} else {//Mostrar los tiff
+
+			repaintTabPanel();
+		}
+	}
 
 	public void repaintTabPanel() {
+	
 		folderView = new TabPanel(this.dir);
 		// se crean los scrolls
 		// s.setViewportView(folderView);
-		folderView.revalidate();
+		this.setRightComponent(folderView);
 		folderView.repaint();
+		
 
 	}
 
