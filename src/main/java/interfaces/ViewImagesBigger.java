@@ -176,6 +176,23 @@ public class ViewImagesBigger extends JPanel {
 		this.setVisible(true);
 
 	}
+	
+	
+	
+
+	public JLabel getLabelImage() {
+		return labelImage;
+	}
+
+
+
+
+	public void setLabelImage(JLabel labelImage) {
+		this.labelImage = labelImage;
+	}
+
+
+
 
 	public void closeTab(ActionEvent evt) {
 		JButton bu = (JButton) evt.getSource();

@@ -39,6 +39,7 @@ public class AlgorithmView extends JFrame {
 	private String directory;
 	private File image;
 	private ShowImages panelImage;
+	private ViewImagesBigger vi;
 
 	public AlgorithmView(File image, String dir) {
 		// Parametros ventana
@@ -124,7 +125,7 @@ public class AlgorithmView extends JFrame {
 
 		panelButtons.add(saveImageBt);
 		panelButtons.add(modifySelectionBu);
-		
+
 		JScrollPane s = new JScrollPane(panelImage);
 		JPanel jSp = new JPanel(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -188,9 +189,12 @@ public class AlgorithmView extends JFrame {
 				break;
 			case 2:
 				me.consume();
-
-				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList, this);
-				addComparer(vi);
+				if (vi == null) {
+					vi = new ViewImagesBigger(imageIcon, imageIcoList, this);
+					addComparer(vi);
+				}else {
+					vi.getLabelImage().setIcon(imageIcon);
+				}
 
 				break;
 

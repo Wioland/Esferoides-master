@@ -124,15 +124,14 @@ public class ExcelActions {
 		for (Integer tbIndex : lAux) {
 			checkExcelTab(tp, dir, tbIndex);
 		}
-		
+
 		List<String> result = new ArrayList<String>();
 
 		File folder = new File(dir);
 
 		Utils.searchDirectory(".*\\.xls", folder, result);
 		Collections.sort(result);
-		
-		
+
 		addedExcelToTheTab(result, tp);
 	}
 
@@ -157,7 +156,8 @@ public class ExcelActions {
 					if (!modTab.equals(excelMod)) { // si se ha
 													// modificado
 
-						JOptionPane.showMessageDialog(null, "The excel "+excel.getName() +" was modified. Updating it´s tab");
+						JOptionPane.showMessageDialog(null,
+								"The excel " + excel.getName() + " was modified. Updating it´s tab");
 
 						JScrollPane sp = (JScrollPane) tp.getComponent(index);
 						JViewport jP = (JViewport) sp.getComponent(0);
@@ -171,41 +171,19 @@ public class ExcelActions {
 					}
 				} else { // si ya no existe
 
-					JOptionPane.showMessageDialog(null, "The excel " + excel.getName() + " was deleted");
-
-					JScrollPane sp = (JScrollPane) tp.getComponentAt(index);
-					JViewport jP = (JViewport) sp.getComponent(0);
-
-					if (tp.getIndexTabExcel().size() == 1) { // si solo queda un tab de excel entonces que se quede ese
-																// tab como no file
-						tp.noFileText("Excel", jP);
-						tp.setTitleAt(1, "Excel ");
-
-						tp.getIndexTabExcel().remove(1);
-						tp.getExcelModificationIndexTab().remove(1);
-
-					} else {
-						tp.remove(index);
-						Set<Integer> list = tp.getIndexTabExcel().keySet();
-						List<Integer> auxList = new ArrayList<Integer>();
-						for (Integer integer : list) {
-							if (integer > index) {
-								auxList.add(integer);
-
-							}
-						}
-
-						for (Integer integer : auxList) {
-							tp.getIndexTabExcel().put(integer - 1, tp.getIndexTabExcel().get(integer));
-							tp.getExcelModificationIndexTab().put(integer - 1,
-									tp.getExcelModificationIndexTab().get(integer));
-
-							tp.getIndexTabExcel().remove(integer);
-							tp.getExcelModificationIndexTab().remove(integer);
-						}
-
+					deleteExcelTab(excel, index, tp);
+					excel = tp.getIndexTabExcel().get(index);
+					
+					boolean exist=excel.exists();
+					boolean existindex=tp.getIndexTabExcel().containsKey(index);
+					
+					
+					while (!exist && existindex ) {
+						deleteExcelTab(excel, index, tp);
+						excel = tp.getIndexTabExcel().get(index);
+						 exist=excel.exists();
+					existindex=tp.getIndexTabExcel().containsKey(index);
 					}
-
 				}
 
 			} else { // si ese tab no tiene un excel
@@ -213,6 +191,46 @@ public class ExcelActions {
 				addedExcelToTheTab(result, tp);
 
 			}
+		}
+
+	}
+
+	public static void deleteExcelTab(File excel, int index, TabPanel tp) {
+
+		JOptionPane.showMessageDialog(null, "The excel " + excel.getName() + " was deleted");
+
+		JScrollPane sp = (JScrollPane) tp.getComponentAt(index);
+		JViewport jP = (JViewport) sp.getComponent(0);
+
+		if (tp.getIndexTabExcel().size() == 1) { // si solo queda un tab de excel entonces que se quede ese
+													// tab como no file
+			tp.noFileText("Excel", jP);
+			tp.setTitleAt(1, "Excel ");
+
+			tp.getIndexTabExcel().remove(1);
+			tp.getExcelModificationIndexTab().remove(1);
+
+		} else {
+			tp.remove(index);
+			Set<Integer> list = tp.getIndexTabExcel().keySet();
+			List<Integer> auxList = new ArrayList<Integer>();
+			for (Integer integer : list) {
+				if (integer > index) {
+					auxList.add(integer);
+
+				}
+			}
+
+			for (Integer integer : auxList) {
+				tp.getIndexTabExcel().put(integer - 1, tp.getIndexTabExcel().get(integer));
+				tp.getExcelModificationIndexTab().put(integer - 1, tp.getExcelModificationIndexTab().get(integer));
+
+				tp.getIndexTabExcel().remove(integer);
+				tp.getExcelModificationIndexTab().remove(integer);
+			}
+
+			System.out.println("Eliminado " + excel.getName());
+
 		}
 
 	}
@@ -271,7 +289,7 @@ public class ExcelActions {
 		tp.getIndexTabExcel().put(tp.indexOfTab("Excel " + name), excel);
 		tp.setSelectedIndex(tp.indexOfTab("Excel " + name));
 
-		//int index = tp.indexOfComponent(s);
+		// int index = tp.indexOfComponent(s);
 
 		// excelcheckWithTime(tp, tp.getDir(), index, 60);
 
