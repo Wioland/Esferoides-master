@@ -213,28 +213,7 @@ public class ImageTreePanel extends JSplitPane {
 
 	}
 
-//	private void showImageTree(String path, String fileName) {
-//		List<ImageIcon> imaVer = new ArrayList<ImageIcon>();
-//		List<String> listImagesName = new ArrayList<String>();
-//		List<ImageIcon> listIm = new ArrayList<ImageIcon>();
-//
-//		File folder = new File(path);
-//
-//		Utils.search(".*\\.tiff", folder, listImagesName);
-//		Collections.sort(listImagesName);
-//
-//		for (String name : listImagesName) {
-//			ImageIcon im = ShowTiff.showTiffToImageIcon(name);
-//			listIm.add(im);
-//
-//			if (name.contains(fileName)) {
-//				imaVer.add(im);
-//			}
-//		}
-//
-//		// ViewImagesBigger vIb = new ViewImagesBigger(imaVer.get(0), listIm,dir);
-//
-//	}
+
 
 	/*
 	 * Funcion que aniade los nodos al tree

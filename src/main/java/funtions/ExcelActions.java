@@ -281,6 +281,13 @@ public class ExcelActions {
 		String name = excel.getName();
 		ExcelTableCreator excelPanel = new ExcelTableCreator(excel);
 		JScrollPane s = new JScrollPane(excelPanel);
+		
+		if(!excel.getAbsoluteFile().equals(tp.getDir())) {
+			
+			String folder=excel.getAbsolutePath().replace(tp.getDir(), "");
+			name=folder;
+		}
+		
 
 		s.setName("Excel " + name);
 		tp.add("Excel " + name, s);
