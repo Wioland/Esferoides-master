@@ -158,12 +158,15 @@ public class FileFuntions {
 						String auxOriginal=originalName.replace("." + extension, "");
 						
 						int rowIndex = ExcelActions.findRow(sheetResult, auxOriginal);
-						ExcelActions.changeRow(rowIndex, sheetResult, newRow);
-						FileOutputStream out = new FileOutputStream(
-								new File(originalPath.replace(originalName, "") + "results.xls"));
-						modifyExcel.write(out);
+						if(rowIndex!=-1) {
+							ExcelActions.changeRow(rowIndex, sheetResult, newRow);
+							FileOutputStream out = new FileOutputStream(
+									new File(originalPath.replace(originalName, "") + "results.xls"));
+							modifyExcel.write(out);
 
-						out.close();
+							out.close();
+						}
+
 
 					} catch (Exception e) {
 						e.printStackTrace();

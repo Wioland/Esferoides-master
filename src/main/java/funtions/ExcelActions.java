@@ -40,11 +40,6 @@ public class ExcelActions {
 
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet("Results");
-//		HSSFCellStyle style = workbook.createCellStyle();
-//		style.setFillBackgroundColor(IndexedColors.ROYAL_BLUE.getIndex());
-//		CellStyle style2 = workbook.createCellStyle();
-//		style.setFillBackgroundColor(IndexedColors.LIGHT_BLUE.getIndex()); 
-
 		HSSFRow rowhead = sheet.createRow((short) 0);
 
 		String[] headings = this.rt.getHeadings();
@@ -85,6 +80,14 @@ public class ExcelActions {
 
 	}
 
+	/**
+	 * Method that find the row of an object in an excel file based on the name it has on the first column
+	 * 
+	 * @param sheet   sheet of the excel where you wanted to find the object
+	 * @param cellContent  id of the object in the excel
+	 * @return the row number of the object or -1 if the object isn't in the excel sheet
+	 */
+	
 	public static int findRow(HSSFSheet sheet, String cellContent) {
 		for (Row row : sheet) {
 			for (Cell cell : row) {
@@ -95,7 +98,7 @@ public class ExcelActions {
 				}
 			}
 		}
-		return 0;
+		return -1;
 	}
 
 	public static void changeRow(int rowIndex, HSSFSheet sheet, Row newRow) {
