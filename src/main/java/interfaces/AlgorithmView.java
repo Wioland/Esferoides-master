@@ -29,9 +29,6 @@ import funtions.RoiFuntions;
 
 public class AlgorithmView extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private JButton selectedBu;
@@ -192,7 +189,7 @@ public class AlgorithmView extends JFrame {
 				if (vi == null) {
 					vi = new ViewImagesBigger(imageIcon, imageIcoList, this);
 					addComparer(vi);
-				}else {
+				} else {
 					vi.getLabelImage().setIcon(imageIcon);
 				}
 

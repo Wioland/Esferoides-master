@@ -13,13 +13,12 @@ public class ExcelTask extends TimerTask {
 	private Integer counter;
 	private TabPanel tp;
 	private String dir;
-	private int indezTab;
 
 	public ExcelTask(TabPanel tabpane, String directory) {
 		counter = 0;
-		this.tp=tabpane;
-		this.dir=directory;
-	
+		this.tp = tabpane;
+		this.dir = directory;
+
 	}
 
 	@Override

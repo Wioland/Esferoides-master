@@ -3,12 +3,9 @@ package interfaces;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -22,16 +19,7 @@ import javax.swing.tree.TreePath;
 import funtions.FileFuntions;
 import funtions.Main;
 import funtions.RoiFuntions;
-import funtions.ShowTiff;
 import funtions.Utils;
-import ij.IJ;
-import ij.ImageJ;
-import ij.ImagePlus;
-import ij.gui.Toolbar;
-import ij.plugin.frame.RoiManager;
-import loci.formats.FormatException;
-import loci.plugins.BF;
-import loci.plugins.in.ImporterOptions;
 
 public class ImageTreePanel extends JSplitPane {
 
@@ -212,8 +200,6 @@ public class ImageTreePanel extends JSplitPane {
 		folderView.repaint();
 
 	}
-
-
 
 	/*
 	 * Funcion que aniade los nodos al tree

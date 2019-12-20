@@ -14,9 +14,6 @@ import funtions.ShowTiff;
 
 public class LensMEnuButtons extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private boolean minSizeIma;
 	private boolean maxSizeIma;
@@ -80,28 +77,25 @@ public class LensMEnuButtons extends JPanel {
 		if ((!minSizeIma && typeAction.equals("minus")) || (subtract == -subtractAddSize)) {
 
 			for (String path : listImagesPrev.keySet()) {
-				JButton bu=listImagesPrev.get(path);
+				JButton bu = listImagesPrev.get(path);
 				ImageIcon iaux = ShowTiff.showTiffToImageIcon(bu.getName());
-				ImageIcon iconoEscala = new ImageIcon(iaux.getImage()
-						.getScaledInstance(widthSize - subtract, heightSize - subtract, java.awt.Image.SCALE_DEFAULT));
+				ImageIcon iconoEscala = new ImageIcon(iaux.getImage().getScaledInstance(widthSize - subtract,
+						heightSize - subtract, java.awt.Image.SCALE_DEFAULT));
 				bu.setIcon(iconoEscala);
 				bu.repaint();
 
 			}
-			
-			
+
 			heightSize = ((JButton) listImagesPrev.values().toArray()[0]).getIcon().getIconHeight();
 			widthSize = ((JButton) listImagesPrev.values().toArray()[0]).getIcon().getIconWidth();
 
-			
-			isMAxorMinSizeIma( heightSize);
-			numberOfImagesPerRow( heightSize,(ShowImages) ((JButton) listImagesPrev.values().toArray()[0]).getParent() );
-		
-	
+			isMAxorMinSizeIma(heightSize);
+			numberOfImagesPerRow(heightSize, (ShowImages) ((JButton) listImagesPrev.values().toArray()[0]).getParent());
+
 		}
 
 	}
-	
+
 	public void isMAxorMinSizeIma(int heightSize) {
 		if (heightSize < minimunSize) {
 			minSizeIma = true;
@@ -123,28 +117,27 @@ public class LensMEnuButtons extends JPanel {
 			}
 		}
 	}
-	
-	
+
 	public void numberOfImagesPerRow(int heightSize, ShowImages buttonParentPane) {
-		
-		GridLayout grid=(GridLayout) buttonParentPane.getLayout();
-		int colums=grid.getColumns();
-		
-		if(heightSize>= 700 ) {
-			if(colums!=1) {
+
+		GridLayout grid = (GridLayout) buttonParentPane.getLayout();
+		int colums = grid.getColumns();
+
+		if (heightSize >= 700) {
+			if (colums != 1) {
 				grid.setColumns(1);
 			}
-		}else {
-			if(heightSize>400 && heightSize<700 ) {
-				if(colums!=2){
+		} else {
+			if (heightSize > 400 && heightSize < 700) {
+				if (colums != 2) {
 					grid.setColumns(2);
 				}
-				
-			}else {
-				if(colums!=3) {
+
+			} else {
+				if (colums != 3) {
 					grid.setColumns(3);
 				}
-				
+
 			}
 		}
 	}

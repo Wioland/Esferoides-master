@@ -2,7 +2,6 @@ package funtions;
 
 import javax.swing.JOptionPane;
 
-import ij.IJ;
 import ij.io.DirectoryChooser;
 import interfaces.GeneralView;
 import interfaces.ImageTreePanel;
@@ -49,10 +48,7 @@ public class Main {
 		FileFuntions.chargePlugins();
 		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the images");
 		callProgram(dc.getDirectory(), null);
-	
-		
+
 	}
-
-
 
 }

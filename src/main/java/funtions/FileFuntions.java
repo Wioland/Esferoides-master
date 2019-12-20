@@ -40,23 +40,31 @@ public class FileFuntions {
 
 	private static Map<String, Long> directoryLastChange;
 
+	/**
+	 * assign the plugin folder for imageJ and creates a instance of imageJ
+	 */
 	public static void chargePlugins() {
 		Class<?> clazz = EsferoideJ_.class;
 		String url = clazz.getResource("/" + clazz.getName().replace('.', '/') + ".class").toString();
-//		String pluginsDir ="C:\\Users\\yomendez\\Desktop\\Fiji.app\\jars";
 		String pluginsDir = url.substring("file:".length(),
 				url.length() - clazz.getName().length() - ".class".length());
 		System.setProperty("plugins.dir", pluginsDir);
-		
+
 		ImageJ imageJFrame = new ImageJ();
-		//imageJFrame.setVisible(false);
+		// imageJFrame.setVisible(false);
 
 	}
 
+	/**
+	 * Returns the Path of the selected file in the tree
+	 * 
+	 * @param tp The treePath created of the current directory
+	 * @return The path of the selected file in the tree
+	 */
 	public static String getPathSelectedTreeFile(TreePath tp) {
 		String path = "";
 
-		for (int i = 0; i < tp.getPathCount(); i++) {
+		for (int i = 0; i < tp.getPathCount(); i++) { // we generate the path form the String{} given
 			path += tp.getPath()[i].toString();
 			if (i > 0 && i != (tp.getPathCount() - 1)) {
 
@@ -69,27 +77,36 @@ public class FileFuntions {
 
 	}
 
-	public static File getTemporalFolderFromOriginalPath(String OriginalPath) {
-		File folder = new File(OriginalPath);
-		folder = new File(OriginalPath.replace(folder.getName(), "") + "temporal");
+	/**
+	 * Get the path of the temporal folder from a file path
+	 * 
+	 * @param originalPath A file path
+	 * @return the path of the temporal folder
+	 */
+	public static File getTemporalFolderFromOriginalPath(String originalPath) {
+		File folder = new File(originalPath);
+		folder = new File(originalPath.replace(folder.getName(), "") + "temporal");
 		return folder;
 	}
 
-	// guardar la imagen del algoritmo no solo el tiff tambien el zip
-	// generados
+	/**
+	 * Save the files from the temporal folder to the prediction folder exchanging
+	 * the original files in the prediction folder with the temporal ones We save
+	 * the tiff and roi/zip and change the corresponding row on the result excel
+	 * 
+	 * @param selectedFile The temporal file to save
+	 * @param saveDirPath
+	 */
 	public static void saveSelectedImage(File selectedFile, String saveDirPath) {
-		// se bucan los archivos tif y zip con el mismo nombre dentro de la carpeta
-		// temporal
 
-		// se coge el nombre del archivo creado y se le quita el nombre del algoritmo
-		// utilizado
-
-		// Se sobre escriben los archivos de la carpeta general con el mismo nombre
+		// We look for the tiff and zip files with the same as the selected file
+		// We take the files and take out he algorithm name
+		// We exchange the files in the saveDir
 
 		int resp = JOptionPane.showConfirmDialog(null,
 				"This action will delete the current images in predition folder. Are you sure you want to proceed to save?",
 				"Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-		if (resp == 0) {
+		if (resp == 0) { // if yes
 
 			JOptionPane.showMessageDialog(null, "Saving the images");
 
@@ -113,9 +130,9 @@ public class FileFuntions {
 				if (!f.getName().endsWith("xls")) {
 
 					/*
-					 * si se a movido el archivo nuevo a la carpeta predicctions se comprueba que el
-					 * archivo original existe y en ese caso se borra y se renombra el nuevo, si no
-					 * solo se renombra el nuevo
+					 * If the new file was succesfully move to the predicctions folder if the
+					 * original file exist we delete it and change the name of the new file
+					 * otherwise we onle rename
 					 */
 					for (String oriFilePath : originalFiles) {
 						extension = extensionwithoutName(s);
@@ -145,7 +162,7 @@ public class FileFuntions {
 					}
 				} else {
 
-					// cambiar la fila del excel por la nueva
+					// we change the excel row to the new one
 					try {
 
 						HSSFWorkbook modifyExcel = new HSSFWorkbook(
@@ -155,10 +172,10 @@ public class FileFuntions {
 						HSSFSheet sheetResult = modifyExcel.getSheet("Results");
 						HSSFRow newRow = newdataExcel.getSheet("Results").getRow(1);
 						extension = extensionwithoutName(originalName);
-						String auxOriginal=originalName.replace("." + extension, "");
-						
+						String auxOriginal = originalName.replace("." + extension, "");
+
 						int rowIndex = ExcelActions.findRow(sheetResult, auxOriginal);
-						if(rowIndex!=-1) {
+						if (rowIndex != -1) {
 							ExcelActions.changeRow(rowIndex, sheetResult, newRow);
 							FileOutputStream out = new FileOutputStream(
 									new File(originalPath.replace(originalName, "") + "results.xls"));
@@ -166,7 +183,6 @@ public class FileFuntions {
 
 							out.close();
 						}
-
 
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -181,24 +197,37 @@ public class FileFuntions {
 
 	}
 
-	// si se sale de la app o para borrar la carpeta tras seleccionar una imagen
+	/**
+	 * For delete a folder If we close the app or the algorithm view window we
+	 * delete the temporal folder
+	 * 
+	 * @param temporalFolder The folder to delete
+	 */
 	public static void deleteTemporalFolder(File temporalFolder) {
 
-		if (temporalFolder.exists()) {
+		if (temporalFolder.exists()) { // if exist
 			File[] files = temporalFolder.listFiles();
-			for (File file : files) {
-				if (file.isDirectory()) {
+			for (File file : files) { // if it isn't empty we delete it's files
+				if (file.isDirectory()) { // if it's a directory we call this method else we delete it
 					deleteTemporalFolder(file);
 				} else {
 					file.delete();
 				}
 
 			}
-			temporalFolder.delete();
+			temporalFolder.delete(); // we delete it
 		}
 
 	}
 
+	/**
+	 * 
+	 * check if all the files have the same extension
+	 * 
+	 * @param result    list of path
+	 * @param extension extension to check
+	 * @return true if all files have the same extension false otherwise
+	 */
 	public static boolean isExtension(List<String> result, String extension) {
 		boolean isTif = true;
 		for (String name : result) {
@@ -210,6 +239,12 @@ public class FileFuntions {
 		return isTif;
 	}
 
+	/**
+	 * From a file path we get the name of the file without the file extension
+	 * 
+	 * @param filePath the path of the file
+	 * @return the name of the file with out the extension
+	 */
 	public static String namewithoutExtension(String filePath) {
 		File faux = new File(filePath);
 		String fileName = faux.getName();
@@ -217,11 +252,23 @@ public class FileFuntions {
 		return nameNoextension;
 	}
 
+	/**
+	 * We get the extension of a file
+	 * 
+	 * @param filePath the path of the file we want to know the extension
+	 * @return the extension of the file
+	 */
 	public static String extensionwithoutName(String filePath) {
 		File f = new File(filePath);
 		return f.getName().split("\\.")[1];
 	}
 
+	/**
+	 * Creates the directoryLastChange if it wasn't all ready created and add the
+	 * last modification of the directory
+	 * 
+	 * @param directory The path of the directory
+	 */
 	public static void addModificationDirectory(String directory) {
 		if (directoryLastChange == null) {
 			directoryLastChange = new HashMap<String, Long>();
@@ -231,18 +278,31 @@ public class FileFuntions {
 
 	}
 
+	/**
+	 * check if a directory has been modify
+	 * 
+	 * @param directory The path of the directory
+	 * @return true if the directory has been modify
+	 */
 	public static boolean directoryHasChange(String directory) {
 		File direFile = new File(directory + "predictions");
 		return direFile.lastModified() != directoryLastChange.get(directory + "predictions");
 	}
 
+	/**
+	 * check if the directory has change If true, we change the content of the
+	 * tabpanel adding or deleting images
+	 * 
+	 * @param directory the path of the directory
+	 * @param tp        The tabPanel that shows the content of the directory
+	 */
 	public static void isDirectoryContentModify(String directory, TabPanel tp) {
 		if (directoryHasChange(directory)) {
 			JOptionPane.showMessageDialog(null, "The content of the directoy has change. Painting again the images",
 					"Warning", JOptionPane.WARNING_MESSAGE);
 			addModificationDirectory(directory);
 
-			// Se pintan de nuevo las imagenes del tab
+			// we paint again the images
 			JPanel sp = (JPanel) tp.getComponent(0);
 			JScrollPane s = (JScrollPane) sp.getComponent(1);
 			JViewport jv = (JViewport) s.getComponent(0);
@@ -252,17 +312,16 @@ public class FileFuntions {
 			Utils.search(".*\\.tiff", new File(directory), actualImages);
 			Collections.sort(actualImages);
 
-			checkStillExist(images, actualImages); // se comprueban si las imagens de los botones siguen existiendo
+			checkStillExist(images, actualImages); // check if the images of the buttons still exist
 
-			if (actualImages.size() != 0) { // si sigue habiendo achivos en los actuales, es decir que no estabn en los
-											// botones se pasa a añadirlos
+			if (actualImages.size() != 0) { // if we have new file we add them
 				for (String name : actualImages) {
-					// convertir a formato que se pueda ver
+					// convert the format to show the image
 					ImageIcon image = ShowTiff.showTiffToImageIcon(name);
 					image.setDescription(name);
 
-					// aniadir a button
-					// Obtiene un icono en escala con las dimensiones especificadas
+					// add the button
+					// we create an icon with the specific measures
 					ImageIcon iconoEscala = new ImageIcon(
 							image.getImage().getScaledInstance(700, 700, java.awt.Image.SCALE_DEFAULT));
 					JButton imageView = new JButton(iconoEscala);
@@ -298,6 +357,13 @@ public class FileFuntions {
 		}
 	}
 
+	/**
+	 * Check if the images shown still exist, the had been modify And change the
+	 * images that the showImages is showing
+	 * 
+	 * @param images       ShowImages with the images shown
+	 * @param actualImages List of the images of the directory
+	 */
 	public static void checkStillExist(ShowImages images, List<String> actualImages) {
 		Iterator<String> imageModify = images.getLastModifyImage().keySet().iterator();
 		while (imageModify.hasNext()) {
@@ -305,7 +371,7 @@ public class FileFuntions {
 			String imaPath = imageModify.next();
 			File faux = new File(imaPath);
 
-			if (faux.exists()) { // si sigue existiendo se mire si ha sido modificada
+			if (faux.exists()) { // if it still exist we look if it has been modify
 				if (faux.lastModified() != images.getLastModifyImage().get(imaPath)) {
 
 					JOptionPane.showMessageDialog(null, "The image " + faux.getName() + " has change", "Warning",
@@ -321,7 +387,7 @@ public class FileFuntions {
 
 				}
 				actualImages.remove(imaPath);
-			} else {// si no existe borrarla del map de imagenes
+			} else {// if it doesn´t exist we delete it from the map
 
 				JButton deleteImage = images.getListImagesPrev().get(imaPath);
 				images.remove(deleteImage);
@@ -333,6 +399,13 @@ public class FileFuntions {
 		}
 	}
 
+	/**
+	 * We check if the images on the directory has been modified, deleted or new
+	 * ones has been added in the seconds given
+	 * 
+	 * @param tp     The tabpanel that contains the tab with the images
+	 * @param secons the seconds between calls
+	 */
 	public static void imagescheckWithTime(TabPanel tp, int secons) {
 		ImagesTask imatask = new ImagesTask(tp);
 		Timer temporizador = new Timer();

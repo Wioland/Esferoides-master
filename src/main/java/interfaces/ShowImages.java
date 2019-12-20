@@ -28,7 +28,7 @@ public class ShowImages extends JPanel {
 	private Map<String, JButton> listImagesPrev;
 	private Map<String, Long> lastModifyImage;
 	private String dir;
-	private List<ImageIcon> imageIcon ;
+	private List<ImageIcon> imageIcon;
 
 	/*
 	 * Mostrar las imagenes tiff como botones
@@ -88,9 +88,8 @@ public class ShowImages extends JPanel {
 			JButton imageView = new JButton(iconoEscala);
 			imageView.setIcon(iconoEscala);
 			imageView.setName(name);
-			
+
 			imageIcon.add(image);
-			
 
 			imageView.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {

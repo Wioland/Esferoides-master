@@ -14,9 +14,6 @@ import funtions.FileFuntions;
 
 public class GeneralView extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private String directory;
 
@@ -62,7 +59,6 @@ public class GeneralView extends JFrame {
 
 				File deleteFile = new File(directory + File.separator + "temporal");
 				FileFuntions.deleteTemporalFolder(deleteFile);
-				
 
 			}
 

@@ -20,9 +20,6 @@ import funtions.ShowTiff;
 
 public class ViewImagesBigger extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private List<ImageIcon> listImages;
 	private JLabel labelImage;
@@ -34,11 +31,6 @@ public class ViewImagesBigger extends JPanel {
 	private AlgorithmView al;
 
 	public ViewImagesBigger(Icon image, List<ImageIcon> listImages, Component tp) {
-
-		// setMinimumSize(new Dimension(1000, 800));
-
-		// JSplitPane jSp = new JSplitPane();
-		// JScrollPane s = new JScrollPane(jSp);
 
 		this.listImages = listImages;
 		this.image = image;
@@ -176,23 +168,14 @@ public class ViewImagesBigger extends JPanel {
 		this.setVisible(true);
 
 	}
-	
-	
-	
 
 	public JLabel getLabelImage() {
 		return labelImage;
 	}
 
-
-
-
 	public void setLabelImage(JLabel labelImage) {
 		this.labelImage = labelImage;
 	}
-
-
-
 
 	public void closeTab(ActionEvent evt) {
 		JButton bu = (JButton) evt.getSource();

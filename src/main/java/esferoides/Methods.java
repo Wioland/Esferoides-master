@@ -5,22 +5,29 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import funtions.ExcelActions;
 import funtions.FileFuntions;
-import ij.IJ;
 import ij.measure.ResultsTable;
-import interfaces.OurProgressBar;
 import loci.plugins.in.ImporterOptions;
 
 public class Methods {
+
 	private static ArrayList<Integer> goodRows;
-	private static String[] algorithms = { "suspension", "colageno", "Hector no fluo v1", "Hector no fluo v2", "Teodora v1" };
+	private static String[] algorithms = { "suspension", "colageno", "Hector no fluo v1", "Hector no fluo v2",
+			"Teodora v1" };
 	private static File temporalFolder;
 
+	/**
+	 * Constructor. Creates the images with the methods given in the temporal folder
+	 * if it's possible
+	 * 
+	 * @param directory current directory
+	 * @param result    List of the file paths of the current directory
+	 */
 	public Methods(String directory, List<String> result) {
+
 		temporalFolder = new File(directory + "temporal");
+
 		for (String type : algorithms) {
 			if (type.equals("suspension") || type.equals("colageno")) {
 				if (checkIfFluoImages(result)) {
@@ -38,6 +45,8 @@ public class Methods {
 		}
 	}
 
+	// Getters and setters
+
 	public static File getTemporalFolder() {
 		return temporalFolder;
 	}
@@ -54,11 +63,13 @@ public class Methods {
 		this.algorithms = algorithms;
 	}
 
-	
-	
-	
-	
-
+	/**
+	 * Checks all the files in the directory has a fluo image
+	 * 
+	 * @param result list path of the files
+	 * @return true if all have fluo images false if none of then have a fluo image
+	 *         or some of then haven't it
+	 */
 	private boolean checkIfFluoImages(List<String> result) {
 		boolean haveFluo = true;
 		File faux;
@@ -66,11 +77,10 @@ public class Methods {
 
 		for (String name : result) {
 			faux = new File(name);
-			nameNoextension=FileFuntions.namewithoutExtension(name);
-			if(!nameNoextension.endsWith("fluo")) {
+			nameNoextension = FileFuntions.namewithoutExtension(name);
+			if (!nameNoextension.endsWith("fluo")) {
 				faux = new File(faux.getAbsolutePath().replace(nameNoextension, nameNoextension + "fluo"));
 			}
-			
 
 			if (!faux.exists()) {
 //				JOptionPane.showMessageDialog(null,
@@ -84,22 +94,28 @@ public class Methods {
 		return haveFluo;
 	}
 
+	/**
+	 * Method that creates the images in the temporal directory with the method
+	 * given
+	 * 
+	 * @param result    paths of the files
+	 * @param directory temporal directory to store the images
+	 * @param type      the method used to create the images
+	 */
 	private void createImagesMetods(List<String> result, String directory, String type) {
 		try {
-			
-			
-			if (type.contains("Hector")){
-				int i=0;
+
+			// In order to only take the tif images without the fluo ones
+			if (type.contains("Hector")) {
+				int i = 0;
 				for (String name : result) {
-					if(name.endsWith("fluo.tif")) {
+					if (name.endsWith("fluo.tif")) {
 						result.set(i, name.replace("fluo.tif", ".tif"));
 						i++;
 					}
 				}
 			}
-			
-			
-			
+
 			// We initialize the ResultsTable
 			ResultsTable rt = new ResultsTable();
 			ImporterOptions options = new ImporterOptions();
@@ -108,7 +124,7 @@ public class Methods {
 
 			EsferoidProcessor esferoidProcessor = EsferoidProcessorFactory.createEsferoidProcessor(type);
 
-			//OurProgressBar pb = new OurProgressBar(null);
+			// OurProgressBar pb = new OurProgressBar(null);
 			goodRows = new ArrayList<>();
 			// For each file in the folder we detect the esferoid on it.
 			for (String name : result) {
@@ -130,9 +146,6 @@ public class Methods {
 
 			rt.reset();
 
-			//pb.setVisible(false);
-			//pb.dispose();
-			//IJ.showMessage("Process finished");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

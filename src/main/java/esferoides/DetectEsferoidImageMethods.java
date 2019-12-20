@@ -57,7 +57,6 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Fill Holes", "");
 		IJ.run(imp2, "Erode", "");
 		IJ.run(imp2, "Erode", "");
-//		IJ.run(imp2, "Watershed", "");
 		int w = imp2.getWidth();
 		int h = imp2.getHeight();
 		imp2.setRoi(10, 10, w - 10, h - 10);
@@ -75,7 +74,6 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Dilate", "");
 		IJ.run(imp2, "Fill Holes", "");
 		IJ.run(imp2, "Erode", "");
-//		IJ.run(imp2, "Watershed", "");
 		int w = imp2.getWidth();
 		int h = imp2.getHeight();
 		imp2.setRoi(10, 10, w - 10, h - 10);
@@ -89,7 +87,7 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Find Edges", "");
 
 		IJ.run(imp2, "Maximum...", "radius=" + maxFilter);
-		ImagePlus imp4 = imp2.duplicate();
+		// ImagePlus imp4 = imp2.duplicate();
 
 		ImageStatistics stats = imp2.getAllStatistics();
 		double mean = stats.mean;
@@ -106,7 +104,6 @@ public class DetectEsferoidImageMethods {
 		}
 		IJ.run(imp2, "Erode", "");
 		IJ.run(imp2, "Erode", "");
-//		IJ.run(imp2, "Watershed", "");
 		int w = imp2.getWidth();
 		int h = imp2.getHeight();
 		imp2.setRoi(50, 50, w - 50, h - 50);
@@ -114,8 +111,6 @@ public class DetectEsferoidImageMethods {
 		imp2 = imp2.duplicate();
 		imp2.setTitle(title);
 		IJ.run(imp2, "Canvas Size...", "width=" + w + " height=" + h + " position=Center");
-
-//		IJ.run(imp3, "Shape Smoothing", "relative_proportion_fds=5 absolute_number_fds=2 keep=[Relative_proportion of FDs]");
 
 	}
 
@@ -142,15 +137,12 @@ public class DetectEsferoidImageMethods {
 			IJ.run(imp2, "Dilate", "");
 		}
 		IJ.run(imp2, "Watershed", "");
-//		IJ.run(imp2, "Shape Smoothing", "relative_proportion_fds=5 absolute_number_fds=2 keep=[Relative_proportion of FDs]");
 
 	}
 
 	public static void processEsferoidesGeneralCase(ImagePlus imp2) {
 		IJ.run(imp2, "Convolve...",
 				"text1=[-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 50 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n] normalize");
-//		IJ.run(imp2, "Convolve...",
-//				"text1=[-1 -1 -1 -1 -1\n-1 -1 -1 -1 -1\n-1 -1 24 -1 -1\n-1 -1 -1 -1 -1\n-1 -1 -1 -1 -1\n] normalize");
 
 		IJ.run(imp2, "Maximum...", "radius=2");
 		Prefs.blackBackground = false;
@@ -163,7 +155,6 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Erode", "");
 		IJ.run(imp2, "Erode", "");
 		IJ.run(imp2, "Erode", "");
-//		IJ.run(imp2, "Shape Smoothing", "relative_proportion_fds=5 absolute_number_fds=2 keep=[Relative_proportion of FDs]");
 
 	}
 
@@ -175,30 +166,18 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Fill Holes", "");
 		IJ.run(imp2, "Erode", "");
 		IJ.run(imp2, "Erode", "");
-//		IJ.run(imp2, "Shape Smoothing", "relative_proportion_fds=5 absolute_number_fds=2 keep=[Relative_proportion of FDs]");
 
 	}
 
 	public static void processEsferoidUsingThresholdCombination(ImagePlus imp2) {
 
 		ImagePlus imp1 = imp2.duplicate();
-//		IJ.run(imp1, "Convolve...",
-//				"text1=[-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 50 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n] normalize");
-//		IJ.run(imp1, "Maximum...", "radius=2");
-//		Prefs.blackBackground = false;
-//		IJ.run(imp1, "Convert to Mask", "");
-//		IJ.run(imp1, "Dilate", "");
-//		IJ.run(imp1, "Dilate", "");
-//		IJ.run(imp1, "Dilate", "");
-//		IJ.run(imp1, "Fill Holes", "");
 		IJ.run(imp1, "Find Edges", "");
 		IJ.run(imp1, "Convert to Mask", "");
 		IJ.run(imp1, "Morphological Filters", "operation=[Black Top Hat] element=Square radius=5");
 		imp1.changes = false;
 		imp1.close();
 		ImagePlus imp4 = IJ.getImage();
-//		imp3.close();
-//		imp3= IJ.getImage();
 		IJ.run(imp4, "Dilate", "");
 		IJ.run(imp4, "Dilate", "");
 		IJ.run(imp4, "Fill Holes", "");
@@ -213,7 +192,6 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Erode", "");
 		ImageCalculator ic = new ImageCalculator();
 		ImagePlus imp3 = ic.run("OR create", imp4, imp2);
-//		IJ.run(imp3, "Shape Smoothing", "relative_proportion_fds=5 absolute_number_fds=2 keep=[Relative_proportion of FDs]");
 
 		imp4.changes = false;
 		imp4.close();
@@ -231,7 +209,6 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Erode", "");
 		IJ.run(imp2, "Erode", "");
 		IJ.run(imp2, "Watershed", "");
-//		IJ.run(imp2, "Shape Smoothing", "relative_proportion_fds=5 absolute_number_fds=2 keep=[Relative_proportion of FDs]");
 
 	}
 
@@ -241,14 +218,12 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Morphological Filters", "operation=[Black Top Hat] element=Square radius=5");
 		imp2.close();
 		ImagePlus imp3 = IJ.getImage();
-//		imp3.close();
-//		imp3= IJ.getImage();
+
 		IJ.run(imp3, "Dilate", "");
 		IJ.run(imp3, "Dilate", "");
 		IJ.run(imp3, "Fill Holes", "");
 		IJ.run(imp3, "Erode", "");
 		IJ.run(imp3, "Erode", "");
-//		IJ.run(imp3, "Shape Smoothing", "relative_proportion_fds=5 absolute_number_fds=2 keep=[Relative_proportion of FDs]");
 
 	}
 
@@ -256,9 +231,6 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Variance...", "radius=1");
 		IJ.setAutoThreshold(imp2, "Default"); // dark
 		IJ.run(imp2, "Convert to Mask", "");
-//		IJ.run(imp2, "Fill Holes", "");
-
-//		IJ.run(imp3, "Shape Smoothing", "relative_proportion_fds=5 absolute_number_fds=2 keep=[Relative_proportion of FDs]");
 
 	}
 
@@ -267,8 +239,6 @@ public class DetectEsferoidImageMethods {
 		IJ.setAutoThreshold(imp2, "Default dark");
 		IJ.run(imp2, "Convert to Mask", "");
 		IJ.run(imp2, "Fill Holes", "");
-
-//		IJ.run(imp3, "Shape Smoothing", "relative_proportion_fds=5 absolute_number_fds=2 keep=[Relative_proportion of FDs]");
 
 	}
 

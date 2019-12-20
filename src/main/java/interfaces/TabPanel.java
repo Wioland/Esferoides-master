@@ -23,9 +23,6 @@ import funtions.Utils;
 
 public class TabPanel extends JTabbedPane {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Map<Integer, Long> excelModificationIndexTab;
 	private Map<Integer, File> IndexTabExcel;
@@ -67,7 +64,7 @@ public class TabPanel extends JTabbedPane {
 				}
 			}
 		} else {
-			JPanel splitPane = new JPanel(new GridBagLayout()) ;
+			JPanel splitPane = new JPanel(new GridBagLayout());
 			LensMEnuButtons lens = new LensMEnuButtons(images.getListImagesPrev());
 			JScrollPane s = new JScrollPane(images);
 			GridBagConstraints constraints = new GridBagConstraints();
@@ -75,17 +72,17 @@ public class TabPanel extends JTabbedPane {
 
 			constraints.gridx = 0;
 			constraints.gridy = 0;
-			
-			splitPane.add(lens,constraints);
-			
+
+			splitPane.add(lens, constraints);
+
 			constraints.weightx = 1;
 			constraints.weighty = 1;
 			constraints.gridx = 0;
 			constraints.gridy = 1;
-			splitPane.add(s,constraints);
+			splitPane.add(s, constraints);
 
 			addTab("Images", splitPane);
-			
+
 		}
 
 		// los del excel
@@ -99,14 +96,13 @@ public class TabPanel extends JTabbedPane {
 
 				excel = new File(path);
 				if (excel.exists()) {
-					ExcelActions.addExcelPanel(excel,this);
+					ExcelActions.addExcelPanel(excel, this);
 
 				} else {
 					noFileText("Excel", null);
 				}
 
 			}
-			
 
 		}
 
@@ -116,8 +112,8 @@ public class TabPanel extends JTabbedPane {
 				TabPanel tab = (TabPanel) e.getSource();
 
 				if (tab.getTitleAt(tab.getSelectedIndex()).contains("Excel")) {
-					ExcelActions.checkExcelTab(tab, dir,tab.getSelectedIndex()) ;
-				}else {
+					ExcelActions.checkExcelTab(tab, dir, tab.getSelectedIndex());
+				} else {
 					if (tab.getTitleAt(tab.getSelectedIndex()).contains("Images")) {
 						FileFuntions.isDirectoryContentModify(dir, tab);
 					}
@@ -125,11 +121,10 @@ public class TabPanel extends JTabbedPane {
 
 			}
 		});
-		
-		
+
 		FileFuntions.addModificationDirectory(dir);
 		FileFuntions.imagescheckWithTime(this, 60);
-		
+
 		ExcelActions.excelcheckWithTime(this, dir, 60);
 
 	}
@@ -178,10 +173,10 @@ public class TabPanel extends JTabbedPane {
 			if (tabName.equals("Excel")) { // igual hay que cambiarlo por el nombre
 				insertTab(tabName, null, s, null, 1);
 				excelModificationIndexTab.put(this.indexOfTab(tabName), 0L);
-				
-				//int index= indexOfComponent(s);
-				
-				//ExcelActions.excelcheckWithTime(this, dir, index, 60); 
+
+				// int index= indexOfComponent(s);
+
+				// ExcelActions.excelcheckWithTime(this, dir, index, 60);
 			} else {
 				addTab(tabName, s);
 			}
@@ -192,10 +187,5 @@ public class TabPanel extends JTabbedPane {
 		}
 
 	}
-
-	
-
-	
-
 
 }

@@ -16,9 +16,6 @@ import org.apache.poi.ss.usermodel.Row;
 
 public class ExcelTableCreator extends JTable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private File excel;
@@ -27,7 +24,7 @@ public class ExcelTableCreator extends JTable {
 	public ExcelTableCreator(File excel) {
 		this.excel = excel;
 		readXLSX(excel);
-		
+
 	}
 
 	private void readXLSX(File file) {
@@ -103,7 +100,4 @@ public class ExcelTableCreator extends JTable {
 		}
 	}
 
-	
-	
-	
 }

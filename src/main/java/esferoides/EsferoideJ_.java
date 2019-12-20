@@ -15,7 +15,6 @@ import ij.measure.ResultsTable;
 import interfaces.OurProgressBar;
 import loci.plugins.in.ImporterOptions;
 
-
 @Plugin(type = Command.class, headless = true, menuPath = "Plugins>EsferoideJ")
 public class EsferoideJ_ implements Command {
 
@@ -49,27 +48,12 @@ public class EsferoideJ_ implements Command {
 
 			// We first read the list of files
 			List<String> result = esferoidProcessor.getSearchFiles().apply();
-			
+
 			String dir = result.get(0);
 			result.remove(0);
-
-//		// ProgressBar
-//		
-//		IJ.setForegroundColor(255, 0, 0);
 			goodRows = new ArrayList<>();
-//		JFrame frame = new JFrame("Work in progress");
-//		JProgressBar progressBar = new JProgressBar();
-//		progressBar.setValue(0);
-//		progressBar.setString("");
-//		progressBar.setStringPainted(true);
-//		progressBar.setIndeterminate(true);
-//		Border border = BorderFactory.createTitledBorder("Processing...");
-//		progressBar.setBorder(border);
-//		Container content = frame.getContentPane();
-//		content.add(progressBar, BorderLayout.NORTH);
-//		frame.setSize(300, 100);
-//		frame.setVisible(true);
-//		
+
+			// ProgressBar
 			OurProgressBar pb = new OurProgressBar(null);
 
 			// For each file in the folder we detect the esferoid on it.
@@ -94,15 +78,12 @@ public class EsferoideJ_ implements Command {
 
 			pb.setVisible(false);
 			pb.dispose();
-			//IJ.showMessage("Process finished");
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
-	
-	
-
 
 }
