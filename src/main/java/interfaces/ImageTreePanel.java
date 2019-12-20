@@ -114,107 +114,102 @@ public class ImageTreePanel extends JSplitPane {
 		if (me.getClickCount() == 2 && !me.isConsumed()) {
 			me.consume();
 			TreePath tp = tree.getPathForLocation(me.getX(), me.getY());
-			String path = FileFuntions.getPathSelectedTreeFile(tp);
-			ij.WindowManager.closeAllWindows();
-			// System.out.println("Path de treepath " + tp.toString());
+			if (tp != null) {
+				String path = FileFuntions.getPathSelectedTreeFile(tp);
+				ij.WindowManager.closeAllWindows();
+				// System.out.println("Path de treepath " + tp.toString());
 
-			if (tp.getPath().length > 0) {
-				File fileSelected = new File(path);
+				if (tp.getPath().length > 0) {
+					File fileSelected = new File(path);
 
-				if (fileSelected.isFile()) {
+					if (fileSelected.isFile()) {
 
-					// hacer que se abran en imagej
+						// hacer que se abran en imagej
 
-					String roiPath = RoiFuntions.getRoiPathPredicctions(path);
-					RoiFuntions.showOriginalFilePlusRoi(path, roiPath);
+						String roiPath = RoiFuntions.getRoiPathPredicctions(path);
+						RoiFuntions.showOriginalFilePlusRoi(path, roiPath);
 
-				} else {
-					if (!path.equals(dir)) { // si no es el directorio en el que nos encontramos que
+					} else {
+						if (!path.equals(dir)) { // si no es el directorio en el que nos encontramos que
 
-						File folder = new File(path);
-						List<String> resultTif = new ArrayList<String>();
-						List<String> resultNd2 = new ArrayList<String>();
-						List<String> resultTiff = new ArrayList<String>();
-						String oldPath = this.dir;
-						String detectedFiles= "";
-						boolean switchFolder = true;
-						this.dir = path;
+							File folder = new File(path);
+							List<String> resultTif = new ArrayList<String>();
+							List<String> resultNd2 = new ArrayList<String>();
+							List<String> resultTiff = new ArrayList<String>();
+							String oldPath = this.dir;
+							String detectedFiles = "";
+							boolean switchFolder = true;
+							this.dir = path;
 
-						Utils.search(".*\\.tif", folder, resultTif);
-						Utils.search(".*\\.tiff", folder, resultTiff);
-						Utils.search(".*\\.nd2", folder, resultNd2);
-						
-						if (resultTiff.size() != 0) {
-							detectedFiles+= "Tiff ";
-						}
-						if (resultTif.size() != 0) {
-							detectedFiles+= "Tif ";
-						}
-						if (resultNd2.size() != 0) {
-							detectedFiles+= "ND2 ";
-						}
-						
-						
-						
-						
-						
-						if (resultTif.size() != 0 || resultNd2.size() != 0 ) {
-							JOptionPane.showMessageDialog(this, "Detected image files with the requered extension");
-							Main.callProgram(dir, this);
-							changeDirActions( resultTiff, detectedFiles, oldPath, switchFolder);
-						} else { 
-							JOptionPane.showMessageDialog(this,
-									"Nothing to be done. Not changing to de selected folder");
-							this.dir = oldPath;
-							switchFolder = false;
+							Utils.search(".*\\.tif", folder, resultTif);
+							Utils.search(".*\\.tiff", folder, resultTiff);
+							Utils.search(".*\\.nd2", folder, resultNd2);
 
-						}
+							if (resultTiff.size() != 0) {
+								detectedFiles += "Tiff ";
+							}
+							if (resultTif.size() != 0) {
+								detectedFiles += "Tif ";
+							}
+							if (resultNd2.size() != 0) {
+								detectedFiles += "ND2 ";
+							}
 
-						if (switchFolder) {
-							JOptionPane.showMessageDialog(this, "Changed the folder to " + dir);
-							FileFuntions.addModificationDirectory(dir);
+							if (resultTif.size() != 0 || resultNd2.size() != 0) {
+								JOptionPane.showMessageDialog(this, "Detected image files with the requered extension");
+								Main.callProgram(dir, this);
+								changeDirActions(resultTiff, detectedFiles, oldPath, switchFolder);
+							} else {
+								JOptionPane.showMessageDialog(this,
+										"Nothing to be done. Not changing to de selected folder");
+								this.dir = oldPath;
+								switchFolder = false;
+
+							}
+
+							if (switchFolder) {
+								JOptionPane.showMessageDialog(this, "Changed the folder to " + dir);
+								FileFuntions.addModificationDirectory(dir);
+							}
+
 						}
 
 					}
 
 				}
-
 			}
+
 		}
 	}
-	
-	
-	
-	public void changeDirActions(List<String> result, String extensionFile,String oldPath,boolean switchFolder) {
+
+	public void changeDirActions(List<String> result, String extensionFile, String oldPath, boolean switchFolder) {
 		if (result.size() == 0) { // si no tiene imagenes tiff, es decir no se han hecho predicciones
 
 			int n = JOptionPane.showConfirmDialog(this,
-					"The folder contains " + extensionFile +" files do you want to use an Algorithm?",
-					extensionFile+" files detected", JOptionPane.YES_NO_OPTION);
+					"The folder contains " + extensionFile + " files do you want to use an Algorithm?",
+					extensionFile + " files detected", JOptionPane.YES_NO_OPTION);
 
 			if (n == 0) {
 				SelectAlgoritm sAl = new SelectAlgoritm(dir, this);
 			} else {
-				JOptionPane.showMessageDialog(this,
-						"Nothing to be done. Not changing to the selected folder");
+				JOptionPane.showMessageDialog(this, "Nothing to be done. Not changing to the selected folder");
 				this.dir = oldPath;
 				switchFolder = false;
 			}
 
-		} else {//Mostrar los tiff
+		} else {// Mostrar los tiff
 
 			repaintTabPanel();
 		}
 	}
 
 	public void repaintTabPanel() {
-	
+
 		folderView = new TabPanel(this.dir);
 		// se crean los scrolls
 		// s.setViewportView(folderView);
 		this.setRightComponent(folderView);
 		folderView.repaint();
-		
 
 	}
 

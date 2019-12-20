@@ -15,6 +15,7 @@ import ij.measure.ResultsTable;
 import interfaces.OurProgressBar;
 import loci.plugins.in.ImporterOptions;
 
+
 @Plugin(type = Command.class, headless = true, menuPath = "Plugins>EsferoideJ")
 public class EsferoideJ_ implements Command {
 
@@ -100,5 +101,8 @@ public class EsferoideJ_ implements Command {
 		}
 
 	}
+	
+	
+
 
 }

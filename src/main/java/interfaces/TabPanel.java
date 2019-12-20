@@ -43,7 +43,7 @@ public class TabPanel extends JTabbedPane {
 		this.dir = directory;
 		originalIma = false;
 
-		Utils.searchDirectory(".*\\.xls", folder, result);
+		Utils.search(".*\\.xls", folder, result);
 		Collections.sort(result);
 
 		// Creamos los paneles, creamos los componentes dentro de estos y aniadimos el

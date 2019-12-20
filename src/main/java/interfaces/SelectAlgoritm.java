@@ -16,18 +16,18 @@ public class SelectAlgoritm {
 	
 		
 	
-		EsferoideJ_ esfe= new EsferoideJ_();
-		IJ.runMacro("EsferoideJ");
+		//EsferoideJ_ esfe= new EsferoideJ_();
 		
 		
 		this.dir = directory;
 		
-		Methods.getAlgorithms();
+		//Methods.getAlgorithms();
+		//IJ.run( "EsferoideJ");
 		//IJ.run("EsferoideJ_.class");
 	
 		
-//		Class<?> clazz = EsferoideJ_.class;
-//		IJ.runPlugIn(clazz.getName(), "");
+	Class<?> clazz = EsferoideJ_.class;
+		IJ.runPlugIn(clazz.getName(), "");
 	
 //		dir = esfe.getDir();
 //		GeneralView ventana = new GeneralView(dir);
