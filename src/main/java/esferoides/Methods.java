@@ -14,7 +14,7 @@ public class Methods {
 
 	private static ArrayList<Integer> goodRows;
 	private static String[] algorithms = { "suspension", "colageno", "Hector no fluo v1", "Hector no fluo v2",
-			"Teodora v1" };
+			"Teodora v1","Teodora Big"};
 	private static File temporalFolder;
 
 	/**
@@ -36,7 +36,7 @@ public class Methods {
 
 			} else {
 				if ((type.contains("Hector") && FileFuntions.isExtension(result, "tif"))
-						|| (type.equals("Teodora v1") && FileFuntions.isExtension(result, "nd2"))) {
+						|| (type.equals("Teodora v1") && FileFuntions.isExtension(result, "nd2")) || (type.equals("Teodora Big") && FileFuntions.isExtension(result, "nd2")) ) {
 					createImagesMetods(result, directory, type);
 				}
 

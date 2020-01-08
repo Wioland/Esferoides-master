@@ -29,7 +29,6 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import esferoides.EsferoideJ_;
 import ij.ImageJ;
 import interfaces.ShowImages;
 import interfaces.TabPanel;
@@ -44,14 +43,12 @@ public class FileFuntions {
 	 * assign the plugin folder for imageJ and creates a instance of imageJ
 	 */
 	public static void chargePlugins() {
-		Class<?> clazz = EsferoideJ_.class;
-		String url = clazz.getResource("/" + clazz.getName().replace('.', '/') + ".class").toString();
-		String pluginsDir = url.substring("file:".length(),
-				url.length() - clazz.getName().length() - ".class".length());
-		System.setProperty("plugins.dir", pluginsDir);
+		PropertiesFileFuntions prop = new PropertiesFileFuntions();
+		prop.cheeckJarDirectoryChange();
+		System.setProperty("plugins.dir", prop.getProp().getProperty("jarDirectory"));
 
 		ImageJ imageJFrame = new ImageJ();
-		// imageJFrame.setVisible(false);
+		imageJFrame.setVisible(false);
 
 	}
 
@@ -121,8 +118,11 @@ public class FileFuntions {
 			String pattern = originalName.replace(extension, ".*\\.*");
 
 			File oldFolder = new File(selectedFile.getAbsolutePath().replace(selectedFile.getName(), ""));
+			String oldNameNoExt = namewithoutExtension(selectedFile.getAbsolutePath());
+			oldNameNoExt += ".*\\.*";
+			oldNameNoExt = oldNameNoExt.replace("_pred", "");
 
-			Utils.search(pattern, oldFolder, temporalFiles);
+			Utils.search(oldNameNoExt, oldFolder, temporalFiles);
 			Utils.search(pattern, saveDir, originalFiles);
 
 			for (String s : temporalFiles) {
@@ -132,7 +132,7 @@ public class FileFuntions {
 					/*
 					 * If the new file was succesfully move to the predicctions folder if the
 					 * original file exist we delete it and change the name of the new file
-					 * otherwise we onle rename
+					 * otherwise we only rename
 					 */
 					for (String oriFilePath : originalFiles) {
 						extension = extensionwithoutName(s);
@@ -144,6 +144,7 @@ public class FileFuntions {
 								Path from = f.toPath();
 								Path to = orFile.toPath();
 								try {
+									// orFile.delete();
 									Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
 
 								} catch (IOException e) {
@@ -156,7 +157,6 @@ public class FileFuntions {
 
 							}
 
-							break;
 						}
 
 					}
@@ -260,7 +260,12 @@ public class FileFuntions {
 	 */
 	public static String extensionwithoutName(String filePath) {
 		File f = new File(filePath);
-		return f.getName().split("\\.")[1];
+		if (f.getName().contains(".")) {
+			return f.getName().split("\\.")[1];
+		} else {
+			return "";
+		}
+
 	}
 
 	/**
@@ -273,8 +278,8 @@ public class FileFuntions {
 		if (directoryLastChange == null) {
 			directoryLastChange = new HashMap<String, Long>();
 		}
-		File faux = new File(directory + "predictions");
-		directoryLastChange.put(directory + "predictions", faux.lastModified());
+		File faux = new File(directory);
+		directoryLastChange.put(directory, faux.lastModified());
 
 	}
 
@@ -285,8 +290,8 @@ public class FileFuntions {
 	 * @return true if the directory has been modify
 	 */
 	public static boolean directoryHasChange(String directory) {
-		File direFile = new File(directory + "predictions");
-		return direFile.lastModified() != directoryLastChange.get(directory + "predictions");
+		File direFile = new File(directory);
+		return direFile.lastModified() != directoryLastChange.get(directory);
 	}
 
 	/**
@@ -297,6 +302,7 @@ public class FileFuntions {
 	 * @param tp        The tabPanel that shows the content of the directory
 	 */
 	public static void isDirectoryContentModify(String directory, TabPanel tp) {
+
 		if (directoryHasChange(directory)) {
 			JOptionPane.showMessageDialog(null, "The content of the directoy has change. Painting again the images",
 					"Warning", JOptionPane.WARNING_MESSAGE);
@@ -312,7 +318,7 @@ public class FileFuntions {
 			Utils.search(".*\\.tiff", new File(directory), actualImages);
 			Collections.sort(actualImages);
 
-			checkStillExist(images, actualImages); // check if the images of the buttons still exist
+			checkStillExist(images, actualImages,tp); // check if the images of the buttons still exist
 
 			if (actualImages.size() != 0) { // if we have new file we add them
 				for (String name : actualImages) {
@@ -327,9 +333,10 @@ public class FileFuntions {
 					JButton imageView = new JButton(iconoEscala);
 					imageView.setIcon(iconoEscala);
 					imageView.setName(name);
-
 					images.getImageIcon().add(image);
-
+					imageView.repaint();
+					
+					
 					imageView.addMouseListener(new MouseAdapter() {
 						public void mouseClicked(MouseEvent e) {
 
@@ -364,7 +371,7 @@ public class FileFuntions {
 	 * @param images       ShowImages with the images shown
 	 * @param actualImages List of the images of the directory
 	 */
-	public static void checkStillExist(ShowImages images, List<String> actualImages) {
+	public static void checkStillExist(ShowImages images, List<String> actualImages, TabPanel tp) {
 		Iterator<String> imageModify = images.getLastModifyImage().keySet().iterator();
 		while (imageModify.hasNext()) {
 
@@ -379,6 +386,7 @@ public class FileFuntions {
 
 					JButton imageButton = images.getListImagesPrev().get(imaPath);
 					ImageIcon ima = new ImageIcon(imaPath);
+					ima.setDescription(imaPath);
 					imageButton.setIcon(ima);
 					imageButton.repaint();
 
@@ -386,7 +394,6 @@ public class FileFuntions {
 					images.getLastModifyImage().put(imaPath, faux.lastModified());
 
 				}
-				actualImages.remove(imaPath);
 			} else {// if it doesn´t exist we delete it from the map
 
 				JButton deleteImage = images.getListImagesPrev().get(imaPath);
@@ -395,6 +402,7 @@ public class FileFuntions {
 				imageModify.remove();
 
 			}
+			actualImages.remove(imaPath);
 
 		}
 	}

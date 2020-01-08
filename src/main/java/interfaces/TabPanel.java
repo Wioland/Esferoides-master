@@ -115,21 +115,21 @@ public class TabPanel extends JTabbedPane {
 					ExcelActions.checkExcelTab(tab, dir, tab.getSelectedIndex());
 				} else {
 					if (tab.getTitleAt(tab.getSelectedIndex()).contains("Images")) {
-						FileFuntions.isDirectoryContentModify(dir, tab);
+						FileFuntions.isDirectoryContentModify(dir+"predictions", tab);
 					}
 				}
 
 			}
 		});
 
-		FileFuntions.addModificationDirectory(dir);
+		FileFuntions.addModificationDirectory(dir+"predictions");
 		FileFuntions.imagescheckWithTime(this, 60);
 
 		ExcelActions.excelcheckWithTime(this, dir, 60);
 
 	}
 
-	public String getDir() {
+	public String getDir() { 
 		return dir;
 	}
 

@@ -23,7 +23,7 @@ public class ImagesTask extends TimerTask {
 //		LOGGER.log(Level.INFO, "ImageTask    Numero de ejecución " + counter);
 //		counter++;
 
-		FileFuntions.isDirectoryContentModify(dir, tp);
+		FileFuntions.isDirectoryContentModify(dir+"predictions", tp);
 	}
 
 }

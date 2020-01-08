@@ -241,5 +241,25 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Fill Holes", "");
 
 	}
+	
+public static void processEsferoidBig(ImagePlus imp2) {
+		
+		ImagePlus imp1 = imp2.duplicate();
+		imp1.show();
+		IJ.setAutoThreshold(imp1, "Default"); 
+		IJ.run(imp1, "Convert to Mask", "");
+		IJ.run(imp2, "Find Edges", "");
+		IJ.run(imp2, "Find Edges", "");
+		IJ.setAutoThreshold(imp2, "Default dark");
+		IJ.run(imp2, "Convert to Mask", "");
+		ImageCalculator ic = new ImageCalculator();
+		ic.run("ADD", imp2, imp1);
+		IJ.run(imp2, "Fill Holes", "");
+		imp1.changes=false;
+		//imp2.changes=false;
+		imp1.close();
+		
+	}
+
 
 }

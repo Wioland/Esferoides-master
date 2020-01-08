@@ -34,11 +34,17 @@ public class AnalyseParticleMethods {
 		return rm;
 	}
 
-	public static RoiManager analyseParticlesTeodora(ImagePlus imp2, boolean blackHole) {
+	public static RoiManager analyseParticlesTeodora(ImagePlus imp2, boolean blackHole,boolean exclude) {
 		if (blackHole) {
 			IJ.run(imp2, "Analyze Particles...", "size=20000-Infinity circularity=0.5-1.00 show=Outlines exclude add");
 		} else {
-			IJ.run(imp2, "Analyze Particles...", "size=20000-Infinity circularity=0.25-1.00 show=Outlines exclude add");
+			if (exclude) {
+				IJ.run(imp2, "Analyze Particles...",
+						"size=20000-Infinity circularity=0.15-1.00 show=Outlines exclude add");
+			}else {
+				IJ.run(imp2, "Analyze Particles...",
+						"size=20000-Infinity circularity=0.00-1.00 show=Outlines add");
+			}
 		}
 
 		ImagePlus imp3 = IJ.getImage();

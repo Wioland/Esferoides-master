@@ -68,20 +68,10 @@ public class ViewImagesBigger extends JPanel {
 
 		JPanel panelButtons = new JPanel();
 
-//		panelButtons.setMaximumSize(new Dimension(200, 200));
-//		backBu.setMaximumSize(new Dimension(200, 200));
-//		forwardBu.setMaximumSize(new Dimension(200, 200));
-
 		panelButtons.add(backBu);
 		panelButtons.add(forwardBu);
 
-//		jSp.setOrientation(SwingConstants.HORIZONTAL);
 		JScrollPane scrollIma = new JScrollPane(labelImage);
-
-//		jSp.setTopComponent(scrollIma);
-//		jSp.setBottomComponent(panelButtons);
-//
-//		jSp.setDividerLocation(800);
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -100,7 +90,6 @@ public class ViewImagesBigger extends JPanel {
 			tryAlgoriBu.setText("Try other algorithm");
 
 			addlistenerButton(backBu, forwardBu, tryAlgoriBu);
-//			tryAlgoriBu.setMaximumSize(new Dimension(200, 200));
 			panelButtons.add(tryAlgoriBu);
 			String nombreImagen = (new File(listImages.get(indexImagenList).getDescription())).getName();
 			String title = indexImageView + nombreImagen;
@@ -147,7 +136,6 @@ public class ViewImagesBigger extends JPanel {
 			splitPa.setLeftComponent(new JScrollPane(originalImaLb));
 			splitPa.setRightComponent(new JScrollPane(labelImage));
 
-			// JScrollPane scroll = new JScrollPane(splitPa);
 			splitPa.setVisible(true);
 			this.add(splitPa, constraints);
 			splitPa.setDividerLocation(500);
@@ -155,9 +143,6 @@ public class ViewImagesBigger extends JPanel {
 
 			addlistenerButton(backBu, forwardBu);
 		}
-
-//		jSp.setVisible(true);
-//		add(jSp);
 
 		constraints.weightx = 0;
 		constraints.weighty = 0;

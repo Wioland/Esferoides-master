@@ -157,7 +157,7 @@ public class ImageTreePanel extends JSplitPane {
 
 							if (switchFolder) {
 								JOptionPane.showMessageDialog(this, "Changed the folder to " + dir);
-								FileFuntions.addModificationDirectory(dir);
+								FileFuntions.addModificationDirectory(dir+"predictions");
 							}
 
 						}
@@ -208,9 +208,13 @@ public class ImageTreePanel extends JSplitPane {
 	private void addChildTree(DefaultMutableTreeNode parentNode, File parent, DefaultTreeModel modelo) {
 
 		int index = 0;
+		List<String> listExtensions = JMenuPropertiesFile.getExtensions();
 
 		for (File f : parent.listFiles()) {
-			if (f.isFile() && !f.getName().endsWith("xls")) {
+
+			String extension = FileFuntions.extensionwithoutName(f.getAbsolutePath());
+			
+			if (f.isFile() && !f.getName().endsWith("xls") && listExtensions.contains(extension)) {
 				DefaultMutableTreeNode child = new DefaultMutableTreeNode(f.getName());
 				modelo.insertNodeInto(child, parentNode, index);
 				index++;

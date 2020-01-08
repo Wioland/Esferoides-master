@@ -8,6 +8,7 @@ import java.awt.event.WindowListener;
 import java.io.File;
 
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 
 import funtions.FileFuntions;
@@ -16,10 +17,12 @@ public class GeneralView extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private String directory;
+	private JMenuBar mb;
 
 	public GeneralView(String directory) {
 
 		this.directory = directory;
+		this.mb = new JMenuBar();
 
 		// Parametros ventana
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,6 +77,10 @@ public class GeneralView extends JFrame {
 
 			}
 		});
+
+		setJMenuBar(mb);
+		JMenuPropertiesFile menu = new JMenuPropertiesFile();
+		mb.add(menu);
 
 		OurProgressBar pb = new OurProgressBar(this);
 		ImageTreePanel imageTree = new ImageTreePanel(directory);

@@ -11,6 +11,8 @@ public class Main {
 	// PRUEBAS
 
 	public static void callProgram(String dc, ImageTreePanel folderView) {
+		
+
 
 		if (dc != null) {
 			int selection = JOptionPane.showOptionDialog(null, "Select an option", "Option selecter",
