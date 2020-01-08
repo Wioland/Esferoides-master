@@ -38,6 +38,7 @@ import task.ImagesTask;
 public class FileFuntions {
 
 	private static Map<String, Long> directoryLastChange;
+	private static List<String> pluginNames;
 
 	/**
 	 * assign the plugin folder for imageJ and creates a instance of imageJ
@@ -49,6 +50,11 @@ public class FileFuntions {
 
 		ImageJ imageJFrame = new ImageJ();
 		imageJFrame.setVisible(false);
+
+		setPluginNames(new ArrayList<>());
+		for (int i = 0; i < imageJFrame.getMenuBar().getMenu(5).countItems(); i++) {
+			getPluginNames().add(imageJFrame.getMenuBar().getMenu(5).getItem(i).getLabel());
+		}
 
 	}
 
@@ -318,7 +324,7 @@ public class FileFuntions {
 			Utils.search(".*\\.tiff", new File(directory), actualImages);
 			Collections.sort(actualImages);
 
-			checkStillExist(images, actualImages,tp); // check if the images of the buttons still exist
+			checkStillExist(images, actualImages, tp); // check if the images of the buttons still exist
 
 			if (actualImages.size() != 0) { // if we have new file we add them
 				for (String name : actualImages) {
@@ -335,8 +341,7 @@ public class FileFuntions {
 					imageView.setName(name);
 					images.getImageIcon().add(image);
 					imageView.repaint();
-					
-					
+
 					imageView.addMouseListener(new MouseAdapter() {
 						public void mouseClicked(MouseEvent e) {
 
@@ -419,5 +424,13 @@ public class FileFuntions {
 		Timer temporizador = new Timer();
 
 		temporizador.scheduleAtFixedRate(imatask, 0, 1000 * secons);
+	}
+
+	public static List<String> getPluginNames() {
+		return pluginNames;
+	}
+
+	public static void setPluginNames(List<String> pluginNames) {
+		FileFuntions.pluginNames = pluginNames;
 	}
 }
