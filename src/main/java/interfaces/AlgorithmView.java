@@ -2,6 +2,8 @@ package interfaces;
 
 import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -18,10 +20,12 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.SwingConstants;
 
 import esferoides.Methods;
 import funtions.FileFuntions;
@@ -205,27 +209,44 @@ public class AlgorithmView extends JFrame {
 
 	public void addComparer(ViewImagesBigger vi) {
 		JPanel JPaneDad = (JPanel) selectedBu.getParent().getParent().getParent().getParent();
-		JSplitPane JSplitPaneViewBiger = new JSplitPane(VERTICAL_SPLIT);
+		
+		JPanel panelLabels = new JPanel(new BorderLayout());
+		JLabel originaText= new JLabel("Original image");
+		JLabel newImageText= new JLabel("New detected esferoid image");
+		panelLabels.add(originaText,BorderLayout.WEST);
+		panelLabels.add(newImageText,BorderLayout.EAST);
+		
+	
+		
+		
 
 		JScrollPane scrollIma = (JScrollPane) JPaneDad.getComponentAt(1, 0);
-		JSplitPaneViewBiger.setBottomComponent(scrollIma);
-		JSplitPaneViewBiger.setTopComponent(vi);
+		scrollIma.setVisible(false);
+		
+		
+		
+	
 
-		JSplitPaneViewBiger.setVisible(true);
 
 		GridBagConstraints constraints = new GridBagConstraints();
+		
 		constraints.fill = GridBagConstraints.BOTH;
-
-		constraints.weightx = 1;
-		constraints.weighty = 1;
+		constraints.weightx = 0.1;
+		constraints.weighty = 0.1;
 
 		constraints.gridx = 0;
 		constraints.gridy = 0;
 
 		JPaneDad.remove(scrollIma);
-		JPaneDad.add(JSplitPaneViewBiger, constraints);
-		JSplitPaneViewBiger.setDividerLocation(500);
+		JPaneDad.add(panelLabels, constraints);
+		constraints.weightx = 1;
+		constraints.weighty = 1;
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.gridy = 1;
+		JPaneDad.add(vi, constraints);
 		JPaneDad.updateUI();
+		
+
 
 	}
 

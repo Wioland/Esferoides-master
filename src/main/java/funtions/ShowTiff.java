@@ -16,6 +16,7 @@ public class ShowTiff {
 		BufferedImage image = null;
 		try {
 			File f = new File(path);
+		//	boolean s = f.exists();
 			image = ImageIO.read(f);
 			String[] formatNames = ImageIO.getReaderFormatNames();
 

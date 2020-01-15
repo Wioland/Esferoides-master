@@ -40,7 +40,7 @@ public class TabPanel extends JTabbedPane {
 		this.dir = directory;
 		originalIma = false;
 
-		Utils.search(".*\\.xls", folder, result);
+		Utils.searchDirectory(".*\\.xls", folder, result);
 		Collections.sort(result);
 
 		// Creamos los paneles, creamos los componentes dentro de estos y aniadimos el
@@ -54,11 +54,11 @@ public class TabPanel extends JTabbedPane {
 			noFileText("Images", null);
 			// Comprobar si en la carpeta hay imagenes nd2
 			List<String> listImages = new ArrayList<String>();
-			Utils.search(".*\\.nd2", folder, listImages);
+			Utils.searchDirectory(".*\\.nd2", folder, listImages);
 			if (listImages.size() != 0) {
 				originalIma = true;
 			} else {
-				Utils.search(".*\\.tif", folder, listImages);
+				Utils.searchDirectory(".*\\.tif", folder, listImages);
 				if (listImages.size() != 0) {
 					originalIma = true;
 				}

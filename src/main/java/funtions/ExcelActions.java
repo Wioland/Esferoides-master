@@ -69,7 +69,15 @@ public class ExcelActions {
 			// in case the excel is from the temporal images we change the name in order to
 			// identify the excel with the image
 			if (dir.endsWith("temporal" + File.separator)) {
-				String name = sheet.getRow(1).getCell(0).getStringCellValue();
+				String name ="";
+				
+				if(rows!=0) {
+					name = sheet.getRow(1).getCell(0).getStringCellValue();
+				}else {
+				
+					name = "";
+				}
+				
 				filename = this.dir + name + "_results.xls";
 
 			}

@@ -87,7 +87,7 @@ public class ViewImagesBigger extends JPanel {
 
 			this.add(scrollIma, constraints);
 
-			tryAlgoriBu.setText("Try other algorithm");
+			tryAlgoriBu.setText("Try other algorithms");
 
 			addlistenerButton(backBu, forwardBu, tryAlgoriBu);
 			panelButtons.add(tryAlgoriBu);
@@ -132,7 +132,7 @@ public class ViewImagesBigger extends JPanel {
 			ImageIcon ico = ShowTiff.showTiffToImageIcon(al.getImage().getAbsolutePath());
 			originalImaLb.setIcon(ico);
 			originalImaLb.setVisible(true);
-
+			
 			splitPa.setLeftComponent(new JScrollPane(originalImaLb));
 			splitPa.setRightComponent(new JScrollPane(labelImage));
 

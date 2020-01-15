@@ -67,15 +67,16 @@ public class Utils {
 		// String name = imp1.getTitle();
 		// FileInfo f = imp1.getFileInfo();
 		// dir=dir.replace(name, "");
-		name = name.substring(0, name.indexOf("."));
+		name = name.substring(0, name.lastIndexOf("."));
 		name = name.replace(dir, "");
 		folder = new File(dir + "predictions");
 
 		if (!temp && !folder.exists()) {
 			folder.mkdir();
 		} else {
+
 			folder = new File(dir + "temporal");
-			name += "_" + nameClass.substring(nameClass.indexOf(".") + 1);
+			name += "_" + nameClass.substring(nameClass.lastIndexOf(".") + 1);
 			folder.mkdir();
 		}
 
@@ -212,8 +213,8 @@ public class Utils {
 		return null;
 
 	}
-	
-	public static  int countBelowThreshold(ImagePlus imp1, int threshold) {
+
+	public static int countBelowThreshold(ImagePlus imp1, int threshold) {
 
 		ImageProcessor ip = imp1.getProcessor();
 		int[] histogram = ip.getHistogram();
@@ -226,9 +227,8 @@ public class Utils {
 		return countpixels;
 
 	}
-	
-	
-	public static boolean countBetweenThresholdOver(ImagePlus imp1, int threshold1,int threshold2, int num) {
+
+	public static boolean countBetweenThresholdOver(ImagePlus imp1, int threshold1, int threshold2, int num) {
 
 		ImageProcessor ip = imp1.getProcessor();
 		int[] histogram = ip.getHistogram(256);
@@ -237,31 +237,27 @@ public class Utils {
 //		System.out.println(min);
 		double max = is.max;
 //		System.out.println(max);
-		double range = (max-min)/256;
-		
-		
-		
-		
+		double range = (max - min) / 256;
+
 		int i = 0;
 		double pos = min;
-		while(pos<threshold1) {
+		while (pos < threshold1) {
 			pos = pos + range;
 			i++;
-			
+
 		}
-		
-		while(pos<threshold2) {
-			if(histogram[i]<num) {
+
+		while (pos < threshold2) {
+			if (histogram[i] < num) {
 				return true;
 			}
 			i++;
 			pos = pos + range;
 			System.out.println(pos);
 		}
-		
+
 		return false;
 
 	}
-
 
 }

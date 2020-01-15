@@ -127,7 +127,13 @@ public class ImageTreePanel extends JSplitPane {
 							String oldPath = this.dir;
 							String detectedFiles = "";
 							boolean switchFolder = true;
-							this.dir = path;
+							
+							if(path.endsWith(File.separator)) {
+								this.dir = path;
+							}else {
+								this.dir = path+File.separator;
+							}
+							
 
 							Utils.search(".*\\.tif", folder, resultTif);
 							Utils.search(".*\\.tiff", folder, resultTiff);
@@ -219,7 +225,7 @@ public class ImageTreePanel extends JSplitPane {
 				modelo.insertNodeInto(child, parentNode, index);
 				index++;
 			} else {
-				if (f.isDirectory() && !f.getName().contentEquals("predictions")) {
+				if (f.isDirectory() &&   !(f.getName().equals("predictions") || f.getName().equals("temporal"))   ) {
 					DefaultMutableTreeNode child = new DefaultMutableTreeNode(f.getName());
 					modelo.insertNodeInto(child, parentNode, index);
 					index++;

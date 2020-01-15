@@ -5,6 +5,11 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,8 +18,10 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import funtions.FileFuntions;
 import funtions.ShowTiff;
 import funtions.Utils;
 
@@ -71,8 +78,10 @@ public class ShowImages extends JPanel {
 	}
 
 	public void createImageButton(File folder, Component tp) {
-
-		Utils.search(".*\\.tiff", folder, listImages);
+		
+		listImages=FileFuntions.checkTiffNotPredictionsFolder(folder);
+		
+		
 		Collections.sort(listImages);
 		imageIcon = new ArrayList<ImageIcon>();
 
@@ -122,5 +131,8 @@ public class ShowImages extends JPanel {
 			this.add(imageView);
 		}
 	}
+	
+	
+	
 
 }

@@ -1,5 +1,6 @@
 package funtions;
 
+import java.awt.Menu;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +31,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import ij.IJ;
 import ij.ImageJ;
 import interfaces.ShowImages;
 import interfaces.TabPanel;
@@ -49,14 +52,31 @@ public class FileFuntions {
 		System.setProperty("plugins.dir", prop.getProp().getProperty("jarDirectory"));
 
 		ImageJ imageJFrame = new ImageJ();
-		imageJFrame.setVisible(false);
+		// imageJFrame.setVisible(false);
+
+		IJ.setForegroundColor(255, 0, 0);
 
 		setPluginNames(new ArrayList<>());
-		for (int i = 0; i < imageJFrame.getMenuBar().getMenu(5).countItems(); i++) {
-			getPluginNames().add(imageJFrame.getMenuBar().getMenu(5).getItem(i).getLabel());
-		}
+
+		// addMenuItem(imageJFrame.getMenuBar().getMenu(5));
 
 	}
+
+//	
+//	public static void addMenuItem(Menu menu) {
+//		for (int i = 0; i < menu.countItems(); i++) {
+//			String claString=menu.getItem(i).getClass().getName();
+//			
+//			if(claString=="java.awt.Menu") {
+//				addMenuItem((Menu)menu.getItem(i));
+//			}else {
+//				getPluginNames().add(menu.getLabel()+" > "+menu.getItem(i).getLabel());
+//			}
+//			
+//			
+//		}
+//		
+//	}
 
 	/**
 	 * Returns the Path of the selected file in the tree
@@ -424,6 +444,87 @@ public class FileFuntions {
 		Timer temporizador = new Timer();
 
 		temporizador.scheduleAtFixedRate(imatask, 0, 1000 * secons);
+	}
+
+	/**
+	 * Function that checks if there is tiff and roi files in the folder but not in
+	 * the predictions folder In case of finding Tiff and roi files in the folder it
+	 * ask you if you want to move the files to a prediction folder
+	 * 
+	 * @param folder		the folder to check if have tiff and roi files
+	 * @return 		List<String>  the list of tiff files in the folder given
+	 */
+	public static List<String> checkTiffNotPredictionsFolder(File folder) {
+
+		List<String> listImages = new ArrayList<String>();
+		File predictionsDir = new File(folder.getAbsolutePath() + File.separator + "predictions");
+
+		if (!folder.getAbsolutePath().endsWith("predictions")) {
+
+			if (predictionsDir.exists() && predictionsDir.list().length != 0) {
+				Utils.searchDirectory(".*\\.tiff", predictionsDir, listImages);
+				// check if there is more outside the predictions folder to ask to move there
+				moveTifffromParentToPredictions( folder, listImages,predictionsDir) ;
+			} else {
+
+				if (folder.getAbsolutePath().endsWith("temporal")) {
+					Utils.searchDirectory(".*\\.tiff", folder, listImages);
+				} else {
+					 moveTifffromParentToPredictions( folder, listImages,predictionsDir) ;
+				}
+
+			}
+		} else {
+			Utils.searchDirectory(".*\\.tiff", predictionsDir, listImages);
+
+		}
+
+		return listImages;
+	}
+
+	
+	/**
+	 * Moves the tiff and roi files from the folder to the predictionsDir
+	 * 
+	 * @param folder			the folder to check if have tiff and roi files
+	 * @param listImages 		the list of tiff files
+	 * @param predictionsDir	the folder predictions
+	 */
+	public static void moveTifffromParentToPredictions(File folder, List<String> listImages, File predictionsDir) {
+
+		listImages.clear();
+		
+
+		Utils.searchDirectory(".*\\.tiff", folder, listImages);
+		Utils.searchDirectory(".*\\.zip", folder, listImages);
+		if (!listImages.isEmpty()) {
+			JOptionPane.showConfirmDialog(null, "There are tiff files in this folder, but tey aren´t in a predictions"
+					+ " folder. Moving Tiff and Zip files to predictions folder");
+
+			if (!predictionsDir.exists()) {
+				predictionsDir.mkdir();
+			}
+
+			for (String s : listImages) {
+				File file = new File(s);
+				String newPAth = s.replace(file.getName(), "predictions" + File.separator + file.getName());
+				Path from = Paths.get(s);
+				Path to = Paths.get(newPAth);
+
+				try {
+					Files.move(from, to, StandardCopyOption.REPLACE_EXISTING);
+
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			listImages.clear();
+			Utils.searchDirectory(".*\\.tiff", predictionsDir, listImages);
+		}else {
+			Utils.searchDirectory(".*\\.tiff", predictionsDir, listImages);
+		}
+
 	}
 
 	public static List<String> getPluginNames() {

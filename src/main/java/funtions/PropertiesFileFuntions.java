@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
@@ -61,22 +63,14 @@ public class PropertiesFileFuntions {
 	public void changeJarDirectory(String dirname, String text) {
 		FileOutputStream out;
 		try {
-			
-			int resp = JOptionPane.showConfirmDialog(null, text, "Change jar directory", JOptionPane.YES_NO_OPTION,
-					JOptionPane.ERROR_MESSAGE);
-			if (resp == 0) {
-				
-				DirectoryChooser dc = new DirectoryChooser("Select the folder containing the jar");
-				String dir = dc.getDirectory();
-				if (dir != dirname) {
-					out = new FileOutputStream(path.getFile());
-					prop.setProperty("jarDirectory", dir);
-					prop.store(out, null);
-					out.close();
-					JOptionPane.showMessageDialog(null, "directory jar changed");
-				}
+			Path resourceDirectory = Paths.get("src", "main", "resources");
+			String dir = resourceDirectory.toString();
+			out = new FileOutputStream(path.getFile());
+			prop.setProperty("jarDirectory", dir);
+			prop.store(out, null);
+			out.close();
+			//JOptionPane.showMessageDialog(null, "directory jar changed");
 
-			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

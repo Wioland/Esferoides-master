@@ -18,7 +18,7 @@ public class Main {
 			int selection = JOptionPane.showOptionDialog(null, "Select an option", "Option selecter",
 					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, // null para icono por
 																					// defecto.
-					new Object[] { "Use algoritm", "View results" }, // null para YES, NO y CANCEL
+					new Object[] { "Detect esferoid", "View results" }, // null para YES, NO y CANCEL
 					"Use algoritm");
 
 			switch (selection) {

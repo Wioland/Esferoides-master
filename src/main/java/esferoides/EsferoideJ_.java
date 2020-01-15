@@ -15,7 +15,7 @@ import ij.measure.ResultsTable;
 import interfaces.OurProgressBar;
 import loci.plugins.in.ImporterOptions;
 
-@Plugin(type = Command.class, headless = true, menuPath = "Plugins>EsferoideJ")
+@Plugin(type = Command.class, headless = true, menuPath = "Plugins>EsferoideJ_")
 public class EsferoideJ_ implements Command {
 
 	@Parameter(label = "Select type of images", choices = { "suspension", "colageno", "Hector no fluo v1",
