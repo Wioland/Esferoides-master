@@ -475,7 +475,7 @@ public class FileFuntions {
 
 			}
 		} else {
-			Utils.searchDirectory(".*\\.tiff", predictionsDir, listImages);
+			Utils.searchDirectory(".*\\.tiff", folder, listImages);
 
 		}
 

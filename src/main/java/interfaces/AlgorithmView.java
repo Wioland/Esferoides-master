@@ -1,10 +1,7 @@
 package interfaces;
 
-import static javax.swing.JSplitPane.VERTICAL_SPLIT;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -24,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
 import esferoides.Methods;
@@ -41,6 +37,7 @@ public class AlgorithmView extends JFrame {
 	private File image;
 	private ShowImages panelImage;
 	private ViewImagesBigger vi;
+	private JPanel jSp;
 
 	public AlgorithmView(File image, String dir) {
 		// Parametros ventana
@@ -128,7 +125,7 @@ public class AlgorithmView extends JFrame {
 		panelButtons.add(modifySelectionBu);
 
 		JScrollPane s = new JScrollPane(panelImage);
-		JPanel jSp = new JPanel(new GridBagLayout());
+		jSp = new JPanel(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.BOTH;
 
@@ -208,45 +205,61 @@ public class AlgorithmView extends JFrame {
 	}
 
 	public void addComparer(ViewImagesBigger vi) {
+
 		JPanel JPaneDad = (JPanel) selectedBu.getParent().getParent().getParent().getParent();
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+
+		JPanel panelLabels = new JPanel(new GridLayout(0,2));
+		JPanel panelOriginal = new JPanel();
+		JPanel panelNew = new JPanel();
+
+		JLabel originaText = new JLabel("Original image",SwingConstants.CENTER);
+		originaText.setFont(new Font("Arial", Font.BOLD, 12));
+		JLabel newImageText = new JLabel("New detected esferoid image",SwingConstants.CENTER);
+		newImageText.setFont(new Font("Arial", Font.BOLD, 12));
+
+		panelLabels.add(originaText);
+		panelLabels.add(newImageText);
 		
-		JPanel panelLabels = new JPanel(new BorderLayout());
-		JLabel originaText= new JLabel("Original image");
-		JLabel newImageText= new JLabel("New detected esferoid image");
-		panelLabels.add(originaText,BorderLayout.WEST);
-		panelLabels.add(newImageText,BorderLayout.EAST);
-		
-	
-		
-		
+//		panelOriginal.add(originaText);
+//		panelNew.add(newImageText);
+//
+//		panelLabels.add(panelOriginal );
+//		panelLabels.add(panelNew);
+
+		JPanel panelButtons = (JPanel) jSp.getComponent(1);
+		jSp.remove(panelButtons);
+
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.weightx = 0;
+		constraints.weighty = 0;
+		constraints.gridx = 1;
+		constraints.gridy = 1;
+		jSp.add(panelButtons, constraints);
 
 		JScrollPane scrollIma = (JScrollPane) JPaneDad.getComponentAt(1, 0);
 		scrollIma.setVisible(false);
-		
-		
-		
-	
 
-
-		GridBagConstraints constraints = new GridBagConstraints();
-		
-		constraints.fill = GridBagConstraints.BOTH;
-		constraints.weightx = 0.1;
-		constraints.weighty = 0.1;
+		// constraints.fill = GridBagConstraints.BOTH;
+		constraints.weightx = 0;
+		constraints.weighty = 0;
 
 		constraints.gridx = 0;
 		constraints.gridy = 0;
 
 		JPaneDad.remove(scrollIma);
 		JPaneDad.add(panelLabels, constraints);
+
+		constraints.fill = GridBagConstraints.BOTH;
 		constraints.weightx = 1;
 		constraints.weighty = 1;
-		constraints.fill = GridBagConstraints.BOTH;
+
 		constraints.gridy = 1;
+		constraints.gridx = 0;
+
 		JPaneDad.add(vi, constraints);
 		JPaneDad.updateUI();
-		
-
 
 	}
 
