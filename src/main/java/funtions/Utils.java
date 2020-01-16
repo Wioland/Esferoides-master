@@ -147,9 +147,11 @@ public class Utils {
 				rt.addValue("X Feret", vFeret[3]);
 				rt.addValue("Y Feret", vFeret[4]);
 			}
+			
+			IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + File.separator + name + "_pred.tiff");
 		}
 
-		IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + File.separator + name + "_pred.tiff");
+		
 	}
 
 	// Method to obtain the area from a polygon. Probably, there is a most direct

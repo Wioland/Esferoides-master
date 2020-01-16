@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import esferoides.Methods;
@@ -113,6 +114,13 @@ public class AlgorithmView extends JFrame {
 		imageIcoList = panelImage.getImageIcon();
 		panelImage.setAutoscrolls(true);
 
+		if (panelImage.getListImages().size() == 0) {
+			pb.dispose();
+			JOptionPane.showMessageDialog(null, "Nothing detected in the image given");
+			
+			this.dispose();
+		}
+
 		JButton saveImageBt = new JButton();
 		JButton modifySelectionBu = new JButton();
 
@@ -124,10 +132,11 @@ public class AlgorithmView extends JFrame {
 		panelButtons.add(saveImageBt);
 		panelButtons.add(modifySelectionBu);
 
-		JScrollPane s = new JScrollPane(panelImage);
-		jSp = new JPanel(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.BOTH;
+		jSp = new JPanel(new GridBagLayout());
+
+		JScrollPane s = new JScrollPane(panelImage);
 
 		constraints.weightx = 1;
 		constraints.weighty = 1;
@@ -208,25 +217,17 @@ public class AlgorithmView extends JFrame {
 
 		JPanel JPaneDad = (JPanel) selectedBu.getParent().getParent().getParent().getParent();
 		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.fill = GridBagConstraints.BOTH;
 
-		JPanel panelLabels = new JPanel(new GridLayout(0,2));
-		JPanel panelOriginal = new JPanel();
-		JPanel panelNew = new JPanel();
+		JPanel panelLabels = new JPanel(new GridLayout(0, 2));
 
-		JLabel originaText = new JLabel("Original image",SwingConstants.CENTER);
+		JLabel originaText = new JLabel("Original image", SwingConstants.CENTER);
 		originaText.setFont(new Font("Arial", Font.BOLD, 12));
-		JLabel newImageText = new JLabel("New detected esferoid image",SwingConstants.CENTER);
+
+		JLabel newImageText = new JLabel("New detected esferoid image", SwingConstants.CENTER);
 		newImageText.setFont(new Font("Arial", Font.BOLD, 12));
 
 		panelLabels.add(originaText);
 		panelLabels.add(newImageText);
-		
-//		panelOriginal.add(originaText);
-//		panelNew.add(newImageText);
-//
-//		panelLabels.add(panelOriginal );
-//		panelLabels.add(panelNew);
 
 		JPanel panelButtons = (JPanel) jSp.getComponent(1);
 		jSp.remove(panelButtons);
@@ -241,7 +242,6 @@ public class AlgorithmView extends JFrame {
 		JScrollPane scrollIma = (JScrollPane) JPaneDad.getComponentAt(1, 0);
 		scrollIma.setVisible(false);
 
-		// constraints.fill = GridBagConstraints.BOTH;
 		constraints.weightx = 0;
 		constraints.weighty = 0;
 

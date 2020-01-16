@@ -498,7 +498,7 @@ public class FileFuntions {
 		Utils.searchDirectory(".*\\.tiff", folder, listImages);
 		Utils.searchDirectory(".*\\.zip", folder, listImages);
 		if (!listImages.isEmpty()) {
-			JOptionPane.showConfirmDialog(null, "There are tiff files in this folder, but tey aren´t in a predictions"
+			JOptionPane.showMessageDialog(null, "There are tiff files in this folder, but tey aren´t in a predictions"
 					+ " folder. Moving Tiff and Zip files to predictions folder");
 
 			if (!predictionsDir.exists()) {

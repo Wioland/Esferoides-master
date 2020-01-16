@@ -77,6 +77,14 @@ public class ShowImages extends JPanel {
 		this.listImagesPrev = listImagesPrev;
 	}
 
+	public List<String> getListImages() {
+		return listImages;
+	}
+
+	public void setListImages(List<String> listImages) {
+		this.listImages = listImages;
+	}
+
 	public void createImageButton(File folder, Component tp) {
 		
 		listImages=FileFuntions.checkTiffNotPredictionsFolder(folder);
