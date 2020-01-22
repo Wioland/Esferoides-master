@@ -152,7 +152,7 @@ public class ImageTreePanel extends JSplitPane {
 							if (resultTif.size() != 0 || resultNd2.size() != 0) {
 								JOptionPane.showMessageDialog(this, "Detected image files with the requered extension");
 								Main.callProgram(dir, this);
-								changeDirActions(resultTiff, detectedFiles, oldPath, switchFolder);
+								switchFolder=changeDirActions(resultTiff, detectedFiles, oldPath,switchFolder);
 							} else {
 								JOptionPane.showMessageDialog(this,
 										"Nothing to be done. Not changing to de selected folder");
@@ -176,7 +176,9 @@ public class ImageTreePanel extends JSplitPane {
 		}
 	}
 
-	public void changeDirActions(List<String> result, String extensionFile, String oldPath, boolean switchFolder) {
+	public boolean changeDirActions(List<String> result, String extensionFile, String oldPath,boolean switchFolder) {
+		
+	
 		if (result.size() == 0) { // si no tiene imagenes tiff, es decir no se han hecho predicciones
 
 			int n = JOptionPane.showConfirmDialog(this,
@@ -195,6 +197,7 @@ public class ImageTreePanel extends JSplitPane {
 
 			repaintTabPanel();
 		}
+		return switchFolder;
 	}
 
 	public void repaintTabPanel() {

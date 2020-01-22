@@ -451,8 +451,8 @@ public class FileFuntions {
 	 * the predictions folder In case of finding Tiff and roi files in the folder it
 	 * ask you if you want to move the files to a prediction folder
 	 * 
-	 * @param folder		the folder to check if have tiff and roi files
-	 * @return 		List<String>  the list of tiff files in the folder given
+	 * @param folder the folder to check if have tiff and roi files
+	 * @return List<String> the list of tiff files in the folder given
 	 */
 	public static List<String> checkTiffNotPredictionsFolder(File folder) {
 
@@ -461,17 +461,19 @@ public class FileFuntions {
 
 		if (!folder.getAbsolutePath().endsWith("predictions")) {
 
-			if (predictionsDir.exists() && predictionsDir.list().length != 0) {
-				Utils.searchDirectory(".*\\.tiff", predictionsDir, listImages);
-				// check if there is more outside the predictions folder to ask to move there
-				moveTifffromParentToPredictions( folder, listImages,predictionsDir) ;
-			} else {
+			if (predictionsDir.exists()) {
+				if (predictionsDir.list().length != 0) {
+					Utils.searchDirectory(".*\\.tiff", predictionsDir, listImages);
+					// check if there is more outside the predictions folder to ask to move there
+					moveTifffromParentToPredictions(folder, listImages, predictionsDir);
+				} else {
+					moveTifffromParentToPredictions(folder, listImages, predictionsDir);
+				}
 
+			} else {
 				if (folder.getAbsolutePath().endsWith("temporal")) {
 					Utils.searchDirectory(".*\\.tiff", folder, listImages);
-				} else {
-					 moveTifffromParentToPredictions( folder, listImages,predictionsDir) ;
-				}
+				} 
 
 			}
 		} else {
@@ -482,18 +484,16 @@ public class FileFuntions {
 		return listImages;
 	}
 
-	
 	/**
 	 * Moves the tiff and roi files from the folder to the predictionsDir
 	 * 
-	 * @param folder			the folder to check if have tiff and roi files
-	 * @param listImages 		the list of tiff files
-	 * @param predictionsDir	the folder predictions
+	 * @param folder         the folder to check if have tiff and roi files
+	 * @param listImages     the list of tiff files
+	 * @param predictionsDir the folder predictions
 	 */
 	public static void moveTifffromParentToPredictions(File folder, List<String> listImages, File predictionsDir) {
 
 		listImages.clear();
-		
 
 		Utils.searchDirectory(".*\\.tiff", folder, listImages);
 		Utils.searchDirectory(".*\\.zip", folder, listImages);
@@ -521,7 +521,7 @@ public class FileFuntions {
 			}
 			listImages.clear();
 			Utils.searchDirectory(".*\\.tiff", predictionsDir, listImages);
-		}else {
+		} else {
 			Utils.searchDirectory(".*\\.tiff", predictionsDir, listImages);
 		}
 

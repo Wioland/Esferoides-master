@@ -43,7 +43,7 @@ public class Utils {
 	// list of files
 	// is stored in the result list.
 	public static void searchDirectory(final String pattern, final File folder, List<String> result) {
-		for (final File f : folder.listFiles()) {
+ 		for (final File f : folder.listFiles()) {
 
 			if (f.isFile()) {
 				if (f.getName().matches(pattern)) {
@@ -95,6 +95,7 @@ public class Utils {
 
 				imp1.show();
 				rm.select(0);
+				System.out.println("******************************************************    "+rm.getIndexesAsString());
 				IJ.run(imp1, "Fit Spline", "");
 				rm.addRoi(imp1.getRoi());
 				rm.select(0);
@@ -146,6 +147,7 @@ public class Utils {
 				rt.addValue("Min. Feret", vFeret[2]);
 				rt.addValue("X Feret", vFeret[3]);
 				rt.addValue("Y Feret", vFeret[4]);
+				
 			}
 			
 			IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + File.separator + name + "_pred.tiff");
@@ -261,5 +263,7 @@ public class Utils {
 		return false;
 
 	}
-
+	
+	
+	
 }

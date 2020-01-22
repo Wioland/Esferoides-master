@@ -27,6 +27,7 @@ import javax.swing.SwingConstants;
 import esferoides.Methods;
 import funtions.FileFuntions;
 import funtions.RoiFuntions;
+import ij.IJ;
 
 public class AlgorithmView extends JFrame {
 
@@ -159,6 +160,8 @@ public class AlgorithmView extends JFrame {
 		jSp.setVisible(true);
 		getContentPane().add(jSp);
 		jSp.repaint();
+	
+		IJ.run("Close All");
 		// pack();
 
 	}

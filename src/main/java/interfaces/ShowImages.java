@@ -53,6 +53,9 @@ public class ShowImages extends JPanel {
 
 	}
 
+	
+	// GETTERS Y SETTERS	
+	
 	public List<ImageIcon> getImageIcon() {
 		return imageIcon;
 	}
@@ -85,6 +88,11 @@ public class ShowImages extends JPanel {
 		this.listImages = listImages;
 	}
 
+	
+	//METHOS
+	
+	
+	
 	public void createImageButton(File folder, Component tp) {
 		
 		listImages=FileFuntions.checkTiffNotPredictionsFolder(folder);
