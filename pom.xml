@@ -34,6 +34,7 @@
 			<name>ImageJ</name>
 			<url>http://maven.imagej.net/content/repositories/public/</url>
 		</repository>
+		
 	</repositories>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -67,7 +68,7 @@
 			<artifactId>bio-formats</artifactId>
 			<version>5.0.0-rc2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>ome</groupId>
 			<artifactId>loci_plugins</artifactId>
@@ -88,6 +89,12 @@
 			<artifactId>poi</artifactId>
 			<version>3.7</version>
 		</dependency>
+		
+		<dependency>
+    <groupId>com.github.jai-imageio</groupId>
+    <artifactId>jai-imageio-core</artifactId>
+    <version>1.4.0</version>
+</dependency>
 		
 	</dependencies>
 </project>

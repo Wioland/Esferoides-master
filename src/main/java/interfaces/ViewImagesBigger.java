@@ -1,34 +1,25 @@
 package interfaces;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
 
 import funtions.ShowTiff;
 
 public class ViewImagesBigger extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private List<ImageIcon> listImages;
 	private JLabel labelImage;
@@ -40,11 +31,6 @@ public class ViewImagesBigger extends JPanel {
 	private AlgorithmView al;
 
 	public ViewImagesBigger(Icon image, List<ImageIcon> listImages, Component tp) {
-
-		// setMinimumSize(new Dimension(1000, 800));
-
-		JSplitPane jSp = new JSplitPane();
-		// JScrollPane s = new JScrollPane(jSp);
 
 		this.listImages = listImages;
 		this.image = image;
@@ -79,31 +65,31 @@ public class ViewImagesBigger extends JPanel {
 		}
 
 		// contenedor de botones y puesta en orden de estos
-		JPanel panelButtons = new JPanel();
 
-//		panelButtons.setMaximumSize(new Dimension(200, 200));
-//		backBu.setMaximumSize(new Dimension(200, 200));
-//		forwardBu.setMaximumSize(new Dimension(200, 200));
+		JPanel panelButtons = new JPanel();
 
 		panelButtons.add(backBu);
 		panelButtons.add(forwardBu);
-		
-		jSp.setOrientation(SwingConstants.HORIZONTAL);
-		JScrollPane scrollIma = new JScrollPane(labelImage);
-		
-		jSp.setTopComponent(scrollIma);
-		jSp.setBottomComponent(panelButtons);
 
-		jSp.setDividerLocation(800);
-		
-	
-		
+		JScrollPane scrollIma = new JScrollPane(labelImage);
+
+		setLayout(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+
+		constraints.weightx = 1;
+		constraints.weighty = 1;
+
+		constraints.gridx = 0;
+		constraints.gridy = 0;
 
 		if (this.tp != null) {
-			tryAlgoriBu.setText("Try other algorithm");
+
+			this.add(scrollIma, constraints);
+
+			tryAlgoriBu.setText("Try other algorithms");
 
 			addlistenerButton(backBu, forwardBu, tryAlgoriBu);
-//			tryAlgoriBu.setMaximumSize(new Dimension(200, 200));
 			panelButtons.add(tryAlgoriBu);
 			String nombreImagen = (new File(listImages.get(indexImagenList).getDescription())).getName();
 			String title = indexImageView + nombreImagen;
@@ -146,19 +132,34 @@ public class ViewImagesBigger extends JPanel {
 			ImageIcon ico = ShowTiff.showTiffToImageIcon(al.getImage().getAbsolutePath());
 			originalImaLb.setIcon(ico);
 			originalImaLb.setVisible(true);
+			
+			splitPa.setLeftComponent(new JScrollPane(originalImaLb));
+			splitPa.setRightComponent(new JScrollPane(labelImage));
 
-			splitPa.setLeftComponent(originalImaLb);
-			splitPa.setRightComponent(labelImage);
-			JScrollPane scroll= new JScrollPane(splitPa);
-			jSp.setTopComponent(scroll);
-		
+			splitPa.setVisible(true);
+			this.add(splitPa, constraints);
+			splitPa.setDividerLocation(500);
+			this.repaint();
+
 			addlistenerButton(backBu, forwardBu);
 		}
 
-		jSp.setVisible(true);
-		add(jSp);
+		constraints.weightx = 0;
+		constraints.weighty = 0;
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		this.add(panelButtons, constraints);
+
 		this.setVisible(true);
 
+	}
+
+	public JLabel getLabelImage() {
+		return labelImage;
+	}
+
+	public void setLabelImage(JLabel labelImage) {
+		this.labelImage = labelImage;
 	}
 
 	public void closeTab(ActionEvent evt) {
@@ -174,19 +175,12 @@ public class ViewImagesBigger extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int prevImaIndex = indexImagenList;
+
 				indexImagenList--;
 				if (indexImagenList < 0) {
 					indexImagenList = listImages.size() - 1;
 				}
-
-				labelImage.setIcon(listImages.get(indexImagenList));
-				image = labelImage.getIcon();
-				if (tp != null) {
-					String nombreImagen = (new File(listImages.get(prevImaIndex).getDescription())).getName();
-					tp.setTitleAt(tp.indexOfTab(indexImageView + nombreImagen),
-							listImages.get(indexImagenList).getDescription());
-				}
+				moreActionChangeIndexIma();
 
 			}
 		});
@@ -195,26 +189,43 @@ public class ViewImagesBigger extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int prevImaIndex = indexImagenList;
+
 				indexImagenList++;
 				if (indexImagenList > listImages.size() - 1) {
 					indexImagenList = 0;
 				}
 
-				labelImage.setIcon(listImages.get(indexImagenList));
-				image = labelImage.getIcon();
-				if (tp != null) {
-					String nombreImagen = (new File(listImages.get(prevImaIndex).getDescription())).getName();
-					int indexTab = tp.indexOfTab(indexImageView + nombreImagen);
-					String title = indexImageView
-							+ (new File(listImages.get(indexImagenList).getDescription()).getName());
-					tp.setTitleAt(indexTab, title);
-					// lblTitle.settext(title);
-					tp.repaint();
-				}
+				moreActionChangeIndexIma();
 
 			}
 		});
+	}
+
+	private void moreActionChangeIndexIma() {
+		labelImage.setIcon(listImages.get(indexImagenList));
+		image = labelImage.getIcon();
+
+		if (al != null && tp == null) {
+			al.setSelectedBu(al.getButtonFromImage(listImages.get(indexImagenList).getDescription()));
+
+		} else {
+			changetTabTitle(tp);
+		}
+	}
+
+	public void changetTabTitle(TabPanel tp) {
+
+		if (tp != null) {
+			int indexTab = tp.getSelectedIndex();
+			String title = indexImageView + (new File(listImages.get(indexImagenList).getDescription()).getName());
+			tp.setTitleAt(indexTab, title);
+			tp.repaint();
+
+			JPanel Xpane = (JPanel) tp.getTabComponentAt(indexTab);
+			JLabel nameXpane = (JLabel) Xpane.getComponent(0);
+			nameXpane.setText(title);
+			Xpane.repaint();
+		}
 	}
 
 	private void addlistenerButton(JButton backBu, JButton forwardBu, JButton tryAlgoriBu) {

@@ -1,7 +1,6 @@
 package interfaces;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 
@@ -33,10 +32,10 @@ public class OurProgressBar extends JDialog {
 		setSize(300, 100);
 		setMinimumSize(new Dimension(300, 100));
 		setLocationRelativeTo(frameDad);
-		//setAlwaysOnTop(true);
+		// setAlwaysOnTop(true);
 		setUndecorated(true);
 		setVisible(true);
-		
+
 	}
 
 }

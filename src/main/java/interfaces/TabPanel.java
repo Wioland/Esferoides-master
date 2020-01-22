@@ -1,8 +1,7 @@
 package interfaces;
 
-import java.awt.Component;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,26 +9,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JViewport;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
+import funtions.ExcelActions;
+import funtions.FileFuntions;
 import funtions.Utils;
 
 public class TabPanel extends JTabbedPane {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Map<Integer, Long> excelModificationIndexTab;
 	private Map<Integer, File> IndexTabExcel;
 	private String dir;
-	private boolean nd2Ima;
+	private boolean originalIma;
 
 	public TabPanel(String directory) {
 
@@ -40,9 +38,9 @@ public class TabPanel extends JTabbedPane {
 		excelModificationIndexTab = new HashMap<Integer, Long>();
 		IndexTabExcel = new HashMap<Integer, File>();
 		this.dir = directory;
-		nd2Ima = false;
+		originalIma = false;
 
-		Utils.search(".*\\.xls", folder, result);
+		Utils.searchDirectory(".*\\.xls", folder, result);
 		Collections.sort(result);
 
 		// Creamos los paneles, creamos los componentes dentro de estos y aniadimos el
@@ -51,30 +49,46 @@ public class TabPanel extends JTabbedPane {
 		// los de las imagenes
 
 		ShowImages images = new ShowImages(directory, this);
-		
+
 		if (images.countComponents() == 0) {
-			noFileText("Images");
+			noFileText("Images", null);
 			// Comprobar si en la carpeta hay imagenes nd2
 			List<String> listImages = new ArrayList<String>();
-			Utils.search(".*\\.nd2", folder, listImages);
-			if (listImages != null) {
-				nd2Ima = true;
+			Utils.searchDirectory(".*\\.nd2", folder, listImages);
+			if (listImages.size() != 0) {
+				originalIma = true;
+			} else {
+				Utils.searchDirectory(".*\\.tif", folder, listImages);
+				if (listImages.size() != 0) {
+					originalIma = true;
+				}
 			}
 		} else {
-			JSplitPane splitPane= new JSplitPane(HORIZONTAL);
-			LensMEnuButtons lens= new LensMEnuButtons(images.getListImagesPrev());
-			JScrollPane s= new JScrollPane(images);
-			
-			splitPane.setTopComponent(lens);
-			splitPane.setBottomComponent(s);
-			
+			JPanel splitPane = new JPanel(new GridBagLayout());
+			LensMEnuButtons lens = new LensMEnuButtons(images.getListImagesPrev());
+			JScrollPane s = new JScrollPane(images);
+			GridBagConstraints constraints = new GridBagConstraints();
+			constraints.fill = GridBagConstraints.BOTH;
+
+			constraints.gridx = 0;
+			constraints.gridy = 0;
+
+			splitPane.add(lens, constraints);
+
+			constraints.weightx = 1;
+			constraints.weighty = 1;
+			constraints.gridx = 0;
+			constraints.gridy = 1;
+			splitPane.add(s, constraints);
+
 			addTab("Images", splitPane);
+
 		}
 
 		// los del excel
 
 		if (result.size() == 0) {
-			noFileText("Excel");
+			noFileText("Excel", null);
 		} else {
 
 			for (String path : result) {
@@ -82,164 +96,95 @@ public class TabPanel extends JTabbedPane {
 
 				excel = new File(path);
 				if (excel.exists()) {
-					addExcelPanel(excel);
+					ExcelActions.addExcelPanel(excel, this);
 
 				} else {
-					noFileText("Excel");
+					noFileText("Excel", null);
 				}
 
 			}
 
 		}
+
+		this.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				TabPanel tab = (TabPanel) e.getSource();
+
+				if (tab.getTitleAt(tab.getSelectedIndex()).contains("Excel")) {
+					ExcelActions.checkExcelTab(tab, dir, tab.getSelectedIndex());
+				} else {
+					if (tab.getTitleAt(tab.getSelectedIndex()).contains("Images")) {
+						FileFuntions.isDirectoryContentModify(dir+"predictions", tab);
+					}
+				}
+
+			}
+		});
+
+		FileFuntions.addModificationDirectory(dir+"predictions");
+		FileFuntions.imagescheckWithTime(this, 60);
+
+		ExcelActions.excelcheckWithTime(this, dir, 60);
+
 	}
 
-	
-	public String getDir() {
+	public String getDir() { 
 		return dir;
 	}
 
 	public void setDir(String dir) {
 		this.dir = dir;
 	}
-	
-	
-	public boolean isNd2Ima() {
-		return nd2Ima;
+
+	public boolean isOriginalIma() {
+		return originalIma;
 	}
 
-	public void setNd2Ima(boolean nd2Ima) {
-		this.nd2Ima = nd2Ima;
+	public void setOriginalIma(boolean originalIma) {
+		this.originalIma = originalIma;
 	}
 
-	/*
-	 * Funcion que aniade la vista del excel
-	 */
-	private void excelPanelContent(JPanel panelExcel, File excel) {
-		ExcelTableCreator excelPanel = new ExcelTableCreator(excel);
-
-		panelExcel.add(excelPanel);
-		panelExcel.setVisible(true);
-
+	public Map<Integer, Long> getExcelModificationIndexTab() {
+		return excelModificationIndexTab;
 	}
 
-	private void noFileText(String tabName) {
+	public void setExcelModificationIndexTab(Map<Integer, Long> excelModificationIndexTab) {
+		this.excelModificationIndexTab = excelModificationIndexTab;
+	}
+
+	public Map<Integer, File> getIndexTabExcel() {
+		return IndexTabExcel;
+	}
+
+	public void setIndexTabExcel(Map<Integer, File> indexTabExcel) {
+		IndexTabExcel = indexTabExcel;
+	}
+
+	public void noFileText(String tabName, JViewport jp) {
+
 		JTextArea j = new JTextArea();
 		j.setText("There is no such file in this folder");
 		j.enable(false);
 		j.setName(tabName);
 
-		if (tabName.equals("Excel")) { // igual hay que cambiarlo por el nombre
-			insertTab(tabName, null, j, null, 1);
-			excelModificationIndexTab.put(this.indexOfTab(tabName), 0L);
-			addListenersPanelExcel(j);
-		} else {
-			addTab(tabName, j);
-		}
+		JScrollPane s = new JScrollPane(j);
+		if (jp == null) {
+			if (tabName.equals("Excel")) { // igual hay que cambiarlo por el nombre
+				insertTab(tabName, null, s, null, 1);
+				excelModificationIndexTab.put(this.indexOfTab(tabName), 0L);
 
-	}
+				// int index= indexOfComponent(s);
 
-	private void addExcelPanel(File excel) {
-		JPanel panelExcel = new JPanel();
-		String name = excel.getName();
-		// System.out.println(name);
-		excelPanelContent(panelExcel, excel);
-		panelExcel.setName("Excel " + name);
-
-		JScrollPane s= new JScrollPane(panelExcel);
-		
-		insertTab("Excel " + name, null, s, null, 1);
-		excelModificationIndexTab.put(this.indexOfTab("Excel " + name), excel.lastModified());
-		IndexTabExcel.put(this.indexOfTab("Excel " + name), excel);
-		addListenersPanelExcel(panelExcel);
-
-	}
-
-	private void checkExcelTab(MouseEvent e) {
-
-		/*
-		 * si ya habia un excel mostrandose comprueba si este se ha modificado o si ese
-		 * ha desaparecido si no habia excel comprueba si ahora hay excel, se borrar su
-		 * componente label y se cambia por el excel ademas se le cambia el nombre a la
-		 * pestaña
-		 */
-
-		int indexComponent = ((TabPanel) e.getComponent().getParent().getParent().getParent()).indexOfTab(e.getComponent().getName());
-		File excel = IndexTabExcel.get(indexComponent);
-
-		if (excel != null) { // si tiene excel
-			if (excel.exists()) { // si sigue existiendo
-				if (!excelModificationIndexTab.get(indexComponent).equals(excel.lastModified())) { // si se
-					JOptionPane.showMessageDialog(null, "The excel was modified. Updating this tab"); // ha modificado
-					JPanel jP = (JPanel) e.getComponent();
-					ExcelTableCreator eTC = (ExcelTableCreator) jP.getComponent(0);
-					jP.remove(eTC);
-					eTC = new ExcelTableCreator(excel);
-					jP.add(eTC);
-					jP.repaint();
-					excelModificationIndexTab.put(indexComponent, excel.lastModified());
-				}
+				// ExcelActions.excelcheckWithTime(this, dir, index, 60);
 			} else {
-				remove(e.getComponent());
-				JOptionPane.showMessageDialog(null, "The excel that this tab was showing was deleted");
-				noFileText("Excel");
-				IndexTabExcel.remove(indexComponent);
-				excelModificationIndexTab.remove(indexComponent);
+				addTab(tabName, s);
 			}
-
-		} else { // se comprueba si la carpeta tiene ahora mismo un excel
-			File folder = new File(dir);
-			List<String> result = new ArrayList<String>();
-
-			Utils.search(".*\\.xls", folder, result);
-			Collections.sort(result);
-			if (result.size() != 0) { // si lo tiene
-				remove(e.getComponent());
-				excelModificationIndexTab.remove(indexComponent);
-				JOptionPane.showMessageDialog(null, "Detected an excel file");
-				for (String string : result) {
-					addExcelPanel(new File(string));
-				}
-
-			}
-
+		} else {
+			jp.remove(jp.getComponent(0));
+			jp.add(j);
+			jp.repaint();
 		}
-
-	}
-
-	private void addListenersPanelExcel(Component component) {
-
-		component.addMouseListener(new MouseListener() {
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-				checkExcelTab(e);
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
 
 	}
 

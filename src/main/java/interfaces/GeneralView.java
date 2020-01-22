@@ -6,30 +6,23 @@ import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 
-import funtions.CreateListImageAlgori;
 import funtions.FileFuntions;
-import funtions.Utils;
-import ij.ImageJ;
-import ij.io.DirectoryChooser;
 
 public class GeneralView extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private String directory;
+	private JMenuBar mb;
 
 	public GeneralView(String directory) {
-		ImageJ imageJFrame = new ImageJ();
-		imageJFrame.setVisible(false);
+
 		this.directory = directory;
+		this.mb = new JMenuBar();
 
 		// Parametros ventana
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,7 +62,6 @@ public class GeneralView extends JFrame {
 
 				File deleteFile = new File(directory + File.separator + "temporal");
 				FileFuntions.deleteTemporalFolder(deleteFile);
-				imageJFrame.dispose();
 
 			}
 
@@ -86,6 +78,10 @@ public class GeneralView extends JFrame {
 			}
 		});
 
+		setJMenuBar(mb);
+		JMenuPropertiesFile menu = new JMenuPropertiesFile();
+		mb.add(menu);
+
 		OurProgressBar pb = new OurProgressBar(this);
 		ImageTreePanel imageTree = new ImageTreePanel(directory);
 		getContentPane().add(imageTree);
@@ -94,9 +90,9 @@ public class GeneralView extends JFrame {
 		pb.setVisible(false);
 		pb.dispose();
 
-		if (imageTree.getFolderView().isNd2Ima()) {
+		if (imageTree.getFolderView().isOriginalIma()) {
 			int op = JOptionPane.showConfirmDialog((Component) null,
-					"There aren´t Tiff files in this folder, but we detected Nd2 files. Do you want to detect the esferoid of this images?",
+					"There aren´t Tif files in this folder, but we detected Nd2 files. Do you want to detect the esferoid of this images?",
 					"alert", JOptionPane.YES_NO_OPTION);
 			if (op == 0) {
 				SelectAlgoritm seletAl = new SelectAlgoritm(this.directory, imageTree);

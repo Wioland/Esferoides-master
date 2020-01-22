@@ -1,7 +1,9 @@
 package interfaces;
 
-import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,32 +16,30 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
-import funtions.CreateListImageAlgori;
+import esferoides.Methods;
 import funtions.FileFuntions;
 import funtions.RoiFuntions;
+import ij.IJ;
 
 public class AlgorithmView extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private JButton selectedBu;
 	private List<ImageIcon> imageIcoList;
 	private String directory;
-	private CreateListImageAlgori cLa;
 	private File image;
-
-	
+	private ShowImages panelImage;
+	private ViewImagesBigger vi;
+	private JPanel jSp;
 
 	public AlgorithmView(File image, String dir) {
 		// Parametros ventana
@@ -78,7 +78,7 @@ public class AlgorithmView extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				File folder = CreateListImageAlgori.getTemporalFolder();
+				File folder = Methods.getTemporalFolder();
 				if (folder != null) {
 					folder.delete();
 				}
@@ -98,21 +98,29 @@ public class AlgorithmView extends JFrame {
 			}
 		});
 
-		this.image=image;
+		this.image = image;
 		this.directory = dir;
 		OurProgressBar pb = new OurProgressBar(this);
+		// directory=dir+"temporal"+File.separator;
 
-		cLa = new CreateListImageAlgori(this.image);
+		String path = RoiFuntions.getOriginalFilePathFromPredictions(this.image.getAbsolutePath());
 
-	
-		// crear las imagenes con todos los algoritmos
-		cLa.createImagesAlgorithms();
+		List<String> result = new ArrayList<String>();
+		result.add(path);
+		Methods executeMethods = new Methods(directory, result);
 
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 
-		ShowImages panelImage = new ShowImages(dir + "temporal", this);
-		imageIcoList=new ArrayList(panelImage.getListImagesPrev().values());
+		panelImage = new ShowImages(dir + "temporal", this);
+		imageIcoList = panelImage.getImageIcon();
 		panelImage.setAutoscrolls(true);
+
+		if (panelImage.getListImages().size() == 0) {
+			pb.dispose();
+			JOptionPane.showMessageDialog(null, "Nothing detected in the image given");
+			
+			this.dispose();
+		}
 
 		JButton saveImageBt = new JButton();
 		JButton modifySelectionBu = new JButton();
@@ -124,12 +132,26 @@ public class AlgorithmView extends JFrame {
 
 		panelButtons.add(saveImageBt);
 		panelButtons.add(modifySelectionBu);
-		JScrollPane s = new JScrollPane(panelImage);
-		JSplitPane jSp = new JSplitPane();
 
-		jSp.setOrientation(SwingConstants.VERTICAL);
-		jSp.setLeftComponent(s);
-		jSp.setRightComponent(panelButtons);
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+		jSp = new JPanel(new GridBagLayout());
+
+		JScrollPane s = new JScrollPane(panelImage);
+
+		constraints.weightx = 1;
+		constraints.weighty = 1;
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+
+		jSp.add(s, constraints);
+
+		constraints.weightx = 0;
+		constraints.weighty = 0;
+		constraints.gridx = 1;
+		constraints.gridy = 0;
+		jSp.add(panelButtons, constraints);
+
 		// jSp.setDividerLocation(1100 + jSp.getInsets().left);
 
 		// aniadimos las componentes al jframe
@@ -137,10 +159,13 @@ public class AlgorithmView extends JFrame {
 		pb.dispose();
 		jSp.setVisible(true);
 		getContentPane().add(jSp);
-
-		pack();
+		jSp.repaint();
+	
+		IJ.run("Close All");
+		// pack();
 
 	}
+
 	public String getDirectory() {
 		return directory;
 	}
@@ -156,6 +181,15 @@ public class AlgorithmView extends JFrame {
 	public void setImage(File image) {
 		this.image = image;
 	}
+
+	public JButton getSelectedBu() {
+		return selectedBu;
+	}
+
+	public void setSelectedBu(JButton selectedBu) {
+		this.selectedBu = selectedBu;
+	}
+
 	public void mouseClick(MouseEvent me, ImageIcon imageIcon) {
 		if (!me.isConsumed()) {
 			switch (me.getClickCount()) {
@@ -165,13 +199,13 @@ public class AlgorithmView extends JFrame {
 				break;
 			case 2:
 				me.consume();
-				
-				ViewImagesBigger vi = new ViewImagesBigger(imageIcon, imageIcoList,this );
-				JFrame frame= new JFrame("Image comparator");
-				frame.getContentPane().add(vi);
-				frame.setExtendedState(MAXIMIZED_BOTH);
-				frame.show();
-				
+				if (vi == null) {
+					vi = new ViewImagesBigger(imageIcon, imageIcoList, this);
+					addComparer(vi);
+				} else {
+					vi.getLabelImage().setIcon(imageIcon);
+				}
+
 				break;
 
 			default:
@@ -179,6 +213,62 @@ public class AlgorithmView extends JFrame {
 			}
 
 		}
+
+	}
+
+	public void addComparer(ViewImagesBigger vi) {
+
+		JPanel JPaneDad = (JPanel) selectedBu.getParent().getParent().getParent().getParent();
+		GridBagConstraints constraints = new GridBagConstraints();
+
+		JPanel panelLabels = new JPanel(new GridLayout(0, 2));
+
+		JLabel originaText = new JLabel("Original image", SwingConstants.CENTER);
+		originaText.setFont(new Font("Arial", Font.BOLD, 12));
+
+		JLabel newImageText = new JLabel("New detected esferoid image", SwingConstants.CENTER);
+		newImageText.setFont(new Font("Arial", Font.BOLD, 12));
+
+		panelLabels.add(originaText);
+		panelLabels.add(newImageText);
+
+		JPanel panelButtons = (JPanel) jSp.getComponent(1);
+		jSp.remove(panelButtons);
+
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.weightx = 0;
+		constraints.weighty = 0;
+		constraints.gridx = 1;
+		constraints.gridy = 1;
+		jSp.add(panelButtons, constraints);
+
+		JScrollPane scrollIma = (JScrollPane) JPaneDad.getComponentAt(1, 0);
+		scrollIma.setVisible(false);
+
+		constraints.weightx = 0;
+		constraints.weighty = 0;
+
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+
+		JPaneDad.remove(scrollIma);
+		JPaneDad.add(panelLabels, constraints);
+
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.weightx = 1;
+		constraints.weighty = 1;
+
+		constraints.gridy = 1;
+		constraints.gridx = 0;
+
+		JPaneDad.add(vi, constraints);
+		JPaneDad.updateUI();
+
+	}
+
+	public JButton getButtonFromImage(String imagPath) {
+
+		return panelImage.getListImagesPrev().get(imagPath);
 
 	}
 
@@ -218,18 +308,18 @@ public class AlgorithmView extends JFrame {
 	private void SaveImageAndDelete(String filePath) {
 		File ima = new File(filePath);
 		FileFuntions.saveSelectedImage(ima, this.directory + "predictions");
-		//FileFuntions.deleteTemporalFolder(new File(this.directory + "temporal"));
-		//this.dispose();
+		// FileFuntions.deleteTemporalFolder(new File(this.directory + "temporal"));
+		// this.dispose();
 	}
 
 	private void modifySeclection(String filename) {
 		String fileRoi = filename.replace("_pred.tiff", ".zip");
 
-		String nd2Path = RoiFuntions.getNd2FilePathFromTempralTiff(filename);
+		String originalPath = RoiFuntions.getoriginalFilePathFromTempralTiff(filename);
 
 		ij.WindowManager.closeAllWindows();
 
-		RoiFuntions.showNd2FilePlusRoi(nd2Path, fileRoi);
+		RoiFuntions.showOriginalFilePlusRoi(originalPath, fileRoi);
 
 	}
 

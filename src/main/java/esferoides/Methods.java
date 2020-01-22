@@ -3,136 +3,158 @@ package esferoides;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
-import bsh.This;
-import funtions.Utils;
-import ij.IJ;
-import loci.formats.FormatException;
+import funtions.ExcelActions;
+import funtions.FileFuntions;
+import ij.measure.ResultsTable;
 import loci.plugins.in.ImporterOptions;
-
 
 public class Methods {
 
-	protected static ArrayList<Integer> goodRows;
+	private static ArrayList<Integer> goodRows;
+	private static String[] algorithms = { "suspension", "colageno", "Hector no fluo v1", "Hector no fluo v2",
+			"Teodora v1", "Teodora Big" };
+	private static File temporalFolder;
 
-	public static void esferoideJ_Run(String imagePath,String format) {
-		IJ.setForegroundColor(255, 0, 0);
-		goodRows = new ArrayList<>();
-		List<String> result = new ArrayList<String>();
-		String imageName = "";
-		String path = "";
-		String className = "";
+	/**
+	 * Constructor. Creates the images with the methods given in the temporal folder
+	 * if it's possible
+	 * 
+	 * @param directory current directory
+	 * @param result    List of the file paths of the current directory
+	 */
+	public Methods(String directory, List<String> result) {
 
-		if (imagePath == null) { // caso de que no se pase un directorio y entonces tenga que seleccionar el que
-									// quiere
+		temporalFolder = new File(directory + "temporal");
 
-			Object[] options = { "ND2", "Tiff", "Cancel" };
-			int n = JOptionPane.showOptionDialog(null, "Would you like green eggs and ham?", "A Silly Question",
-					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-			switch (n) {
-			case 0:
-				format = "nd2";
-				break;
+		for (String type : algorithms) {
+			if (type.equals("suspension") || type.equals("colageno")) {
+				if (checkIfFluoImages(result)) {
+					createImagesMetods(result, directory, type);
+				}
 
-			case 1:
-				format = "tiff";
-				break;
-
-			default:
-				break;
-			}
-
-			if (format !=null) {
-				path = EsferoideDad.getByFormat(format, result);
 			} else {
+				if ((type.contains("Hector") && FileFuntions.isExtension(result, "tif"))
+						|| (type.equals("Teodora v1") && FileFuntions.isExtension(result, "nd2"))
+						|| (type.equals("Teodora Big") && FileFuntions.isExtension(result, "nd2"))) {
+					createImagesMetods(result, directory, type);
+				}
 
-				// cancelada la accion
 			}
 
-		} else { // caso en el que se le pasa un directorio y hay que distinguir si tambien se le
-					// ha pasado una imagen o es solo una carpeta
-			File folder = new File(imagePath);
-			if (folder.isDirectory()) {
-				path = imagePath;
-
-				Utils.search(".*\\." + format, folder, result);
-				Collections.sort(result);
-			} else {
-				path = imagePath;
-				imageName = folder.getName();
-				result.add(imagePath);
-			}
-		}
-
-		EsferoideDad j = null;
-		
-		if (imagePath.endsWith(".nd2") || format == "nd2") {
-			className = "EsferoideJ_";
-			j= new EsferoideJ_();
-		} else {
-			if (imagePath.endsWith(".tiff") || format == "tiff") {
-				className = "EsferoideJv2_";
-				j= new EsferoideJv2_();
-			}
-
-		}
-		if (path != null && !className.contentEquals("")) {
-
-			//EsferoideDad.createResultTable(result, path, className);
-			EsferoideDad.setGoodRows(goodRows);
-			j.createResultTable(result, className);
-			
 		}
 	}
-//
-//	public static void createDatasetRun() {
-//
-//		ImporterOptions options;
-//		try {
-//			options = new ImporterOptions();
-//
-//			options.setWindowless(true);
-//
-//			List<String> result = new ArrayList<String>();
-//			String dir = EsferoideDad.getByFormat("nd2", result);
-//
-//			if (dir != null) {
-//				for (String name : result) {
-//					CreateDataset.saveImageAndMask(options, dir, name);
-//
-//				}
-//
-//			}
-//
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		} catch (FormatException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
-//
-//	public static void EsferoideHistogramMosaicJ_Run() {
-//		EsferoideHistogramMosaicJ_ j = new EsferoideHistogramMosaicJ_();
-//		j.run();
-//
-//	}
-//
-//	public static void esferoideMosaicJ_Run() {
-//		EsferoideMosaicJ_ k = new EsferoideMosaicJ_();
-//		k.run();
-//
-//	}
-//
-//	public static void ExtractHistogramsJ_Run() {
-//		ExtractHistogramsJ_ j = new ExtractHistogramsJ_();
-//		j.run();
-//
-//	}
 
+	// Getters and setters
+
+	public static File getTemporalFolder() {
+		return temporalFolder;
+	}
+
+	public void setTemporalFolder(File temporalFolder) {
+		this.temporalFolder = temporalFolder;
+	}
+
+	public static String[] getAlgorithms() {
+		return algorithms;
+	}
+
+	public void setAlgorithms(String[] algorithms) {
+		this.algorithms = algorithms;
+	}
+
+	/**
+	 * Checks all the files in the directory has a fluo image
+	 * 
+	 * @param result list path of the files
+	 * @return true if all have fluo images false if none of then have a fluo image
+	 *         or some of then haven't it
+	 */
+	private boolean checkIfFluoImages(List<String> result) {
+		boolean haveFluo = true;
+		File faux;
+		String nameNoextension;
+
+		for (String name : result) {
+			faux = new File(name);
+			nameNoextension = FileFuntions.namewithoutExtension(name);
+			if (!nameNoextension.endsWith("fluo")) {
+				faux = new File(faux.getAbsolutePath().replace(nameNoextension, nameNoextension + "fluo"));
+			}
+
+			if (!faux.exists()) {
+//				JOptionPane.showMessageDialog(null,
+//						"One or more images doesn´t have their fluo image or it isn´t in the same folder. This method needs a fluo image. Try it later when a fluo image is in the folder",
+//						"No fluo image. Can´t do the method", JOptionPane.WARNING_MESSAGE);
+				haveFluo = false;
+				break;
+			}
+		}
+
+		return haveFluo;
+	}
+
+	/**
+	 * Method that creates the images in the temporal directory with the method
+	 * given
+	 * 
+	 * @param result    paths of the files
+	 * @param directory temporal directory to store the images
+	 * @param type      the method used to create the images
+	 */
+	private void createImagesMetods(List<String> result, String directory, String type) {
+		try {
+
+			// In order to only take the tif images without the fluo ones
+			if (type.contains("Hector")) {
+				int i = 0;
+				for (String name : result) {
+					if (name.endsWith("fluo.tif")) {
+						result.set(i, name.replace("fluo.tif", ".tif"));
+						i++;
+					}
+				}
+			}
+
+			// We initialize the ResultsTable
+			ResultsTable rt = new ResultsTable();
+			ImporterOptions options = new ImporterOptions();
+
+			// We construct the EsferoidProcessorObject
+
+			EsferoidProcessor esferoidProcessor = EsferoidProcessorFactory.createEsferoidProcessor(type);
+
+			// OurProgressBar pb = new OurProgressBar(null);
+			goodRows = new ArrayList<>();
+			// For each file in the folder we detect the esferoid on it.
+			for (String name : result) {
+				esferoidProcessor.getDetectEsferoid().apply(options, directory, name, goodRows, true);
+			}
+
+			rt = ResultsTable.getResultsTable();
+
+			/// Remove empty rows
+			int rows = rt.getCounter();
+			for (int i = rows; i > 0; i--) {
+				if (!(goodRows.contains(i - 1))) {
+					rt.deleteRow(i - 1);
+				}
+			}
+
+			directory += "temporal" + File.separator;
+
+			if (rows != 0) {
+				ExcelActions ete = new ExcelActions(rt, directory);
+				ete.convertToExcel();
+
+				rt.reset();
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 }

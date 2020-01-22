@@ -1,24 +1,24 @@
 package funtions;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 
 import ij.io.DirectoryChooser;
 import interfaces.GeneralView;
 import interfaces.ImageTreePanel;
 import interfaces.SelectAlgoritm;
-import interfaces.TabPanel;
 
 public class Main {
 	// PRUEBAS
 
 	public static void callProgram(String dc, ImageTreePanel folderView) {
+		
+
 
 		if (dc != null) {
 			int selection = JOptionPane.showOptionDialog(null, "Select an option", "Option selecter",
 					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, // null para icono por
 																					// defecto.
-					new Object[] { "Use algoritm", "View results" }, // null para YES, NO y CANCEL
+					new Object[] { "Detect esferoid", "View results" }, // null para YES, NO y CANCEL
 					"Use algoritm");
 
 			switch (selection) {
@@ -39,7 +39,7 @@ public class Main {
 	public static void createGeneralViewOrNot(ImageTreePanel folderView, String dc) {
 		if (folderView == null) { // si no se estaba ya en un GeneralView se crea uno nuevo
 			GeneralView ventana = new GeneralView(dc);
-		} else { 
+		} else {
 			folderView.repaintTabPanel();
 
 		}
@@ -47,16 +47,10 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
+		FileFuntions.chargePlugins();
 		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the images");
 		callProgram(dc.getDirectory(), null);
-	}
 
-//		CreateListImageAlgori j= new CreateListImageAlgori();
-//		try {
-//			j.iniA(j.getClasses("esferoides"));
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+	}
 
 }
