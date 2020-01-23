@@ -132,24 +132,7 @@ public class Methods {
 				esferoidProcessor.getDetectEsferoid().apply(options, directory, name, goodRows, true);
 			}
 
-			rt = ResultsTable.getResultsTable();
-
-			/// Remove empty rows
-			int rows = rt.getCounter();
-			for (int i = rows; i > 0; i--) {
-				if (!(goodRows.contains(i - 1))) {
-					rt.deleteRow(i - 1);
-				}
-			}
-
-			directory += "temporal" + File.separator;
-
-			if (rows != 0) {
-				ExcelActions ete = new ExcelActions(rt, directory);
-				ete.convertToExcel();
-
-				rt.reset();
-			}
+		
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
