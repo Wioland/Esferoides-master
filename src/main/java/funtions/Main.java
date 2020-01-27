@@ -5,7 +5,6 @@ import javax.swing.JOptionPane;
 import ij.io.DirectoryChooser;
 import interfaces.GeneralView;
 import interfaces.ImageTreePanel;
-import interfaces.SelectAlgoritm;
 
 public class Main {
 	// PRUEBAS
@@ -23,10 +22,10 @@ public class Main {
 
 			switch (selection) {
 			case 0:
-				SelectAlgoritm seletAl = new SelectAlgoritm(dc, folderView);
+				createGeneralViewOrNot(folderView, dc,true);
 				break;
 			case 1:
-				createGeneralViewOrNot(folderView, dc);
+				createGeneralViewOrNot(folderView, dc,false);
 
 				break;
 			default:
@@ -36,11 +35,11 @@ public class Main {
 		}
 	}
 
-	public static void createGeneralViewOrNot(ImageTreePanel folderView, String dc) {
+	public static void createGeneralViewOrNot(ImageTreePanel folderView, String dc,boolean selectAlgo) {
 		if (folderView == null) { // si no se estaba ya en un GeneralView se crea uno nuevo
-			GeneralView ventana = new GeneralView(dc);
+			 new GeneralView(dc,selectAlgo);
 		} else {
-			folderView.repaintTabPanel();
+			folderView.repaintTabPanel(selectAlgo);
 
 		}
 

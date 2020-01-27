@@ -40,6 +40,9 @@ public class DetectEsferoidMethods {
 
 		Method[] methods = getMethodsProcessor();
 		ImagePlus imp3 = null;
+		RoiManager rm;
+		String nameClass ;
+		ImageCalculator ic;
 		for (Method method : methods) {
 
 			try {
@@ -48,7 +51,7 @@ public class DetectEsferoidMethods {
 				for (Method method2 : methods) {
 
 					method2.invoke(null, impNoFluo, true, -1, -1, 0);
-					ImageCalculator ic = new ImageCalculator();
+					 ic = new ImageCalculator();
 					imp3 = ic.run("Add create", impFluo, impNoFluo);
 
 					if (imp3.getBitDepth() != 8) {
@@ -57,9 +60,9 @@ public class DetectEsferoidMethods {
 					}
 
 					IJ.run(imp3, "Fill Holes", "");
-					RoiManager rm = AnalyseParticleMethods.analyzeParticlesFluo(imp3);
+					rm = AnalyseParticleMethods.analyzeParticlesFluo(imp3);
 
-					String nameClass = "FluoColageno_" + method.getName() + "_" + method2.getName();
+					 nameClass = "FluoColageno_" + method.getName() + "_" + method2.getName();
 					Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
 
 					
@@ -105,15 +108,17 @@ public class DetectEsferoidMethods {
 		// DetectEsferoidImageMethods.processEsferoidFluo(impFluo, false);
 
 		Method[] methods = getMethodsProcessor();
+		RoiManager rm;
+		String nameClass;
 		for (Method method : methods) {
 
 			try {
 
 				method.invoke(null, impFluo, false, -1, -1, 0);
 
-				RoiManager rm = AnalyseParticleMethods.analyzeParticlesFluo(impFluo);
+				 rm= AnalyseParticleMethods.analyzeParticlesFluo(impFluo);
 
-				String nameClass = "FluoSuspension_" + method.getName();
+				 nameClass = "FluoSuspension_" + method.getName();
 				Utils.showResultsAndSave(dir, name, impNoFluo, rm, goodRows, nameClass, temp);
 				
 				
@@ -147,7 +152,9 @@ public class DetectEsferoidMethods {
 		ImagePlus imp2 = imp.duplicate();
 		imp2.setTitle(title);
 		RoiManager rm = null;
-
+		String nameClass;
+		String aux;
+		
 		// DetectEsferoidImageMethods.processEsferoidUsingThreshold(imp2, true);
 		String bits = String.valueOf(imp2.getBitDepth()) + "-bit";
 		if (bits == "24-bit") {
@@ -175,7 +182,7 @@ public class DetectEsferoidMethods {
 
 				}
 
-				String nameClass = "Hectorv2_" + method.getName();
+				 nameClass = "Hectorv2_" + method.getName();
 				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
 
 				
@@ -193,7 +200,7 @@ public class DetectEsferoidMethods {
 					rm.runCommand("Deselect");
 					rm.run("Delete");
 				}
-				String aux = String.valueOf(imp2.getBitDepth()) + "-bit";
+			aux = String.valueOf(imp2.getBitDepth()) + "-bit";
 				if (aux == "24-bit") {
 					aux = "RGB";
 				}
@@ -227,7 +234,9 @@ public class DetectEsferoidMethods {
 		ImagePlus imp2 = imp.duplicate();
 		imp2.setTitle(title);
 		RoiManager rm = null;
-
+		String nameClass;
+		String aux;
+		
 		// DetectEsferoidImageMethods.processEsferoidUsingThreshold(imp2, true);
 		String bits = String.valueOf(imp2.getBitDepth()) + "-bit";
 		if (bits == "24-bit") {
@@ -289,7 +298,7 @@ public class DetectEsferoidMethods {
 
 				}
 
-				String nameClass = "Hectorv1_" + method.getName();
+				 nameClass = "Hectorv1_" + method.getName();
 				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
 
 				
@@ -307,7 +316,7 @@ public class DetectEsferoidMethods {
 					rm.runCommand("Deselect");
 					rm.run("Delete");
 				}
-				String aux = String.valueOf(imp2.getBitDepth()) + "-bit";
+				 aux = String.valueOf(imp2.getBitDepth()) + "-bit";
 				if (aux == "24-bit") {
 					aux = "RGB";
 				}
@@ -351,7 +360,8 @@ public class DetectEsferoidMethods {
 //			boolean realBlackHole = countBetweenThresholdOver(imp2, 1100, 2000, 1500);
 //			System.out.println(realBlackHole);
 			RoiManager rm;
-
+			String nameClass;
+			String aux;
 			// DetectEsferoidImageMethods.processEsferoidEdges(imp2, 0);
 
 			String bits = String.valueOf(imp2.getBitDepth()) + "-bit";
@@ -373,7 +383,7 @@ public class DetectEsferoidMethods {
 					iters++;
 				}
 
-				String nameClass = "TeodoraV1_" + method.getName();
+				 nameClass = "TeodoraV1_" + method.getName();
 				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
 
 				
@@ -387,7 +397,7 @@ public class DetectEsferoidMethods {
 					rm.run("Delete");
 				}
 
-				String aux = String.valueOf(imp2.getBitDepth()) + "-bit";
+				 aux = String.valueOf(imp2.getBitDepth()) + "-bit";
 				if (aux == "24-bit") {
 					aux = "RGB";
 				}
@@ -422,6 +432,8 @@ public class DetectEsferoidMethods {
 			ImagePlus imp2 = imp.duplicate();
 
 			RoiManager rm;
+			String nameClass;
+			String aux ;
 
 			int count = Utils.countBelowThreshold(imp2, 1100);
 			boolean realBlackHole1 = Utils.countBetweenThresholdOver(imp2, 1100, 2000, 1500);
@@ -460,7 +472,7 @@ public class DetectEsferoidMethods {
 					iters++;
 				}
 
-				String nameClass = "Teodora_Big_" + method.getName();
+				 nameClass = "Teodora_Big_" + method.getName();
 				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
 
 				
@@ -473,7 +485,7 @@ public class DetectEsferoidMethods {
 					rm.runCommand("Deselect");
 					rm.run("Delete");
 				}
-				String aux = String.valueOf(imp2.getBitDepth()) + "-bit";
+				 aux = String.valueOf(imp2.getBitDepth()) + "-bit";
 				if (aux == "24-bit") {
 					aux = "RGB";
 				}

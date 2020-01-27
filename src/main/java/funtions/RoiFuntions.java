@@ -63,10 +63,11 @@ public class RoiFuntions {
 		f = new File(f.getAbsolutePath().replace(f.getName(), ""));
 		String[] listFiles = f.list();
 		String originalName = "";
-
+		String extension;
+		
 		for (String name : listFiles) {
 			if (!name.endsWith(".xls")) {
-				String extension = FileFuntions.extensionwithoutName(name);
+				 extension = FileFuntions.extensionwithoutName(name);
 				if (tiffName.contains(name.replace("." + extension, ""))) {
 					originalName = name;
 					break;

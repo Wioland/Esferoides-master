@@ -2,6 +2,7 @@ package interfaces;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import javax.swing.JViewport;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import esferoides.Methods;
 import funtions.ExcelActions;
 import funtions.FileFuntions;
 import funtions.Utils;
@@ -29,8 +31,49 @@ public class TabPanel extends JTabbedPane {
 	private String dir;
 	private boolean originalIma;
 
-	public TabPanel(String directory) {
+	public TabPanel(String directory, boolean selectAlgo) {
 
+		if (selectAlgo) {
+			selectAlgorithmImagesTab(directory);
+		} else {
+			alreadyImageTiffFolderTab(directory);
+		}
+
+	}
+
+	public String getDir() {
+		return dir;
+	}
+
+	public void setDir(String dir) {
+		this.dir = dir;
+	}
+
+	public boolean isOriginalIma() {
+		return originalIma;
+	}
+
+	public void setOriginalIma(boolean originalIma) {
+		this.originalIma = originalIma;
+	}
+
+	public Map<Integer, Long> getExcelModificationIndexTab() {
+		return excelModificationIndexTab;
+	}
+
+	public void setExcelModificationIndexTab(Map<Integer, Long> excelModificationIndexTab) {
+		this.excelModificationIndexTab = excelModificationIndexTab;
+	}
+
+	public Map<Integer, File> getIndexTabExcel() {
+		return IndexTabExcel;
+	}
+
+	public void setIndexTabExcel(Map<Integer, File> indexTabExcel) {
+		IndexTabExcel = indexTabExcel;
+	}
+
+	public void alreadyImageTiffFolderTab(String directory) {
 		// Buscamos los excels que haya en la carpeta o en sus hijos
 		List<String> result = new ArrayList<String>();
 		File folder = new File(directory);
@@ -50,7 +93,7 @@ public class TabPanel extends JTabbedPane {
 
 		ShowImages images = new ShowImages(directory, this);
 
-		if (images.countComponents() == 0) {
+		if (images.getComponents().length == 0) {
 			noFileText("Images", null);
 			// Comprobar si en la carpeta hay imagenes nd2
 			List<String> listImages = new ArrayList<String>();
@@ -115,57 +158,68 @@ public class TabPanel extends JTabbedPane {
 					ExcelActions.checkExcelTab(tab, dir, tab.getSelectedIndex());
 				} else {
 					if (tab.getTitleAt(tab.getSelectedIndex()).contains("Images")) {
-						FileFuntions.isDirectoryContentModify(dir+"predictions", tab);
+						FileFuntions.isDirectoryContentModify(dir + "predictions", tab);
 					}
 				}
 
 			}
 		});
 
-		FileFuntions.addModificationDirectory(dir+"predictions");
+		FileFuntions.addModificationDirectory(dir + "predictions");
 		FileFuntions.imagescheckWithTime(this, 60);
 
 		ExcelActions.excelcheckWithTime(this, dir, 60);
 
 	}
 
-	public String getDir() { 
-		return dir;
-	}
+	public void selectAlgorithmImagesTab(String directory) {
 
-	public void setDir(String dir) {
-		this.dir = dir;
-	}
+		List<String> result = new ArrayList<String>();
+		List<String> listExtensions = JMenuPropertiesFile.getExtensions();
+		int i = 0;
 
-	public boolean isOriginalIma() {
-		return originalIma;
-	}
+		// Miramos que tipo de formato contiene la carpeta seleccionada para ello
+		// buscamos los tipos de formato que admitimos dentro de esa carpeta hasta que
+		// result no sea vacio o no queden tipos de formato con los que comparar
 
-	public void setOriginalIma(boolean originalIma) {
-		this.originalIma = originalIma;
-	}
+		while (result.isEmpty() && i < listExtensions.size()) {
+			Utils.searchDirectory(".*\\." + listExtensions.get(i), new File(directory), result);
+			i++;
+		}
 
-	public Map<Integer, Long> getExcelModificationIndexTab() {
-		return excelModificationIndexTab;
-	}
+		if (result.isEmpty()) { // mostramos k en esa carpeta no hay imagenes requeridas y volverr a llamar al
+								// mail para seleccionar otra carpeta y realizar las acciones que queramos con
+								// ella
 
-	public void setExcelModificationIndexTab(Map<Integer, Long> excelModificationIndexTab) {
-		this.excelModificationIndexTab = excelModificationIndexTab;
-	}
+			alreadyImageTiffFolderTab(directory);
 
-	public Map<Integer, File> getIndexTabExcel() {
-		return IndexTabExcel;
-	}
+		} else { // si hay imagens procedemos a realizar la decteccion de los esferoides en ellas
+			// Realizamos los metodos de procesado
+		new Methods(directory, result);
 
-	public void setIndexTabExcel(Map<Integer, File> indexTabExcel) {
-		IndexTabExcel = indexTabExcel;
+			// para cada imagen original creamos un showimages mirando cuales de las nuevas
+			// imagenes
+			// creadas contienen el nombre de la imagen original sin el sufijo
+		
+			ShowAllAlgorithmImages imaCreated;
+			JPanel imagesPanel = new JPanel(new GridLayout(0, 3));
+
+			for (String pathOriginalImage : result) {
+				imaCreated = new ShowAllAlgorithmImages(pathOriginalImage, this);
+				imagesPanel.add(imaCreated);
+			}
+
+			addTab("Images", imagesPanel);
+		}
+
 	}
 
 	public void noFileText(String tabName, JViewport jp) {
 
 		JTextArea j = new JTextArea();
 		j.setText("There is no such file in this folder");
-		j.enable(false);
+		j.setEnabled(false);
+		//j.enable(false);
 		j.setName(tabName);
 
 		JScrollPane s = new JScrollPane(j);

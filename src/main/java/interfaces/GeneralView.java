@@ -16,12 +16,12 @@ import funtions.FileFuntions;
 public class GeneralView extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private String directory;
+	//private String directory;
 	private JMenuBar mb;
 
-	public GeneralView(String directory) {
+	public GeneralView(String directory,boolean selectAlgo) {
 
-		this.directory = directory;
+		//this.directory = directory;
 		this.mb = new JMenuBar();
 
 		// Parametros ventana
@@ -83,7 +83,7 @@ public class GeneralView extends JFrame {
 		mb.add(menu);
 
 		OurProgressBar pb = new OurProgressBar(this);
-		ImageTreePanel imageTree = new ImageTreePanel(directory);
+		ImageTreePanel imageTree = new ImageTreePanel(directory,selectAlgo);
 		getContentPane().add(imageTree);
 
 		setVisible(true);
@@ -95,7 +95,7 @@ public class GeneralView extends JFrame {
 					"There aren´t Tif files in this folder, but we detected Nd2 files. Do you want to detect the esferoid of this images?",
 					"alert", JOptionPane.YES_NO_OPTION);
 			if (op == 0) {
-				SelectAlgoritm seletAl = new SelectAlgoritm(this.directory, imageTree);
+				new GeneralView(directory, true);
 			}
 		}
 	}

@@ -51,11 +51,11 @@ public class ExcelActions {
 		}
 
 		int rows = this.rt.getCounter();
-
+		String[] rowi;
 		HSSFRow row;
 		for (int i = 0; i < rows; i++) {
 			row = sheet.createRow((short) i + 1);
-			String[] rowi = this.rt.getRowAsString(i).split("\\t");
+			rowi = this.rt.getRowAsString(i).split("\\t");
 			for (int j = 1; j <= headings.length; j++) {
 
 				row.createCell((short) j - 1).setCellValue(rowi[j]);
@@ -239,7 +239,7 @@ public class ExcelActions {
 		JScrollPane sp = (JScrollPane) tp.getComponentAt(index);
 		JViewport jP = (JViewport) sp.getComponent(0);
 
-		if (tp.getIndexTabExcel().size() == 1) { // if it is the las excel tab we transform it to a noFileTab
+		if (tp.getIndexTabExcel().size() == 1) { // if it is the last excel tab we transform it to a noFileTab
 
 			tp.noFileText("Excel", jP);
 			tp.setTitleAt(1, "Excel ");
@@ -288,6 +288,9 @@ public class ExcelActions {
 			if (!tp.getComponent(1).getClass().equals(JScrollPane.class)) {
 				firstCheck = true;
 			}
+			String name;
+			ExcelTableCreator eTC;
+			File ex;
 
 			for (String path : result) {
 				if (!tp.getIndexTabExcel().containsValue(new File(path))) { // if there is a nofileTab the first excel
@@ -299,18 +302,20 @@ public class ExcelActions {
 						JViewport jP = (JViewport) sp.getComponent(0);
 						jP.remove(jP.getComponent(0));
 
-						File ex = new File(path);
-						ExcelTableCreator eTC = new ExcelTableCreator(ex);
+						ex = new File(path);
+						eTC = new ExcelTableCreator(ex);
 
 						jP.add(eTC);
 						jP.repaint();
 
-						String name = ex.getName();
+						name = ex.getName();
 						tp.getExcelModificationIndexTab().put(tp.getSelectedIndex(), ex.lastModified());
 						tp.getIndexTabExcel().put(tp.getSelectedIndex(), ex);
 						tp.setTitleAt(tp.getSelectedIndex(), "Excel " + name);
 
 						firstCheck = true;
+						
+						
 					} else {
 						addExcelPanel(new File(path), tp); // For the rest of excels we create a new tab
 					}
@@ -333,7 +338,7 @@ public class ExcelActions {
 		ExcelTableCreator excelPanel = new ExcelTableCreator(excel);
 		JScrollPane s = new JScrollPane(excelPanel);
 
-		if (!excel.getAbsoluteFile().equals(tp.getDir())) { // if the excel is in a subfolder the name contains the
+		if (!excel.getAbsolutePath().equals(tp.getDir())) { // if the excel is in a subfolder the name contains the
 															// different path + excel name
 
 			String folder = excel.getAbsolutePath().replace(tp.getDir(), "");

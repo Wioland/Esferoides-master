@@ -21,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import esferoides.Methods;
@@ -107,7 +106,7 @@ public class AlgorithmView extends JFrame {
 
 		List<String> result = new ArrayList<String>();
 		result.add(path);
-		Methods executeMethods = new Methods(directory, result);
+		 new Methods(directory, result);
 
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 
@@ -118,7 +117,7 @@ public class AlgorithmView extends JFrame {
 		if (panelImage.getListImages().size() == 0) {
 			pb.dispose();
 			JOptionPane.showMessageDialog(null, "Nothing detected in the image given");
-			
+
 			this.dispose();
 		}
 
@@ -160,7 +159,7 @@ public class AlgorithmView extends JFrame {
 		jSp.setVisible(true);
 		getContentPane().add(jSp);
 		jSp.repaint();
-	
+
 		IJ.run("Close All");
 		// pack();
 

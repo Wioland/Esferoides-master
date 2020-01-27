@@ -18,7 +18,7 @@ public class ShowTiff {
 			File f = new File(path);
 		//	boolean s = f.exists();
 			image = ImageIO.read(f);
-			String[] formatNames = ImageIO.getReaderFormatNames();
+			//String[] formatNames = ImageIO.getReaderFormatNames();
 
 		} catch (Exception e) {
 			e.printStackTrace();

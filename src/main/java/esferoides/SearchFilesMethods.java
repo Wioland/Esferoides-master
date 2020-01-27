@@ -20,7 +20,7 @@ public class SearchFilesMethods {
 
 			options.setWindowless(true);
 			// We ask the user for a directory with nd2 images.
-			DirectoryChooser dc = new DirectoryChooser("Select the folder containing the fluo and tiff images");
+			DirectoryChooser dc = new DirectoryChooser("Select the folder containing the fluo and tif images");
 			String dir = dc.getDirectory();
 
 			// We store the list of tiff files in the result list.

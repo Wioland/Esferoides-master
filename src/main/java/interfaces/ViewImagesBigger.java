@@ -91,56 +91,12 @@ public class ViewImagesBigger extends JPanel {
 
 			addlistenerButton(backBu, forwardBu, tryAlgoriBu);
 			panelButtons.add(tryAlgoriBu);
-			String nombreImagen = (new File(listImages.get(indexImagenList).getDescription())).getName();
-			String title = indexImageView + nombreImagen;
-			this.tp.add(title, this);
-			this.tp.setSelectedIndex(this.tp.indexOfTab(title));
-
-			int index = this.tp.indexOfTab(title);
-			JPanel pnlTab = new JPanel(new GridBagLayout());
-			pnlTab.setOpaque(false);
-			JLabel lblTitle = new JLabel(title);
-			JButton btnClose = new JButton("x");
-
-			GridBagConstraints gbc = new GridBagConstraints();
-			gbc.gridx = 0;
-			gbc.gridy = 0;
-			gbc.weightx = 1;
-
-			pnlTab.add(lblTitle, gbc);
-
-			gbc.gridx++;
-			gbc.weightx = 0;
-			pnlTab.add(btnClose, gbc);
-
-			this.tp.setTabComponentAt(index, pnlTab);
-
-			btnClose.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					closeTab(e);
-				}
-			});
+			
+			addXTotab();
+			
 
 		} else {
-			JSplitPane splitPa = new JSplitPane();
-			splitPa.setOrientation(javax.swing.JSplitPane.HORIZONTAL_SPLIT);
-
-			JLabel originalImaLb = new JLabel();
-			ImageIcon ico = ShowTiff.showTiffToImageIcon(al.getImage().getAbsolutePath());
-			originalImaLb.setIcon(ico);
-			originalImaLb.setVisible(true);
-			
-			splitPa.setLeftComponent(new JScrollPane(originalImaLb));
-			splitPa.setRightComponent(new JScrollPane(labelImage));
-
-			splitPa.setVisible(true);
-			this.add(splitPa, constraints);
-			splitPa.setDividerLocation(500);
-			this.repaint();
-
+			createComparer(constraints);
 			addlistenerButton(backBu, forwardBu);
 		}
 
@@ -168,6 +124,73 @@ public class ViewImagesBigger extends JPanel {
 			tp.remove(tp.indexOfTabComponent(bu.getParent()));
 		}
 	}
+	
+	
+	private void createComparer(GridBagConstraints constraints) { 
+		
+		JSplitPane splitPa = new JSplitPane();
+		splitPa.setOrientation(javax.swing.JSplitPane.HORIZONTAL_SPLIT);
+
+		JLabel originalImaLb = new JLabel();
+		
+		if(al!=null) {
+			ImageIcon ico = ShowTiff.showTiffToImageIcon(al.getImage().getAbsolutePath());
+			originalImaLb.setIcon(ico);
+		}else {
+			originalImaLb.setIcon(labelImage.getIcon());
+		}
+	
+		
+		originalImaLb.setVisible(true);
+		
+		splitPa.setLeftComponent(new JScrollPane(originalImaLb));
+		splitPa.setRightComponent(new JScrollPane(labelImage));
+
+		splitPa.setVisible(true);
+		
+		this.add(splitPa, constraints);
+		splitPa.setDividerLocation(500);
+		this.repaint();
+
+		
+	}
+	
+	private void addXTotab() {
+		
+		String nombreImagen = (new File(listImages.get(indexImagenList).getDescription())).getName();
+		String title = indexImageView + nombreImagen;
+		this.tp.add(title, this);
+		this.tp.setSelectedIndex(this.tp.indexOfTab(title));
+
+		int index = this.tp.indexOfTab(title);
+		JPanel pnlTab = new JPanel(new GridBagLayout());
+		pnlTab.setOpaque(false);
+		JLabel lblTitle = new JLabel(title);
+		JButton btnClose = new JButton("x");
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 1;
+
+		pnlTab.add(lblTitle, gbc);
+
+		gbc.gridx++;
+		gbc.weightx = 0;
+		pnlTab.add(btnClose, gbc);
+
+		this.tp.setTabComponentAt(index, pnlTab);
+
+		btnClose.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				closeTab(e);
+			}
+		});
+	}
+	
 
 	private void addlistenerButton(JButton backBu, JButton forwardBu) {
 		// TODO Auto-generated method stub
@@ -240,7 +263,7 @@ public class ViewImagesBigger extends JPanel {
 				ImageIcon i = listImages.get(listImages.indexOf(image));
 				File f = new File(i.getDescription());
 
-				AlgorithmView alg = new AlgorithmView(f, dir);
+				 new AlgorithmView(f, dir);
 
 			}
 		});

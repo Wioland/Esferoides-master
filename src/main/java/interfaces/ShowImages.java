@@ -5,11 +5,6 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,12 +13,10 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import funtions.FileFuntions;
 import funtions.ShowTiff;
-import funtions.Utils;
 
 public class ShowImages extends JPanel {
 
@@ -34,28 +27,39 @@ public class ShowImages extends JPanel {
 	private List<String> listImages;
 	private Map<String, JButton> listImagesPrev;
 	private Map<String, Long> lastModifyImage;
-	private String dir;
+
 	private List<ImageIcon> imageIcon;
 
 	/*
 	 * Mostrar las imagenes tiff como botones
 	 */
 	public ShowImages(String directory, Component tp) {
-		this.dir = directory;
+
 		this.setLayout(new GridLayout(0, 1));
 
 		listImages = new ArrayList<String>();
 		listImagesPrev = new HashMap<String, JButton>();
 		lastModifyImage = new HashMap<String, Long>();
 
-		File folder = new File(dir);
+		File folder = new File(directory);
 		createImageButton(folder, tp);
 
 	}
 
-	
-	// GETTERS Y SETTERS	
-	
+	public ShowImages(TabPanel tp, List<String> images) {
+
+		this.setLayout(new GridLayout(0, 1));
+
+		listImages = new ArrayList<String>();
+		listImagesPrev = new HashMap<String, JButton>();
+		lastModifyImage = new HashMap<String, Long>();
+
+		createImageButton(tp, images);
+
+	}
+
+	// GETTERS Y SETTERS
+
 	public List<ImageIcon> getImageIcon() {
 		return imageIcon;
 	}
@@ -88,18 +92,17 @@ public class ShowImages extends JPanel {
 		this.listImages = listImages;
 	}
 
-	
-	//METHOS
-	
-	
-	
+	// METHOS
+
 	public void createImageButton(File folder, Component tp) {
-		
-		listImages=FileFuntions.checkTiffNotPredictionsFolder(folder);
-		
-		
+
+		listImages = FileFuntions.checkTiffNotPredictionsFolder(folder);
+
 		Collections.sort(listImages);
 		imageIcon = new ArrayList<ImageIcon>();
+		ImageIcon iconoEscala;
+		JButton imageView;
+		File faux;
 
 		for (String name : listImages) {
 			// convertir a formato que se pueda ver
@@ -108,9 +111,8 @@ public class ShowImages extends JPanel {
 
 			// aniadir a button
 			// Obtiene un icono en escala con las dimensiones especificadas
-			ImageIcon iconoEscala = new ImageIcon(
-					image.getImage().getScaledInstance(700, 700, java.awt.Image.SCALE_DEFAULT));
-			JButton imageView = new JButton(iconoEscala);
+			iconoEscala = new ImageIcon(image.getImage().getScaledInstance(700, 700, java.awt.Image.SCALE_DEFAULT));
+			imageView = new JButton(iconoEscala);
 			imageView.setIcon(iconoEscala);
 			imageView.setName(name);
 
@@ -126,7 +128,7 @@ public class ShowImages extends JPanel {
 						String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
 						if (tap != null && tap.indexOfTab(nombreTab) == -1) {
 
-							ViewImagesBigger viewImageBig = new ViewImagesBigger(image, imageIcon, tap);
+							new ViewImagesBigger(image, imageIcon, tap);
 
 						}
 					} else {
@@ -141,14 +143,57 @@ public class ShowImages extends JPanel {
 
 			listImagesPrev.put(name, imageView);
 
-			File faux = new File(name);
+			faux = new File(name);
 			lastModifyImage.put(name, faux.lastModified());
 
 			this.add(imageView);
 		}
 	}
-	
-	
-	
+
+	public void createImageButton(TabPanel tp, List<String> images) {
+
+		listImages = images;
+
+		Collections.sort(listImages);
+		imageIcon = new ArrayList<ImageIcon>();
+		ImageIcon iconoEscala;
+		JButton imageView;
+		File faux;
+
+		for (String name : listImages) {
+			// convertir a formato que se pueda ver
+			ImageIcon image = ShowTiff.showTiffToImageIcon(name);
+			image.setDescription(name);
+
+			// aniadir a button
+			// Obtiene un icono en escala con las dimensiones especificadas
+			iconoEscala = new ImageIcon(image.getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_DEFAULT));
+			imageView = new JButton(iconoEscala);
+			imageView.setIcon(iconoEscala);
+			imageView.setName(name);
+
+			imageIcon.add(image);
+
+			imageView.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+
+					String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
+					if (tp != null && tp.indexOfTab(nombreTab) == -1) {
+
+						new ViewImagesBigger(image, imageIcon, tp);
+
+					}
+
+				}
+			});
+
+			listImagesPrev.put(name, imageView);
+
+			faux = new File(name);
+			lastModifyImage.put(name, faux.lastModified());
+
+			this.add(imageView);
+		}
+	}
 
 }

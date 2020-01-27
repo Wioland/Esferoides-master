@@ -178,7 +178,7 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Find Edges", "");
 		IJ.run(imp2, "Convert to Mask", "");
 		for (int i = 0; i < iters; i++) {
-			IJ.run(imp2, "Find Edges", "");IJ.run("Close");
+			IJ.run(imp2, "Find Edges", "");
 		}
 
 		IJ.run(imp2, "Fill Holes", "");
@@ -370,10 +370,6 @@ public class DetectEsferoidImageMethods {
 
 		ImagePlus imp1 = imp2.duplicate();
 		imp1.show();
-		
-		
-		
-		
 		
 		
 		
