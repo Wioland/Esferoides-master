@@ -30,7 +30,7 @@ public class ViewImagesBigger extends JPanel {
 	private String indexImageView;
 	private AlgorithmView al;
 
-	public ViewImagesBigger(Icon image, List<ImageIcon> listImages, Component tp) {
+	public ViewImagesBigger(Icon image, List<ImageIcon> listImages, Component tp,boolean selectALgo) {
 
 		this.listImages = listImages;
 		this.image = image;
@@ -86,11 +86,19 @@ public class ViewImagesBigger extends JPanel {
 		if (this.tp != null) {
 
 			this.add(scrollIma, constraints);
+			
+			
+			if(selectALgo) {
+				createComparer(constraints);
+				addlistenerButton(backBu, forwardBu);
+			}else {
+				tryAlgoriBu.setText("Try other algorithms");
 
-			tryAlgoriBu.setText("Try other algorithms");
+				addlistenerButton(backBu, forwardBu, tryAlgoriBu);
+				panelButtons.add(tryAlgoriBu);
+			}
 
-			addlistenerButton(backBu, forwardBu, tryAlgoriBu);
-			panelButtons.add(tryAlgoriBu);
+			
 			
 			addXTotab();
 			

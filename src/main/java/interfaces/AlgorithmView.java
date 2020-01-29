@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
@@ -48,33 +49,7 @@ public class AlgorithmView extends JFrame {
 		this.setVisible(true);
 		setMinimumSize(new Dimension(1000, 300));
 
-		addWindowListener(new WindowListener() {
-
-			@Override
-			public void windowOpened(WindowEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void windowIconified(WindowEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void windowDeiconified(WindowEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void windowDeactivated(WindowEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
+		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
 				File folder = Methods.getTemporalFolder();
@@ -83,19 +58,9 @@ public class AlgorithmView extends JFrame {
 				}
 
 			}
-
-			@Override
-			public void windowClosed(WindowEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void windowActivated(WindowEvent e) {
-				// TODO Auto-generated method stub
-
-			}
 		});
+		
+	
 
 		this.image = image;
 		this.directory = dir;
@@ -199,7 +164,7 @@ public class AlgorithmView extends JFrame {
 			case 2:
 				me.consume();
 				if (vi == null) {
-					vi = new ViewImagesBigger(imageIcon, imageIcoList, this);
+					vi = new ViewImagesBigger(imageIcon, imageIcoList, this,false);
 					addComparer(vi);
 				} else {
 					vi.getLabelImage().setIcon(imageIcon);

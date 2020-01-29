@@ -5,6 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import funtions.Utils;
 import ij.IJ;
 import ij.ImagePlus;
@@ -81,13 +83,11 @@ public class DetectEsferoidMethods {
 					//imp3 = null;
 
 				}
-			} catch (IllegalAccessException | IllegalArgumentException | IOException e1) {
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException| IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
+			} 
 
 		}
 		imp3.close();
@@ -127,13 +127,11 @@ public class DetectEsferoidMethods {
 				name = name.replace("fluo", "");
 				impNoFluo = IJ.openImage(name);
 
-			} catch (IllegalAccessException | IllegalArgumentException | IOException e1) {
+			} catch (IllegalAccessException | IllegalArgumentException |InvocationTargetException | IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
+			} 
 
 		}
 		impFluo.close();
@@ -172,13 +170,10 @@ public class DetectEsferoidMethods {
 				if (rm == null || rm.getRoisAsArray().length == 0) {
 					// DetectEsferoidImageMethods.processEsferoidUsingThreshold(imp2, false);
 
-					try {
+				
 						method.invoke(null, imp2, false, -1, -1, 0);
 
-					} catch (IllegalAccessException | IllegalArgumentException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+				
 
 				}
 
@@ -208,16 +203,11 @@ public class DetectEsferoidMethods {
 					IJ.run(imp2, bits, "");
 
 				}
-			} catch (IllegalAccessException | IllegalArgumentException e1) {
+			} catch (IllegalAccessException | IllegalArgumentException | IOException | InvocationTargetException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			} catch (InvocationTargetException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
+			} 
 		}
 		imp.close();
 	}
@@ -325,16 +315,11 @@ public class DetectEsferoidMethods {
 
 				}
 
-			} catch (IllegalAccessException | IllegalArgumentException e1) {
+			} catch (IllegalAccessException | IllegalArgumentException | IOException | InvocationTargetException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
+			} 
 
 		}
 		imp.close();
@@ -409,13 +394,11 @@ public class DetectEsferoidMethods {
 			}
 			imp.close();
 
-		} catch (FormatException | IOException | IllegalAccessException | IllegalArgumentException e) {
+		} catch (FormatException | IOException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
+		} 
 
 	}
 
@@ -496,13 +479,11 @@ public class DetectEsferoidMethods {
 			}
 			imp.close();
 
-		} catch (FormatException | IOException | IllegalAccessException | IllegalArgumentException e) {
+		} catch (FormatException | IOException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
+		} 
 
 	}
 

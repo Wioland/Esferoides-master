@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
@@ -46,15 +47,15 @@ public class ShowImages extends JPanel {
 
 	}
 
-	public ShowImages(TabPanel tp, List<String> images) {
+	public ShowImages(TabPanel tp, List<String> images, String originalName) {
 
-		this.setLayout(new GridLayout(0, 1));
+		this.setLayout(new GridLayout(0, 2));
 
 		listImages = new ArrayList<String>();
 		listImagesPrev = new HashMap<String, JButton>();
 		lastModifyImage = new HashMap<String, Long>();
 
-		createImageButton(tp, images);
+		createImageButton(tp, images, originalName);
 
 	}
 
@@ -128,7 +129,7 @@ public class ShowImages extends JPanel {
 						String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
 						if (tap != null && tap.indexOfTab(nombreTab) == -1) {
 
-							new ViewImagesBigger(image, imageIcon, tap);
+							new ViewImagesBigger(image, imageIcon, tap,false);
 
 						}
 					} else {
@@ -150,7 +151,7 @@ public class ShowImages extends JPanel {
 		}
 	}
 
-	public void createImageButton(TabPanel tp, List<String> images) {
+	public void createImageButton(TabPanel tp, List<String> images, String origianlName) {
 
 		listImages = images;
 
@@ -158,7 +159,7 @@ public class ShowImages extends JPanel {
 		imageIcon = new ArrayList<ImageIcon>();
 		ImageIcon iconoEscala;
 		JButton imageView;
-		File faux;
+		// File faux;
 
 		for (String name : listImages) {
 			// convertir a formato que se pueda ver
@@ -167,33 +168,71 @@ public class ShowImages extends JPanel {
 
 			// aniadir a button
 			// Obtiene un icono en escala con las dimensiones especificadas
-			iconoEscala = new ImageIcon(image.getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_DEFAULT));
+			iconoEscala = new ImageIcon(image.getImage().getScaledInstance(300, 300, java.awt.Image.SCALE_DEFAULT));
 			imageView = new JButton(iconoEscala);
 			imageView.setIcon(iconoEscala);
 			imageView.setName(name);
-
+		
+            // these next two lines do the magic..
+			imageView.setContentAreaFilled(false);
+			imageView.setOpaque(true);
 			imageIcon.add(image);
 
 			imageView.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
-
-					String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
-					if (tp != null && tp.indexOfTab(nombreTab) == -1) {
-
-						new ViewImagesBigger(image, imageIcon, tp);
-
-					}
-
-				}
+					clickImageButtonAlgoritm(e,tp,image,origianlName);
+				}	
 			});
 
 			listImagesPrev.put(name, imageView);
 
-			faux = new File(name);
-			lastModifyImage.put(name, faux.lastModified());
+			// Poner a la hora de hacer definitivo el guardado
+//			faux = new File(name);
+//			lastModifyImage.put(name, faux.lastModified());
 
 			this.add(imageView);
 		}
 	}
+	
+	
+	private void clickImageButtonAlgoritm(MouseEvent e, TabPanel tp , ImageIcon image,String origianlName) {
+		if (e.getClickCount() == 2 && !e.isConsumed()) {
+			e.consume();
+			
+			// si solo se realiza un click se cambia la seleccionada, se se hacen dos se
+			// habre un comparadar si se puede
+			String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
+			if (tp != null && tp.indexOfTab(nombreTab) == -1) {
+				int index = -1;
+				int i=0;
+				
+				while(index==-1 && i<tp.getComponentCount()) {
+					
+					if(tp.getTitleAt(i).contains(origianlName)) {
+						index=i;
+					}else {
+						i++;
+					}
+				}
 
+				if (index == -1) {
+					// si no hay ningun tab que contenga el nombre del original de este tipo de
+					// imagen se crea un comparador
+					new ViewImagesBigger(image, imageIcon, tp,true);
+				} else {
+					// se pone el foco a al tab de ese tipo de imagenes
+					tp.setSelectedIndex(index);
+				}
+			}
+
+		}
+		
+		// se añade o se sustituye la imagen definitiva a guardar de ese tipo por la
+		// seleccionada actual
+		
+		JButton buttonSelected=(JButton) e.getSource();
+		buttonSelected.setBackground(Color.yellow);
+		tp.getOriginalNewSelected().put(origianlName, buttonSelected.getName());
+
+	}
 }

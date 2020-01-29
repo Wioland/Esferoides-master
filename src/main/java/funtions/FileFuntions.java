@@ -379,7 +379,7 @@ public class FileFuntions {
 							if (tp != null) {
 								if (tp.indexOfTab(nombreTab) == -1) {
 									 new ViewImagesBigger(image, images.getImageIcon(),
-											tp);
+											tp,false);
 								}
 
 							}
@@ -541,6 +541,22 @@ public class FileFuntions {
 		}
 
 	}
+	
+	
+	public static void removeAllToTemporal(String path) {
+		// TODO Auto-generated method stub
+
+	}
+	
+	public static <K, V> K getKey(Map<K, V> map, V value) {
+		for (K key : map.keySet()) {
+			if (value.equals(map.get(key))) {
+				return key;
+			}
+		}
+		return null;
+	}
+	
 
 //	public static List<String> getPluginNames() {
 //		return pluginNames;

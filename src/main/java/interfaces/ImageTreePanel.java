@@ -1,11 +1,13 @@
 package interfaces;
 
+import java.awt.Container;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -204,11 +206,15 @@ public class ImageTreePanel extends JSplitPane {
 
 	public void repaintTabPanel(boolean selectAlgo) {
 
+		Container generalView = this.getParent().getParent().getParent().getParent();
+		
+		OurProgressBar pb= new OurProgressBar((JFrame) generalView);
 		folderView = new TabPanel(this.dir, selectAlgo);
 		// se crean los scrolls
 		// s.setViewportView(folderView);
 		this.setRightComponent(folderView);
 		folderView.repaint();
+		pb.dispose();
 
 	}
 
