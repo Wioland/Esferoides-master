@@ -206,8 +206,7 @@ public class ShowImages extends JPanel {
 				int index = -1;
 				int i=0;
 				
-				while(index==-1 && i<tp.getComponentCount()) {
-					
+				while(index==-1 && i<tp.getComponentCount()-1) {
 					if(tp.getTitleAt(i).contains(origianlName)) {
 						index=i;
 					}else {
@@ -229,10 +228,13 @@ public class ShowImages extends JPanel {
 		
 		// se añade o se sustituye la imagen definitiva a guardar de ese tipo por la
 		// seleccionada actual
-		
+		JButton oldSelected= tp.getOriginalNewSelected().get(origianlName);
+		if(oldSelected!=null) {
+			oldSelected.setBackground(null);
+		}
 		JButton buttonSelected=(JButton) e.getSource();
 		buttonSelected.setBackground(Color.yellow);
-		tp.getOriginalNewSelected().put(origianlName, buttonSelected.getName());
+		tp.getOriginalNewSelected().put(origianlName, buttonSelected);
 
 	}
 }

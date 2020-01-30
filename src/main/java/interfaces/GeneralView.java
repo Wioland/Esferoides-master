@@ -34,7 +34,7 @@ public class GeneralView extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				
 				File deleteFile = new File(directory + File.separator + "temporal");
-				FileFuntions.deleteTemporalFolder(deleteFile);
+				FileFuntions.deleteFolder(deleteFile);
 
 			}
 		});

@@ -96,7 +96,9 @@ public class ExcelTableCreator extends JTable {
 				JOptionPane.showMessageDialog(null, "Nothing to import", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		} catch (IOException ex) {
-			System.err.println("" + ex.getMessage());
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error ehile reading the excel", "Error saving",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

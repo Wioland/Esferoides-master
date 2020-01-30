@@ -90,13 +90,12 @@ public class PropertiesFileFuntions {
 			out.close();
 			// JOptionPane.showMessageDialog(null, "directory jar changed");
 //				}
-		} catch (FileNotFoundException e) {
+		} catch ( IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			JOptionPane.showMessageDialog(null, "Error changing the Jar directory", "Error saving",
+					JOptionPane.ERROR_MESSAGE);
+		} 
 
 	}
 
@@ -116,7 +115,10 @@ public class PropertiesFileFuntions {
 			prop.load(is);
 			is.close();
 		} catch (IOException e) {
-			System.out.println(e.toString());
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error getting the properties file", "Error saving",
+					JOptionPane.ERROR_MESSAGE);
+			
 		}
 		return prop;
 

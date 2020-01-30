@@ -70,12 +70,11 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 							FileOutputStream out = new FileOutputStream(prop.getPath().getFile());
 							prop.getProp().store(out, null);
 							out.close();
-						} catch (FileNotFoundException e1) {
+						} catch ( IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+							JOptionPane.showMessageDialog(null, "Error while doing the required action", "Error saving",
+									JOptionPane.ERROR_MESSAGE);
 						}
 						
 						

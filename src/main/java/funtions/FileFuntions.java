@@ -232,21 +232,21 @@ public class FileFuntions {
 	 * For delete a folder If we close the app or the algorithm view window we
 	 * delete the temporal folder
 	 * 
-	 * @param temporalFolder The folder to delete
+	 * @param folder The folder to delete
 	 */
-	public static void deleteTemporalFolder(File temporalFolder) {
+	public static void deleteFolder(File folder) {
 
-		if (temporalFolder.exists()) { // if exist
-			File[] files = temporalFolder.listFiles();
+		if (folder.exists()) { // if exist
+			File[] files = folder.listFiles();
 			for (File file : files) { // if it isn't empty we delete it's files
 				if (file.isDirectory()) { // if it's a directory we call this method else we delete it
-					deleteTemporalFolder(file);
+					deleteFolder(file);
 				} else {
 					file.delete();
 				}
 
 			}
-			temporalFolder.delete(); // we delete it
+			folder.delete(); // we delete it
 		}
 
 	}
@@ -532,6 +532,9 @@ public class FileFuntions {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "An error occurred while saving the images in the predicctions folder", "Error saving",
+							JOptionPane.ERROR_MESSAGE);
+					
 				}
 			}
 			listImages.clear();
@@ -543,10 +546,6 @@ public class FileFuntions {
 	}
 	
 	
-	public static void removeAllToTemporal(String path) {
-		// TODO Auto-generated method stub
-
-	}
 	
 	public static <K, V> K getKey(Map<K, V> map, V value) {
 		for (K key : map.keySet()) {
@@ -556,6 +555,34 @@ public class FileFuntions {
 		}
 		return null;
 	}
+	public static  String getKeyFRomButtonDescription(Map<String, JButton> map,String value) {
+		JButton valueButton=null;
+		
+		for (JButton bu: map.values()) {
+			if(bu.getName()==value) {
+				valueButton=bu;
+				break;
+			}
+		}
+		
+		return getKey(map, valueButton);
+	}
+
+
+
+	public static void removeAllToOriginalFolder(String dirPredictions, File tempoFolder) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+
+	public static void changeToriginalName(File tempoFolder, Map<String, JButton> originalNewSelected) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+   
 	
 
 //	public static List<String> getPluginNames() {

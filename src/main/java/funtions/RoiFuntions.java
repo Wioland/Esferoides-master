@@ -3,6 +3,8 @@ package funtions;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
@@ -47,13 +49,12 @@ public class RoiFuntions {
 
 			r.show("Results");
 
-		} catch (FormatException e) {
+		} catch (FormatException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			JOptionPane.showMessageDialog(null, "Error while trying to show the imagen + roi", "Error saving",
+					JOptionPane.ERROR_MESSAGE);
+		} 
 	}
 
 	public static String getoriginalFilePathFromTempralTiff(String pathTemporalTiff) {

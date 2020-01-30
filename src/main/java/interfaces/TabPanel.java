@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -35,7 +37,7 @@ public class TabPanel extends JTabbedPane {
 	private Map<Integer, File> indexTabExcel;
 	private String dir;
 	private boolean originalIma;
-	private Map<String, String> originalNewSelected;
+	private Map<String, JButton> originalNewSelected;
 	private int originalImagesNumber = 0;
 
 	public TabPanel(String directory, boolean selectAlgo) {
@@ -79,14 +81,14 @@ public class TabPanel extends JTabbedPane {
 	}
 
 	public void setIndexTabExcel(Map<Integer, File> indexTabExcel) {
-		indexTabExcel = indexTabExcel;
+		this.indexTabExcel = indexTabExcel;
 	}
 
-	public Map<String, String> getOriginalNewSelected() {
+	public Map<String, JButton> getOriginalNewSelected() {
 		return originalNewSelected;
 	}
 
-	public void setOriginalNewSelected(Map<String, String> originalNewSelected) {
+	public void setOriginalNewSelected(Map<String, JButton> originalNewSelected) {
 		this.originalNewSelected = originalNewSelected;
 	}
 
@@ -196,7 +198,7 @@ public class TabPanel extends JTabbedPane {
 		this.dir = directory;
 		List<String> result = new ArrayList<String>();
 		List<String> listExtensions = JMenuPropertiesFile.getExtensions();
-		originalNewSelected = new HashMap<String, String>();
+		originalNewSelected = new HashMap<String, JButton>();
 		int i = 0;
 
 		// Miramos que tipo de formato contiene la carpeta seleccionada para ello
@@ -204,7 +206,7 @@ public class TabPanel extends JTabbedPane {
 		// result no sea vacio o no queden tipos de formato con los que comparar
 
 		while (result.isEmpty() && i < listExtensions.size()) {
-			if(listExtensions.get(i).contentEquals("tiff")) {
+			if (listExtensions.get(i).contentEquals("tiff")) {
 				i++;
 			}
 			Utils.searchDirectory(".*\\." + listExtensions.get(i), new File(directory), result);
@@ -225,7 +227,7 @@ public class TabPanel extends JTabbedPane {
 			// imagenes
 			// creadas contienen el nombre de la imagen original sin el sufijo
 
-			ShowAllAlgorithmImages imaCreated;
+			ShowAllAlgorithmImages imaCreated = null;
 			JPanel imagesPanel = new JPanel(new GridLayout(0, 2));
 
 			for (String pathOriginalImage : result) {
@@ -235,7 +237,7 @@ public class TabPanel extends JTabbedPane {
 
 			JPanel splitPane = new JPanel(new GridBagLayout());
 			JPanel selectButtons = new JPanel();
-			//JScrollPane s = new JScrollPane(imagesPanel);
+			// JScrollPane s = new JScrollPane(imagesPanel);
 
 			addSelectedButtons(selectButtons);
 
@@ -251,11 +253,28 @@ public class TabPanel extends JTabbedPane {
 			constraints.weighty = 1;
 			constraints.gridx = 0;
 			constraints.gridy = 1;
-			//splitPane.add(s, constraints);
-			splitPane.add(imagesPanel, constraints);
+			// splitPane.add(s, constraints);
+
+			if (result.size() == 1) {
+				splitPane.add(imaCreated, constraints);
+
+			} else {
+				splitPane.add(imagesPanel, constraints);
+			}
 
 			addTab("Images", splitPane);
 		}
+
+	}
+
+	public void changeSelectedImage(String newImage) {
+
+		String key = FileFuntions.getKeyFRomButtonDescription(originalNewSelected, newImage);
+		JButton newButton = originalNewSelected.get(key);
+		newButton.setBackground(Color.yellow);
+
+		JButton oldButton = originalNewSelected.get(key);
+		oldButton.setBackground(null);
 
 	}
 
@@ -272,8 +291,10 @@ public class TabPanel extends JTabbedPane {
 
 		cleanSelection.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
-
-
+				for (JButton b : originalNewSelected.values()) {
+					b.setBackground(null);
+				}
+				originalNewSelected.clear();
 			}
 		});
 
@@ -291,34 +312,78 @@ public class TabPanel extends JTabbedPane {
 		dirPredictions += "predictions";
 
 		File folder = new File(dirPredictions);
+		File tempoFolder = new File(dirPredictions.replace("predictions", "temporal"));
+
 		folder.mkdir();
 		try {
-			if (getOriginalNewSelected().values().isEmpty() || getOriginalNewSelected().values().size()!=originalImagesNumber ) {
+			if (getOriginalNewSelected().values().isEmpty()
+					|| getOriginalNewSelected().values().size() != originalImagesNumber) {
 				JOptionPane.showMessageDialog(null, "Please select an image of each");
 			} else {
-				for (String nameFile : getOriginalNewSelected().values()) {
-					String auxName = nameFile.replace("temporal", "predictions");
-					File auxFile = new File(nameFile);
-					String nameNoExtension = FileFuntions.getKey(getOriginalNewSelected(), nameFile);
-					String nameNoPAth = FileFuntions.namewithoutExtension(nameFile);
+//juntamos todos los excels en uno
 
-					auxName = auxName.replace(nameNoPAth, nameNoExtension); // el nombre con todos los procesos por el
-																			// nombre original
-					auxFile.renameTo(new File(auxName));
+				moveFinalFilesToPredictions();
 
-					auxFile = new File(nameFile.replace(".tiff", ".zip"));
-					auxName = auxName.replace(".tiff", ".zip");
-					auxFile.renameTo(new File(auxName));
-				}
+				// pasar a la vista de los tif
+				FileFuntions.deleteFolder(tempoFolder);
+				//pasomos a la vista de tab tiff
+				
+				((ImageTreePanel)this.getParent()).repaintTabPanel(false);
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 
 			JOptionPane.showMessageDialog(null, "Error moving the images to the final folder. Please try again");
-			FileFuntions.removeAllToTemporal(dirPredictions);
+			FileFuntions.removeAllToOriginalFolder(dirPredictions, tempoFolder);
+			FileFuntions.changeToriginalName(tempoFolder, getOriginalNewSelected());
+			FileFuntions.deleteFolder(folder);
 		}
 
+	}
+
+	public void moveFinalFilesToPredictions() {
+		OurProgressBar pb = new OurProgressBar(getJFrameGeneral());
+		JOptionPane.showMessageDialog(getJFrameGeneral(), "Saving the images in the predicction folder");
+		String auxName = "";
+		File auxFile = null;
+		String nameNoExtension = "";
+		String nameNoPAth = "";
+
+		for (JButton nameFile : getOriginalNewSelected().values()) {
+
+			auxName = nameFile.getName().replace("temporal", "predictions");
+			auxFile = new File(nameFile.getName());
+			nameNoExtension = FileFuntions.getKey(getOriginalNewSelected(), nameFile);
+			nameNoPAth = FileFuntions.namewithoutExtension(nameFile.getName());
+
+			auxName = auxName.replace(nameNoPAth, nameNoExtension + "_pred"); // el nombre con todos los procesos por el
+			// nombre original
+			auxFile.renameTo(new File(auxName));
+
+			auxFile = new File(nameFile.getName().replace("_pred.tiff", "_results.xls"));
+			auxName = auxName.replace("_pred.tiff", "_results.xls");
+			
+			File fileExcel = new File(auxName.replace(File.separator+"predictions", ""));
+			auxFile.renameTo(fileExcel);
+
+			auxFile = new File(nameFile.getName().replace("_pred.tiff", ".zip"));
+			auxName = auxName.replace("_results.xls", ".zip");
+			auxFile.renameTo(new File(auxName));
+
+			ExcelActions.mergeExcels(fileExcel, nameNoExtension,
+					new File(fileExcel.getAbsolutePath().replace(fileExcel.getName(), "")));
+
+		}
+		JOptionPane.showMessageDialog(getJFrameGeneral(), "Images save");
+		pb.dispose();
+		
+	
+
+	}
+
+	public JFrame getJFrameGeneral() {
+		return (JFrame) ((ImageTreePanel) this.getParent()).getJFrameGeneral();
 	}
 
 	public void noFileText(String tabName, JViewport jp) {

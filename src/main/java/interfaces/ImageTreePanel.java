@@ -203,12 +203,16 @@ public class ImageTreePanel extends JSplitPane {
 		}
 		return switchFolder;
 	}
+	
+	public JFrame getJFrameGeneral() {
+		return (JFrame)this.getParent().getParent().getParent().getParent();
+	}
 
 	public void repaintTabPanel(boolean selectAlgo) {
 
-		Container generalView = this.getParent().getParent().getParent().getParent();
+		JFrame generalView = getJFrameGeneral();
 		
-		OurProgressBar pb= new OurProgressBar((JFrame) generalView);
+		OurProgressBar pb= new OurProgressBar( generalView);
 		folderView = new TabPanel(this.dir, selectAlgo);
 		// se crean los scrolls
 		// s.setViewportView(folderView);

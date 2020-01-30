@@ -1,6 +1,7 @@
 package funtions;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,6 +20,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import ij.measure.ResultsTable;
 import interfaces.ExcelTableCreator;
@@ -79,12 +82,10 @@ public class ExcelActions {
 			workbook.write(fileOut);
 			fileOut.close();
 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "An error occurred while creating the excel associated with the image");
 		}
 
 	}
@@ -314,8 +315,7 @@ public class ExcelActions {
 						tp.setTitleAt(tp.getSelectedIndex(), "Excel " + name);
 
 						firstCheck = true;
-						
-						
+
 					} else {
 						addExcelPanel(new File(path), tp); // For the rest of excels we create a new tab
 					}
@@ -371,5 +371,114 @@ public class ExcelActions {
 		Timer temporizador = new Timer();
 
 		temporizador.scheduleAtFixedRate(exTask, 0, 1000 * secons);
+	}
+
+	public static void deleteAllExcels(File directory) {
+
+		String pattern = ".*\\_results.xls";
+		List<String> result = new ArrayList<String>();
+		Utils.searchDirectory(pattern, directory, result);
+
+		File aux = null;
+		for (String string : result) {
+			aux = new File(string);
+			aux.delete();
+		}
+
+	}
+
+	public static void mergeExcels(File excel, String originalName, File directory) {
+
+		List<String> result = new ArrayList<String>();
+
+		Utils.searchDirectory("results.xls", directory, result);
+
+		FileInputStream inputStream;
+		HSSFWorkbook wb;
+		try {
+
+			if (result.isEmpty()) {
+
+				// cambiar el nombre de la fila 1
+				inputStream = new FileInputStream(excel);
+				wb = new HSSFWorkbook(inputStream);
+				modifyCell(wb, 0, 1, 0, originalName);
+
+				inputStream.close();
+
+				FileOutputStream outputFile = new FileOutputStream(excel);
+
+				wb.write(outputFile);
+
+				outputFile.close();
+
+				excel.renameTo(new File(excel.getAbsolutePath().replace(excel.getName(), "results.xls")));
+			} else {
+				// añadir una fila pero con ekl nombre cambiado
+				inputStream = new FileInputStream(excel);
+				wb = new HSSFWorkbook(inputStream);
+				modifyCell(wb, 0, 1, 0, originalName);
+
+				FileOutputStream outputFile = new FileOutputStream(excel);
+				wb.write(outputFile);
+				outputFile.close();
+
+				HSSFRow newRow = getRow(excel, 0, 1);
+				inputStream.close();
+				inputStream = new FileInputStream(new File(result.get(0)));
+				wb = new HSSFWorkbook(inputStream);
+
+				addRow(wb, 0, newRow);
+
+				inputStream.close();
+				outputFile = new FileOutputStream(new File(result.get(0)));
+				wb.write(outputFile);
+
+				outputFile.close();
+
+				excel.delete();
+
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private static HSSFRow getRow(File excel, int indexSheet, int indexRow) {
+		HSSFWorkbook oldExcel;
+		HSSFRow newRow = null;
+		try {
+			oldExcel = new HSSFWorkbook(new FileInputStream(excel));
+			newRow = oldExcel.getSheetAt(indexSheet).getRow(indexRow);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return newRow;
+	}
+
+	public static void modifyCell(HSSFWorkbook workbook, int indexSheet, int indexRow, int indexCell, String newValue) {
+		HSSFSheet sheet = workbook.getSheetAt(indexSheet);
+		Cell cell2Update = sheet.getRow(indexRow).getCell(indexCell);
+		cell2Update.setCellValue(newValue);
+	}
+
+	public static void addRow(HSSFWorkbook workbook, int indexSheet, HSSFRow newRow) {
+		HSSFSheet sheet = workbook.getSheetAt(indexSheet);
+		int rowCount = sheet.getLastRowNum();
+		sheet.createRow((short) (rowCount + 1));
+		// changeRow(rowCount+1, sheet, newRow);
+
+		for (int i = 0; i < sheet.getRow(rowCount).getLastCellNum(); i++) {
+			sheet.getRow(rowCount + 1).createCell(i);
+			Cell cell2Update = sheet.getRow(rowCount + 1).getCell(i);
+			cell2Update.setCellValue(newRow.getCell(i).getStringCellValue());
+
+		}
+
 	}
 }

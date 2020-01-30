@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import funtions.FileFuntions;
 import loci.plugins.in.ImporterOptions;
 
@@ -135,6 +137,7 @@ public class Methods {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
 		}
 
 	}

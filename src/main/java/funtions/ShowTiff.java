@@ -5,6 +5,7 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 public class ShowTiff {
 
@@ -22,6 +23,8 @@ public class ShowTiff {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error cwhile trying to show the tiff file", "Error saving",
+					JOptionPane.ERROR_MESSAGE);
 		}
 		ImageIcon imaIco = new ImageIcon(image);
 

@@ -5,6 +5,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.List;
 
@@ -145,7 +147,13 @@ public class ViewImagesBigger extends JPanel {
 			ImageIcon ico = ShowTiff.showTiffToImageIcon(al.getImage().getAbsolutePath());
 			originalImaLb.setIcon(ico);
 		}else {
-			originalImaLb.setIcon(labelImage.getIcon());
+			originalImaLb.setIcon(image);
+			JButton selectButton= new JButton("Select");
+			selectButton.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					mouseSelectAction(originalImaLb);
+				}
+			});
 		}
 	
 		
@@ -161,6 +169,14 @@ public class ViewImagesBigger extends JPanel {
 		this.repaint();
 
 		
+	}
+	
+	
+	public void mouseSelectAction(JLabel originalImaLb) {
+		tp.changeSelectedImage(listImages.get(indexImagenList).getDescription());
+				
+		originalImaLb.setIcon(labelImage.getIcon());		
+		this.repaint();
 	}
 	
 	private void addXTotab() {
