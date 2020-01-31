@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
@@ -470,14 +472,114 @@ public class ExcelActions {
 	public static void addRow(HSSFWorkbook workbook, int indexSheet, HSSFRow newRow) {
 		HSSFSheet sheet = workbook.getSheetAt(indexSheet);
 		int rowCount = sheet.getLastRowNum();
-		sheet.createRow((short) (rowCount + 1));
+		if(rowCount!=0 || sheet.getRow(0)!=null) {
+			rowCount++;
+		}
+		
+		sheet.createRow((short) (rowCount));
 		// changeRow(rowCount+1, sheet, newRow);
 
-		for (int i = 0; i < sheet.getRow(rowCount).getLastCellNum(); i++) {
-			sheet.getRow(rowCount + 1).createCell(i);
-			Cell cell2Update = sheet.getRow(rowCount + 1).getCell(i);
-			cell2Update.setCellValue(newRow.getCell(i).getStringCellValue());
+		for (int i = 0; i < newRow.getLastCellNum(); i++) {
+			sheet.getRow(rowCount).createCell(i);
+			Cell cell2Update = sheet.getRow(rowCount).getCell(i);
+			
+			if (newRow.getCell(i)!=null) {
+			    switch (newRow.getCell(i).getCellType()) {
+			        case Cell.CELL_TYPE_BOOLEAN:
+			        	cell2Update.setCellValue(newRow.getCell(i).getBooleanCellValue());
+			            break;
+			        case Cell.CELL_TYPE_NUMERIC:
+			        	cell2Update.setCellValue(newRow.getCell(i).getNumericCellValue());
+			            break;
+			        case Cell.CELL_TYPE_STRING:
+			        	cell2Update.setCellValue(newRow.getCell(i).getStringCellValue());
+			            break;
+			        case Cell.CELL_TYPE_BLANK:
+			        	cell2Update.setCellValue(newRow.getCell(i).getStringCellValue());
+			            break;
+			        case Cell.CELL_TYPE_ERROR:
+			        	cell2Update.setCellValue(newRow.getCell(i).getErrorCellValue());
+			            break;
+			    }
+			}
+			
 
+		}
+
+	}
+
+	public static void unMergeExcel(String pathFile, Map<String, JButton> originalNewSelected) {
+		if (pathFile.endsWith(File.separator)) {
+			pathFile += "results.xls";
+		} else {
+			pathFile += File.separator + "results.xls";
+		}
+
+		File excel = new File(pathFile);
+
+		if (excel.exists()) {
+
+			FileInputStream inputStream;
+			HSSFWorkbook wb;
+			try {
+
+				// cambiar el nombre de la fila 1
+				inputStream = new FileInputStream(excel);
+				wb = new HSSFWorkbook(inputStream);
+				HSSFSheet sheet = wb.getSheetAt(0);
+
+				String name = "";
+				HSSFRow row;
+				for (int i=0;i<sheet.getLastRowNum()+1;i++) {
+					
+					if (i != 0) {
+						row=sheet.getRow(i);
+						name = row.getCell(0).getStringCellValue();
+						name = originalNewSelected.get(name).getName();
+						createExcelFromOtherExcelRow(name,sheet.getRow(0),row);
+					}
+					
+
+				}
+
+				inputStream.close();
+
+				excel.delete();
+
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+
+		}
+	}
+
+	private static void createExcelFromOtherExcelRow(String pathFile, HSSFRow headings, HSSFRow data) {
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		HSSFSheet sheet = workbook.createSheet("Results");
+
+	
+
+		FileOutputStream fileOut;
+		try {
+
+			String filename = pathFile.replace(".tiff", "_results.xls");
+			addRow(workbook, 0, headings);
+			
+			fileOut = new FileOutputStream(filename);
+			workbook.write(fileOut);
+			fileOut.close();
+			
+			data.getCell(0).setCellValue(FileFuntions.namewithoutExtension(pathFile).replace("_pred", ""));
+			addRow(workbook, 0, data);
+			
+			fileOut = new FileOutputStream(filename);
+			workbook.write(fileOut);
+			fileOut.close();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "An error occurred while creating the excel associated with the image");
 		}
 
 	}
