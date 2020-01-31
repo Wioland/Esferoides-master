@@ -14,6 +14,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -31,13 +32,16 @@ public class ViewImagesBigger extends JPanel {
 	private TabPanel tp;
 	private String indexImageView;
 	private AlgorithmView al;
+	private JPanel panelButtons;
+	private int clickImageIndex;
 
 	public ViewImagesBigger(Icon image, List<ImageIcon> listImages, Component tp,boolean selectALgo) {
 
 		this.listImages = listImages;
 		this.image = image;
 		this.indexImagenList = listImages.indexOf(image);
-		indexImageView = "ImageViewer ";
+		this.clickImageIndex=indexImagenList;
+		this.indexImageView = "ImageViewer ";
 
 		if (tp.getClass().equals(TabPanel.class)) {
 			this.tp = (TabPanel) tp;
@@ -68,7 +72,7 @@ public class ViewImagesBigger extends JPanel {
 
 		// contenedor de botones y puesta en orden de estos
 
-		JPanel panelButtons = new JPanel();
+		panelButtons = new JPanel();
 
 		panelButtons.add(backBu);
 		panelButtons.add(forwardBu);
@@ -87,13 +91,15 @@ public class ViewImagesBigger extends JPanel {
 
 		if (this.tp != null) {
 
-			this.add(scrollIma, constraints);
-			
-			
 			if(selectALgo) {
 				createComparer(constraints);
 				addlistenerButton(backBu, forwardBu);
+				
+			
+				
+				
 			}else {
+				this.add(scrollIma, constraints);
 				tryAlgoriBu.setText("Try other algorithms");
 
 				addlistenerButton(backBu, forwardBu, tryAlgoriBu);
@@ -127,6 +133,9 @@ public class ViewImagesBigger extends JPanel {
 	public void setLabelImage(JLabel labelImage) {
 		this.labelImage = labelImage;
 	}
+	
+	
+	
 
 	public void closeTab(ActionEvent evt) {
 		JButton bu = (JButton) evt.getSource();
@@ -154,6 +163,9 @@ public class ViewImagesBigger extends JPanel {
 					mouseSelectAction(originalImaLb);
 				}
 			});
+			
+			panelButtons.add(selectButton);
+			
 		}
 	
 		
@@ -173,10 +185,15 @@ public class ViewImagesBigger extends JPanel {
 	
 	
 	public void mouseSelectAction(JLabel originalImaLb) {
-		tp.changeSelectedImage(listImages.get(indexImagenList).getDescription());
+		JOptionPane.showMessageDialog(tp.getJFrameGeneral(), "Changing the selected image");
+		
+		tp.changeSelectedImage(listImages.get(indexImagenList).getDescription(),listImages.get(clickImageIndex).getDescription());
 				
 		originalImaLb.setIcon(labelImage.getIcon());		
 		this.repaint();
+		
+		JOptionPane.showMessageDialog(tp.getJFrameGeneral(), "Image changed");
+		
 	}
 	
 	private void addXTotab() {

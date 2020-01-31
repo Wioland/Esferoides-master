@@ -1,6 +1,5 @@
 package interfaces;
 
-import java.awt.Container;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -203,16 +202,16 @@ public class ImageTreePanel extends JSplitPane {
 		}
 		return switchFolder;
 	}
-	
+
 	public JFrame getJFrameGeneral() {
-		return (JFrame)this.getParent().getParent().getParent().getParent();
+		return (JFrame) this.getParent().getParent().getParent().getParent();
 	}
 
 	public void repaintTabPanel(boolean selectAlgo) {
 
 		JFrame generalView = getJFrameGeneral();
-		
-		OurProgressBar pb= new OurProgressBar( generalView);
+
+		OurProgressBar pb = new OurProgressBar(generalView);
 		folderView = new TabPanel(this.dir, selectAlgo);
 		// se crean los scrolls
 		// s.setViewportView(folderView);

@@ -572,14 +572,57 @@ public class FileFuntions {
 
 	public static void removeAllToOriginalFolder(String dirPredictions, File tempoFolder) {
 		// TODO Auto-generated method stub
-		
+		File dirPre= new File(dirPredictions);
+		if(dirPre.exists() && dirPre.listFiles().length!=0) {
+			 File[] files = dirPre.listFiles();
+			 for (File file : files) {
+				file.renameTo(new File(file.getAbsolutePath().replace(dirPredictions, tempoFolder.getAbsolutePath())));
+			}
+		}
 	}
 
 	
 
-	public static void changeToriginalName(File tempoFolder, Map<String, JButton> originalNewSelected) {
+	public static void changeToriginalNameAndFolder(String dirPredictions, Map<String, JButton> originalNewSelected) {
 		// TODO Auto-generated method stub
+		File dirPre= new File(dirPredictions);
 		
+		if(dirPre.exists() && dirPre.listFiles().length!=0) {
+			 File[] files = dirPre.listFiles();
+			 String nameNoEx="";
+			 String originalDirectoryPath="";
+			 File originalFolder=null;
+			 
+			 for (File file : files) {
+				 nameNoEx=FileFuntions.namewithoutExtension(file.getAbsolutePath());
+				 if(nameNoEx.endsWith("_pred")) {
+					nameNoEx= nameNoEx.replace("_pred", ""); 
+				 }
+				 originalDirectoryPath=originalNewSelected.get(nameNoEx).getName();
+				 originalFolder= new File(originalDirectoryPath);
+				 originalFolder= new File(originalFolder.getAbsolutePath().replace(originalFolder.getName(), ""));
+				 
+				 if(!originalFolder.exists()) {
+					 originalFolder.mkdir();
+				 }
+				 
+				 
+				 if(FileFuntions.extensionwithoutName(file.getAbsolutePath()).equals("zip")) {
+					 file.renameTo(new File(originalNewSelected.get(nameNoEx).getName().replace("_pred.tiff", ".zip")));
+				 }else {
+					 file.renameTo(new File(originalNewSelected.get(nameNoEx).getName()));
+				 }
+				
+				 
+			}
+			 
+			 if(dirPre.listFiles().length==0) {
+				 dirPre.delete();
+				 
+			 }
+			 
+			 ExcelActions.unMergeExcel(dirPredictions.replace("predictions", ""),originalNewSelected);
+		}
 	}
 	
    

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,7 @@ public class ShowAllAlgorithmImages extends JPanel {
 		// imagenes
 		// creadas contienen el nombre de la imagen original sin el sufijo
 		List<String> aux = new ArrayList<String>();
-		//JPanel labelPanel = new JPanel();
+		// JPanel labelPanel = new JPanel();
 		JLabel originalImageLAbelName = new JLabel();
 
 		String imageName = FileFuntions.namewithoutExtension(originalImage);
@@ -63,7 +62,7 @@ public class ShowAllAlgorithmImages extends JPanel {
 
 //		labelPanel.add(originalImageLAbelName);
 //		this.add(labelPanel,constraints);
-		this.add(originalImageLAbelName,constraints);
+		this.add(originalImageLAbelName, constraints);
 
 		constraints.weightx = 1;
 		constraints.weighty = 1;
@@ -71,9 +70,9 @@ public class ShowAllAlgorithmImages extends JPanel {
 		constraints.gridy = 1;
 
 		JScrollPane s = new JScrollPane(sI);
-	
-		this.add(s,constraints);
-		//this.add(sI,constraints);
+
+		this.add(s, constraints);
+		// this.add(sI,constraints);
 
 	}
 

@@ -6,7 +6,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +38,7 @@ public class TabPanel extends JTabbedPane {
 	private boolean originalIma;
 	private Map<String, JButton> originalNewSelected;
 	private int originalImagesNumber = 0;
+	private ShowImages images;
 
 	public TabPanel(String directory, boolean selectAlgo) {
 
@@ -112,7 +112,7 @@ public class TabPanel extends JTabbedPane {
 
 		// los de las imagenes
 
-		ShowImages images = new ShowImages(directory, this);
+		images = new ShowImages(directory, this);
 
 		if (images.getComponents().length == 0) {
 			noFileText("Images", null);
@@ -267,14 +267,18 @@ public class TabPanel extends JTabbedPane {
 
 	}
 
-	public void changeSelectedImage(String newImage) {
+	public void changeSelectedImage(String newImage, String oldImage) {
 
-		String key = FileFuntions.getKeyFRomButtonDescription(originalNewSelected, newImage);
-		JButton newButton = originalNewSelected.get(key);
-		newButton.setBackground(Color.yellow);
-
+		String key = FileFuntions.getKeyFRomButtonDescription(originalNewSelected, oldImage);
 		JButton oldButton = originalNewSelected.get(key);
 		oldButton.setBackground(null);
+		images = (ShowImages) oldButton.getParent();
+
+		JButton newButton = images.getListImagesPrev().get(newImage);
+		newButton.setBackground(Color.yellow);
+
+		originalNewSelected.put(key, newButton);
+		this.repaint();
 
 	}
 
@@ -320,23 +324,23 @@ public class TabPanel extends JTabbedPane {
 					|| getOriginalNewSelected().values().size() != originalImagesNumber) {
 				JOptionPane.showMessageDialog(null, "Please select an image of each");
 			} else {
-//juntamos todos los excels en uno
+				// juntamos todos los excels en uno
 
 				moveFinalFilesToPredictions();
 
 				// pasar a la vista de los tif
 				FileFuntions.deleteFolder(tempoFolder);
-				//pasomos a la vista de tab tiff
-				
-				((ImageTreePanel)this.getParent()).repaintTabPanel(false);
+				// pasomos a la vista de tab tiff
+				FileFuntions.changeToriginalNameAndFolder(dirPredictions, getOriginalNewSelected());
+			//	((ImageTreePanel) this.getParent()).repaintTabPanel(false);
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 
 			JOptionPane.showMessageDialog(null, "Error moving the images to the final folder. Please try again");
-			FileFuntions.removeAllToOriginalFolder(dirPredictions, tempoFolder);
-			FileFuntions.changeToriginalName(tempoFolder, getOriginalNewSelected());
+			FileFuntions.changeToriginalNameAndFolder(dirPredictions, getOriginalNewSelected());
+			//FileFuntions.removeAllToOriginalFolder(dirPredictions, tempoFolder);
 			FileFuntions.deleteFolder(folder);
 		}
 
@@ -363,8 +367,8 @@ public class TabPanel extends JTabbedPane {
 
 			auxFile = new File(nameFile.getName().replace("_pred.tiff", "_results.xls"));
 			auxName = auxName.replace("_pred.tiff", "_results.xls");
-			
-			File fileExcel = new File(auxName.replace(File.separator+"predictions", ""));
+
+			File fileExcel = new File(auxName.replace(File.separator + "predictions", ""));
 			auxFile.renameTo(fileExcel);
 
 			auxFile = new File(nameFile.getName().replace("_pred.tiff", ".zip"));
@@ -377,8 +381,6 @@ public class TabPanel extends JTabbedPane {
 		}
 		JOptionPane.showMessageDialog(getJFrameGeneral(), "Images save");
 		pb.dispose();
-		
-	
 
 	}
 
