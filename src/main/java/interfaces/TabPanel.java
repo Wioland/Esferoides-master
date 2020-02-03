@@ -116,17 +116,7 @@ public class TabPanel extends JTabbedPane {
 
 		if (images.getComponents().length == 0) {
 			noFileText("Images", null);
-			// Comprobar si en la carpeta hay imagenes nd2
-			List<String> listImages = new ArrayList<String>();
-			Utils.searchDirectory(".*\\.nd2", folder, listImages);
-			if (listImages.size() != 0) {
-				originalIma = true;
-			} else {
-				Utils.searchDirectory(".*\\.tif", folder, listImages);
-				if (listImages.size() != 0) {
-					originalIma = true;
-				}
-			}
+			originalIma=FileFuntions.isOriginalImage(folder);
 		} else {
 			JPanel splitPane = new JPanel(new GridBagLayout());
 			LensMEnuButtons lens = new LensMEnuButtons(images.getListImagesPrev());
@@ -331,8 +321,8 @@ public class TabPanel extends JTabbedPane {
 				// pasar a la vista de los tif
 				FileFuntions.deleteFolder(tempoFolder);
 				// pasomos a la vista de tab tiff
-				FileFuntions.changeToriginalNameAndFolder(dirPredictions, getOriginalNewSelected());
-			//	((ImageTreePanel) this.getParent()).repaintTabPanel(false);
+				
+				((ImageTreePanel) this.getParent()).repaintTabPanel(false);
 			}
 
 		} catch (Exception e) {

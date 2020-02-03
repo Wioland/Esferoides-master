@@ -50,7 +50,7 @@ public class FileFuntions {
 		prop.cheeckJarDirectoryChange();
 		System.setProperty("plugins.dir", prop.getProp().getProperty("jarDirectory"));
 
-		 new ImageJ(2);// NO_SHOW MODE
+		new ImageJ(2);// NO_SHOW MODE
 		// imageJFrame.setVisible(false);
 
 		IJ.setForegroundColor(255, 0, 0);
@@ -378,8 +378,7 @@ public class FileFuntions {
 							String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
 							if (tp != null) {
 								if (tp.indexOfTab(nombreTab) == -1) {
-									 new ViewImagesBigger(image, images.getImageIcon(),
-											tp,false);
+									new ViewImagesBigger(image, images.getImageIcon(), tp, false);
 								}
 
 							}
@@ -532,9 +531,10 @@ public class FileFuntions {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, "An error occurred while saving the images in the predicctions folder", "Error saving",
+					JOptionPane.showMessageDialog(null,
+							"An error occurred while saving the images in the predicctions folder", "Error saving",
 							JOptionPane.ERROR_MESSAGE);
-					
+					removeAllToOriginalFolder(newPAth, new File(to.toString()));
 				}
 			}
 			listImages.clear();
@@ -544,9 +544,7 @@ public class FileFuntions {
 		}
 
 	}
-	
-	
-	
+
 	public static <K, V> K getKey(Map<K, V> map, V value) {
 		for (K key : map.keySet()) {
 			if (value.equals(map.get(key))) {
@@ -555,78 +553,86 @@ public class FileFuntions {
 		}
 		return null;
 	}
-	public static  String getKeyFRomButtonDescription(Map<String, JButton> map,String value) {
-		JButton valueButton=null;
-		
-		for (JButton bu: map.values()) {
-			if(bu.getName()==value) {
-				valueButton=bu;
+
+	public static String getKeyFRomButtonDescription(Map<String, JButton> map, String value) {
+		JButton valueButton = null;
+
+		for (JButton bu : map.values()) {
+			if (bu.getName() == value) {
+				valueButton = bu;
 				break;
 			}
 		}
-		
+
 		return getKey(map, valueButton);
 	}
 
-
-
 	public static void removeAllToOriginalFolder(String dirPredictions, File tempoFolder) {
 		// TODO Auto-generated method stub
-		File dirPre= new File(dirPredictions);
-		if(dirPre.exists() && dirPre.listFiles().length!=0) {
-			 File[] files = dirPre.listFiles();
-			 for (File file : files) {
+		File dirPre = new File(dirPredictions);
+		if (dirPre.exists() && dirPre.listFiles().length != 0) {
+			File[] files = dirPre.listFiles();
+			for (File file : files) {
 				file.renameTo(new File(file.getAbsolutePath().replace(dirPredictions, tempoFolder.getAbsolutePath())));
 			}
 		}
 	}
 
-	
-
 	public static void changeToriginalNameAndFolder(String dirPredictions, Map<String, JButton> originalNewSelected) {
 		// TODO Auto-generated method stub
-		File dirPre= new File(dirPredictions);
-		
-		if(dirPre.exists() && dirPre.listFiles().length!=0) {
-			 File[] files = dirPre.listFiles();
-			 String nameNoEx="";
-			 String originalDirectoryPath="";
-			 File originalFolder=null;
-			 
-			 for (File file : files) {
-				 nameNoEx=FileFuntions.namewithoutExtension(file.getAbsolutePath());
-				 if(nameNoEx.endsWith("_pred")) {
-					nameNoEx= nameNoEx.replace("_pred", ""); 
-				 }
-				 originalDirectoryPath=originalNewSelected.get(nameNoEx).getName();
-				 originalFolder= new File(originalDirectoryPath);
-				 originalFolder= new File(originalFolder.getAbsolutePath().replace(originalFolder.getName(), ""));
-				 
-				 if(!originalFolder.exists()) {
-					 originalFolder.mkdir();
-				 }
-				 
-				 
-				 if(FileFuntions.extensionwithoutName(file.getAbsolutePath()).equals("zip")) {
-					 file.renameTo(new File(originalNewSelected.get(nameNoEx).getName().replace("_pred.tiff", ".zip")));
-				 }else {
-					 file.renameTo(new File(originalNewSelected.get(nameNoEx).getName()));
-				 }
-				
-				 
+		File dirPre = new File(dirPredictions);
+
+		if (dirPre.exists() && dirPre.listFiles().length != 0) {
+			File[] files = dirPre.listFiles();
+			String nameNoEx = "";
+			String originalDirectoryPath = "";
+			File originalFolder = null;
+
+			for (File file : files) {
+				nameNoEx = FileFuntions.namewithoutExtension(file.getAbsolutePath());
+				if (nameNoEx.endsWith("_pred")) {
+					nameNoEx = nameNoEx.replace("_pred", "");
+				}
+				originalDirectoryPath = originalNewSelected.get(nameNoEx).getName();
+				originalFolder = new File(originalDirectoryPath);
+				originalFolder = new File(originalFolder.getAbsolutePath().replace(originalFolder.getName(), ""));
+
+				if (!originalFolder.exists()) {
+					originalFolder.mkdir();
+				}
+
+				if (FileFuntions.extensionwithoutName(file.getAbsolutePath()).equals("zip")) {
+					file.renameTo(new File(originalNewSelected.get(nameNoEx).getName().replace("_pred.tiff", ".zip")));
+				} else {
+					file.renameTo(new File(originalNewSelected.get(nameNoEx).getName()));
+				}
+
 			}
-			 
-			 if(dirPre.listFiles().length==0) {
-				 dirPre.delete();
-				 
-			 }
-			 
-			 ExcelActions.unMergeExcel(dirPredictions.replace("predictions", ""),originalNewSelected);
+
+			if (dirPre.listFiles().length == 0) {
+				dirPre.delete();
+
+			}
+
+			ExcelActions.unMergeExcel(dirPredictions.replace("predictions", ""), originalNewSelected);
 		}
 	}
-	
-   
-	
+
+	public static boolean isOriginalImage(File folder) {
+		boolean originalIma = false;
+		// Comprobar si en la carpeta hay imagenes nd2
+		List<String> listImages = new ArrayList<String>();
+		Utils.searchDirectory(".*\\.nd2", folder, listImages);
+		if (listImages.size() != 0) {
+			originalIma = true;
+		} else {
+			Utils.searchDirectory(".*\\.tif", folder, listImages);
+			if (listImages.size() != 0) {
+				originalIma = true;
+			}
+		}
+		return originalIma;
+	}
 
 //	public static List<String> getPluginNames() {
 //		return pluginNames;

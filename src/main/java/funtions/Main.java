@@ -1,10 +1,13 @@
 package funtions;
 
+import java.io.File;
+
 import javax.swing.JOptionPane;
 
 import ij.io.DirectoryChooser;
 import interfaces.GeneralView;
 import interfaces.ImageTreePanel;
+import interfaces.OurProgressBar;
 
 public class Main {
 	// PRUEBAS
@@ -22,7 +25,8 @@ public class Main {
 
 			switch (selection) {
 			case 0:
-				createGeneralViewOrNot(folderView, dc,true);
+				boolean b=FileFuntions.isOriginalImage(new File(dc));
+				createGeneralViewOrNot(folderView, dc,b);
 				break;
 			case 1:
 				createGeneralViewOrNot(folderView, dc,false);
@@ -39,8 +43,9 @@ public class Main {
 		if (folderView == null) { // si no se estaba ya en un GeneralView se crea uno nuevo
 			 new GeneralView(dc,selectAlgo);
 		} else {
+			
 			folderView.repaintTabPanel(selectAlgo);
-
+		
 		}
 
 	}
