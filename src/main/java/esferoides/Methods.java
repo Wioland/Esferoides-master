@@ -61,7 +61,7 @@ public class Methods {
 	}
 
 	public void setAlgorithms(String[] algorithm) {
-	algorithms = algorithm;
+		algorithms = algorithm;
 	}
 
 	// METHODS
@@ -120,7 +120,7 @@ public class Methods {
 			}
 
 			// We initialize the ResultsTable
-			//ResultsTable rt = new ResultsTable();
+			// ResultsTable rt = new ResultsTable();
 			ImporterOptions options = new ImporterOptions();
 
 			// We construct the EsferoidProcessorObject

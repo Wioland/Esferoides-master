@@ -18,11 +18,11 @@ public class ExcelTableCreator extends JTable {
 
 	private static final long serialVersionUID = 1L;
 
-	//private File excel;
+	// private File excel;
 	private DefaultTableModel tableModel;
 
 	public ExcelTableCreator(File excel) {
-	//	this.excel = excel;
+		// this.excel = excel;
 		readXLSX(excel);
 
 	}

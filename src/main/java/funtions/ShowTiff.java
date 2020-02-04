@@ -17,13 +17,13 @@ public class ShowTiff {
 		BufferedImage image = null;
 		try {
 			File f = new File(path);
-		//	boolean s = f.exists();
+			// boolean s = f.exists();
 			image = ImageIO.read(f);
-			//String[] formatNames = ImageIO.getReaderFormatNames();
+			// String[] formatNames = ImageIO.getReaderFormatNames();
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error cwhile trying to show the tiff file", "Error saving",
+			JOptionPane.showMessageDialog(null, "Error while trying to show the tiff file", "Error saving",
 					JOptionPane.ERROR_MESSAGE);
 		}
 		ImageIcon imaIco = new ImageIcon(image);

@@ -1,7 +1,6 @@
 package funtions;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -90,20 +89,20 @@ public class PropertiesFileFuntions {
 			out.close();
 			// JOptionPane.showMessageDialog(null, "directory jar changed");
 //				}
-		} catch ( IOException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error changing the Jar directory", "Error saving",
 					JOptionPane.ERROR_MESSAGE);
-		} 
+		}
 
 	}
 
 	/**
 	 * Initialize Properties with the resource file given in the URL
 	 * 
-	 * @param path		the path of the resource file
-	 * @return			properties initialized
+	 * @param path the path of the resource file
+	 * @return properties initialized
 	 */
 	public Properties getPropertyDirectory(URL path) {
 
@@ -118,7 +117,7 @@ public class PropertiesFileFuntions {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error getting the properties file", "Error saving",
 					JOptionPane.ERROR_MESSAGE);
-			
+
 		}
 		return prop;
 

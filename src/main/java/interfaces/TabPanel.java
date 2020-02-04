@@ -39,6 +39,7 @@ public class TabPanel extends JTabbedPane {
 	private Map<String, JButton> originalNewSelected;
 	private int originalImagesNumber = 0;
 	private ShowImages images;
+	private LensMEnuButtons lens;
 
 	public TabPanel(String directory, boolean selectAlgo) {
 
@@ -92,6 +93,14 @@ public class TabPanel extends JTabbedPane {
 		this.originalNewSelected = originalNewSelected;
 	}
 
+	public LensMEnuButtons getLens() {
+		return lens;
+	}
+
+	public void setLens(LensMEnuButtons lens) {
+		this.lens = lens;
+	}
+
 	// METHODS
 
 	public void alreadyImageTiffFolderTab(String directory) {
@@ -116,10 +125,10 @@ public class TabPanel extends JTabbedPane {
 
 		if (images.getComponents().length == 0) {
 			noFileText("Images", null);
-			originalIma=FileFuntions.isOriginalImage(folder);
+			originalIma = FileFuntions.isOriginalImage(folder);
 		} else {
 			JPanel splitPane = new JPanel(new GridBagLayout());
-			LensMEnuButtons lens = new LensMEnuButtons(images.getListImagesPrev());
+			lens = new LensMEnuButtons(images.getListImagesPrev());
 			JScrollPane s = new JScrollPane(images);
 			GridBagConstraints constraints = new GridBagConstraints();
 			constraints.fill = GridBagConstraints.BOTH;
@@ -170,6 +179,7 @@ public class TabPanel extends JTabbedPane {
 				} else {
 					if (tab.getTitleAt(tab.getSelectedIndex()).contains("Images")) {
 						FileFuntions.isDirectoryContentModify(dir + "predictions", tab);
+						
 					}
 				}
 
@@ -321,7 +331,7 @@ public class TabPanel extends JTabbedPane {
 				// pasar a la vista de los tif
 				FileFuntions.deleteFolder(tempoFolder);
 				// pasomos a la vista de tab tiff
-				
+
 				((ImageTreePanel) this.getParent()).repaintTabPanel(false);
 			}
 
@@ -330,7 +340,7 @@ public class TabPanel extends JTabbedPane {
 
 			JOptionPane.showMessageDialog(null, "Error moving the images to the final folder. Please try again");
 			FileFuntions.changeToriginalNameAndFolder(dirPredictions, getOriginalNewSelected());
-			//FileFuntions.removeAllToOriginalFolder(dirPredictions, tempoFolder);
+			// FileFuntions.removeAllToOriginalFolder(dirPredictions, tempoFolder);
 			FileFuntions.deleteFolder(folder);
 		}
 

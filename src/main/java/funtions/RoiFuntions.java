@@ -54,7 +54,7 @@ public class RoiFuntions {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error while trying to show the imagen + roi", "Error saving",
 					JOptionPane.ERROR_MESSAGE);
-		} 
+		}
 	}
 
 	public static String getoriginalFilePathFromTempralTiff(String pathTemporalTiff) {
@@ -65,10 +65,10 @@ public class RoiFuntions {
 		String[] listFiles = f.list();
 		String originalName = "";
 		String extension;
-		
+
 		for (String name : listFiles) {
 			if (!name.endsWith(".xls")) {
-				 extension = FileFuntions.extensionwithoutName(name);
+				extension = FileFuntions.extensionwithoutName(name);
 				if (tiffName.contains(name.replace("." + extension, ""))) {
 					originalName = name;
 					break;

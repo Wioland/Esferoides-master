@@ -26,6 +26,7 @@ public class ViewImagesBigger extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private List<ImageIcon> listImages;
 	private JLabel labelImage;
+	private JLabel originalImaLb;
 	private int indexImagenList = 0;
 	private Icon image;
 	private String dir;
@@ -35,12 +36,12 @@ public class ViewImagesBigger extends JPanel {
 	private JPanel panelButtons;
 	private int clickImageIndex;
 
-	public ViewImagesBigger(Icon image, List<ImageIcon> listImages, Component tp,boolean selectALgo) {
+	public ViewImagesBigger(Icon image, List<ImageIcon> listImages, Component tp, boolean selectALgo) {
 
 		this.listImages = listImages;
 		this.image = image;
 		this.indexImagenList = listImages.indexOf(image);
-		this.clickImageIndex=indexImagenList;
+		this.clickImageIndex = indexImagenList;
 		this.indexImageView = "ImageViewer ";
 
 		if (tp.getClass().equals(TabPanel.class)) {
@@ -91,14 +92,11 @@ public class ViewImagesBigger extends JPanel {
 
 		if (this.tp != null) {
 
-			if(selectALgo) {
+			if (selectALgo) {
 				createComparer(constraints);
 				addlistenerButton(backBu, forwardBu);
-				
-			
-				
-				
-			}else {
+
+			} else {
 				this.add(scrollIma, constraints);
 				tryAlgoriBu.setText("Try other algorithms");
 
@@ -106,10 +104,7 @@ public class ViewImagesBigger extends JPanel {
 				panelButtons.add(tryAlgoriBu);
 			}
 
-			
-			
 			addXTotab();
-			
 
 		} else {
 			createComparer(constraints);
@@ -126,6 +121,14 @@ public class ViewImagesBigger extends JPanel {
 
 	}
 
+	public JLabel getOriginalImaLb() {
+		return originalImaLb;
+	}
+
+	public void setOriginalImaLb(JLabel originalImaLb) {
+		this.originalImaLb = originalImaLb;
+	}
+
 	public JLabel getLabelImage() {
 		return labelImage;
 	}
@@ -133,9 +136,6 @@ public class ViewImagesBigger extends JPanel {
 	public void setLabelImage(JLabel labelImage) {
 		this.labelImage = labelImage;
 	}
-	
-	
-	
 
 	public void closeTab(ActionEvent evt) {
 		JButton bu = (JButton) evt.getSource();
@@ -143,61 +143,58 @@ public class ViewImagesBigger extends JPanel {
 			tp.remove(tp.indexOfTabComponent(bu.getParent()));
 		}
 	}
-	
-	
-	private void createComparer(GridBagConstraints constraints) { 
-		
+
+	private void createComparer(GridBagConstraints constraints) {
+
 		JSplitPane splitPa = new JSplitPane();
 		splitPa.setOrientation(javax.swing.JSplitPane.HORIZONTAL_SPLIT);
 
-		JLabel originalImaLb = new JLabel();
-		
-		if(al!=null) {
+		 originalImaLb = new JLabel();
+
+		if (al != null) {
 			ImageIcon ico = ShowTiff.showTiffToImageIcon(al.getImage().getAbsolutePath());
 			originalImaLb.setIcon(ico);
-		}else {
+		} else {
 			originalImaLb.setIcon(image);
-			JButton selectButton= new JButton("Select");
+			JButton selectButton = new JButton("Select");
 			selectButton.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					mouseSelectAction(originalImaLb);
 				}
 			});
-			
+
 			panelButtons.add(selectButton);
-			
+
 		}
-	
-		
+
 		originalImaLb.setVisible(true);
-		
+
 		splitPa.setLeftComponent(new JScrollPane(originalImaLb));
 		splitPa.setRightComponent(new JScrollPane(labelImage));
 
 		splitPa.setVisible(true);
-		
+
 		this.add(splitPa, constraints);
 		splitPa.setDividerLocation(500);
 		this.repaint();
 
-		
 	}
-	
-	
+
 	public void mouseSelectAction(JLabel originalImaLb) {
 		JOptionPane.showMessageDialog(tp.getJFrameGeneral(), "Changing the selected image");
-		
-		tp.changeSelectedImage(listImages.get(indexImagenList).getDescription(),listImages.get(clickImageIndex).getDescription());
-				
-		originalImaLb.setIcon(labelImage.getIcon());		
+
+		tp.changeSelectedImage(listImages.get(indexImagenList).getDescription(),
+				listImages.get(clickImageIndex).getDescription());
+
+		originalImaLb.setIcon(labelImage.getIcon());
 		this.repaint();
-		
+
 		JOptionPane.showMessageDialog(tp.getJFrameGeneral(), "Image changed");
-		
+
 	}
-	
+
 	private void addXTotab() {
-		
+
 		String nombreImagen = (new File(listImages.get(indexImagenList).getDescription())).getName();
 		String title = indexImageView + nombreImagen;
 		this.tp.add(title, this);
@@ -232,6 +229,7 @@ public class ViewImagesBigger extends JPanel {
 		});
 	}
 	
+
 
 	private void addlistenerButton(JButton backBu, JButton forwardBu) {
 		// TODO Auto-generated method stub
@@ -304,7 +302,7 @@ public class ViewImagesBigger extends JPanel {
 				ImageIcon i = listImages.get(listImages.indexOf(image));
 				File f = new File(i.getDescription());
 
-				 new AlgorithmView(f, dir);
+				new AlgorithmView(f, dir);
 
 			}
 		});

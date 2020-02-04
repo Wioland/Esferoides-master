@@ -129,7 +129,7 @@ public class ShowImages extends JPanel {
 						String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
 						if (tap != null && tap.indexOfTab(nombreTab) == -1) {
 
-							new ViewImagesBigger(image, imageIcon, tap,false);
+							new ViewImagesBigger(image, imageIcon, tap, false);
 
 						}
 					} else {
@@ -172,16 +172,16 @@ public class ShowImages extends JPanel {
 			imageView = new JButton(iconoEscala);
 			imageView.setIcon(iconoEscala);
 			imageView.setName(name);
-		
-            // these next two lines do the magic..
+
+			// these next two lines do the magic..
 			imageView.setContentAreaFilled(false);
 			imageView.setOpaque(true);
 			imageIcon.add(image);
 
 			imageView.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
-					clickImageButtonAlgoritm(e,tp,image,origianlName);
-				}	
+					clickImageButtonAlgoritm(e, tp, image, origianlName);
+				}
 			});
 
 			listImagesPrev.put(name, imageView);
@@ -193,23 +193,22 @@ public class ShowImages extends JPanel {
 			this.add(imageView);
 		}
 	}
-	
-	
-	private void clickImageButtonAlgoritm(MouseEvent e, TabPanel tp , ImageIcon image,String origianlName) {
+
+	private void clickImageButtonAlgoritm(MouseEvent e, TabPanel tp, ImageIcon image, String origianlName) {
 		if (e.getClickCount() == 2 && !e.isConsumed()) {
 			e.consume();
-			
+
 			// si solo se realiza un click se cambia la seleccionada, se se hacen dos se
 			// habre un comparadar si se puede
 			String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
 			if (tp != null && tp.indexOfTab(nombreTab) == -1) {
 				int index = -1;
-				int i=0;
-				
-				while(index==-1 && i<tp.getComponentCount()-1) {
-					if(tp.getTitleAt(i).contains(origianlName)) {
-						index=i;
-					}else {
+				int i = 0;
+
+				while (index == -1 && i < tp.getComponentCount() - 1) {
+					if (tp.getTitleAt(i).contains(origianlName)) {
+						index = i;
+					} else {
 						i++;
 					}
 				}
@@ -217,7 +216,7 @@ public class ShowImages extends JPanel {
 				if (index == -1) {
 					// si no hay ningun tab que contenga el nombre del original de este tipo de
 					// imagen se crea un comparador
-					new ViewImagesBigger(image, imageIcon, tp,true);
+					new ViewImagesBigger(image, imageIcon, tp, true);
 				} else {
 					// se pone el foco a al tab de ese tipo de imagenes
 					tp.setSelectedIndex(index);
@@ -225,14 +224,14 @@ public class ShowImages extends JPanel {
 			}
 
 		}
-		
+
 		// se añade o se sustituye la imagen definitiva a guardar de ese tipo por la
 		// seleccionada actual
-		JButton oldSelected= tp.getOriginalNewSelected().get(origianlName);
-		if(oldSelected!=null) {
+		JButton oldSelected = tp.getOriginalNewSelected().get(origianlName);
+		if (oldSelected != null) {
 			oldSelected.setBackground(null);
 		}
-		JButton buttonSelected=(JButton) e.getSource();
+		JButton buttonSelected = (JButton) e.getSource();
 		buttonSelected.setBackground(Color.yellow);
 		tp.getOriginalNewSelected().put(origianlName, buttonSelected);
 

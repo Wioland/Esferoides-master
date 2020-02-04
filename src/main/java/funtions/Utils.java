@@ -279,7 +279,7 @@ public class Utils {
 			}
 			i++;
 			pos = pos + range;
-			//System.out.println(pos);
+			// System.out.println(pos);
 		}
 
 		return false;

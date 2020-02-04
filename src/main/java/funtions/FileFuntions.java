@@ -1,5 +1,6 @@
 package funtions;
 
+import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -126,7 +127,7 @@ public class FileFuntions {
 		// We exchange the files in the saveDir
 
 		int resp = JOptionPane.showConfirmDialog(null,
-				"This action will delete the current images in predition folder. Are you sure you want to proceed to save?",
+				"This action will delete the current image in predition folder. Are you sure you want to proceed to save?",
 				"Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 		if (resp == 0) { // if yes
 
@@ -348,6 +349,8 @@ public class FileFuntions {
 			List<String> actualImages = new ArrayList<String>();
 			Utils.search(".*\\.tiff", new File(directory), actualImages);
 			Collections.sort(actualImages);
+			
+//			images= new ShowImages(directory,tp);
 
 			checkStillExist(images, actualImages, tp); // check if the images of the buttons still exist
 
@@ -356,6 +359,7 @@ public class FileFuntions {
 				ImageIcon iconoEscala;
 				JButton imageView;
 				File faux;
+				int height=tp.getLens().actualImageHeight();
 
 				for (String name : actualImages) {
 					// convert the format to show the image
@@ -365,7 +369,7 @@ public class FileFuntions {
 					// add the button
 					// we create an icon with the specific measures
 					iconoEscala = new ImageIcon(
-							image.getImage().getScaledInstance(700, 700, java.awt.Image.SCALE_DEFAULT));
+							image.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
 					imageView = new JButton(iconoEscala);
 					imageView.setIcon(iconoEscala);
 					imageView.setName(name);
@@ -394,7 +398,10 @@ public class FileFuntions {
 					images.add(imageView);
 				}
 			}
+			
 			images.repaint();
+	
+			
 		}
 	}
 
@@ -420,25 +427,46 @@ public class FileFuntions {
 
 					JButton imageButton = images.getListImagesPrev().get(imaPath);
 					ImageIcon ima = new ImageIcon(imaPath);
+					
+					images.getImageIcon().set(images.getListImages().indexOf(imaPath), ima);
+					
 					ima.setDescription(imaPath);
 					imageButton.setIcon(ima);
 					imageButton.repaint();
 
 					images.getListImagesPrev().put(imaPath, imageButton);
 					images.getLastModifyImage().put(imaPath, faux.lastModified());
+					
+					//si hay tabpanels con viewImagesBigger esto se cierran 
+					//se vuelve a coger la lista de tiff images para actualizarla
+					Component[] com = tp.getComponents();
+					for (Component component : com) {
+						if(component.getClass().equals(ViewImagesBigger.class)) {
+							tp.remove(component);
+						}
+					}
+					
 
 				}
 			} else {// if it doesn´t exist we delete it from the map
-
+				
 				JButton deleteImage = images.getListImagesPrev().get(imaPath);
 				images.remove(deleteImage);
+				
+				
+				images.getImageIcon().remove(images.getListImages().indexOf(imaPath));
+				images.getListImages().remove(imaPath);
+				images.getListImagesPrev().remove(imaPath);
 
+				
+				
 				imageModify.remove();
 
 			}
 			actualImages.remove(imaPath);
 
 		}
+		
 	}
 
 	/**

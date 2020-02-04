@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +39,7 @@ public class AlgorithmView extends JFrame {
 	private ShowImages panelImage;
 	private ViewImagesBigger vi;
 	private JPanel jSp;
+	private ViewImagesBigger imagesComparer;
 
 	public AlgorithmView(File image, String dir) {
 		// Parametros ventana
@@ -59,8 +59,6 @@ public class AlgorithmView extends JFrame {
 
 			}
 		});
-		
-	
 
 		this.image = image;
 		this.directory = dir;
@@ -71,7 +69,7 @@ public class AlgorithmView extends JFrame {
 
 		List<String> result = new ArrayList<String>();
 		result.add(path);
-		 new Methods(directory, result);
+		new Methods(directory, result);
 
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 
@@ -164,7 +162,7 @@ public class AlgorithmView extends JFrame {
 			case 2:
 				me.consume();
 				if (vi == null) {
-					vi = new ViewImagesBigger(imageIcon, imageIcoList, this,false);
+					vi = new ViewImagesBigger(imageIcon, imageIcoList, this, false);
 					addComparer(vi);
 				} else {
 					vi.getLabelImage().setIcon(imageIcon);
@@ -182,6 +180,8 @@ public class AlgorithmView extends JFrame {
 
 	public void addComparer(ViewImagesBigger vi) {
 
+		this.imagesComparer=vi;
+		
 		JPanel JPaneDad = (JPanel) selectedBu.getParent().getParent().getParent().getParent();
 		GridBagConstraints constraints = new GridBagConstraints();
 
@@ -272,6 +272,11 @@ public class AlgorithmView extends JFrame {
 	private void SaveImageAndDelete(String filePath) {
 		File ima = new File(filePath);
 		FileFuntions.saveSelectedImage(ima, this.directory + "predictions");
+	
+		vi.getOriginalImaLb().setIcon(vi.getLabelImage().getIcon());
+	
+		
+		
 		// FileFuntions.deleteTemporalFolder(new File(this.directory + "temporal"));
 		// this.dispose();
 	}

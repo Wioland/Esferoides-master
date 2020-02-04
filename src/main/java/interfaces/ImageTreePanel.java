@@ -125,8 +125,8 @@ public class ImageTreePanel extends JSplitPane {
 						if (!path.equals(dir)) { // si no es el directorio en el que nos encontramos que
 							if (selectAlgo) { // si el directorio no es uno de deteccion de esferoides
 								int r = JOptionPane.showConfirmDialog(this,
-										"The current images will be deleted if you change the current directory. Do you want to change the directory?","WARNING",
-								        JOptionPane.YES_NO_OPTION);
+										"The current images will be deleted if you change the current directory. Do you want to change the directory?",
+										"WARNING", JOptionPane.YES_NO_OPTION);
 								if (r == 0) { // se borra la carpeta temporal creada con las imagenes de los distintos
 												// algoritmos
 
@@ -136,7 +136,7 @@ public class ImageTreePanel extends JSplitPane {
 										FileFuntions.deleteFolder(new File(dir + File.separator + "temporal"));
 									}
 									// se cambia de directory
-									detectDirContentChange(path); 
+									detectDirContentChange(path);
 								} else {
 									JOptionPane.showMessageDialog(this,
 											"No changing the directory. Nothing to be done");
@@ -188,12 +188,12 @@ public class ImageTreePanel extends JSplitPane {
 		if (resultTif.size() != 0 || resultNd2.size() != 0) {
 			JOptionPane.showMessageDialog(this, "Detected image files with the requered extension");
 			Main.callProgram(dir, this);
-			if(!selectAlgo) {
+			if (!selectAlgo) {
 				switchFolder = changeDirActions(resultTiff, detectedFiles, oldPath, switchFolder);
-			}else {
-				switchFolder=true;
+			} else {
+				switchFolder = true;
 			}
-			
+
 		} else {
 			JOptionPane.showMessageDialog(this, "Nothing to be done. Not changing to de selected folder");
 			this.dir = oldPath;
@@ -237,13 +237,12 @@ public class ImageTreePanel extends JSplitPane {
 
 	public void repaintTabPanel(boolean selectAlgo) {
 
-		this.selectAlgo=selectAlgo;
+		this.selectAlgo = selectAlgo;
 		folderView = new TabPanel(this.dir, selectAlgo);
 		// se crean los scrolls
 		// s.setViewportView(folderView);
 		this.setRightComponent(folderView);
 		folderView.repaint();
-		
 
 	}
 
