@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
@@ -12,6 +13,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import funtions.PropertiesFileFuntions;
+import ij.IJ;
 import ij.io.DirectoryChooser;
 
 public class JMenuPropertiesFile extends JMenu implements ActionListener {
@@ -53,9 +55,21 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 
 				DirectoryChooser dc = new DirectoryChooser("Select new directory");
 
-				JOptionPane.showMessageDialog(mainFrame, "Directory changed to " + dc.getDirectory());
+				Window[] s = Window.getWindows();
+				for (Window window : s) {
+					if (window.getClass().equals(AlgorithmView.class)) {
+						window.dispose();
+					}
+				}
+
+				IJ.run("Close All");
+				IJ.selectWindow("Results");
+				IJ.run("Close");
+				IJ.selectWindow("ROI Manager");
+				IJ.run("Close");
 
 				mainFrame.paintMainFRame(dc.getDirectory());
+				JOptionPane.showMessageDialog(mainFrame, "Directory changed to " + dc.getDirectory());
 
 			} else {
 				JOptionPane.showMessageDialog(mainFrame, "Directory not changed");

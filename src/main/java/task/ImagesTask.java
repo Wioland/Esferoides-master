@@ -24,7 +24,11 @@ public class ImagesTask extends TimerTask {
 //		counter++;
 
 		FileFuntions.isDirectoryContentModify(dir + "predictions", tp);
-		
+
+		if (tp.getParent().getParent() == null) {
+			this.cancel();
+
+		}
 	}
 
 }
