@@ -1,6 +1,7 @@
 package interfaces;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -15,12 +16,14 @@ import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JViewport;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -179,7 +182,7 @@ public class TabPanel extends JTabbedPane {
 				} else {
 					if (tab.getTitleAt(tab.getSelectedIndex()).contains("Images")) {
 						FileFuntions.isDirectoryContentModify(dir + "predictions", tab);
-						
+
 					}
 				}
 
@@ -237,7 +240,7 @@ public class TabPanel extends JTabbedPane {
 
 			JPanel splitPane = new JPanel(new GridBagLayout());
 			JPanel selectButtons = new JPanel();
-			// JScrollPane s = new JScrollPane(imagesPanel);
+			JScrollPane s = new JScrollPane(imagesPanel);
 
 			addSelectedButtons(selectButtons);
 
@@ -259,7 +262,8 @@ public class TabPanel extends JTabbedPane {
 				splitPane.add(imaCreated, constraints);
 
 			} else {
-				splitPane.add(imagesPanel, constraints);
+				// splitPane.add(imagesPanel, constraints);
+				splitPane.add(s, constraints);
 			}
 
 			addTab("Images", splitPane);
@@ -318,32 +322,100 @@ public class TabPanel extends JTabbedPane {
 		File folder = new File(dirPredictions);
 		File tempoFolder = new File(dirPredictions.replace("predictions", "temporal"));
 
-		folder.mkdir();
-		try {
-			if (getOriginalNewSelected().values().isEmpty()
-					|| getOriginalNewSelected().values().size() != originalImagesNumber) {
-				JOptionPane.showMessageDialog(null, "Please select an image of each");
+		if (folder.exists()) {
+
+			String message = "There is already images that detected the esferoides in this folder. Do you want to replace the all the current images with the new ones or do you prefere with ones you change?";
+			Object[] opciones = { "Replace all", "Choose images" };
+
+			int op = JOptionPane.showOptionDialog(null, message, "Warning", JOptionPane.YES_NO_OPTION, 2, null,
+					opciones, "Replace all");
+
+			if (op == 0) {
+
+				FileFuntions.deleteFolder(folder);
+
+				String excelPath = getDir();
+				if (!excelPath.endsWith(File.separator)) {
+					excelPath += File.separator;
+				}
+				excelPath += "results.xls";
+				File excel = new File(excelPath);
+				excel.delete();
+
+				saveImagesSelected();
 			} else {
-				// juntamos todos los excels en uno
 
-				moveFinalFilesToPredictions();
+				List<String> result = new ArrayList<String>();
+				Utils.searchDirectory(".*\\.tiff", folder, result);
 
-				// pasar a la vista de los tif
-				FileFuntions.deleteFolder(tempoFolder);
-				// pasomos a la vista de tab tiff
+				JPanel panelDad= new JPanel(new GridBagLayout());
+				JPanel panelLabels = new JPanel(new GridLayout(0, 2));
 
-				((ImageTreePanel) this.getParent()).repaintTabPanel(false);
+				JLabel originaText = new JLabel("Original image", SwingConstants.CENTER);
+				originaText.setFont(new Font("Arial", Font.BOLD, 12));
+
+				JLabel newImageText = new JLabel("New detected esferoid image", SwingConstants.CENTER);
+				newImageText.setFont(new Font("Arial", Font.BOLD, 12));
+
+				panelLabels.add(newImageText);
+				panelLabels.add(originaText);
+			
+				ViewImagesBigger vi = new ViewImagesBigger(result, getOriginalNewSelected(), this);
+				GridBagConstraints constraints = new GridBagConstraints();
+				
+				
+		
+
+				constraints.fill = GridBagConstraints.BOTH;
+				constraints.weightx = 0;
+				constraints.weighty = 0;
+
+				constraints.gridx = 0;
+				constraints.gridy = 0;
+
+				
+				panelDad.add(panelLabels, constraints);
+
+				constraints.fill = GridBagConstraints.BOTH;
+				constraints.weightx = 1;
+				constraints.weighty = 1;
+
+				constraints.gridy = 1;
+				constraints.gridx = 0;
+
+				panelDad.add(vi, constraints);
+				
+				this.removeAll();
+				this.add("Compare Images", panelDad);
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} else {
 
-			JOptionPane.showMessageDialog(null, "Error moving the images to the final folder. Please try again");
-			FileFuntions.changeToriginalNameAndFolder(dirPredictions, getOriginalNewSelected());
-			// FileFuntions.removeAllToOriginalFolder(dirPredictions, tempoFolder);
-			FileFuntions.deleteFolder(folder);
+			try {
+				if (getOriginalNewSelected().values().isEmpty()
+						|| getOriginalNewSelected().values().size() != originalImagesNumber) {
+					JOptionPane.showMessageDialog(null, "Please select an image of each");
+				} else {
+					// juntamos todos los excels en uno
+					folder.mkdir();
+					moveFinalFilesToPredictions();
+
+					// pasar a la vista de los tif
+					FileFuntions.deleteFolder(tempoFolder);
+					// pasomos a la vista de tab tiff
+
+					((ImageTreePanel) this.getParent()).repaintTabPanel(false);
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+
+				JOptionPane.showMessageDialog(null, "Error moving the images to the final folder. Please try again");
+				FileFuntions.changeToriginalNameAndFolder(dirPredictions, getOriginalNewSelected());
+				// FileFuntions.removeAllToOriginalFolder(dirPredictions, tempoFolder);
+				FileFuntions.deleteFolder(folder);
+			}
 		}
-
 	}
 
 	public void moveFinalFilesToPredictions() {

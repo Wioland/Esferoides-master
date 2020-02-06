@@ -162,7 +162,7 @@ public class FileFuntions {
 				if (!f.getName().endsWith("xls")) {
 
 					/*
-					 * If the new file was succesfully move to the predicctions folder if the
+					 * If the new file was successfully move to the predictions folder if the
 					 * original file exist we delete it and change the name of the new file
 					 * otherwise we only rename
 					 */

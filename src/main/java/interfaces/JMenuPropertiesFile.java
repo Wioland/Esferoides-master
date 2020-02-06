@@ -62,11 +62,16 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 					}
 				}
 
-				IJ.run("Close All");
-				IJ.selectWindow("Results");
-				IJ.run("Close");
-				IJ.selectWindow("ROI Manager");
-				IJ.run("Close");
+				if (IJ.isWindows()) {
+					IJ.run("Close All");
+					if (IJ.isResultsWindow()) {
+						IJ.selectWindow("Results");
+						IJ.run("Close");
+						IJ.selectWindow("ROI Manager");
+						IJ.run("Close");
+					}
+
+				}
 
 				mainFrame.paintMainFRame(dc.getDirectory());
 				JOptionPane.showMessageDialog(mainFrame, "Directory changed to " + dc.getDirectory());

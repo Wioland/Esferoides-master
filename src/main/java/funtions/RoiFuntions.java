@@ -43,7 +43,13 @@ public class RoiFuntions {
 			IJ.setTool("freehand");
 			RoiManager roi = new RoiManager();
 
-			roi.runCommand("Open", roiPath);
+			if((new File(roiPath)).exists()) {
+				roi.runCommand("Open", roiPath);
+			}else {
+				JOptionPane.showMessageDialog(null, "No Roi file associated with this image");
+			}
+			
+			
 			roi.runCommand(imp, "Measure");
 			ResultsTable r = ResultsTable.getResultsTable();
 
