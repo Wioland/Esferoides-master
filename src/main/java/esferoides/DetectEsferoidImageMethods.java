@@ -32,20 +32,14 @@ public class DetectEsferoidImageMethods {
 	public static void processEsferoidUsingThreshold(ImagePlus imp2, boolean dilate, int noNeedde, double Nonee,
 			int noNE) {
 
-		
-		
-		
-		
-		if(imp2.getBitDepth()==24 || imp2.getBitDepth()==32) {
-			IJ.run(imp2,"Color Threshold...","");
-			
-		}else {
+		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
+			IJ.run(imp2, "Color Threshold...", "");
+
+		} else {
 			IJ.setAutoThreshold(imp2, "Default");
 		}
-		
-		
-		
-		//IJ.setAutoThreshold(imp2, "Default");
+
+		// IJ.setAutoThreshold(imp2, "Default");
 		IJ.run(imp2, "Convert to Mask", "");
 		if (dilate) {
 			IJ.run(imp2, "Dilate", "");
@@ -69,15 +63,14 @@ public class DetectEsferoidImageMethods {
 	public static void processEsferoidUsingThresholdOld(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee,
 			int noNE) {
 
-		if(imp2.getBitDepth()==24 || imp2.getBitDepth()==32) {
-			IJ.run(imp2,"Color Threshold...","");
-			
-		}else {
+		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
+			IJ.run(imp2, "Color Threshold...", "");
+
+		} else {
 			IJ.setAutoThreshold(imp2, "Otsu");
 		}
-		
-		
-		//IJ.setAutoThreshold(imp2, "Otsu");
+
+		// IJ.setAutoThreshold(imp2, "Otsu");
 		IJ.run(imp2, "Convert to Mask", "");
 		IJ.run(imp2, "Dilate", "");
 		IJ.run(imp2, "Dilate", "");
@@ -95,24 +88,17 @@ public class DetectEsferoidImageMethods {
 	public static void processEsferoidUsingVariance(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee,
 			int noNE) {
 
-		
-		
-		
-		
-		
 		IJ.run(imp2, "Find Edges", "");
 		IJ.run(imp2, "Variance...", "radius=7");
-		
-		if(imp2.getBitDepth()==24 || imp2.getBitDepth()==32) {
-			IJ.run(imp2,"Color Threshold...","");
-			
-		}else {
-			IJ.setAutoThreshold(imp2,"Otsu dark");
+
+		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
+			IJ.run(imp2, "Color Threshold...", "");
+
+		} else {
+			IJ.setAutoThreshold(imp2, "Otsu dark");
 		}
-		
-		
-		
-		//IJ.setAutoThreshold(imp2, "Otsu dark");
+
+		// IJ.setAutoThreshold(imp2, "Otsu dark");
 		IJ.run(imp2, "Convert to Mask", "");
 		IJ.run(imp2, "Dilate", "");
 		IJ.run(imp2, "Fill Holes", "");
@@ -128,8 +114,6 @@ public class DetectEsferoidImageMethods {
 	public static void processEsferoidesGeneralCaseHector(ImagePlus imp2, boolean noNeed, int maxFilter, double stdI,
 			int noNE) {
 
-		
-		
 //		if (maxFilter != -1 && stdI != -1) {
 
 		IJ.run(imp2, "Find Edges", "");
@@ -141,17 +125,15 @@ public class DetectEsferoidImageMethods {
 		double mean = stats.mean;
 		double std = stats.stdDev;
 		// System.out.println(Math.floor(mean + stdI * std));
-		
-		
-		if(imp2.getBitDepth()==24 || imp2.getBitDepth()==32) {
-			IJ.run(imp2,"Color Threshold...","");
-			
-		}else {
-			IJ.setAutoThreshold(imp2,"Default dark");
+
+		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
+			IJ.run(imp2, "Color Threshold...", "");
+
+		} else {
+			IJ.setAutoThreshold(imp2, "Default dark");
 		}
-		
-		
-		//IJ.setAutoThreshold(imp2, "Default dark");
+
+		// IJ.setAutoThreshold(imp2, "Default dark");
 		IJ.setRawThreshold(imp2, Math.floor(mean + stdI * std), 255, null);
 		IJ.run(imp2, "Convert to Mask", "");
 
@@ -178,7 +160,7 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Find Edges", "");
 		IJ.run(imp2, "Convert to Mask", "");
 		for (int i = 0; i < iters; i++) {
-			IJ.run(imp2, "Find Edges", "");IJ.run("Close");
+			IJ.run(imp2, "Find Edges", "");
 		}
 
 		IJ.run(imp2, "Fill Holes", "");
@@ -220,18 +202,15 @@ public class DetectEsferoidImageMethods {
 
 	public static void processEsferoidUsingThreshold2(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee,
 			int noNE) {
-		
 
-		if(imp2.getBitDepth()==24 || imp2.getBitDepth()==32) {
-			IJ.run(imp2,"Color Threshold...","");
-			
-		}else {
-			IJ.setAutoThreshold(imp2,"Otsu");
+		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
+			IJ.run(imp2, "Color Threshold...", "");
+
+		} else {
+			IJ.setAutoThreshold(imp2, "Otsu");
 		}
-		
-		
-		
-	//	IJ.setAutoThreshold(imp2, "Otsu");
+
+		// IJ.setAutoThreshold(imp2, "Otsu");
 		IJ.run(imp2, "Convert to Mask", "");
 		IJ.run(imp2, "Dilate", "");
 		IJ.run(imp2, "Dilate", "");
@@ -244,9 +223,8 @@ public class DetectEsferoidImageMethods {
 	public static void processEsferoidUsingThresholdCombination(ImagePlus imp2, boolean noNeed, int noNeedde,
 			double Nonee, int noNE) {
 
-		
 		ImagePlus imp1 = imp2.duplicate();
-		
+
 		IJ.run(imp1, "Find Edges", "");
 		IJ.run(imp1, "Convert to Mask", "");
 		IJ.run(imp1, "Morphological Filters", "operation=[Black Top Hat] element=Square radius=5");
@@ -258,17 +236,15 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp4, "Fill Holes", "");
 		IJ.run(imp4, "Erode", "");
 		IJ.run(imp4, "Erode", "");
-		
-		
-		if(imp2.getBitDepth()==24 || imp2.getBitDepth()==32) {
-			IJ.run(imp2,"Color Threshold...","");
-			
-		}else {
-			IJ.setAutoThreshold(imp2,"Otsu");
+
+		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
+			IJ.run(imp2, "Color Threshold...", "");
+
+		} else {
+			IJ.setAutoThreshold(imp2, "Otsu");
 		}
-		
-		
-		//IJ.setAutoThreshold(imp2, "Otsu");
+
+		// IJ.setAutoThreshold(imp2, "Otsu");
 		IJ.run(imp2, "Convert to Mask", "");
 		IJ.run(imp2, "Dilate", "");
 		IJ.run(imp2, "Dilate", "");
@@ -287,20 +263,15 @@ public class DetectEsferoidImageMethods {
 
 	public static void processEsferoidUsingThresholdWithWatershed(ImagePlus imp2, boolean noNeed, int noNeedde,
 			double Nonee, int noNE) {
-		
-		
-		
-		if(imp2.getBitDepth()==24 || imp2.getBitDepth()==32) {
-			IJ.run(imp2,"Color Threshold...","");
-			
-		}else {
-			IJ.setAutoThreshold(imp2,"Otsu");
+
+		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
+			IJ.run(imp2, "Color Threshold...", "");
+
+		} else {
+			IJ.setAutoThreshold(imp2, "Otsu");
 		}
-		
-		
-		
-		
-	//	IJ.setAutoThreshold(imp2, "Otsu");
+
+		// IJ.setAutoThreshold(imp2, "Otsu");
 		IJ.run(imp2, "Convert to Mask", "");
 		IJ.run(imp2, "Dilate", "");
 		IJ.run(imp2, "Dilate", "");
@@ -328,39 +299,33 @@ public class DetectEsferoidImageMethods {
 	}
 
 	public static void processEsferoidVariance(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee, int noNE) {
-		
-		
+
 		IJ.run(imp2, "Variance...", "radius=1");
-		
-		
-		if(imp2.getBitDepth()==24 || imp2.getBitDepth()==32) {
-			IJ.run(imp2,"Color Threshold...","");
-			
-		}else {
-			IJ.setAutoThreshold(imp2,"Default");
+
+		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
+			IJ.run(imp2, "Color Threshold...", "");
+
+		} else {
+			IJ.setAutoThreshold(imp2, "Default");
 		}
-		
-		//IJ.setAutoThreshold(imp2, "Default"); // dark
+
+		// IJ.setAutoThreshold(imp2, "Default"); // dark
 		IJ.run(imp2, "Convert to Mask", "");
 
 	}
 
 	public static void processEsferoidVariance2(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee, int noNE) {
-		
 
 		IJ.run(imp2, "Variance...", "radius=1");
-		
-		
-		if(imp2.getBitDepth()==24 || imp2.getBitDepth()==32) {
-			IJ.run(imp2,"Color Threshold...","");
-			
-		}else {
-			IJ.setAutoThreshold(imp2,"Default dark");
+
+		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
+			IJ.run(imp2, "Color Threshold...", "");
+
+		} else {
+			IJ.setAutoThreshold(imp2, "Default dark");
 		}
-		
-		
-		
-		//IJ.setAutoThreshold(imp2, "Default dark");
+
+		// IJ.setAutoThreshold(imp2, "Default dark");
 		IJ.run(imp2, "Convert to Mask", "");
 		IJ.run(imp2, "Fill Holes", "");
 
@@ -370,37 +335,26 @@ public class DetectEsferoidImageMethods {
 
 		ImagePlus imp1 = imp2.duplicate();
 		imp1.show();
-		
-		
-		
-		
-		
-		
-		
-		if(imp1.getBitDepth()==24 || imp1.getBitDepth()==32) {
-			IJ.run(imp1,"Color Threshold...","");
-			
-		}else {
+
+		if (imp1.getBitDepth() == 24 || imp1.getBitDepth() == 32) {
+			IJ.run(imp1, "Color Threshold...", "");
+
+		} else {
 			IJ.setAutoThreshold(imp1, "Default");
-			
+
 		}
-		
-		
-	
+
 		IJ.run(imp1, "Convert to Mask", "");
 		IJ.run(imp2, "Find Edges", "");
 		IJ.run(imp2, "Find Edges", "");
-		if(imp2.getBitDepth()==24 || imp2.getBitDepth()==32) {
-			IJ.run(imp2,"Color Threshold...","");
-			
-		}else {
+		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
+			IJ.run(imp2, "Color Threshold...", "");
+
+		} else {
 			IJ.setAutoThreshold(imp2, "Default dark");
-			
+
 		}
-		
-		
-		
-		
+
 		IJ.run(imp2, "Convert to Mask", "");
 		ImageCalculator ic = new ImageCalculator();
 		ic.run("ADD", imp2, imp1);

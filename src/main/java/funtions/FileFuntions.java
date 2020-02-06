@@ -1,6 +1,6 @@
 package funtions;
 
-import java.awt.Menu;
+import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -41,7 +41,7 @@ import task.ImagesTask;
 public class FileFuntions {
 
 	private static Map<String, Long> directoryLastChange;
-	private static List<String> pluginNames;
+	// private static List<String> pluginNames;
 
 	/**
 	 * assign the plugin folder for imageJ and creates a instance of imageJ
@@ -51,12 +51,12 @@ public class FileFuntions {
 		prop.cheeckJarDirectoryChange();
 		System.setProperty("plugins.dir", prop.getProp().getProperty("jarDirectory"));
 
-		ImageJ imageJFrame = new ImageJ();
+		new ImageJ(2);// NO_SHOW MODE
 		// imageJFrame.setVisible(false);
 
 		IJ.setForegroundColor(255, 0, 0);
 
-		setPluginNames(new ArrayList<>());
+		// setPluginNames(new ArrayList<>());
 
 		// addMenuItem(imageJFrame.getMenuBar().getMenu(5));
 
@@ -127,7 +127,7 @@ public class FileFuntions {
 		// We exchange the files in the saveDir
 
 		int resp = JOptionPane.showConfirmDialog(null,
-				"This action will delete the current images in predition folder. Are you sure you want to proceed to save?",
+				"This action will delete the current image in predition folder. Are you sure you want to proceed to save?",
 				"Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 		if (resp == 0) { // if yes
 
@@ -151,24 +151,30 @@ public class FileFuntions {
 			Utils.search(oldNameNoExt, oldFolder, temporalFiles);
 			Utils.search(pattern, saveDir, originalFiles);
 
+			File f;
+			File orFile;
+			Path from;
+			Path to;
+			HSSFWorkbook modifyExcel;
+
 			for (String s : temporalFiles) {
-				File f = new File(s);
+				f = new File(s);
 				if (!f.getName().endsWith("xls")) {
 
 					/*
-					 * If the new file was succesfully move to the predicctions folder if the
+					 * If the new file was successfully move to the predictions folder if the
 					 * original file exist we delete it and change the name of the new file
 					 * otherwise we only rename
 					 */
 					for (String oriFilePath : originalFiles) {
 						extension = extensionwithoutName(s);
 						if (oriFilePath.endsWith(extension)) {
-							File orFile = new File(oriFilePath);
+							orFile = new File(oriFilePath);
 							if (orFile.exists()) {
 								// f.renameTo(new File(f.getAbsolutePath().replace(f.getName(),
 								// orFile.getName())));
-								Path from = f.toPath();
-								Path to = orFile.toPath();
+								from = f.toPath();
+								to = orFile.toPath();
 								try {
 									// orFile.delete();
 									Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
@@ -191,7 +197,7 @@ public class FileFuntions {
 					// we change the excel row to the new one
 					try {
 
-						HSSFWorkbook modifyExcel = new HSSFWorkbook(
+						modifyExcel = new HSSFWorkbook(
 								new FileInputStream(new File(originalPath.replace(originalName, "") + "results.xls")));
 						HSSFWorkbook newdataExcel = new HSSFWorkbook(new FileInputStream(new File(s)));
 
@@ -227,21 +233,21 @@ public class FileFuntions {
 	 * For delete a folder If we close the app or the algorithm view window we
 	 * delete the temporal folder
 	 * 
-	 * @param temporalFolder The folder to delete
+	 * @param folder The folder to delete
 	 */
-	public static void deleteTemporalFolder(File temporalFolder) {
+	public static void deleteFolder(File folder) {
 
-		if (temporalFolder.exists()) { // if exist
-			File[] files = temporalFolder.listFiles();
+		if (folder.exists()) { // if exist
+			File[] files = folder.listFiles();
 			for (File file : files) { // if it isn't empty we delete it's files
 				if (file.isDirectory()) { // if it's a directory we call this method else we delete it
-					deleteTemporalFolder(file);
+					deleteFolder(file);
 				} else {
 					file.delete();
 				}
 
 			}
-			temporalFolder.delete(); // we delete it
+			folder.delete(); // we delete it
 		}
 
 	}
@@ -343,10 +349,18 @@ public class FileFuntions {
 			List<String> actualImages = new ArrayList<String>();
 			Utils.search(".*\\.tiff", new File(directory), actualImages);
 			Collections.sort(actualImages);
+			
+//			images= new ShowImages(directory,tp);
 
 			checkStillExist(images, actualImages, tp); // check if the images of the buttons still exist
 
 			if (actualImages.size() != 0) { // if we have new file we add them
+
+				ImageIcon iconoEscala;
+				JButton imageView;
+				File faux;
+				int height=tp.getLens().actualImageHeight();
+
 				for (String name : actualImages) {
 					// convert the format to show the image
 					ImageIcon image = ShowTiff.showTiffToImageIcon(name);
@@ -354,9 +368,9 @@ public class FileFuntions {
 
 					// add the button
 					// we create an icon with the specific measures
-					ImageIcon iconoEscala = new ImageIcon(
-							image.getImage().getScaledInstance(700, 700, java.awt.Image.SCALE_DEFAULT));
-					JButton imageView = new JButton(iconoEscala);
+					iconoEscala = new ImageIcon(
+							image.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
+					imageView = new JButton(iconoEscala);
 					imageView.setIcon(iconoEscala);
 					imageView.setName(name);
 					images.getImageIcon().add(image);
@@ -368,8 +382,7 @@ public class FileFuntions {
 							String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
 							if (tp != null) {
 								if (tp.indexOfTab(nombreTab) == -1) {
-									ViewImagesBigger viewImageBig = new ViewImagesBigger(image, images.getImageIcon(),
-											tp);
+									new ViewImagesBigger(image, images.getImageIcon(), tp, false);
 								}
 
 							}
@@ -379,13 +392,16 @@ public class FileFuntions {
 
 					images.getListImagesPrev().put(name, imageView);
 
-					File faux = new File(name);
+					faux = new File(name);
 					images.getLastModifyImage().put(name, faux.lastModified());
 
 					images.add(imageView);
 				}
 			}
+			
 			images.repaint();
+	
+			
 		}
 	}
 
@@ -411,25 +427,46 @@ public class FileFuntions {
 
 					JButton imageButton = images.getListImagesPrev().get(imaPath);
 					ImageIcon ima = new ImageIcon(imaPath);
+					
+					images.getImageIcon().set(images.getListImages().indexOf(imaPath), ima);
+					
 					ima.setDescription(imaPath);
 					imageButton.setIcon(ima);
 					imageButton.repaint();
 
 					images.getListImagesPrev().put(imaPath, imageButton);
 					images.getLastModifyImage().put(imaPath, faux.lastModified());
+					
+					//si hay tabpanels con viewImagesBigger esto se cierran 
+					//se vuelve a coger la lista de tiff images para actualizarla
+					Component[] com = tp.getComponents();
+					for (Component component : com) {
+						if(component.getClass().equals(ViewImagesBigger.class)) {
+							tp.remove(component);
+						}
+					}
+					
 
 				}
 			} else {// if it doesn´t exist we delete it from the map
-
+				
 				JButton deleteImage = images.getListImagesPrev().get(imaPath);
 				images.remove(deleteImage);
+				
+				
+				images.getImageIcon().remove(images.getListImages().indexOf(imaPath));
+				images.getListImages().remove(imaPath);
+				images.getListImagesPrev().remove(imaPath);
 
+				
+				
 				imageModify.remove();
 
 			}
 			actualImages.remove(imaPath);
 
 		}
+		
 	}
 
 	/**
@@ -473,7 +510,7 @@ public class FileFuntions {
 			} else {
 				if (folder.getAbsolutePath().endsWith("temporal")) {
 					Utils.searchDirectory(".*\\.tiff", folder, listImages);
-				} 
+				}
 
 			}
 		} else {
@@ -505,11 +542,16 @@ public class FileFuntions {
 				predictionsDir.mkdir();
 			}
 
+			File file;
+			String newPAth;
+			Path from;
+			Path to;
+
 			for (String s : listImages) {
-				File file = new File(s);
-				String newPAth = s.replace(file.getName(), "predictions" + File.separator + file.getName());
-				Path from = Paths.get(s);
-				Path to = Paths.get(newPAth);
+				file = new File(s);
+				newPAth = s.replace(file.getName(), "predictions" + File.separator + file.getName());
+				from = Paths.get(s);
+				to = Paths.get(newPAth);
 
 				try {
 					Files.move(from, to, StandardCopyOption.REPLACE_EXISTING);
@@ -517,6 +559,10 @@ public class FileFuntions {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null,
+							"An error occurred while saving the images in the predicctions folder", "Error saving",
+							JOptionPane.ERROR_MESSAGE);
+					removeAllToOriginalFolder(newPAth, new File(to.toString()));
 				}
 			}
 			listImages.clear();
@@ -527,11 +573,102 @@ public class FileFuntions {
 
 	}
 
-	public static List<String> getPluginNames() {
-		return pluginNames;
+	public static <K, V> K getKey(Map<K, V> map, V value) {
+		for (K key : map.keySet()) {
+			if (value.equals(map.get(key))) {
+				return key;
+			}
+		}
+		return null;
 	}
 
-	public static void setPluginNames(List<String> pluginNames) {
-		FileFuntions.pluginNames = pluginNames;
+	public static String getKeyFRomButtonDescription(Map<String, JButton> map, String value) {
+		JButton valueButton = null;
+
+		for (JButton bu : map.values()) {
+			if (bu.getName() == value) {
+				valueButton = bu;
+				break;
+			}
+		}
+
+		return getKey(map, valueButton);
 	}
+
+	public static void removeAllToOriginalFolder(String dirPredictions, File tempoFolder) {
+		// TODO Auto-generated method stub
+		File dirPre = new File(dirPredictions);
+		if (dirPre.exists() && dirPre.listFiles().length != 0) {
+			File[] files = dirPre.listFiles();
+			for (File file : files) {
+				file.renameTo(new File(file.getAbsolutePath().replace(dirPredictions, tempoFolder.getAbsolutePath())));
+			}
+		}
+	}
+
+	public static void changeToriginalNameAndFolder(String dirPredictions, Map<String, JButton> originalNewSelected) {
+		// TODO Auto-generated method stub
+		File dirPre = new File(dirPredictions);
+
+		if (dirPre.exists() && dirPre.listFiles().length != 0) {
+			File[] files = dirPre.listFiles();
+			String nameNoEx = "";
+			String originalDirectoryPath = "";
+			File originalFolder = null;
+
+			for (File file : files) {
+				nameNoEx = FileFuntions.namewithoutExtension(file.getAbsolutePath());
+				if (nameNoEx.endsWith("_pred")) {
+					nameNoEx = nameNoEx.replace("_pred", "");
+				}
+				originalDirectoryPath = originalNewSelected.get(nameNoEx).getName();
+				originalFolder = new File(originalDirectoryPath);
+				originalFolder = new File(originalFolder.getAbsolutePath().replace(originalFolder.getName(), ""));
+
+				if (!originalFolder.exists()) {
+					originalFolder.mkdir();
+				}
+
+				if (FileFuntions.extensionwithoutName(file.getAbsolutePath()).equals("zip")) {
+					file.renameTo(new File(originalNewSelected.get(nameNoEx).getName().replace("_pred.tiff", ".zip")));
+				} else {
+					file.renameTo(new File(originalNewSelected.get(nameNoEx).getName()));
+				}
+
+			}
+
+			if (dirPre.listFiles().length == 0) {
+				dirPre.delete();
+
+			}
+
+			ExcelActions.unMergeExcel(dirPredictions.replace("predictions", ""), originalNewSelected);
+		}
+	}
+
+	public static boolean isOriginalImage(File folder) {
+		boolean originalIma = false;
+		// Comprobar si en la carpeta hay imagenes nd2
+		List<String> listImages = new ArrayList<String>();
+		Utils.searchDirectory(".*\\.nd2", folder, listImages);
+		if (listImages.size() != 0) {
+			originalIma = true;
+		} else {
+			Utils.searchDirectory(".*\\.tif", folder, listImages);
+			if (listImages.size() != 0) {
+				originalIma = true;
+			}
+		}
+		return originalIma;
+	}
+
+	
+
+//	public static List<String> getPluginNames() {
+//		return pluginNames;
+//	}
+//
+//	public static void setPluginNames(List<String> pluginNames) {
+//		FileFuntions.pluginNames = pluginNames;
+//	}
 }

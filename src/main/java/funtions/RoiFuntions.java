@@ -3,6 +3,8 @@ package funtions;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
@@ -41,18 +43,23 @@ public class RoiFuntions {
 			IJ.setTool("freehand");
 			RoiManager roi = new RoiManager();
 
-			roi.runCommand("Open", roiPath);
+			if((new File(roiPath)).exists()) {
+				roi.runCommand("Open", roiPath);
+			}else {
+				JOptionPane.showMessageDialog(null, "No Roi file associated with this image");
+			}
+			
+			
 			roi.runCommand(imp, "Measure");
 			ResultsTable r = ResultsTable.getResultsTable();
 
 			r.show("Results");
 
-		} catch (FormatException e) {
+		} catch (FormatException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error while trying to show the imagen + roi", "Error saving",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -63,10 +70,11 @@ public class RoiFuntions {
 		f = new File(f.getAbsolutePath().replace(f.getName(), ""));
 		String[] listFiles = f.list();
 		String originalName = "";
+		String extension;
 
 		for (String name : listFiles) {
 			if (!name.endsWith(".xls")) {
-				String extension = FileFuntions.extensionwithoutName(name);
+				extension = FileFuntions.extensionwithoutName(name);
 				if (tiffName.contains(name.replace("." + extension, ""))) {
 					originalName = name;
 					break;

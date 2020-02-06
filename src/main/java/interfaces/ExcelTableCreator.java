@@ -18,11 +18,11 @@ public class ExcelTableCreator extends JTable {
 
 	private static final long serialVersionUID = 1L;
 
-	private File excel;
+	// private File excel;
 	private DefaultTableModel tableModel;
 
 	public ExcelTableCreator(File excel) {
-		this.excel = excel;
+		// this.excel = excel;
 		readXLSX(excel);
 
 	}
@@ -96,7 +96,9 @@ public class ExcelTableCreator extends JTable {
 				JOptionPane.showMessageDialog(null, "Nothing to import", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		} catch (IOException ex) {
-			System.err.println("" + ex.getMessage());
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error ehile reading the excel", "Error saving",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

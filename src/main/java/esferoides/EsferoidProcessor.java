@@ -6,10 +6,10 @@ import java.util.List;
 import loci.plugins.in.ImporterOptions;
 
 public class EsferoidProcessor {
-	
+
 	private searchFilesFunction searchFiles;
 	private detectEsferoidFunction detectEsferoid;
-	
+
 	public EsferoidProcessor(searchFilesFunction searchFiles, detectEsferoidFunction detectEsferoid) {
 		super();
 		this.searchFiles = searchFiles;
@@ -24,15 +24,14 @@ public class EsferoidProcessor {
 		return detectEsferoid;
 	}
 
-
 }
 
 @FunctionalInterface
 interface searchFilesFunction {
-    public List<String>  apply();
+	public List<String> apply();
 }
 
 @FunctionalInterface
 interface detectEsferoidFunction {
-    public void apply(ImporterOptions options, String dir, String name,ArrayList<Integer> goodRows, boolean temp);
+	public void apply(ImporterOptions options, String dir, String name, ArrayList<Integer> goodRows, boolean temp);
 }

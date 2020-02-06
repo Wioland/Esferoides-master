@@ -76,10 +76,14 @@ public class LensMEnuButtons extends JPanel {
 
 		if ((!minSizeIma && typeAction.equals("minus")) || (subtract == -subtractAddSize)) {
 
+			JButton bu;
+			ImageIcon iaux;
+			ImageIcon iconoEscala;
+
 			for (String path : listImagesPrev.keySet()) {
-				JButton bu = listImagesPrev.get(path);
-				ImageIcon iaux = ShowTiff.showTiffToImageIcon(bu.getName());
-				ImageIcon iconoEscala = new ImageIcon(iaux.getImage().getScaledInstance(widthSize - subtract,
+				bu = listImagesPrev.get(path);
+				iaux = ShowTiff.showTiffToImageIcon(bu.getName());
+				iconoEscala = new ImageIcon(iaux.getImage().getScaledInstance(widthSize - subtract,
 						heightSize - subtract, java.awt.Image.SCALE_DEFAULT));
 				bu.setIcon(iconoEscala);
 				bu.repaint();
@@ -116,6 +120,10 @@ public class LensMEnuButtons extends JPanel {
 				}
 			}
 		}
+	}
+	
+	public int actualImageHeight() {
+		return ((JButton) listImagesPrev.values().toArray()[0]).getIcon().getIconHeight();
 	}
 
 	public void numberOfImagesPerRow(int heightSize, ShowImages buttonParentPane) {

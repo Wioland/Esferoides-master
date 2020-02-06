@@ -43,7 +43,7 @@ public class Utils {
 	// list of files
 	// is stored in the result list.
 	public static void searchDirectory(final String pattern, final File folder, List<String> result) {
- 		for (final File f : folder.listFiles()) {
+		for (final File f : folder.listFiles()) {
 
 			if (f.isFile()) {
 				if (f.getName().matches(pattern)) {
@@ -95,7 +95,6 @@ public class Utils {
 
 				imp1.show();
 				rm.select(0);
-				System.out.println("******************************************************    "+rm.getIndexesAsString());
 				IJ.run(imp1, "Fit Spline", "");
 				rm.addRoi(imp1.getRoi());
 				rm.select(0);
@@ -147,13 +146,36 @@ public class Utils {
 				rt.addValue("Min. Feret", vFeret[2]);
 				rt.addValue("X Feret", vFeret[3]);
 				rt.addValue("Y Feret", vFeret[4]);
-				
+
 			}
-			
+
 			IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + File.separator + name + "_pred.tiff");
+
+			ResultsTable rt = ResultsTable.getResultsTable();
+			int rows = rt.getCounter();
+			for (int i = rows; i > 0; i--) {
+				if (!(goodRows.contains(i - 1))) {
+					rt.deleteRow(i - 1);
+				} else {
+					String[] s = rt.getRowAsString(i - 1).split(",");
+					if (s.length == 1) {
+						s = rt.getRowAsString(i - 1).split("\t");
+					}
+
+					if (s[1].equals("")) {
+						rt.deleteRow(i - 1);
+					}
+				}
+
+			}
+
+			ExcelActions ete = new ExcelActions(rt, folder.getAbsolutePath() + File.separator);
+			ete.convertToExcel();
+
+			rt.reset();
+
 		}
 
-		
 	}
 
 	// Method to obtain the area from a polygon. Probably, there is a most direct
@@ -257,13 +279,11 @@ public class Utils {
 			}
 			i++;
 			pos = pos + range;
-			System.out.println(pos);
+			// System.out.println(pos);
 		}
 
 		return false;
 
 	}
-	
-	
-	
+
 }

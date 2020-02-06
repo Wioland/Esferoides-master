@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import funtions.ExcelActions;
+import javax.swing.JOptionPane;
+
 import funtions.FileFuntions;
-import ij.measure.ResultsTable;
 import loci.plugins.in.ImporterOptions;
 
 public class Methods {
@@ -52,17 +52,19 @@ public class Methods {
 		return temporalFolder;
 	}
 
-	public void setTemporalFolder(File temporalFolder) {
-		this.temporalFolder = temporalFolder;
+	public void setTemporalFolder(File temporalFolde) {
+		temporalFolder = temporalFolde;
 	}
 
 	public static String[] getAlgorithms() {
 		return algorithms;
 	}
 
-	public void setAlgorithms(String[] algorithms) {
-		this.algorithms = algorithms;
+	public void setAlgorithms(String[] algorithm) {
+		algorithms = algorithm;
 	}
+
+	// METHODS
 
 	/**
 	 * Checks all the files in the directory has a fluo image
@@ -118,7 +120,7 @@ public class Methods {
 			}
 
 			// We initialize the ResultsTable
-			ResultsTable rt = new ResultsTable();
+			// ResultsTable rt = new ResultsTable();
 			ImporterOptions options = new ImporterOptions();
 
 			// We construct the EsferoidProcessorObject
@@ -132,29 +134,12 @@ public class Methods {
 				esferoidProcessor.getDetectEsferoid().apply(options, directory, name, goodRows, true);
 			}
 
-			rt = ResultsTable.getResultsTable();
-
-			/// Remove empty rows
-			int rows = rt.getCounter();
-			for (int i = rows; i > 0; i--) {
-				if (!(goodRows.contains(i - 1))) {
-					rt.deleteRow(i - 1);
-				}
-			}
-
-			directory += "temporal" + File.separator;
-
-			if (rows != 0) {
-				ExcelActions ete = new ExcelActions(rt, directory);
-				ete.convertToExcel();
-
-				rt.reset();
-			}
-
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
 		}
 
 	}
+
 }

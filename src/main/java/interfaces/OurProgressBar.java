@@ -19,6 +19,7 @@ public class OurProgressBar extends JDialog {
 
 	public OurProgressBar(JFrame frameDad) {
 		super(frameDad);
+		//setModal(true);
 		setTitle("Work in progress");
 		JProgressBar progressBar = new JProgressBar();
 		progressBar.setValue(0);
@@ -32,9 +33,11 @@ public class OurProgressBar extends JDialog {
 		setSize(300, 100);
 		setMinimumSize(new Dimension(300, 100));
 		setLocationRelativeTo(frameDad);
-		// setAlwaysOnTop(true);
+		
 		setUndecorated(true);
 		setVisible(true);
+//		toFront();
+//		setAlwaysOnTop(true);
 
 	}
 

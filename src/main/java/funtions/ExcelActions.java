@@ -1,15 +1,17 @@
 package funtions;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
@@ -51,11 +53,11 @@ public class ExcelActions {
 		}
 
 		int rows = this.rt.getCounter();
-
+		String[] rowi;
 		HSSFRow row;
 		for (int i = 0; i < rows; i++) {
 			row = sheet.createRow((short) i + 1);
-			String[] rowi = this.rt.getRowAsString(i).split("\\t");
+			rowi = this.rt.getRowAsString(i).split("\\t");
 			for (int j = 1; j <= headings.length; j++) {
 
 				row.createCell((short) j - 1).setCellValue(rowi[j]);
@@ -79,12 +81,10 @@ public class ExcelActions {
 			workbook.write(fileOut);
 			fileOut.close();
 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "An error occurred while creating the excel associated with the image");
 		}
 
 	}
@@ -239,7 +239,7 @@ public class ExcelActions {
 		JScrollPane sp = (JScrollPane) tp.getComponentAt(index);
 		JViewport jP = (JViewport) sp.getComponent(0);
 
-		if (tp.getIndexTabExcel().size() == 1) { // if it is the las excel tab we transform it to a noFileTab
+		if (tp.getIndexTabExcel().size() == 1) { // if it is the last excel tab we transform it to a noFileTab
 
 			tp.noFileText("Excel", jP);
 			tp.setTitleAt(1, "Excel ");
@@ -288,6 +288,9 @@ public class ExcelActions {
 			if (!tp.getComponent(1).getClass().equals(JScrollPane.class)) {
 				firstCheck = true;
 			}
+			String name;
+			ExcelTableCreator eTC;
+			File ex;
 
 			for (String path : result) {
 				if (!tp.getIndexTabExcel().containsValue(new File(path))) { // if there is a nofileTab the first excel
@@ -299,18 +302,19 @@ public class ExcelActions {
 						JViewport jP = (JViewport) sp.getComponent(0);
 						jP.remove(jP.getComponent(0));
 
-						File ex = new File(path);
-						ExcelTableCreator eTC = new ExcelTableCreator(ex);
+						ex = new File(path);
+						eTC = new ExcelTableCreator(ex);
 
 						jP.add(eTC);
 						jP.repaint();
 
-						String name = ex.getName();
+						name = ex.getName();
 						tp.getExcelModificationIndexTab().put(tp.getSelectedIndex(), ex.lastModified());
 						tp.getIndexTabExcel().put(tp.getSelectedIndex(), ex);
 						tp.setTitleAt(tp.getSelectedIndex(), "Excel " + name);
 
 						firstCheck = true;
+
 					} else {
 						addExcelPanel(new File(path), tp); // For the rest of excels we create a new tab
 					}
@@ -333,7 +337,7 @@ public class ExcelActions {
 		ExcelTableCreator excelPanel = new ExcelTableCreator(excel);
 		JScrollPane s = new JScrollPane(excelPanel);
 
-		if (!excel.getAbsoluteFile().equals(tp.getDir())) { // if the excel is in a subfolder the name contains the
+		if (!excel.getAbsolutePath().equals(tp.getDir())) { // if the excel is in a subfolder the name contains the
 															// different path + excel name
 
 			String folder = excel.getAbsolutePath().replace(tp.getDir(), "");
@@ -366,5 +370,210 @@ public class ExcelActions {
 		Timer temporizador = new Timer();
 
 		temporizador.scheduleAtFixedRate(exTask, 0, 1000 * secons);
+	}
+
+	public static void deleteAllExcels(File directory) {
+
+		String pattern = ".*\\_results.xls";
+		List<String> result = new ArrayList<String>();
+		Utils.searchDirectory(pattern, directory, result);
+
+		File aux = null;
+		for (String string : result) {
+			aux = new File(string);
+			aux.delete();
+		}
+
+	}
+
+	public static void mergeExcels(File excel, String originalName, File directory) {
+
+		List<String> result = new ArrayList<String>();
+
+		Utils.searchDirectory("results.xls", directory, result);
+
+		FileInputStream inputStream;
+		HSSFWorkbook wb;
+		try {
+
+			if (result.isEmpty()) {
+
+				// cambiar el nombre de la fila 1
+				inputStream = new FileInputStream(excel);
+				wb = new HSSFWorkbook(inputStream);
+				modifyCell(wb, 0, 1, 0, originalName);
+
+				inputStream.close();
+
+				FileOutputStream outputFile = new FileOutputStream(excel);
+
+				wb.write(outputFile);
+
+				outputFile.close();
+
+				excel.renameTo(new File(excel.getAbsolutePath().replace(excel.getName(), "results.xls")));
+			} else {
+				// añadir una fila pero con ekl nombre cambiado
+				inputStream = new FileInputStream(excel);
+				wb = new HSSFWorkbook(inputStream);
+				modifyCell(wb, 0, 1, 0, originalName);
+
+				FileOutputStream outputFile = new FileOutputStream(excel);
+				wb.write(outputFile);
+				outputFile.close();
+
+				HSSFRow newRow = getRow(excel, 0, 1);
+				inputStream.close();
+				inputStream = new FileInputStream(new File(result.get(0)));
+				wb = new HSSFWorkbook(inputStream);
+
+				addRow(wb, 0, newRow);
+
+				inputStream.close();
+				outputFile = new FileOutputStream(new File(result.get(0)));
+				wb.write(outputFile);
+
+				outputFile.close();
+
+				excel.delete();
+
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private static HSSFRow getRow(File excel, int indexSheet, int indexRow) {
+		HSSFWorkbook oldExcel;
+		HSSFRow newRow = null;
+		try {
+			oldExcel = new HSSFWorkbook(new FileInputStream(excel));
+			newRow = oldExcel.getSheetAt(indexSheet).getRow(indexRow);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return newRow;
+	}
+
+	public static void modifyCell(HSSFWorkbook workbook, int indexSheet, int indexRow, int indexCell, String newValue) {
+		HSSFSheet sheet = workbook.getSheetAt(indexSheet);
+		Cell cell2Update = sheet.getRow(indexRow).getCell(indexCell);
+		cell2Update.setCellValue(newValue);
+	}
+
+	public static void addRow(HSSFWorkbook workbook, int indexSheet, HSSFRow newRow) {
+		HSSFSheet sheet = workbook.getSheetAt(indexSheet);
+		int rowCount = sheet.getLastRowNum();
+		if (rowCount != 0 || sheet.getRow(0) != null) {
+			rowCount++;
+		}
+
+		sheet.createRow((short) (rowCount));
+		// changeRow(rowCount+1, sheet, newRow);
+
+		for (int i = 0; i < newRow.getLastCellNum(); i++) {
+			sheet.getRow(rowCount).createCell(i);
+			Cell cell2Update = sheet.getRow(rowCount).getCell(i);
+
+			if (newRow.getCell(i) != null) {
+				switch (newRow.getCell(i).getCellType()) {
+				case Cell.CELL_TYPE_BOOLEAN:
+					cell2Update.setCellValue(newRow.getCell(i).getBooleanCellValue());
+					break;
+				case Cell.CELL_TYPE_NUMERIC:
+					cell2Update.setCellValue(newRow.getCell(i).getNumericCellValue());
+					break;
+				case Cell.CELL_TYPE_STRING:
+					cell2Update.setCellValue(newRow.getCell(i).getStringCellValue());
+					break;
+				case Cell.CELL_TYPE_BLANK:
+					cell2Update.setCellValue(newRow.getCell(i).getStringCellValue());
+					break;
+				case Cell.CELL_TYPE_ERROR:
+					cell2Update.setCellValue(newRow.getCell(i).getErrorCellValue());
+					break;
+				}
+			}
+
+		}
+
+	}
+
+	public static void unMergeExcel(String pathFile, Map<String, JButton> originalNewSelected) {
+		if (pathFile.endsWith(File.separator)) {
+			pathFile += "results.xls";
+		} else {
+			pathFile += File.separator + "results.xls";
+		}
+
+		File excel = new File(pathFile);
+
+		if (excel.exists()) {
+
+			FileInputStream inputStream;
+			HSSFWorkbook wb;
+			try {
+
+				// cambiar el nombre de la fila 1
+				inputStream = new FileInputStream(excel);
+				wb = new HSSFWorkbook(inputStream);
+				HSSFSheet sheet = wb.getSheetAt(0);
+
+				String name = "";
+				HSSFRow row;
+				for (int i = 0; i < sheet.getLastRowNum() + 1; i++) {
+
+					if (i != 0) {
+						row = sheet.getRow(i);
+						name = row.getCell(0).getStringCellValue();
+						name = originalNewSelected.get(name).getName();
+						createExcelFromOtherExcelRow(name, sheet.getRow(0), row);
+					}
+
+				}
+
+				inputStream.close();
+
+				excel.delete();
+
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+
+		}
+	}
+
+	private static void createExcelFromOtherExcelRow(String pathFile, HSSFRow headings, HSSFRow data) {
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		workbook.createSheet("Results");
+
+		FileOutputStream fileOut;
+		try {
+
+			String filename = pathFile.replace(".tiff", "_results.xls");
+			addRow(workbook, 0, headings);
+
+			fileOut = new FileOutputStream(filename);
+			workbook.write(fileOut);
+			fileOut.close();
+
+			data.getCell(0).setCellValue(FileFuntions.namewithoutExtension(pathFile).replace("_pred", ""));
+			addRow(workbook, 0, data);
+
+			fileOut = new FileOutputStream(filename);
+			workbook.write(fileOut);
+			fileOut.close();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "An error occurred while creating the excel associated with the image");
+		}
+
 	}
 }

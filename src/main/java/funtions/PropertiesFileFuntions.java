@@ -1,8 +1,6 @@
 package funtions;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,8 +11,6 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
-import ij.io.DirectoryChooser;
-
 public class PropertiesFileFuntions {
 
 	private Properties prop;
@@ -23,6 +19,8 @@ public class PropertiesFileFuntions {
 	public PropertiesFileFuntions() {
 		prop = getPropertyDirectory(this.path);
 	}
+
+	// GETTERS Y SETTERS
 
 	public Properties getProp() {
 		return prop;
@@ -40,6 +38,13 @@ public class PropertiesFileFuntions {
 		this.path = path;
 	}
 
+	// METHODS
+
+	/**
+	 * Checks if there is a jar directory in the resource file or if it still exist
+	 * In case not having directory or not existing it ask you to change the
+	 * directory
+	 */
 	public void cheeckJarDirectoryChange() {
 
 		String text = "There is no jar directory assigned to the program or the one assigned no longer exist. Do you want to add one now?";
@@ -60,27 +65,45 @@ public class PropertiesFileFuntions {
 
 	}
 
+	/**
+	 * Changes the current jar directory in the resource file for the giving one
+	 * 
+	 * @param dirname path of the new directory
+	 * @param text    Text of the message shown
+	 */
 	public void changeJarDirectory(String dirname, String text) {
 		FileOutputStream out;
 		try {
+//			int resp = JOptionPane.showConfirmDialog(null, text, "Change jar directory", JOptionPane.YES_NO_OPTION,
+//					JOptionPane.ERROR_MESSAGE);
+//			if (resp == 0) {
+//
+//				DirectoryChooser dc = new DirectoryChooser("Select the folder containing the jar");
+//				String dir = dc.getDirectory();
+//				if (dir != dirname) {
 			Path resourceDirectory = Paths.get("src", "main", "resources");
 			String dir = resourceDirectory.toString();
 			out = new FileOutputStream(path.getFile());
 			prop.setProperty("jarDirectory", dir);
 			prop.store(out, null);
 			out.close();
-			//JOptionPane.showMessageDialog(null, "directory jar changed");
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// JOptionPane.showMessageDialog(null, "directory jar changed");
+//				}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error changing the Jar directory", "Error saving",
+					JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
 
+	/**
+	 * Initialize Properties with the resource file given in the URL
+	 * 
+	 * @param path the path of the resource file
+	 * @return properties initialized
+	 */
 	public Properties getPropertyDirectory(URL path) {
 
 		prop = new Properties();
@@ -91,7 +114,10 @@ public class PropertiesFileFuntions {
 			prop.load(is);
 			is.close();
 		} catch (IOException e) {
-			System.out.println(e.toString());
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error getting the properties file", "Error saving",
+					JOptionPane.ERROR_MESSAGE);
+
 		}
 		return prop;
 

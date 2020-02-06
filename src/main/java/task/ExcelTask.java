@@ -24,10 +24,16 @@ public class ExcelTask extends TimerTask {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		LOGGER.log(Level.INFO, "Numero de ejecución " + counter);
+		LOGGER.log(Level.INFO, "Numero de ejecución " + counter + " el directorio es "+ dir + "     tp dir "+tp.getDir());
 		counter++;
 
 		ExcelActions.checkAllExcelTab(tp, dir);
+
+		if (tp.getParent().getParent() == null) {
+			this.cancel();
+
+		}
+		
 	}
 
 }

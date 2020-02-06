@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -30,10 +31,12 @@ public class ImageTreePanel extends JSplitPane {
 	private JTree tree;
 	private String dir;
 	private TabPanel folderView;
+	private boolean selectAlgo;
 
-	public ImageTreePanel(String directory) {
+	public ImageTreePanel(String directory, boolean selectAlgo) {
 
 		this.dir = directory;
+		this.selectAlgo = selectAlgo;
 		setDividerSize(1);
 		setContinuousLayout(true);
 
@@ -43,7 +46,8 @@ public class ImageTreePanel extends JSplitPane {
 		p.add(tree);// tree
 		p.setAutoscrolls(true);
 
-		folderView = new TabPanel(directory);
+		folderView = new TabPanel(directory, selectAlgo);
+
 		// se crean los scrolls
 
 		JScrollPane s2 = new JScrollPane(p); // se le aniade el tree
@@ -119,51 +123,27 @@ public class ImageTreePanel extends JSplitPane {
 
 					} else {
 						if (!path.equals(dir)) { // si no es el directorio en el que nos encontramos que
+							if (selectAlgo) { // si el directorio no es uno de deteccion de esferoides
+								int r = JOptionPane.showConfirmDialog(this,
+										"The current images will be deleted if you change the current directory. Do you want to change the directory?",
+										"WARNING", JOptionPane.YES_NO_OPTION);
+								if (r == 0) { // se borra la carpeta temporal creada con las imagenes de los distintos
+												// algoritmos
 
-							File folder = new File(path);
-							List<String> resultTif = new ArrayList<String>();
-							List<String> resultNd2 = new ArrayList<String>();
-							List<String> resultTiff = new ArrayList<String>();
-							String oldPath = this.dir;
-							String detectedFiles = "";
-							boolean switchFolder = true;
-							
-							if(path.endsWith(File.separator)) {
-								this.dir = path;
-							}else {
-								this.dir = path+File.separator;
-							}
-							
-
-							Utils.search(".*\\.tif", folder, resultTif);
-							Utils.search(".*\\.tiff", folder, resultTiff);
-							Utils.search(".*\\.nd2", folder, resultNd2);
-
-							if (resultTiff.size() != 0) {
-								detectedFiles += "Tiff ";
-							}
-							if (resultTif.size() != 0) {
-								detectedFiles += "Tif ";
-							}
-							if (resultNd2.size() != 0) {
-								detectedFiles += "ND2 ";
-							}
-
-							if (resultTif.size() != 0 || resultNd2.size() != 0) {
-								JOptionPane.showMessageDialog(this, "Detected image files with the requered extension");
-								Main.callProgram(dir, this);
-								switchFolder=changeDirActions(resultTiff, detectedFiles, oldPath,switchFolder);
+									if (dir.endsWith(File.separator)) {
+										FileFuntions.deleteFolder(new File(dir + "temporal"));
+									} else {
+										FileFuntions.deleteFolder(new File(dir + File.separator + "temporal"));
+									}
+									// se cambia de directory
+									detectDirContentChange(path);
+								} else {
+									JOptionPane.showMessageDialog(this,
+											"No changing the directory. Nothing to be done");
+								}
 							} else {
-								JOptionPane.showMessageDialog(this,
-										"Nothing to be done. Not changing to de selected folder");
-								this.dir = oldPath;
-								switchFolder = false;
 
-							}
-
-							if (switchFolder) {
-								JOptionPane.showMessageDialog(this, "Changed the folder to " + dir);
-								FileFuntions.addModificationDirectory(dir+"predictions");
+								detectDirContentChange(path);
 							}
 
 						}
@@ -176,9 +156,59 @@ public class ImageTreePanel extends JSplitPane {
 		}
 	}
 
-	public boolean changeDirActions(List<String> result, String extensionFile, String oldPath,boolean switchFolder) {
-		
-	
+	public void detectDirContentChange(String path) {
+		File folder = new File(path);
+		List<String> resultTif = new ArrayList<String>();
+		List<String> resultNd2 = new ArrayList<String>();
+		List<String> resultTiff = new ArrayList<String>();
+		String oldPath = this.dir;
+		String detectedFiles = "";
+		boolean switchFolder = true;
+
+		if (path.endsWith(File.separator)) {
+			this.dir = path;
+		} else {
+			this.dir = path + File.separator;
+		}
+
+		Utils.search(".*\\.tif", folder, resultTif);
+		Utils.search(".*\\.tiff", folder, resultTiff);
+		Utils.search(".*\\.nd2", folder, resultNd2);
+
+		if (resultTiff.size() != 0) {
+			detectedFiles += "Tiff ";
+		}
+		if (resultTif.size() != 0) {
+			detectedFiles += "Tif ";
+		}
+		if (resultNd2.size() != 0) {
+			detectedFiles += "ND2 ";
+		}
+
+		if (resultTif.size() != 0 || resultNd2.size() != 0) {
+			JOptionPane.showMessageDialog(this, "Detected image files with the requered extension");
+			Main.callProgram(dir, this);
+			if (!selectAlgo) {
+				switchFolder = changeDirActions(resultTiff, detectedFiles, oldPath, switchFolder);
+			} else {
+				switchFolder = true;
+			}
+
+		} else {
+			JOptionPane.showMessageDialog(this, "Nothing to be done. Not changing to de selected folder");
+			this.dir = oldPath;
+			switchFolder = false;
+
+		}
+
+		if (switchFolder) {
+			JOptionPane.showMessageDialog(this, "Changed the folder to " + dir);
+			FileFuntions.addModificationDirectory(dir + "predictions");
+		}
+	}
+
+	public boolean changeDirActions(List<String> result, String extensionFile, String oldPath, boolean switchFolder) {
+
 		if (result.size() == 0) { // si no tiene imagenes tiff, es decir no se han hecho predicciones
 
 			int n = JOptionPane.showConfirmDialog(this,
@@ -186,7 +216,8 @@ public class ImageTreePanel extends JSplitPane {
 					extensionFile + " files detected", JOptionPane.YES_NO_OPTION);
 
 			if (n == 0) {
-				SelectAlgoritm sAl = new SelectAlgoritm(dir, this);
+				Main.createGeneralViewOrNot(this, this.dir, true);
+				// SelectAlgoritm sAl = new SelectAlgoritm(dir, this);
 			} else {
 				JOptionPane.showMessageDialog(this, "Nothing to be done. Not changing to the selected folder");
 				this.dir = oldPath;
@@ -195,14 +226,19 @@ public class ImageTreePanel extends JSplitPane {
 
 		} else {// Mostrar los tiff
 
-			repaintTabPanel();
+			repaintTabPanel(this.selectAlgo);
 		}
 		return switchFolder;
 	}
 
-	public void repaintTabPanel() {
+	public JFrame getJFrameGeneral() {
+		return (JFrame) this.getParent().getParent().getParent().getParent();
+	}
 
-		folderView = new TabPanel(this.dir);
+	public void repaintTabPanel(boolean selectAlgo) {
+
+		this.selectAlgo = selectAlgo;
+		folderView = new TabPanel(this.dir, selectAlgo);
 		// se crean los scrolls
 		// s.setViewportView(folderView);
 		this.setRightComponent(folderView);
@@ -218,18 +254,20 @@ public class ImageTreePanel extends JSplitPane {
 
 		int index = 0;
 		List<String> listExtensions = JMenuPropertiesFile.getExtensions();
+		String extension;
+		DefaultMutableTreeNode child;
 
 		for (File f : parent.listFiles()) {
 
-			String extension = FileFuntions.extensionwithoutName(f.getAbsolutePath());
-			
+			extension = FileFuntions.extensionwithoutName(f.getAbsolutePath());
+
 			if (f.isFile() && !f.getName().endsWith("xls") && listExtensions.contains(extension)) {
-				DefaultMutableTreeNode child = new DefaultMutableTreeNode(f.getName());
+				child = new DefaultMutableTreeNode(f.getName());
 				modelo.insertNodeInto(child, parentNode, index);
 				index++;
 			} else {
-				if (f.isDirectory() &&   !(f.getName().equals("predictions") || f.getName().equals("temporal"))   ) {
-					DefaultMutableTreeNode child = new DefaultMutableTreeNode(f.getName());
+				if (f.isDirectory() && !(f.getName().equals("predictions") || f.getName().equals("temporal"))) {
+					child = new DefaultMutableTreeNode(f.getName());
 					modelo.insertNodeInto(child, parentNode, index);
 					index++;
 					addChildTree(child, f, modelo);
