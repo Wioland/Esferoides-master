@@ -39,7 +39,7 @@ public class AlgorithmView extends JFrame {
 	private ShowImages panelImage;
 	private ViewImagesBigger vi;
 	private JPanel jSp;
-	private ViewImagesBigger imagesComparer;
+
 
 	public AlgorithmView(File image, String dir) {
 		// Parametros ventana
@@ -165,7 +165,8 @@ public class AlgorithmView extends JFrame {
 					vi = new ViewImagesBigger(imageIcon, imageIcoList, this, false);
 					addComparer(vi);
 				} else {
-					vi.getLabelImage().setIcon(imageIcon);
+					vi.getJPComparer().setLabelImageIcon(imageIcon);
+					//vi.getLabelImage().setIcon(imageIcon);
 				}
 
 				break;
@@ -180,52 +181,27 @@ public class AlgorithmView extends JFrame {
 
 	public void addComparer(ViewImagesBigger vi) {
 
-		this.imagesComparer=vi;
+		this.vi=vi;
 		
 		JPanel JPaneDad = (JPanel) selectedBu.getParent().getParent().getParent().getParent();
 		GridBagConstraints constraints = new GridBagConstraints();
 
-		JPanel panelLabels = new JPanel(new GridLayout(0, 2));
+		
 
-		JLabel originaText = new JLabel("Original image", SwingConstants.CENTER);
-		originaText.setFont(new Font("Arial", Font.BOLD, 12));
-
-		JLabel newImageText = new JLabel("New detected esferoid image", SwingConstants.CENTER);
-		newImageText.setFont(new Font("Arial", Font.BOLD, 12));
-
-		panelLabels.add(originaText);
-		panelLabels.add(newImageText);
-
-		JPanel panelButtons = (JPanel) jSp.getComponent(1);
-		jSp.remove(panelButtons);
-
-		constraints.fill = GridBagConstraints.BOTH;
-		constraints.weightx = 0;
-		constraints.weighty = 0;
-		constraints.gridx = 1;
-		constraints.gridy = 1;
-		jSp.add(panelButtons, constraints);
-
+		
 		JScrollPane scrollIma = (JScrollPane) JPaneDad.getComponentAt(1, 0);
 		scrollIma.setVisible(false);
-
-		constraints.weightx = 0;
-		constraints.weighty = 0;
-
-		constraints.gridx = 0;
-		constraints.gridy = 0;
-
 		JPaneDad.remove(scrollIma);
-		JPaneDad.add(panelLabels, constraints);
-
+		
 		constraints.fill = GridBagConstraints.BOTH;
 		constraints.weightx = 1;
 		constraints.weighty = 1;
 
-		constraints.gridy = 1;
 		constraints.gridx = 0;
+		constraints.gridy = 0;
 
-		JPaneDad.add(vi, constraints);
+		
+		JPaneDad.add(vi.getJPComparer(), constraints);
 		JPaneDad.updateUI();
 
 	}
@@ -273,7 +249,8 @@ public class AlgorithmView extends JFrame {
 		File ima = new File(filePath);
 		FileFuntions.saveSelectedImage(ima, this.directory + "predictions");
 	
-		vi.getOriginalImaLb().setIcon(vi.getLabelImage().getIcon());
+		vi.getJPComparer().setOriginalImaLbIcon(vi.getJPComparer().getLabelImageIcon());
+		
 	
 		
 		

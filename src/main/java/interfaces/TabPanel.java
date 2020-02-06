@@ -348,45 +348,12 @@ public class TabPanel extends JTabbedPane {
 				List<String> result = new ArrayList<String>();
 				Utils.searchDirectory(".*\\.tiff", folder, result);
 
-				JPanel panelDad= new JPanel(new GridBagLayout());
-				JPanel panelLabels = new JPanel(new GridLayout(0, 2));
-
-				JLabel originaText = new JLabel("Original image", SwingConstants.CENTER);
-				originaText.setFont(new Font("Arial", Font.BOLD, 12));
-
-				JLabel newImageText = new JLabel("New detected esferoid image", SwingConstants.CENTER);
-				newImageText.setFont(new Font("Arial", Font.BOLD, 12));
-
-				panelLabels.add(newImageText);
-				panelLabels.add(originaText);
+				
 			
 				ViewImagesBigger vi = new ViewImagesBigger(result, getOriginalNewSelected(), this);
-				GridBagConstraints constraints = new GridBagConstraints();
-				
-				
-		
 
-				constraints.fill = GridBagConstraints.BOTH;
-				constraints.weightx = 0;
-				constraints.weighty = 0;
-
-				constraints.gridx = 0;
-				constraints.gridy = 0;
-
-				
-				panelDad.add(panelLabels, constraints);
-
-				constraints.fill = GridBagConstraints.BOTH;
-				constraints.weightx = 1;
-				constraints.weighty = 1;
-
-				constraints.gridy = 1;
-				constraints.gridx = 0;
-
-				panelDad.add(vi, constraints);
-				
 				this.removeAll();
-				this.add("Compare Images", panelDad);
+				this.add("Compare Images", vi.getJPComparer());
 			}
 
 		} else {

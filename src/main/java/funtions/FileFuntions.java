@@ -120,17 +120,17 @@ public class FileFuntions {
 	 * @param selectedFile The temporal file to save
 	 * @param saveDirPath
 	 */
-	public static void saveSelectedImage(File selectedFile, String saveDirPath) {
+	public static boolean saveSelectedImage(File selectedFile, String saveDirPath) {
 
 		// We look for the tiff and zip files with the same as the selected file
 		// We take the files and take out he algorithm name
 		// We exchange the files in the saveDir
-
+boolean b=false;
 		int resp = JOptionPane.showConfirmDialog(null,
 				"This action will delete the current image in predition folder. Are you sure you want to proceed to save?",
 				"Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 		if (resp == 0) { // if yes
-
+b= true;
 			JOptionPane.showMessageDialog(null, "Saving the images");
 
 			List<String> temporalFiles = new ArrayList<String>();
@@ -226,6 +226,7 @@ public class FileFuntions {
 
 			JOptionPane.showMessageDialog(null, "Save files in prediccion folder succed");
 		}
+		return b;
 
 	}
 
