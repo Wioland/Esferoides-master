@@ -7,9 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -32,13 +30,13 @@ public class JPanelComparer extends JPanel {
 
 	public JPanelComparer() {
 
-		// Se aniade la imagen
+		// Add the image
 		labelImage = new JLabel();
 		originalImaLb = new JLabel();
 		labelImage.setVisible(true);
 		originalImaLb.setVisible(true);
 
-		// se aniaden los botones para poder pasar las imagenes
+		// add the buttons to change the image
 		JButton backBu = new JButton("<");
 		JButton forwardBu = new JButton(">");
 		JButton tryAlgoriBu = new JButton("Try other algorithms");
@@ -59,6 +57,7 @@ public class JPanelComparer extends JPanel {
 		panelButtons.add(selectButton);
 		panelButtons.add(ExitButton);
 
+		// Add the split panel that contains the labels with the images (images label)
 		splitPanelLabelsImages = new JSplitPane();
 		JPanel vi = new JPanel(new GridBagLayout());
 		splitPanelLabelsImages.setOrientation(javax.swing.JSplitPane.HORIZONTAL_SPLIT);
@@ -88,6 +87,7 @@ public class JPanelComparer extends JPanel {
 		vi.add(panelButtons, constraints);
 
 		this.setLayout(new GridBagLayout());
+		// Add the panel with the labels of the type of image(text label)
 		panelLabelsText = new JPanel(new GridLayout(0, 2));
 
 		originaText = new JLabel("Original image", SwingConstants.CENTER);
@@ -96,7 +96,6 @@ public class JPanelComparer extends JPanel {
 		newImageText = new JLabel("New detected esferoid image", SwingConstants.CENTER);
 		newImageText.setFont(new Font("Arial", Font.BOLD, 12));
 
-		
 		panelLabelsText.add(originaText);
 		panelLabelsText.add(newImageText);
 
@@ -121,6 +120,7 @@ public class JPanelComparer extends JPanel {
 		this.setVisible(true);
 	}
 
+	// GETTERS Y SETTERS
 	public JLabel getLabelImage() {
 		return labelImage;
 	}
@@ -170,39 +170,39 @@ public class JPanelComparer extends JPanel {
 	}
 
 	public JButton getTryAlgoButton() {
-		if(panelButtons.getComponents().length==5) {
+		if (panelButtons.getComponents().length == 5) {
 			return (JButton) panelButtons.getComponent(2);
-		}else {
+		} else {
 			for (Component c : panelButtons.getComponents()) {
-				if(c.getName()=="tryAlgoriBu") {
+				if (c.getName() == "tryAlgoriBu") {
 					return (JButton) c;
 				}
 			}
 		}
 		return null;
-	
+
 	}
 
 	public JButton getSelectButton() {
-		if(panelButtons.getComponents().length==5) {
+		if (panelButtons.getComponents().length == 5) {
 			return (JButton) panelButtons.getComponent(3);
-		}else {
+		} else {
 			for (Component c : panelButtons.getComponents()) {
-				if(c.getName()=="selectButton") {
+				if (c.getName() == "selectButton") {
 					return (JButton) c;
 				}
 			}
 		}
 		return null;
-		
+
 	}
 
 	public JButton getExitButton() {
-		if(panelButtons.getComponents().length==5) {
+		if (panelButtons.getComponents().length == 5) {
 			return (JButton) panelButtons.getComponent(4);
-		}else {
+		} else {
 			for (Component c : panelButtons.getComponents()) {
-				if(c.getName()=="exitButton") {
+				if (c.getName() == "exitButton") {
 					return (JButton) c;
 				}
 			}
@@ -257,7 +257,5 @@ public class JPanelComparer extends JPanel {
 	public void setPanelLabelsText(JPanel panelLabelsText) {
 		this.panelLabelsText = panelLabelsText;
 	}
-
-
 
 }

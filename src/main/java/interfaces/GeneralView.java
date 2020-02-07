@@ -28,7 +28,7 @@ public class GeneralView extends JFrame {
 		this.mb = new JMenuBar();
 		this.dir = directory;
 
-		// Parametros ventana
+		// Window parameters
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(MAXIMIZED_BOTH);
 		setVisible(true);
@@ -49,27 +49,9 @@ public class GeneralView extends JFrame {
 
 		createContent(directory, selectAlgo);
 
-//		OurProgressBar pb = new OurProgressBar(this);
-//	 imageTree = new ImageTreePanel(directory,selectAlgo);
-//		getContentPane().add(imageTree);
-//
-//		setVisible(true);
-//		pb.setVisible(false);
-//		pb.dispose();
-//
-//		if (imageTree.getFolderView().isOriginalIma()) {
-//			int op = JOptionPane.showConfirmDialog((Component) null,
-//					"There aren´t Tiff files in this folder, but we detected files with the required extension. Do you want to detect the esferoid of this images?",
-//					"alert", JOptionPane.YES_NO_OPTION);
-//			if (op == 0) {
-//				//Hacer que no cree otro JPanel Main, sino que haga un update del tabpanel k ya tenemos
-//				//new GeneralView(directory, true);
-//				
-//				imageTree.repaintTabPanel(!selectAlgo);
-//			}
-//		}
 	}
 
+	// GETTERS AND SETTERS
 	public String getDir() {
 		return dir;
 	}
@@ -78,6 +60,12 @@ public class GeneralView extends JFrame {
 		this.dir = dir;
 	}
 
+	// METHODS
+	/**
+	 * Paints the graphics of the main FRame
+	 * 
+	 * @param dc path of the current directory
+	 */
 	public void paintMainFRame(String dc) {
 
 		if (dc != null) {
@@ -90,6 +78,12 @@ public class GeneralView extends JFrame {
 
 	}
 
+	/**
+	 * Creates the graphics content of the frame
+	 * 
+	 * @param directory  current directory
+	 * @param selectAlgo if you are detecting esferoid
+	 */
 	private void createContent(String directory, boolean selectAlgo) {
 		OurProgressBar pb = new OurProgressBar(this);
 

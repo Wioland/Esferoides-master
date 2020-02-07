@@ -372,6 +372,11 @@ public class ExcelActions {
 		temporizador.scheduleAtFixedRate(exTask, 0, 1000 * secons);
 	}
 
+	/**
+	 * Deletes all the excels in the directory given 
+	 * 
+	 * @param directory folder in with we are going to delete the excel files
+	 */
 	public static void deleteAllExcels(File directory) {
 
 		String pattern = ".*\\_results.xls";
@@ -386,6 +391,13 @@ public class ExcelActions {
 
 	}
 
+	/**
+	 * Merges different excels in the results.xls excel, if it doesn't exist the excel given transforms in to it
+	 * 
+	 * @param excel				the excel to merge
+	 * @param originalName		original name of the image associated with the data
+	 * @param directory			the directory in with the merge takes place
+	 */
 	public static void mergeExcels(File excel, String originalName, File directory) {
 
 		List<String> result = new ArrayList<String>();
@@ -446,6 +458,14 @@ public class ExcelActions {
 
 	}
 
+	/**
+	 * Gets a row from an excel file
+	 * 
+	 * @param excel			excel file 
+	 * @param indexSheet	index of the sheet to take the row
+	 * @param indexRow		index of the row you wants to get
+	 * @return				the row of the excel in the position given
+	 */
 	private static HSSFRow getRow(File excel, int indexSheet, int indexRow) {
 		HSSFWorkbook oldExcel;
 		HSSFRow newRow = null;
@@ -460,12 +480,29 @@ public class ExcelActions {
 		return newRow;
 	}
 
+	/**
+	 * Modify the value of an excel cell
+	 * 
+	 * @param workbook		the workbook of the excel
+	 * @param indexSheet	index of the sheet 
+	 * @param indexRow		index of the row
+	 * @param indexCell		index of the cell
+	 * @param newValue		new value of the cell
+	 */
 	public static void modifyCell(HSSFWorkbook workbook, int indexSheet, int indexRow, int indexCell, String newValue) {
 		HSSFSheet sheet = workbook.getSheetAt(indexSheet);
 		Cell cell2Update = sheet.getRow(indexRow).getCell(indexCell);
 		cell2Update.setCellValue(newValue);
 	}
 
+	/**
+	 * 
+	 * Adds a new row to the excel given
+	 * 
+	 * @param workbook		workbook of the excel
+	 * @param indexSheet	index of the sheet
+	 * @param newRow		row to insert
+	 */
 	public static void addRow(HSSFWorkbook workbook, int indexSheet, HSSFRow newRow) {
 		HSSFSheet sheet = workbook.getSheetAt(indexSheet);
 		int rowCount = sheet.getLastRowNum();
@@ -504,6 +541,12 @@ public class ExcelActions {
 
 	}
 
+	/**
+	 * Separates each row of the current excel in diferrent excels
+	 * 
+	 * @param pathFile	path of the excel to unmerge
+	 * @param originalNewSelected	has the current label of the row and the old/new 
+	 */
 	public static void unMergeExcel(String pathFile, Map<String, JButton> originalNewSelected) {
 		if (pathFile.endsWith(File.separator)) {
 			pathFile += "results.xls";
@@ -548,6 +591,13 @@ public class ExcelActions {
 		}
 	}
 
+	/**
+	 * Creates a new excel from a row
+	 * 
+	 * @param pathFile		the path to save the file. That is the path of the image associated with the data, so we have to change the extension and name in the funtion
+	 * @param headings		the row that contains the headings of the new data
+	 * @param data			the row with the data
+	 */
 	private static void createExcelFromOtherExcelRow(String pathFile, HSSFRow headings, HSSFRow data) {
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		workbook.createSheet("Results");

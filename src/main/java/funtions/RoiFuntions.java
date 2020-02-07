@@ -15,6 +15,13 @@ import loci.plugins.in.ImporterOptions;
 
 public class RoiFuntions {
 
+	/**
+	 * GEt the roi of and image (current directory) in the predictions folder
+	 * 
+	 * @param pathOriginal path of the file in which the predictions folder is his
+	 *                     roi
+	 * @return
+	 */
 	public static String getRoiPathPredicctions(String pathOriginal) {
 
 		String extension = FileFuntions.extensionwithoutName(pathOriginal);
@@ -28,6 +35,13 @@ public class RoiFuntions {
 		return roiPath;
 	}
 
+	/**
+	 * Gets the original image associated with the roi given and shoes the image
+	 * with the roi and its measures
+	 * 
+	 * @param path    Path of the directory
+	 * @param roiPath path of the zip roi
+	 */
 	public static void showOriginalFilePlusRoi(String path, String roiPath) {
 		ImagePlus[] imps;
 		try {
@@ -43,13 +57,12 @@ public class RoiFuntions {
 			IJ.setTool("freehand");
 			RoiManager roi = new RoiManager();
 
-			if((new File(roiPath)).exists()) {
+			if ((new File(roiPath)).exists()) {
 				roi.runCommand("Open", roiPath);
-			}else {
+			} else {
 				JOptionPane.showMessageDialog(null, "No Roi file associated with this image");
 			}
-			
-			
+
 			roi.runCommand(imp, "Measure");
 			ResultsTable r = ResultsTable.getResultsTable();
 
@@ -63,6 +76,13 @@ public class RoiFuntions {
 		}
 	}
 
+	/**
+	 * Gets the path of the original file (nd2 or tiff) associated with the tiff
+	 * file in the predictions folder
+	 * 
+	 * @param pathTemporalTiff path of a tiff image in the temporal folder
+	 * @return The path of the original file associated with that tiff file
+	 */
 	public static String getoriginalFilePathFromTempralTiff(String pathTemporalTiff) {
 
 		File f = new File(pathTemporalTiff.replace("temporal" + File.separator, ""));
@@ -86,6 +106,14 @@ public class RoiFuntions {
 		return originalName;
 	}
 
+	/**
+	 * gets the path of the original file (nd2 or tif) associated with the tiff file
+	 * in predictions folder
+	 * 
+	 * @param tiffPredictionsPath path of a tiff file in the predictions folder
+	 * @return the path of the original file associated with the tiff file in
+	 *         prediction folder
+	 */
 	public static String getOriginalFilePathFromPredictions(String tiffPredictionsPath) {
 		String path = tiffPredictionsPath.replace("_pred.tiff", ".nd2");
 		path = path.replace(File.separator + "predictions", "");

@@ -113,24 +113,25 @@ public class FileFuntions {
 	}
 
 	/**
-	 * Save the files from the temporal folder to the prediction folder exchanging
+	 * * Save the files from the temporal folder to the prediction folder exchanging
 	 * the original files in the prediction folder with the temporal ones We save
 	 * the tiff and roi/zip and change the corresponding row on the result excel
 	 * 
 	 * @param selectedFile The temporal file to save
 	 * @param saveDirPath
+	 * @return true if the file is save false otherwise
 	 */
 	public static boolean saveSelectedImage(File selectedFile, String saveDirPath) {
 
 		// We look for the tiff and zip files with the same as the selected file
 		// We take the files and take out he algorithm name
 		// We exchange the files in the saveDir
-boolean b=false;
+		boolean b = false;
 		int resp = JOptionPane.showConfirmDialog(null,
 				"This action will delete the current image in predition folder. Are you sure you want to proceed to save?",
 				"Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 		if (resp == 0) { // if yes
-b= true;
+			b = true;
 			JOptionPane.showMessageDialog(null, "Saving the images");
 
 			List<String> temporalFiles = new ArrayList<String>();
@@ -350,7 +351,7 @@ b= true;
 			List<String> actualImages = new ArrayList<String>();
 			Utils.search(".*\\.tiff", new File(directory), actualImages);
 			Collections.sort(actualImages);
-			
+
 //			images= new ShowImages(directory,tp);
 
 			checkStillExist(images, actualImages, tp); // check if the images of the buttons still exist
@@ -360,7 +361,7 @@ b= true;
 				ImageIcon iconoEscala;
 				JButton imageView;
 				File faux;
-				int height=tp.getLens().actualImageHeight();
+				int height = tp.getLens().actualImageHeight();
 
 				for (String name : actualImages) {
 					// convert the format to show the image
@@ -399,10 +400,9 @@ b= true;
 					images.add(imageView);
 				}
 			}
-			
+
 			images.repaint();
-	
-			
+
 		}
 	}
 
@@ -428,46 +428,42 @@ b= true;
 
 					JButton imageButton = images.getListImagesPrev().get(imaPath);
 					ImageIcon ima = new ImageIcon(imaPath);
-					
+
 					images.getImageIcon().set(images.getListImages().indexOf(imaPath), ima);
-					
+
 					ima.setDescription(imaPath);
 					imageButton.setIcon(ima);
 					imageButton.repaint();
 
 					images.getListImagesPrev().put(imaPath, imageButton);
 					images.getLastModifyImage().put(imaPath, faux.lastModified());
-					
-					//si hay tabpanels con viewImagesBigger esto se cierran 
-					//se vuelve a coger la lista de tiff images para actualizarla
+
+					// si hay tabpanels con viewImagesBigger esto se cierran
+					// se vuelve a coger la lista de tiff images para actualizarla
 					Component[] com = tp.getComponents();
 					for (Component component : com) {
-						if(component.getClass().equals(ViewImagesBigger.class)) {
+						if (component.getClass().equals(ViewImagesBigger.class)) {
 							tp.remove(component);
 						}
 					}
-					
 
 				}
 			} else {// if it doesn´t exist we delete it from the map
-				
+
 				JButton deleteImage = images.getListImagesPrev().get(imaPath);
 				images.remove(deleteImage);
-				
-				
+
 				images.getImageIcon().remove(images.getListImages().indexOf(imaPath));
 				images.getListImages().remove(imaPath);
 				images.getListImagesPrev().remove(imaPath);
 
-				
-				
 				imageModify.remove();
 
 			}
 			actualImages.remove(imaPath);
 
 		}
-		
+
 	}
 
 	/**
@@ -574,6 +570,15 @@ b= true;
 
 	}
 
+	/**
+	 * From a map return the key giving the value, there is no repeated values 
+	 * 
+	 * @param <K>	Type of the key
+	 * @param <V>	Type of the value
+	 * @param map	Map<K,V> to search the key
+	 * @param value	the value we wants to know the key
+	 * @return the key of the current value
+	 */
 	public static <K, V> K getKey(Map<K, V> map, V value) {
 		for (K key : map.keySet()) {
 			if (value.equals(map.get(key))) {
@@ -583,6 +588,14 @@ b= true;
 		return null;
 	}
 
+	/**
+	 * 
+	 * GEts the key of a map, giving the description of a button, repeted values in the map
+	 * 
+	 * @param map	map to search the key
+	 * @param value	description of the button
+	 * @return the key of a button
+	 */
 	public static String getKeyFRomButtonDescription(Map<String, JButton> map, String value) {
 		JButton valueButton = null;
 
@@ -596,6 +609,12 @@ b= true;
 		return getKey(map, valueButton);
 	}
 
+	/**
+	 * Moves all the files from the dirpredictions to the temporal folder
+	 * 
+	 * @param dirPredictions	current folder
+	 * @param tempoFolder		new folder 
+	 */
 	public static void removeAllToOriginalFolder(String dirPredictions, File tempoFolder) {
 		// TODO Auto-generated method stub
 		File dirPre = new File(dirPredictions);
@@ -607,6 +626,13 @@ b= true;
 		}
 	}
 
+	/**
+	 * Moves the files to the predictions folder, changes the name of the selected files (Jbutton) to the original ones
+	 * checks if there is already a file with that name in that case delete it and move the other from the temporal folder.
+	 * 
+	 * @param dirPredictions
+	 * @param originalNewSelected
+	 */
 	public static void changeToriginalNameAndFolder(String dirPredictions, Map<String, JButton> originalNewSelected) {
 		// TODO Auto-generated method stub
 		File dirPre = new File(dirPredictions);
@@ -647,6 +673,13 @@ b= true;
 		}
 	}
 
+	/**
+	 * 
+	 * Searchs if in a folder there is original files (nd2 or tif)
+	 * 
+	 * @param folder	folder to search original files
+	 * @return true if there is original images (nd2 or tif) in the folder
+	 */
 	public static boolean isOriginalImage(File folder) {
 		boolean originalIma = false;
 		// Comprobar si en la carpeta hay imagenes nd2
@@ -662,8 +695,6 @@ b= true;
 		}
 		return originalIma;
 	}
-
-	
 
 //	public static List<String> getPluginNames() {
 //		return pluginNames;
