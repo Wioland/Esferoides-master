@@ -33,6 +33,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import ij.IJ;
 import ij.ImageJ;
+import interfaces.JPanelComparer;
 import interfaces.ShowImages;
 import interfaces.TabPanel;
 import interfaces.ViewImagesBigger;
@@ -411,6 +412,7 @@ public class FileFuntions {
 
 			String imaPath = imageModify.next();
 			File faux = new File(imaPath);
+			int height = tp.getLens().actualImageHeight();
 
 			if (faux.exists()) { // if it still exist we look if it has been modify
 				if (faux.lastModified() != images.getLastModifyImage().get(imaPath)) {
@@ -419,7 +421,11 @@ public class FileFuntions {
 							JOptionPane.WARNING_MESSAGE);
 
 					JButton imageButton = images.getListImagesPrev().get(imaPath);
-					ImageIcon ima = new ImageIcon(imaPath);
+					
+					//ImageIcon ima = new ImageIcon(imaPath);
+					ImageIcon ima = ShowTiff.showTiffToImageIcon(imaPath);
+					ima= new ImageIcon(
+							ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
 
 					images.getImageIcon().set(images.getListImages().indexOf(imaPath), ima);
 
@@ -434,7 +440,7 @@ public class FileFuntions {
 					// tiff images
 					Component[] com = tp.getComponents();
 					for (Component component : com) {
-						if (component.getClass().equals(ViewImagesBigger.class)) {
+						if (component.getClass().equals(JPanelComparer.class)) {
 							tp.remove(component);
 						}
 					}
