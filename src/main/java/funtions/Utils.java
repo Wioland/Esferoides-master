@@ -1,6 +1,7 @@
 package funtions;
 
 import java.awt.Polygon;
+import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import ij.plugin.filter.Analyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
+import interfaces.GeneralView;
 
 public class Utils {
 
@@ -332,6 +334,20 @@ public class Utils {
 
 		return false;
 
+	}
+
+	public static String getCurrentDirectory() {
+		
+		Window[] openWindows= Window.getWindows();
+		for (Window window : openWindows) {
+			if(window.getClass().equals(GeneralView.class)) {
+				return ((GeneralView) window).getDir();
+			}
+		}
+		
+		
+		return "";
+		
 	}
 
 }

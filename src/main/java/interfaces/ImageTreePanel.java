@@ -250,8 +250,8 @@ public class ImageTreePanel extends JSplitPane {
 	 * 
 	 * @return the main frame
 	 */
-	public JFrame getJFrameGeneral() {
-		return (JFrame) this.getParent().getParent().getParent().getParent();
+	public GeneralView getJFrameGeneral() {
+		return (GeneralView) this.getParent().getParent().getParent().getParent();
 	}
 
 	/**
@@ -265,6 +265,7 @@ public class ImageTreePanel extends JSplitPane {
 		folderView = new TabPanel(this.dir, selectAlgo);
 		this.setRightComponent(folderView);
 		folderView.repaint();
+		this.getJFrameGeneral().setDir(this.dir);
 
 	}
 

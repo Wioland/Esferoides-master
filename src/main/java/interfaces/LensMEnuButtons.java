@@ -80,7 +80,7 @@ public class LensMEnuButtons extends JPanel {
 		int widthSize = ((JButton) listImagesPrev.values().toArray()[0]).getIcon().getIconWidth();
 		int subtract = subtractAddSize;
 
-		// Takes the cuantity of pixels we wants to add or take from the image
+		// Takes the quantity of pixels we wants to add or take from the image
 		if (typeAction.equals("plus")) {
 			if (!maxSizeIma) {
 				subtract = -subtractAddSize;

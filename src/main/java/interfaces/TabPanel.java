@@ -465,8 +465,8 @@ public class TabPanel extends JTabbedPane {
 	 * 
 	 * @return the main frame of the application
 	 */
-	public JFrame getJFrameGeneral() {
-		return (JFrame) ((ImageTreePanel) this.getParent()).getJFrameGeneral();
+	public GeneralView getJFrameGeneral() {
+		return (GeneralView) ((ImageTreePanel) this.getParent()).getJFrameGeneral();
 	}
 
 	/**
