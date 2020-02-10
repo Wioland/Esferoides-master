@@ -23,17 +23,19 @@ public class ExcelTask extends TimerTask {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		LOGGER.log(Level.INFO, "Numero de ejecución " + counter + " el directorio es "+ dir + "     tp dir "+tp.getDir());
+		// For showing in the console how many times the task has been performed
+		LOGGER.log(Level.INFO,"Numero de ejecución " + counter + " el directorio es " + dir + "     tp dir " + tp.getDir());
 		counter++;
 
+		// Checks if the content of the excels in the tabs has change
 		ExcelActions.checkAllExcelTab(tp, dir);
 
+		// If the tabPanel was delete or change to another one we kill the task
 		if (tp.getParent().getParent() == null) {
 			this.cancel();
 
 		}
-		
+
 	}
 
 }

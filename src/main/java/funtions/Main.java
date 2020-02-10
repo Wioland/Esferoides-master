@@ -9,7 +9,6 @@ import interfaces.GeneralView;
 import interfaces.ImageTreePanel;
 
 public class Main {
-	// PRUEBAS
 
 	public static void main(String[] args) {
 		FileFuntions.chargePlugins();
@@ -59,10 +58,8 @@ public class Main {
 		boolean b = false;
 
 		int selection = JOptionPane.showOptionDialog(null, "Select an option", "Option selecter",
-				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, // null para icono por
-																				// defecto.
-				new Object[] { "Detect esferoid", "View results" }, // null para YES, NO y CANCEL
-				"Use algoritm");
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				new Object[] { "Detect esferoid", "View results" }, "Use algoritm");
 
 		switch (selection) {
 		case 0:
@@ -89,10 +86,10 @@ public class Main {
 	 *                   otherwise
 	 */
 	public static void createGeneralViewOrNot(ImageTreePanel folderView, String dc, boolean selectAlgo) {
-		if (folderView == null) { // si no se estaba ya en un GeneralView se crea uno nuevo
+		if (folderView == null) { // if there isn't a main/GenearalWiew Jframe open we create a new one
 			new GeneralView(dc, selectAlgo);
 		} else {
-
+			// We repaint the tab panel with the new content
 			folderView.repaintTabPanel(selectAlgo);
 
 		}

@@ -293,10 +293,9 @@ public class ExcelActions {
 			File ex;
 
 			for (String path : result) {
-				if (!tp.getIndexTabExcel().containsValue(new File(path))) { // if there is a nofileTab the first excel
-																			// goes there
-																			// Changing the textPane with the
-																			// ScrollPane with the excel
+				// if there is a nofileTab the first excel goes there Changing the textPane with
+				// the ScrollPane with the excel
+				if (!tp.getIndexTabExcel().containsValue(new File(path))) {
 					if (!firstCheck) {
 						JScrollPane sp = (JScrollPane) tp.getComponent(1);
 						JViewport jP = (JViewport) sp.getComponent(0);
@@ -336,9 +335,9 @@ public class ExcelActions {
 		String name = excel.getName();
 		ExcelTableCreator excelPanel = new ExcelTableCreator(excel);
 		JScrollPane s = new JScrollPane(excelPanel);
-
-		if (!excel.getAbsolutePath().equals(tp.getDir())) { // if the excel is in a subfolder the name contains the
-															// different path + excel name
+		// if the excel is in a subfolder the name contains the different path + excel
+		// name
+		if (!excel.getAbsolutePath().equals(tp.getDir())) {
 
 			String folder = excel.getAbsolutePath().replace(tp.getDir(), "");
 			name = folder;
@@ -347,11 +346,8 @@ public class ExcelActions {
 		s.setName("Excel " + name);
 		tp.add("Excel " + name, s);
 
-		// we add to the maps
-		tp.getExcelModificationIndexTab().put(tp.indexOfTab("Excel " + name), excel.lastModified()); // the index and
-																										// the last
-																										// modification
-																										// of the file
+		// we add to the maps the index and the last modification of the file
+		tp.getExcelModificationIndexTab().put(tp.indexOfTab("Excel " + name), excel.lastModified());
 		tp.getIndexTabExcel().put(tp.indexOfTab("Excel " + name), excel); // the index and the excel File
 		tp.setSelectedIndex(tp.indexOfTab("Excel " + name)); // we make it the selected tab
 
@@ -373,7 +369,7 @@ public class ExcelActions {
 	}
 
 	/**
-	 * Deletes all the excels in the directory given 
+	 * Deletes all the excels in the directory given
 	 * 
 	 * @param directory folder in with we are going to delete the excel files
 	 */
@@ -392,11 +388,12 @@ public class ExcelActions {
 	}
 
 	/**
-	 * Merges different excels in the results.xls excel, if it doesn't exist the excel given transforms in to it
+	 * Merges different excels in the results.xls excel, if it doesn't exist the
+	 * excel given transforms in to it
 	 * 
-	 * @param excel				the excel to merge
-	 * @param originalName		original name of the image associated with the data
-	 * @param directory			the directory in with the merge takes place
+	 * @param excel        the excel to merge
+	 * @param originalName original name of the image associated with the data
+	 * @param directory    the directory in with the merge takes place
 	 */
 	public static void mergeExcels(File excel, String originalName, File directory) {
 
@@ -410,7 +407,7 @@ public class ExcelActions {
 
 			if (result.isEmpty()) {
 
-				// cambiar el nombre de la fila 1
+				// changes the name of the first row
 				inputStream = new FileInputStream(excel);
 				wb = new HSSFWorkbook(inputStream);
 				modifyCell(wb, 0, 1, 0, originalName);
@@ -425,7 +422,7 @@ public class ExcelActions {
 
 				excel.renameTo(new File(excel.getAbsolutePath().replace(excel.getName(), "results.xls")));
 			} else {
-				// añadir una fila pero con ekl nombre cambiado
+				// adds a row but with the name changed
 				inputStream = new FileInputStream(excel);
 				wb = new HSSFWorkbook(inputStream);
 				modifyCell(wb, 0, 1, 0, originalName);
@@ -461,10 +458,10 @@ public class ExcelActions {
 	/**
 	 * Gets a row from an excel file
 	 * 
-	 * @param excel			excel file 
-	 * @param indexSheet	index of the sheet to take the row
-	 * @param indexRow		index of the row you wants to get
-	 * @return				the row of the excel in the position given
+	 * @param excel      excel file
+	 * @param indexSheet index of the sheet to take the row
+	 * @param indexRow   index of the row you wants to get
+	 * @return the row of the excel in the position given
 	 */
 	private static HSSFRow getRow(File excel, int indexSheet, int indexRow) {
 		HSSFWorkbook oldExcel;
@@ -483,11 +480,11 @@ public class ExcelActions {
 	/**
 	 * Modify the value of an excel cell
 	 * 
-	 * @param workbook		the workbook of the excel
-	 * @param indexSheet	index of the sheet 
-	 * @param indexRow		index of the row
-	 * @param indexCell		index of the cell
-	 * @param newValue		new value of the cell
+	 * @param workbook   the workbook of the excel
+	 * @param indexSheet index of the sheet
+	 * @param indexRow   index of the row
+	 * @param indexCell  index of the cell
+	 * @param newValue   new value of the cell
 	 */
 	public static void modifyCell(HSSFWorkbook workbook, int indexSheet, int indexRow, int indexCell, String newValue) {
 		HSSFSheet sheet = workbook.getSheetAt(indexSheet);
@@ -499,9 +496,9 @@ public class ExcelActions {
 	 * 
 	 * Adds a new row to the excel given
 	 * 
-	 * @param workbook		workbook of the excel
-	 * @param indexSheet	index of the sheet
-	 * @param newRow		row to insert
+	 * @param workbook   workbook of the excel
+	 * @param indexSheet index of the sheet
+	 * @param newRow     row to insert
 	 */
 	public static void addRow(HSSFWorkbook workbook, int indexSheet, HSSFRow newRow) {
 		HSSFSheet sheet = workbook.getSheetAt(indexSheet);
@@ -544,8 +541,8 @@ public class ExcelActions {
 	/**
 	 * Separates each row of the current excel in diferrent excels
 	 * 
-	 * @param pathFile	path of the excel to unmerge
-	 * @param originalNewSelected	has the current label of the row and the old/new 
+	 * @param pathFile            path of the excel to unmerge
+	 * @param originalNewSelected has the current label of the row and the old/new
 	 */
 	public static void unMergeExcel(String pathFile, Map<String, JButton> originalNewSelected) {
 		if (pathFile.endsWith(File.separator)) {
@@ -562,7 +559,7 @@ public class ExcelActions {
 			HSSFWorkbook wb;
 			try {
 
-				// cambiar el nombre de la fila 1
+				// changed the name of the first row
 				inputStream = new FileInputStream(excel);
 				wb = new HSSFWorkbook(inputStream);
 				HSSFSheet sheet = wb.getSheetAt(0);
@@ -594,9 +591,11 @@ public class ExcelActions {
 	/**
 	 * Creates a new excel from a row
 	 * 
-	 * @param pathFile		the path to save the file. That is the path of the image associated with the data, so we have to change the extension and name in the funtion
-	 * @param headings		the row that contains the headings of the new data
-	 * @param data			the row with the data
+	 * @param pathFile the path to save the file. That is the path of the image
+	 *                 associated with the data, so we have to change the extension
+	 *                 and name in the funtion
+	 * @param headings the row that contains the headings of the new data
+	 * @param data     the row with the data
 	 */
 	private static void createExcelFromOtherExcelRow(String pathFile, HSSFRow headings, HSSFRow data) {
 		HSSFWorkbook workbook = new HSSFWorkbook();

@@ -38,7 +38,7 @@ public class AlgorithmView extends JFrame {
 	private JPanel jSp;
 
 	public AlgorithmView(File image, String dir) {
-		// Parametros ventana
+		// Window parameters
 
 		setExtendedState(MAXIMIZED_BOTH);
 		setTitle("Algorithm view selecter");
@@ -59,7 +59,6 @@ public class AlgorithmView extends JFrame {
 		this.image = image;
 		this.directory = dir;
 		OurProgressBar pb = new OurProgressBar(this);
-		// directory=dir+"temporal"+File.separator;
 
 		String path = RoiFuntions.getOriginalFilePathFromPredictions(this.image.getAbsolutePath());
 
@@ -110,9 +109,7 @@ public class AlgorithmView extends JFrame {
 		constraints.gridy = 0;
 		jSp.add(panelButtons, constraints);
 
-		// jSp.setDividerLocation(1100 + jSp.getInsets().left);
-
-		// aniadimos las componentes al jframe
+		// add the components to the Jframe
 		pb.setVisible(false);
 		pb.dispose();
 		jSp.setVisible(true);
@@ -120,7 +117,6 @@ public class AlgorithmView extends JFrame {
 		jSp.repaint();
 
 		IJ.run("Close All");
-		// pack();
 
 	}
 
@@ -173,7 +169,7 @@ public class AlgorithmView extends JFrame {
 					addComparer(vi);
 				} else {
 					vi.getJPComparer().setLabelImageIcon(imageIcon);
-					// vi.getLabelImage().setIcon(imageIcon);
+
 				}
 
 				break;
@@ -284,8 +280,6 @@ public class AlgorithmView extends JFrame {
 
 		vi.getJPComparer().setOriginalImaLbIcon(vi.getJPComparer().getLabelImageIcon());
 
-		// FileFuntions.deleteTemporalFolder(new File(this.directory + "temporal"));
-		// this.dispose();
 	}
 
 	/**

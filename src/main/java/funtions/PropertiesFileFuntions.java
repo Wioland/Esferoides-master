@@ -74,21 +74,14 @@ public class PropertiesFileFuntions {
 	public void changeJarDirectory(String dirname, String text) {
 		FileOutputStream out;
 		try {
-//			int resp = JOptionPane.showConfirmDialog(null, text, "Change jar directory", JOptionPane.YES_NO_OPTION,
-//					JOptionPane.ERROR_MESSAGE);
-//			if (resp == 0) {
-//
-//				DirectoryChooser dc = new DirectoryChooser("Select the folder containing the jar");
-//				String dir = dc.getDirectory();
-//				if (dir != dirname) {
+
 			Path resourceDirectory = Paths.get("src", "main", "resources");
 			String dir = resourceDirectory.toString();
 			out = new FileOutputStream(path.getFile());
 			prop.setProperty("jarDirectory", dir);
 			prop.store(out, null);
 			out.close();
-			// JOptionPane.showMessageDialog(null, "directory jar changed");
-//				}
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

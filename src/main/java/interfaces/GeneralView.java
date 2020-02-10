@@ -103,9 +103,6 @@ public class GeneralView extends JFrame {
 					"There aren´t Tiff files in this folder, but we detected files with the required extension. Do you want to detect the esferoid of this images?",
 					"alert", JOptionPane.YES_NO_OPTION);
 			if (op == 0) {
-				// Hacer que no cree otro JPanel Main, sino que haga un update del tabpanel k ya
-				// tenemos
-				// new GeneralView(directory, true);
 
 				imageTree.repaintTabPanel(!selectAlgo);
 			}

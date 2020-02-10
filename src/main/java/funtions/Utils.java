@@ -85,9 +85,6 @@ public class Utils {
 		IJ.run(imp1, "RGB Color", "");
 		File folder;
 
-		// String name = imp1.getTitle();
-		// FileInfo f = imp1.getFileInfo();
-		// dir=dir.replace(name, "");
 		name = name.substring(0, name.lastIndexOf("."));
 		name = name.replace(dir, "");
 		folder = new File(dir + "predictions");
@@ -102,7 +99,7 @@ public class Utils {
 		}
 
 		ImageStatistics stats = null;
-		double[] vFeret;// = 0;
+		double[] vFeret;
 		double perimeter = 0;
 		if (rm != null) {
 			rm.setVisible(false);
@@ -130,7 +127,7 @@ public class Utils {
 				// compute the statistics (without calibrate)
 				stats = roi[0].getStatistics();
 
-				vFeret = roi[0].getFeretValues();// .getFeretsDiameter();
+				vFeret = roi[0].getFeretValues();
 				perimeter = roi[0].getLength();
 				Calibration cal = imp1.getCalibration();
 				double pw, ph;
@@ -314,9 +311,7 @@ public class Utils {
 		int[] histogram = ip.getHistogram(256);
 		ImageStatistics is = ip.getStatistics();
 		double min = is.min;
-//		System.out.println(min);
 		double max = is.max;
-//		System.out.println(max);
 		double range = (max - min) / 256;
 
 		int i = 0;
@@ -333,7 +328,6 @@ public class Utils {
 			}
 			i++;
 			pos = pos + range;
-			// System.out.println(pos);
 		}
 
 		return false;

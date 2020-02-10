@@ -40,7 +40,7 @@ public class ImageTreePanel extends JSplitPane {
 		setDividerSize(1);
 		setContinuousLayout(true);
 
-		// se crea el tree
+		//WE create the tree of the directory
 		JPanel p = new JPanel();
 		createTree();
 		p.add(tree);// tree
@@ -48,11 +48,9 @@ public class ImageTreePanel extends JSplitPane {
 
 		folderView = new TabPanel(directory, selectAlgo);
 
-		// se crean los scrolls
+		JScrollPane s2 = new JScrollPane(p); // Add the tree
 
-		JScrollPane s2 = new JScrollPane(p); // se le aniade el tree
-
-		// propiedades del jsplitpane
+		// Properties of the jsplitpane
 		this.setRightComponent(folderView);
 		this.setLeftComponent(s2);
 		this.setOrientation(SwingConstants.VERTICAL);
@@ -80,7 +78,6 @@ public class ImageTreePanel extends JSplitPane {
 
 		// we create de root folder of the directory
 		DefaultMutableTreeNode rootCarpet = new DefaultMutableTreeNode(dir);
-		// System.out.println("la carpeta raiz va a ser " + dir);
 
 		// We defiene the model in which add the nodes
 		DefaultTreeModel modelo = new DefaultTreeModel(rootCarpet);
@@ -130,7 +127,7 @@ public class ImageTreePanel extends JSplitPane {
 								int r = JOptionPane.showConfirmDialog(this,
 										"The current images will be deleted if you change the current directory. Do you want to change the directory?",
 										"WARNING", JOptionPane.YES_NO_OPTION);
-								if (r == 0) { // we delete the temporal folder with the files created with the direferen
+								if (r == 0) { // we delete the temporal folder with the files created with the different
 												// algorithms
 
 									if (dir.endsWith(File.separator)) {
@@ -235,14 +232,13 @@ public class ImageTreePanel extends JSplitPane {
 
 			if (n == 0) {
 				Main.createGeneralViewOrNot(this, this.dir, true);
-				// SelectAlgoritm sAl = new SelectAlgoritm(dir, this);
 			} else {
 				JOptionPane.showMessageDialog(this, "Nothing to be done. Not changing to the selected folder");
 				this.dir = oldPath;
 				switchFolder = false;
 			}
 
-		} else {// Mostrar los tiff
+		} else {
 
 			repaintTabPanel(this.selectAlgo);
 		}

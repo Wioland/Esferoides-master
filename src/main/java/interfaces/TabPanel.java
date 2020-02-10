@@ -237,11 +237,8 @@ public class TabPanel extends JTabbedPane {
 			// run the methods to process the images
 			new Methods(directory, result);
 			originalImagesNumber = result.size();
-			// para cada imagen original creamos un showimages mirando cuales de las nuevas
-			// imagenes
-			// creadas contienen el nombre de la imagen original sin el sufijo
 
-			// For each iamge we create a showimage
+			// For each image we create a showimage
 			ShowAllAlgorithmImages imaCreated = null;
 			JPanel imagesPanel = new JPanel(new GridLayout(0, 2));
 
@@ -440,7 +437,7 @@ public class TabPanel extends JTabbedPane {
 			nameNoPAth = FileFuntions.namewithoutExtension(nameFile.getName());
 
 			auxName = auxName.replace(nameNoPAth, nameNoExtension + "_pred"); // changing the name of the algorithm with
-																				// he original one
+																				// the original one
 			auxFile.renameTo(new File(auxName));
 
 			auxFile = new File(nameFile.getName().replace("_pred.tiff", "_results.xls"));

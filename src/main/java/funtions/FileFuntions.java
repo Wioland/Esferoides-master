@@ -52,13 +52,8 @@ public class FileFuntions {
 		System.setProperty("plugins.dir", prop.getProp().getProperty("jarDirectory"));
 
 		new ImageJ(2);// NO_SHOW MODE
-		// imageJFrame.setVisible(false);
 
 		IJ.setForegroundColor(255, 0, 0);
-
-		// setPluginNames(new ArrayList<>());
-
-		// addMenuItem(imageJFrame.getMenuBar().getMenu(5));
 
 	}
 
@@ -172,12 +167,11 @@ public class FileFuntions {
 						if (oriFilePath.endsWith(extension)) {
 							orFile = new File(oriFilePath);
 							if (orFile.exists()) {
-								// f.renameTo(new File(f.getAbsolutePath().replace(f.getName(),
-								// orFile.getName())));
+
 								from = f.toPath();
 								to = orFile.toPath();
 								try {
-									// orFile.delete();
+
 									Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
 
 								} catch (IOException e) {
@@ -352,8 +346,6 @@ public class FileFuntions {
 			Utils.search(".*\\.tiff", new File(directory), actualImages);
 			Collections.sort(actualImages);
 
-//			images= new ShowImages(directory,tp);
-
 			checkStillExist(images, actualImages, tp); // check if the images of the buttons still exist
 
 			if (actualImages.size() != 0) { // if we have new file we add them
@@ -438,8 +430,8 @@ public class FileFuntions {
 					images.getListImagesPrev().put(imaPath, imageButton);
 					images.getLastModifyImage().put(imaPath, faux.lastModified());
 
-					// si hay tabpanels con viewImagesBigger esto se cierran
-					// se vuelve a coger la lista de tiff images para actualizarla
+					// if there is tabs with viewImagesBigger we close them and get the new list of
+					// tiff images
 					Component[] com = tp.getComponents();
 					for (Component component : com) {
 						if (component.getClass().equals(ViewImagesBigger.class)) {
@@ -571,12 +563,12 @@ public class FileFuntions {
 	}
 
 	/**
-	 * From a map return the key giving the value, there is no repeated values 
+	 * From a map return the key giving the value, there is no repeated values
 	 * 
-	 * @param <K>	Type of the key
-	 * @param <V>	Type of the value
-	 * @param map	Map<K,V> to search the key
-	 * @param value	the value we wants to know the key
+	 * @param <K>   Type of the key
+	 * @param <V>   Type of the value
+	 * @param map   Map<K,V> to search the key
+	 * @param value the value we wants to know the key
 	 * @return the key of the current value
 	 */
 	public static <K, V> K getKey(Map<K, V> map, V value) {
@@ -590,10 +582,11 @@ public class FileFuntions {
 
 	/**
 	 * 
-	 * GEts the key of a map, giving the description of a button, repeted values in the map
+	 * GEts the key of a map, giving the description of a button, repeted values in
+	 * the map
 	 * 
-	 * @param map	map to search the key
-	 * @param value	description of the button
+	 * @param map   map to search the key
+	 * @param value description of the button
 	 * @return the key of a button
 	 */
 	public static String getKeyFRomButtonDescription(Map<String, JButton> map, String value) {
@@ -612,8 +605,8 @@ public class FileFuntions {
 	/**
 	 * Moves all the files from the dirpredictions to the temporal folder
 	 * 
-	 * @param dirPredictions	current folder
-	 * @param tempoFolder		new folder 
+	 * @param dirPredictions current folder
+	 * @param tempoFolder    new folder
 	 */
 	public static void removeAllToOriginalFolder(String dirPredictions, File tempoFolder) {
 		// TODO Auto-generated method stub
@@ -627,8 +620,9 @@ public class FileFuntions {
 	}
 
 	/**
-	 * Moves the files to the predictions folder, changes the name of the selected files (Jbutton) to the original ones
-	 * checks if there is already a file with that name in that case delete it and move the other from the temporal folder.
+	 * Moves the files to the predictions folder, changes the name of the selected
+	 * files (Jbutton) to the original ones checks if there is already a file with
+	 * that name in that case delete it and move the other from the temporal folder.
 	 * 
 	 * @param dirPredictions
 	 * @param originalNewSelected
@@ -677,12 +671,12 @@ public class FileFuntions {
 	 * 
 	 * Searchs if in a folder there is original files (nd2 or tif)
 	 * 
-	 * @param folder	folder to search original files
+	 * @param folder folder to search original files
 	 * @return true if there is original images (nd2 or tif) in the folder
 	 */
 	public static boolean isOriginalImage(File folder) {
 		boolean originalIma = false;
-		// Comprobar si en la carpeta hay imagenes nd2
+		// check if the folder contains nd2 images
 		List<String> listImages = new ArrayList<String>();
 		Utils.searchDirectory(".*\\.nd2", folder, listImages);
 		if (listImages.size() != 0) {
@@ -696,11 +690,4 @@ public class FileFuntions {
 		return originalIma;
 	}
 
-//	public static List<String> getPluginNames() {
-//		return pluginNames;
-//	}
-//
-//	public static void setPluginNames(List<String> pluginNames) {
-//		FileFuntions.pluginNames = pluginNames;
-//	}
 }
