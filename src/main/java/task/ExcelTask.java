@@ -25,8 +25,8 @@ public class ExcelTask extends TimerTask {
 
 	@Override
 	public void run() {
+		
 		currentDir = Utils.getCurrentDirectory();
-		System.out.println(currentDir);
 		// If the tabPanel was delete or change to another one we kill the task
 		if (tp.getDir() != currentDir) {
 			this.cancel();

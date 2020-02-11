@@ -424,14 +424,19 @@ public class FileFuntions {
 					
 					//ImageIcon ima = new ImageIcon(imaPath);
 					ImageIcon ima = ShowTiff.showTiffToImageIcon(imaPath);
+					ima.setDescription(imaPath);
+					
+					images.getImageIcon().set(images.getListImages().indexOf(imaPath), ima);
+					
 					ima= new ImageIcon(
 							ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
 
-					images.getImageIcon().set(images.getListImages().indexOf(imaPath), ima);
+					
 
 					ima.setDescription(imaPath);
 					imageButton.setIcon(ima);
 					imageButton.repaint();
+				
 
 					images.getListImagesPrev().put(imaPath, imageButton);
 					images.getLastModifyImage().put(imaPath, faux.lastModified());
