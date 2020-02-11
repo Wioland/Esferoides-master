@@ -18,24 +18,30 @@ public class ExcelTableCreator extends JTable {
 
 	private static final long serialVersionUID = 1L;
 
-	// private File excel;
+
 	private DefaultTableModel tableModel;
 
 	public ExcelTableCreator(File excel) {
-		// this.excel = excel;
+
 		readXLSX(excel);
 
 	}
 
+	/**
+	 * Creates a table mode with the data of an excel file
+	 * 
+	 * @param file	excel file to read
+	 */
 	private void readXLSX(File file) {
 		tableModel = new DefaultTableModel();
 		try {
 			HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(file));
-			HSSFSheet sheet = wb.getSheetAt(0);// primera hoja
+			HSSFSheet sheet = wb.getSheetAt(0);//first sheet
 			Row row;
 			Cell cell;
 
-			// obtiene cantidad total de columnas con contenido
+		
+			//obtains the number of columns with data
 			int maxCol = 0;
 			for (int a = 0; a <= sheet.getLastRowNum(); a++) {
 				if (sheet.getRow(a) != null) {
@@ -45,11 +51,11 @@ public class ExcelTableCreator extends JTable {
 				}
 			}
 			if (maxCol > 0) {
-				// Añade encabezado a la tabla
+				// Adds the headings
 				for (int i = 1; i <= maxCol; i++) {
 					tableModel.addColumn("Col." + i);
 				}
-				// recorre fila por fila
+				//row by row
 				Iterator<Row> rowIterator = sheet.iterator();
 				while (rowIterator.hasNext()) {
 
@@ -61,12 +67,12 @@ public class ExcelTableCreator extends JTable {
 
 					while (cellIterator.hasNext()) {
 						cell = cellIterator.next();
-						// contenido para celdas vacias
+						// data of the blank cells
 						while (index < cell.getColumnIndex()) {
 							obj[index] = "";
 							index += 1;
 						}
-						// extrae contenido de archivo excel
+						// gets the data from the cell
 						switch (cell.getCellType()) {
 						case Cell.CELL_TYPE_BOOLEAN:
 							obj[index] = cell.getBooleanCellValue();
@@ -97,7 +103,7 @@ public class ExcelTableCreator extends JTable {
 			}
 		} catch (IOException ex) {
 			ex.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error ehile reading the excel", "Error saving",
+			JOptionPane.showMessageDialog(null, "Error while reading the excel", "Error saving",
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}

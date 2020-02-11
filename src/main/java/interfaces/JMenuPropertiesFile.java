@@ -39,6 +39,10 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 
 	}
 
+	/**
+	 * Adds the Action to perform if you try to change the directory in the
+	 * JMenuPanel And the action to add more allowed file extensions
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String menuNAme = ((JMenuItem) e.getSource()).getName();
@@ -46,6 +50,7 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 
 		GeneralView mainFrame = (GeneralView) this.getParent().getParent().getParent().getParent();
 
+		// Action to change the directory
 		if (menuNAme == "Current Directory") {
 
 			String text = "The current directory is: \n" + mainFrame.getDir() + "\n Do you what to change it?";
@@ -55,6 +60,7 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 
 				DirectoryChooser dc = new DirectoryChooser("Select new directory");
 
+				// Closed all the windows that aren't the main frame
 				Window[] s = Window.getWindows();
 				for (Window window : s) {
 					if (window.getClass().equals(AlgorithmView.class)) {
@@ -62,6 +68,7 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 					}
 				}
 
+				// Close the imageJ windows
 				if (IJ.isWindows()) {
 					IJ.run("Close All");
 					if (IJ.isResultsWindow()) {
@@ -80,10 +87,7 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 				JOptionPane.showMessageDialog(mainFrame, "Directory not changed");
 			}
 
-//			prop.changeJarDirectory(prop.getProp().getProperty("jarDirectory"), text);
-//			System.setProperty("plugins.dir", prop.getProp().getProperty("jarDirectory"));
-//			IJ.run("Refresh Menus", "");
-
+//Action to add more allowed extensions
 		} else {
 			String text = "The current extensions are: \n";
 			String ext = prop.getProp().getProperty("imageFilesExtensions");
@@ -119,6 +123,11 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 		}
 	}
 
+	/**
+	 * GEts the allowed file extension from the properties file
+	 * 
+	 * @return the list of allowed file extensions
+	 */
 	public static List<String> getExtensions() {
 		List<String> list = null;
 		PropertiesFileFuntions prop = new PropertiesFileFuntions();

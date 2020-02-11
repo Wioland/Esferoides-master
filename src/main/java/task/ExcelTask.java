@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import funtions.ExcelActions;
+import funtions.Utils;
 import interfaces.TabPanel;
 
 public class ExcelTask extends TimerTask {
@@ -13,6 +14,7 @@ public class ExcelTask extends TimerTask {
 	private Integer counter;
 	private TabPanel tp;
 	private String dir;
+	private String currentDir;
 
 	public ExcelTask(TabPanel tabpane, String directory) {
 		counter = 0;
@@ -23,17 +25,26 @@ public class ExcelTask extends TimerTask {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		LOGGER.log(Level.INFO, "Numero de ejecución " + counter + " el directorio es "+ dir + "     tp dir "+tp.getDir());
-		counter++;
-
-		ExcelActions.checkAllExcelTab(tp, dir);
-
-		if (tp.getParent().getParent() == null) {
+		
+		currentDir = Utils.getCurrentDirectory();
+		// If the tabPanel was delete or change to another one we kill the task
+		if (tp.getDir() != currentDir) {
 			this.cancel();
 
+		}else {
+			// For showing in the console how many times the task has been performed
+			LOGGER.log(Level.INFO,
+					"Numero de ejecución " + counter + " el directorio es " + dir);
+			counter++;
+
+			// Checks if the content of the excels in the tabs has change
+			ExcelActions.checkAllExcelTab(tp, dir);
 		}
 		
+		
+
+	
+
 	}
 
 }

@@ -28,14 +28,16 @@ public class ShowImages extends JPanel {
 	private List<String> listImages;
 	private Map<String, JButton> listImagesPrev;
 	private Map<String, Long> lastModifyImage;
-
 	private List<ImageIcon> imageIcon;
 
-	/*
-	 * Mostrar las imagenes tiff como botones
+	/**
+	 * For showing the tiff images like buttons
+	 * 
+	 * @param directory the current directory path
+	 * @param tp        the container where the buttons are going to be shown
 	 */
 	public ShowImages(String directory, Component tp) {
-
+//we put them in one column
 		this.setLayout(new GridLayout(0, 1));
 
 		listImages = new ArrayList<String>();
@@ -47,8 +49,16 @@ public class ShowImages extends JPanel {
 
 	}
 
+	/**
+	 * For showing the tiff images like buttons
+	 * 
+	 * @param tp           the tabpanel in which the buttons are going to be shown
+	 * @param images       the images we want to show in the buttons
+	 * @param originalName the original name of the group of files (the name of the
+	 *                     nd2 or tiff file)
+	 */
 	public ShowImages(TabPanel tp, List<String> images, String originalName) {
-
+//we put then in two columns
 		this.setLayout(new GridLayout(0, 2));
 
 		listImages = new ArrayList<String>();
@@ -95,8 +105,16 @@ public class ShowImages extends JPanel {
 
 	// METHOS
 
+	/**
+	 * Creates the buttons to show the images of the folder given
+	 * 
+	 * @param folder The location of the images
+	 * @param tp     the place we are going to show the images
+	 */
 	public void createImageButton(File folder, Component tp) {
 
+		// We checks if the tiff files are in the predictions folder, if not we ask to
+		// move it there
 		listImages = FileFuntions.checkTiffNotPredictionsFolder(folder);
 
 		Collections.sort(listImages);
@@ -106,12 +124,12 @@ public class ShowImages extends JPanel {
 		File faux;
 
 		for (String name : listImages) {
-			// convertir a formato que se pueda ver
+			// we transform the images to imageIcon for showing them in the interface
 			ImageIcon image = ShowTiff.showTiffToImageIcon(name);
 			image.setDescription(name);
 
-			// aniadir a button
-			// Obtiene un icono en escala con las dimensiones especificadas
+			// add the button
+			// Get a icon with the specific dimension
 			iconoEscala = new ImageIcon(image.getImage().getScaledInstance(700, 700, java.awt.Image.SCALE_DEFAULT));
 			imageView = new JButton(iconoEscala);
 			imageView.setIcon(iconoEscala);
@@ -119,20 +137,23 @@ public class ShowImages extends JPanel {
 
 			imageIcon.add(image);
 
+			// Adds the mouse click actions of the button
 			imageView.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					AlgorithmView al = null;
 					TabPanel tap = null;
 
+					// if the button is inside a tab panel we create a new tab
 					if (tp.getClass().equals(TabPanel.class)) {
 						tap = (TabPanel) tp;
 						String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
 						if (tap != null && tap.indexOfTab(nombreTab) == -1) {
 
-							new ViewImagesBigger(image, imageIcon, tap, false);
+							new ViewImagesBigger(imageIcon.get(listImages.indexOf(name)), imageIcon, tap, false);
 
 						}
 					} else {
+						// if we are in an algorithm view we change create a comparer
 						if (tp.getClass().equals(AlgorithmView.class)) {
 							al = (AlgorithmView) tp;
 							al.mouseClick(e, image);
@@ -143,7 +164,7 @@ public class ShowImages extends JPanel {
 			});
 
 			listImagesPrev.put(name, imageView);
-
+//save the last time the file was modify
 			faux = new File(name);
 			lastModifyImage.put(name, faux.lastModified());
 
@@ -151,6 +172,13 @@ public class ShowImages extends JPanel {
 		}
 	}
 
+	/**
+	 * Creates the buttons of the list of images given
+	 * 
+	 * @param tp           the tap panel to show the buttons
+	 * @param images       the list of images to show
+	 * @param origianlName the name of the nd2 or tif file without extension
+	 */
 	public void createImageButton(TabPanel tp, List<String> images, String origianlName) {
 
 		listImages = images;
@@ -159,21 +187,20 @@ public class ShowImages extends JPanel {
 		imageIcon = new ArrayList<ImageIcon>();
 		ImageIcon iconoEscala;
 		JButton imageView;
-		// File faux;
 
 		for (String name : listImages) {
-			// convertir a formato que se pueda ver
+			// change to a imageIcon the tiff to show
 			ImageIcon image = ShowTiff.showTiffToImageIcon(name);
 			image.setDescription(name);
 
-			// aniadir a button
-			// Obtiene un icono en escala con las dimensiones especificadas
+			// add the button
+			// Get a icon with the specific dimension
 			iconoEscala = new ImageIcon(image.getImage().getScaledInstance(300, 300, java.awt.Image.SCALE_DEFAULT));
 			imageView = new JButton(iconoEscala);
 			imageView.setIcon(iconoEscala);
 			imageView.setName(name);
 
-			// these next two lines do the magic..
+			// we put the button to opaque in order to see the background if we changed it
 			imageView.setContentAreaFilled(false);
 			imageView.setOpaque(true);
 			imageIcon.add(image);
@@ -186,20 +213,25 @@ public class ShowImages extends JPanel {
 
 			listImagesPrev.put(name, imageView);
 
-			// Poner a la hora de hacer definitivo el guardado
-//			faux = new File(name);
-//			lastModifyImage.put(name, faux.lastModified());
-
 			this.add(imageView);
 		}
 	}
 
+	/**
+	 * Adds the actions to the buttons to select or open a comparer
+	 * 
+	 * @param e            mouse even
+	 * @param tp           the tab panel where the images are
+	 * @param image        the image of the button clicked
+	 * @param origianlName the name of the nd2 or tif image without extension
+	 */
 	private void clickImageButtonAlgoritm(MouseEvent e, TabPanel tp, ImageIcon image, String origianlName) {
 		if (e.getClickCount() == 2 && !e.isConsumed()) {
 			e.consume();
 
-			// si solo se realiza un click se cambia la seleccionada, se se hacen dos se
-			// habre un comparadar si se puede
+			// If only one click is performed we changed the selected image, if two we
+			// create a comparer if we can because there is no other open with the same
+			// image
 			String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
 			if (tp != null && tp.indexOfTab(nombreTab) == -1) {
 				int index = -1;
@@ -214,19 +246,17 @@ public class ShowImages extends JPanel {
 				}
 
 				if (index == -1) {
-					// si no hay ningun tab que contenga el nombre del original de este tipo de
-					// imagen se crea un comparador
+					// if there is no tab with the name of the original image we create a comparer
 					new ViewImagesBigger(image, imageIcon, tp, true);
 				} else {
-					// se pone el foco a al tab de ese tipo de imagenes
+					// if there is already a tab for this image we gave it the focus
 					tp.setSelectedIndex(index);
 				}
 			}
 
 		}
 
-		// se añade o se sustituye la imagen definitiva a guardar de ese tipo por la
-		// seleccionada actual
+		// add or exchange the final image of this type for the selected one
 		JButton oldSelected = tp.getOriginalNewSelected().get(origianlName);
 		if (oldSelected != null) {
 			oldSelected.setBackground(null);

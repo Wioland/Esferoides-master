@@ -1,6 +1,7 @@
 package funtions;
 
 import java.awt.Polygon;
+import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,12 +18,18 @@ import ij.plugin.filter.Analyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
+import interfaces.GeneralView;
 
 public class Utils {
 
-	// Method to search the list of files that satisfies a pattern in a folder. The
-	// list of files
-	// is stored in the result list.
+	/**
+	 * Method to search the list of files that satisfies a pattern in a folder and
+	 * it child folders. The list of files is stored in the result list.
+	 * 
+	 * @param pattern pattern that the files must have
+	 * @param folder  folder to look for the files
+	 * @param result  array with the path of the files that have the pattern
+	 */
 	public static void search(final String pattern, final File folder, List<String> result) {
 		for (final File f : folder.listFiles()) {
 
@@ -39,9 +46,14 @@ public class Utils {
 		}
 	}
 
-	// Method to search the list of files that satisfies a pattern in a folder. The
-	// list of files
-	// is stored in the result list.
+	/**
+	 * Method to search the list of files that satisfies a pattern in a folder. The
+	 * list of files is stored in the result list.
+	 * 
+	 * @param pattern pattern that the files must have
+	 * @param folder  folder to look for the files
+	 * @param result  array with the path of the files that have the pattern
+	 */
 	public static void searchDirectory(final String pattern, final File folder, List<String> result) {
 		for (final File f : folder.listFiles()) {
 
@@ -54,19 +66,27 @@ public class Utils {
 		}
 	}
 
-	// Method to draw the results stored in the roi manager into the image, and then
-	// save the
-	// image in a given directory. Since we know that there is only one esferoide
-	// per image, we
-	// only keep the ROI with the biggest area stored in the ROI Manager.
+	/**
+	 * 
+	 * Method to draw the results stored in the roi manager into the image, and then
+	 * save the image in a given directory. Since we know that there is only one
+	 * esferoide per image, we only keep the ROI with the biggest area stored in the
+	 * ROI Manager.
+	 * 
+	 * @param dir       path of the directory to save the files
+	 * @param name      name of the image
+	 * @param imp1      image in witch the roi was detected
+	 * @param rm        roi manager that contains the information of the roi image
+	 * @param goodRows  row of the result table we wants to save
+	 * @param nameClass name of the algorithm used to creates the roi
+	 * @param temp      true if we are creating files in the temporal folder
+	 * @throws IOException
+	 */
 	public static void showResultsAndSave(String dir, String name, ImagePlus imp1, RoiManager rm,
 			ArrayList<Integer> goodRows, String nameClass, boolean temp) throws IOException {
 		IJ.run(imp1, "RGB Color", "");
 		File folder;
 
-		// String name = imp1.getTitle();
-		// FileInfo f = imp1.getFileInfo();
-		// dir=dir.replace(name, "");
 		name = name.substring(0, name.lastIndexOf("."));
 		name = name.replace(dir, "");
 		folder = new File(dir + "predictions");
@@ -81,7 +101,7 @@ public class Utils {
 		}
 
 		ImageStatistics stats = null;
-		double[] vFeret;// = 0;
+		double[] vFeret;
 		double perimeter = 0;
 		if (rm != null) {
 			rm.setVisible(false);
@@ -109,7 +129,7 @@ public class Utils {
 				// compute the statistics (without calibrate)
 				stats = roi[0].getStatistics();
 
-				vFeret = roi[0].getFeretValues();// .getFeretsDiameter();
+				vFeret = roi[0].getFeretValues();
 				perimeter = roi[0].getLength();
 				Calibration cal = imp1.getCalibration();
 				double pw, ph;
@@ -178,8 +198,14 @@ public class Utils {
 
 	}
 
-	// Method to obtain the area from a polygon. Probably, there is a most direct
-	// method to do this.
+	/**
+	 * 
+	 * Method to obtain the area from a polygon. Probably, there is a most direct
+	 * method to do this.
+	 * 
+	 * @param p the polygon we want to know the area
+	 * @return the area of the poligon
+	 */
 	private static final double getArea(Polygon p) {
 		if (p == null)
 			return Double.NaN;
@@ -194,9 +220,12 @@ public class Utils {
 		return (Math.abs(carea / 2.0));
 	}
 
-	// Method to keep the ROI with the biggest area stored in the ROIManager, the
-	// rest of ROIs are
-	// deleted.
+	/**
+	 * Method to keep the ROI with the biggest area stored in the ROIManager, the
+	 * rest of ROIs are deleted.
+	 * 
+	 * @param rm roi manager with all the measures
+	 */
 	private static void keepBiggestROI(RoiManager rm) {
 
 		Roi[] rois = rm.getRoisAsArray();
@@ -221,6 +250,14 @@ public class Utils {
 
 	}
 
+	/**
+	 * Get the files from a directory with a given extension
+	 * 
+	 * @param format the extension of the file
+	 * @param result array with the path of the files with that extension in the
+	 *               folder
+	 * @return the path of the directory
+	 */
 	public static String getByFormat(String format, List<String> result) {
 		// We ask the user for a directory with nd2 images.
 
@@ -240,6 +277,13 @@ public class Utils {
 
 	}
 
+	/**
+	 * Counts the pixels below the threshold
+	 * 
+	 * @param imp1      imagePlus to process
+	 * @param threshold threshold
+	 * @return number of pixels under the threshold
+	 */
 	public static int countBelowThreshold(ImagePlus imp1, int threshold) {
 
 		ImageProcessor ip = imp1.getProcessor();
@@ -254,15 +298,22 @@ public class Utils {
 
 	}
 
+	/**
+	 * Counts between the threshold
+	 * 
+	 * @param imp1       imagePlus to process
+	 * @param threshold1 upper threshold
+	 * @param threshold2 under threshold
+	 * @param num
+	 * @return
+	 */
 	public static boolean countBetweenThresholdOver(ImagePlus imp1, int threshold1, int threshold2, int num) {
 
 		ImageProcessor ip = imp1.getProcessor();
 		int[] histogram = ip.getHistogram(256);
 		ImageStatistics is = ip.getStatistics();
 		double min = is.min;
-//		System.out.println(min);
 		double max = is.max;
-//		System.out.println(max);
 		double range = (max - min) / 256;
 
 		int i = 0;
@@ -279,11 +330,24 @@ public class Utils {
 			}
 			i++;
 			pos = pos + range;
-			// System.out.println(pos);
 		}
 
 		return false;
 
+	}
+
+	public static String getCurrentDirectory() {
+		
+		Window[] openWindows= Window.getWindows();
+		for (Window window : openWindows) {
+			if(window.getClass().equals(GeneralView.class)) {
+				return ((GeneralView) window).getDir();
+			}
+		}
+		
+		
+		return "";
+		
 	}
 
 }

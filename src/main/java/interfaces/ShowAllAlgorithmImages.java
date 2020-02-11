@@ -26,15 +26,17 @@ public class ShowAllAlgorithmImages extends JPanel {
 
 	public ShowAllAlgorithmImages(String originalImage, TabPanel tp) {
 
+		// We wants to search in the temporal folder
 		String directory = originalImage.replace((new File(originalImage).getName()), "temporal");
 
-		// para cada imagen original creamos un showimages mirando cuales de las nuevas
-		// imagenes
-		// creadas contienen el nombre de la imagen original sin el sufijo
+		// For each original image we create a ShowImages searching for the images that
+		// contains the name of the original image without the extension
 		List<String> aux = new ArrayList<String>();
-		// JPanel labelPanel = new JPanel();
 		JLabel originalImageLAbelName = new JLabel();
 
+		// For each image we create a label with it name without extension.
+		// We put it in bold arial, the background in white and the label panel with a
+		// black border
 		String imageName = FileFuntions.namewithoutExtension(originalImage);
 		originalImageLAbelName.setText(imageName);
 		Font newFont = new Font("Arial", Font.BOLD, 12);
@@ -60,8 +62,6 @@ public class ShowAllAlgorithmImages extends JPanel {
 		constraints.gridx = 0;
 		constraints.gridy = 0;
 
-//		labelPanel.add(originalImageLAbelName);
-//		this.add(labelPanel,constraints);
 		this.add(originalImageLAbelName, constraints);
 
 		constraints.weightx = 1;
@@ -72,7 +72,6 @@ public class ShowAllAlgorithmImages extends JPanel {
 		JScrollPane s = new JScrollPane(sI);
 
 		this.add(s, constraints);
-		// this.add(sI,constraints);
 
 	}
 

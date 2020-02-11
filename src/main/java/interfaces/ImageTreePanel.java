@@ -6,7 +6,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -40,7 +39,7 @@ public class ImageTreePanel extends JSplitPane {
 		setDividerSize(1);
 		setContinuousLayout(true);
 
-		// se crea el tree
+		//WE create the tree of the directory
 		JPanel p = new JPanel();
 		createTree();
 		p.add(tree);// tree
@@ -48,11 +47,9 @@ public class ImageTreePanel extends JSplitPane {
 
 		folderView = new TabPanel(directory, selectAlgo);
 
-		// se crean los scrolls
+		JScrollPane s2 = new JScrollPane(p); // Add the tree
 
-		JScrollPane s2 = new JScrollPane(p); // se le aniade el tree
-
-		// propiedades del jsplitpane
+		// Properties of the jsplitpane
 		this.setRightComponent(folderView);
 		this.setLeftComponent(s2);
 		this.setOrientation(SwingConstants.VERTICAL);
@@ -60,6 +57,7 @@ public class ImageTreePanel extends JSplitPane {
 
 	}
 
+	// GETTERS AND SETTERS
 	public TabPanel getFolderView() {
 		return folderView;
 	}
@@ -68,33 +66,28 @@ public class ImageTreePanel extends JSplitPane {
 		this.folderView = folderView;
 	}
 
-	// CREAR EL tree DE DIRECTORIOS
+//METHODS
 
-	/*
-	 * Funcion que crea el tree del directorio seleccionado
+	/**
+	 * Function that creates the tree directory from the directory given
 	 */
 	private void createTree() {
 
 		File folder = new File(dir);
 
-		// creamos las carpeta raiz del directorio
+		// we create de root folder of the directory
 		DefaultMutableTreeNode rootCarpet = new DefaultMutableTreeNode(dir);
-		// System.out.println("la carpeta raiz va a ser " + dir);
 
-		// Definimos el modelo donde se agregaran los nodos
+		// We defiene the model in which add the nodes
 		DefaultTreeModel modelo = new DefaultTreeModel(rootCarpet);
 
-		// agregamos el modelo al tree, donde previamente establecimos la raiz
+		// add the model to the tree, previously adding the root
 		tree = new JTree(modelo);
 
-		// definimos los eventos
-		// tree.getSelectionModel().addTreeSelectionListener(this);
-
-		// creamos el resto de nodos del tree
+		// we create the rest of nodes
 		addChildTree(rootCarpet, folder, modelo);
 
-		// aniadimos el evento a realizar cuando se haga doble click en uno de los
-		// componentes de l arbol
+		// we add the event to perform double click in a tree node
 		tree.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
 				doubleClickAction(me);
@@ -102,6 +95,13 @@ public class ImageTreePanel extends JSplitPane {
 		});
 	}
 
+	/**
+	 * Action to perform when a click occurred in a tree node. If it is a folder : -
+	 * one click shows in the tree it content - Double click tries to change the
+	 * current directory If image: -opens it with imageJ
+	 * 
+	 * @param me mouse event
+	 */
 	private void doubleClickAction(MouseEvent me) {
 		if (me.getClickCount() == 2 && !me.isConsumed()) {
 			me.consume();
@@ -109,33 +109,32 @@ public class ImageTreePanel extends JSplitPane {
 			if (tp != null) {
 				String path = FileFuntions.getPathSelectedTreeFile(tp);
 				ij.WindowManager.closeAllWindows();
-				// System.out.println("Path de treepath " + tp.toString());
 
 				if (tp.getPath().length > 0) {
 					File fileSelected = new File(path);
 
 					if (fileSelected.isFile()) {
 
-						// hacer que se abran en imagej
+						// open the imageJ
 
 						String roiPath = RoiFuntions.getRoiPathPredicctions(path);
 						RoiFuntions.showOriginalFilePlusRoi(path, roiPath);
 
 					} else {
-						if (!path.equals(dir)) { // si no es el directorio en el que nos encontramos que
-							if (selectAlgo) { // si el directorio no es uno de deteccion de esferoides
+						if (!path.equals(dir)) { // if it isn't the current directory
+							if (selectAlgo) { // if the directory isn't one of detecting esferoid
 								int r = JOptionPane.showConfirmDialog(this,
 										"The current images will be deleted if you change the current directory. Do you want to change the directory?",
 										"WARNING", JOptionPane.YES_NO_OPTION);
-								if (r == 0) { // se borra la carpeta temporal creada con las imagenes de los distintos
-												// algoritmos
+								if (r == 0) { // we delete the temporal folder with the files created with the different
+												// algorithms
 
 									if (dir.endsWith(File.separator)) {
 										FileFuntions.deleteFolder(new File(dir + "temporal"));
 									} else {
 										FileFuntions.deleteFolder(new File(dir + File.separator + "temporal"));
 									}
-									// se cambia de directory
+									// we change the directory
 									detectDirContentChange(path);
 								} else {
 									JOptionPane.showMessageDialog(this,
@@ -156,6 +155,11 @@ public class ImageTreePanel extends JSplitPane {
 		}
 	}
 
+	/**
+	 * Changed the directory to another one
+	 * 
+	 * @param path path of the directory to change
+	 */
 	public void detectDirContentChange(String path) {
 		File folder = new File(path);
 		List<String> resultTif = new ArrayList<String>();
@@ -207,9 +211,19 @@ public class ImageTreePanel extends JSplitPane {
 		}
 	}
 
+	/**
+	 * If the directory doesn't contain tiff files, but contains original files (nd2
+	 * or tiff) asks to detect the esferoid
+	 * 
+	 * @param result        list with the path of the tiff files
+	 * @param extensionFile the extension/s of files the folder contains
+	 * @param oldPath       the path of the old directory
+	 * @param switchFolder  boolean to know id the switch action was executed
+	 * @return true if changed the folder false otherwise
+	 */
 	public boolean changeDirActions(List<String> result, String extensionFile, String oldPath, boolean switchFolder) {
 
-		if (result.size() == 0) { // si no tiene imagenes tiff, es decir no se han hecho predicciones
+		if (result.size() == 0) { // if there is no tiff files, there is no predictions done
 
 			int n = JOptionPane.showConfirmDialog(this,
 					"The folder contains " + extensionFile + " files do you want to use an Algorithm?",
@@ -217,38 +231,50 @@ public class ImageTreePanel extends JSplitPane {
 
 			if (n == 0) {
 				Main.createGeneralViewOrNot(this, this.dir, true);
-				// SelectAlgoritm sAl = new SelectAlgoritm(dir, this);
 			} else {
 				JOptionPane.showMessageDialog(this, "Nothing to be done. Not changing to the selected folder");
 				this.dir = oldPath;
 				switchFolder = false;
 			}
 
-		} else {// Mostrar los tiff
+		} else {
 
 			repaintTabPanel(this.selectAlgo);
 		}
 		return switchFolder;
 	}
 
-	public JFrame getJFrameGeneral() {
-		return (JFrame) this.getParent().getParent().getParent().getParent();
+	/**
+	 * Gets the main frame that contains the imageTRee
+	 * 
+	 * @return the main frame
+	 */
+	public GeneralView getJFrameGeneral() {
+		return (GeneralView) this.getParent().getParent().getParent().getParent();
 	}
 
+	/**
+	 * Repaints the content of the directory (the tab)
+	 * 
+	 * @param selectAlgo true if you are detecting esferoids
+	 */
 	public void repaintTabPanel(boolean selectAlgo) {
 
 		this.selectAlgo = selectAlgo;
 		folderView = new TabPanel(this.dir, selectAlgo);
-		// se crean los scrolls
-		// s.setViewportView(folderView);
 		this.setRightComponent(folderView);
 		folderView.repaint();
+		this.getJFrameGeneral().setDir(this.dir);
 
 	}
 
-	/*
-	 * Funcion que aniade los nodos al tree
+	/**
+	 * Function to add the nodes to the tree Only shows the folders that contains
+	 * files with the extensions given except from tiff
 	 * 
+	 * @param parentNode parent node
+	 * @param parent     file in the node parent
+	 * @param modelo     tree model
 	 */
 	private void addChildTree(DefaultMutableTreeNode parentNode, File parent, DefaultTreeModel modelo) {
 

@@ -1,7 +1,6 @@
 package interfaces;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -17,11 +16,9 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
 
 import esferoides.Methods;
 import funtions.FileFuntions;
@@ -39,10 +36,9 @@ public class AlgorithmView extends JFrame {
 	private ShowImages panelImage;
 	private ViewImagesBigger vi;
 	private JPanel jSp;
-	private ViewImagesBigger imagesComparer;
 
 	public AlgorithmView(File image, String dir) {
-		// Parametros ventana
+		// Window parameters
 
 		setExtendedState(MAXIMIZED_BOTH);
 		setTitle("Algorithm view selecter");
@@ -63,7 +59,6 @@ public class AlgorithmView extends JFrame {
 		this.image = image;
 		this.directory = dir;
 		OurProgressBar pb = new OurProgressBar(this);
-		// directory=dir+"temporal"+File.separator;
 
 		String path = RoiFuntions.getOriginalFilePathFromPredictions(this.image.getAbsolutePath());
 
@@ -114,9 +109,7 @@ public class AlgorithmView extends JFrame {
 		constraints.gridy = 0;
 		jSp.add(panelButtons, constraints);
 
-		// jSp.setDividerLocation(1100 + jSp.getInsets().left);
-
-		// aniadimos las componentes al jframe
+		// add the components to the Jframe
 		pb.setVisible(false);
 		pb.dispose();
 		jSp.setVisible(true);
@@ -124,10 +117,10 @@ public class AlgorithmView extends JFrame {
 		jSp.repaint();
 
 		IJ.run("Close All");
-		// pack();
 
 	}
 
+	// GETTERS Y SETTERS
 	public String getDirectory() {
 		return directory;
 	}
@@ -152,6 +145,16 @@ public class AlgorithmView extends JFrame {
 		this.selectedBu = selectedBu;
 	}
 
+//METHODS
+
+	/**
+	 * Action to perform when a button with an image is clicked. -One click select
+	 * the button and makes it the selected -Two opens a comparer in the JFRame to
+	 * compare with the image in predictions
+	 * 
+	 * @param me        Mouse event
+	 * @param imageIcon ImageIco in the button clicked
+	 */
 	public void mouseClick(MouseEvent me, ImageIcon imageIcon) {
 		if (!me.isConsumed()) {
 			switch (me.getClickCount()) {
@@ -165,7 +168,8 @@ public class AlgorithmView extends JFrame {
 					vi = new ViewImagesBigger(imageIcon, imageIcoList, this, false);
 					addComparer(vi);
 				} else {
-					vi.getLabelImage().setIcon(imageIcon);
+					vi.getJPComparer().setLabelImageIcon(imageIcon);
+
 				}
 
 				break;
@@ -178,68 +182,61 @@ public class AlgorithmView extends JFrame {
 
 	}
 
+	/**
+	 * Adds the comparer interface to the JFRame and deletes the JScrollpanel with
+	 * all the images
+	 * 
+	 * @param vi the JPanel with the comparer interface
+	 */
 	public void addComparer(ViewImagesBigger vi) {
 
-		this.imagesComparer=vi;
-		
+		this.vi = vi;
+
 		JPanel JPaneDad = (JPanel) selectedBu.getParent().getParent().getParent().getParent();
 		GridBagConstraints constraints = new GridBagConstraints();
 
-		JPanel panelLabels = new JPanel(new GridLayout(0, 2));
-
-		JLabel originaText = new JLabel("Original image", SwingConstants.CENTER);
-		originaText.setFont(new Font("Arial", Font.BOLD, 12));
-
-		JLabel newImageText = new JLabel("New detected esferoid image", SwingConstants.CENTER);
-		newImageText.setFont(new Font("Arial", Font.BOLD, 12));
-
-		panelLabels.add(originaText);
-		panelLabels.add(newImageText);
-
-		JPanel panelButtons = (JPanel) jSp.getComponent(1);
-		jSp.remove(panelButtons);
-
-		constraints.fill = GridBagConstraints.BOTH;
-		constraints.weightx = 0;
-		constraints.weighty = 0;
-		constraints.gridx = 1;
-		constraints.gridy = 1;
-		jSp.add(panelButtons, constraints);
-
 		JScrollPane scrollIma = (JScrollPane) JPaneDad.getComponentAt(1, 0);
 		scrollIma.setVisible(false);
-
-		constraints.weightx = 0;
-		constraints.weighty = 0;
-
-		constraints.gridx = 0;
-		constraints.gridy = 0;
-
 		JPaneDad.remove(scrollIma);
-		JPaneDad.add(panelLabels, constraints);
 
 		constraints.fill = GridBagConstraints.BOTH;
 		constraints.weightx = 1;
 		constraints.weighty = 1;
 
-		constraints.gridy = 1;
 		constraints.gridx = 0;
+		constraints.gridy = 0;
 
-		JPaneDad.add(vi, constraints);
+		JPaneDad.add(vi.getJPComparer(), constraints);
 		JPaneDad.updateUI();
 
 	}
 
+	/**
+	 * 
+	 * Gets the button associated with the given image
+	 * 
+	 * @param imagPath image path
+	 * @return A JButton associated with the image given
+	 */
 	public JButton getButtonFromImage(String imagPath) {
 
 		return panelImage.getListImagesPrev().get(imagPath);
 
 	}
 
+	/**
+	 * adds the action to perform when the save button is clicked adds the action to
+	 * perform when the modify button is clicked
+	 * 
+	 * @param saveImageBt       The button to add the save action
+	 * @param modifiSelectionBu the button to add the modify action
+	 * @param pIma              panel with the buttons with the images to select
+	 */
 	private void addButtonListener(JButton saveImageBt, JButton modifiSelectionBu, JPanel pIma) {
 
+		// SAve action
 		saveImageBt.addActionListener(new ActionListener() {
-			// si se genera el click guarda la imagen seleccionada
+			// if click saves the selected image
 			public void actionPerformed(ActionEvent e) {
 				if (selectedBu != null) {
 
@@ -252,8 +249,9 @@ public class AlgorithmView extends JFrame {
 
 		});
 
+		// Modify action
 		modifiSelectionBu.addActionListener(new ActionListener() {
-			// si se genera el click se lleva a otra pestaña para modificar la seleccion
+			// if click new imageJ window to modify the roi selection
 			public void actionPerformed(ActionEvent e) {
 				if (selectedBu != null) {
 
@@ -269,18 +267,26 @@ public class AlgorithmView extends JFrame {
 
 	}
 
+	/**
+	 * SAves the image given in predictions folder, changing it with the current one
+	 * already in the folder predictions if the comparer is open exchange the
+	 * original image with this new one
+	 * 
+	 * @param filePath
+	 */
 	private void SaveImageAndDelete(String filePath) {
 		File ima = new File(filePath);
 		FileFuntions.saveSelectedImage(ima, this.directory + "predictions");
-	
-		vi.getOriginalImaLb().setIcon(vi.getLabelImage().getIcon());
-	
-		
-		
-		// FileFuntions.deleteTemporalFolder(new File(this.directory + "temporal"));
-		// this.dispose();
+
+		vi.getJPComparer().setOriginalImaLbIcon(vi.getJPComparer().getLabelImageIcon());
+
 	}
 
+	/**
+	 * Modufy the roi selection
+	 * 
+	 * @param filename the image in with you modify the roi selection
+	 */
 	private void modifySeclection(String filename) {
 		String fileRoi = filename.replace("_pred.tiff", ".zip");
 

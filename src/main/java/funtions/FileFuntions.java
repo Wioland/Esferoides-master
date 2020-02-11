@@ -33,6 +33,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import ij.IJ;
 import ij.ImageJ;
+import interfaces.JPanelComparer;
 import interfaces.ShowImages;
 import interfaces.TabPanel;
 import interfaces.ViewImagesBigger;
@@ -52,13 +53,8 @@ public class FileFuntions {
 		System.setProperty("plugins.dir", prop.getProp().getProperty("jarDirectory"));
 
 		new ImageJ(2);// NO_SHOW MODE
-		// imageJFrame.setVisible(false);
 
 		IJ.setForegroundColor(255, 0, 0);
-
-		// setPluginNames(new ArrayList<>());
-
-		// addMenuItem(imageJFrame.getMenuBar().getMenu(5));
 
 	}
 
@@ -113,24 +109,25 @@ public class FileFuntions {
 	}
 
 	/**
-	 * Save the files from the temporal folder to the prediction folder exchanging
+	 * * Save the files from the temporal folder to the prediction folder exchanging
 	 * the original files in the prediction folder with the temporal ones We save
 	 * the tiff and roi/zip and change the corresponding row on the result excel
 	 * 
 	 * @param selectedFile The temporal file to save
 	 * @param saveDirPath
+	 * @return true if the file is save false otherwise
 	 */
-	public static void saveSelectedImage(File selectedFile, String saveDirPath) {
+	public static boolean saveSelectedImage(File selectedFile, String saveDirPath) {
 
 		// We look for the tiff and zip files with the same as the selected file
 		// We take the files and take out he algorithm name
 		// We exchange the files in the saveDir
-
+		boolean b = false;
 		int resp = JOptionPane.showConfirmDialog(null,
 				"This action will delete the current image in predition folder. Are you sure you want to proceed to save?",
 				"Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 		if (resp == 0) { // if yes
-
+			b = true;
 			JOptionPane.showMessageDialog(null, "Saving the images");
 
 			List<String> temporalFiles = new ArrayList<String>();
@@ -171,12 +168,11 @@ public class FileFuntions {
 						if (oriFilePath.endsWith(extension)) {
 							orFile = new File(oriFilePath);
 							if (orFile.exists()) {
-								// f.renameTo(new File(f.getAbsolutePath().replace(f.getName(),
-								// orFile.getName())));
+
 								from = f.toPath();
 								to = orFile.toPath();
 								try {
-									// orFile.delete();
+
 									Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
 
 								} catch (IOException e) {
@@ -226,6 +222,7 @@ public class FileFuntions {
 
 			JOptionPane.showMessageDialog(null, "Save files in prediccion folder succed");
 		}
+		return b;
 
 	}
 
@@ -349,8 +346,6 @@ public class FileFuntions {
 			List<String> actualImages = new ArrayList<String>();
 			Utils.search(".*\\.tiff", new File(directory), actualImages);
 			Collections.sort(actualImages);
-			
-//			images= new ShowImages(directory,tp);
 
 			checkStillExist(images, actualImages, tp); // check if the images of the buttons still exist
 
@@ -359,7 +354,7 @@ public class FileFuntions {
 				ImageIcon iconoEscala;
 				JButton imageView;
 				File faux;
-				int height=tp.getLens().actualImageHeight();
+				int height = tp.getLens().actualImageHeight();
 
 				for (String name : actualImages) {
 					// convert the format to show the image
@@ -398,10 +393,9 @@ public class FileFuntions {
 					images.add(imageView);
 				}
 			}
-			
+
 			images.repaint();
-	
-			
+
 		}
 	}
 
@@ -418,6 +412,7 @@ public class FileFuntions {
 
 			String imaPath = imageModify.next();
 			File faux = new File(imaPath);
+			int height = tp.getLens().actualImageHeight();
 
 			if (faux.exists()) { // if it still exist we look if it has been modify
 				if (faux.lastModified() != images.getLastModifyImage().get(imaPath)) {
@@ -426,47 +421,52 @@ public class FileFuntions {
 							JOptionPane.WARNING_MESSAGE);
 
 					JButton imageButton = images.getListImagesPrev().get(imaPath);
-					ImageIcon ima = new ImageIcon(imaPath);
+					
+					//ImageIcon ima = new ImageIcon(imaPath);
+					ImageIcon ima = ShowTiff.showTiffToImageIcon(imaPath);
+					ima.setDescription(imaPath);
 					
 					images.getImageIcon().set(images.getListImages().indexOf(imaPath), ima);
 					
+					ima= new ImageIcon(
+							ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
+
+					
+
 					ima.setDescription(imaPath);
 					imageButton.setIcon(ima);
 					imageButton.repaint();
+				
 
 					images.getListImagesPrev().put(imaPath, imageButton);
 					images.getLastModifyImage().put(imaPath, faux.lastModified());
-					
-					//si hay tabpanels con viewImagesBigger esto se cierran 
-					//se vuelve a coger la lista de tiff images para actualizarla
+
+					// if there is tabs with viewImagesBigger we close them and get the new list of
+					// tiff images
 					Component[] com = tp.getComponents();
 					for (Component component : com) {
-						if(component.getClass().equals(ViewImagesBigger.class)) {
+						if (component.getClass().equals(JPanelComparer.class)) {
 							tp.remove(component);
 						}
 					}
-					
 
 				}
 			} else {// if it doesn´t exist we delete it from the map
-				
+
 				JButton deleteImage = images.getListImagesPrev().get(imaPath);
 				images.remove(deleteImage);
-				
-				
+
 				images.getImageIcon().remove(images.getListImages().indexOf(imaPath));
 				images.getListImages().remove(imaPath);
 				images.getListImagesPrev().remove(imaPath);
 
-				
-				
 				imageModify.remove();
 
 			}
 			actualImages.remove(imaPath);
 
 		}
-		
+
 	}
 
 	/**
@@ -573,6 +573,15 @@ public class FileFuntions {
 
 	}
 
+	/**
+	 * From a map return the key giving the value, there is no repeated values
+	 * 
+	 * @param <K>   Type of the key
+	 * @param <V>   Type of the value
+	 * @param map   Map<K,V> to search the key
+	 * @param value the value we wants to know the key
+	 * @return the key of the current value
+	 */
 	public static <K, V> K getKey(Map<K, V> map, V value) {
 		for (K key : map.keySet()) {
 			if (value.equals(map.get(key))) {
@@ -582,6 +591,15 @@ public class FileFuntions {
 		return null;
 	}
 
+	/**
+	 * 
+	 * GEts the key of a map, giving the description of a button, repeted values in
+	 * the map
+	 * 
+	 * @param map   map to search the key
+	 * @param value description of the button
+	 * @return the key of a button
+	 */
 	public static String getKeyFRomButtonDescription(Map<String, JButton> map, String value) {
 		JButton valueButton = null;
 
@@ -595,6 +613,12 @@ public class FileFuntions {
 		return getKey(map, valueButton);
 	}
 
+	/**
+	 * Moves all the files from the dirpredictions to the temporal folder
+	 * 
+	 * @param dirPredictions current folder
+	 * @param tempoFolder    new folder
+	 */
 	public static void removeAllToOriginalFolder(String dirPredictions, File tempoFolder) {
 		// TODO Auto-generated method stub
 		File dirPre = new File(dirPredictions);
@@ -606,6 +630,14 @@ public class FileFuntions {
 		}
 	}
 
+	/**
+	 * Moves the files to the predictions folder, changes the name of the selected
+	 * files (Jbutton) to the original ones checks if there is already a file with
+	 * that name in that case delete it and move the other from the temporal folder.
+	 * 
+	 * @param dirPredictions
+	 * @param originalNewSelected
+	 */
 	public static void changeToriginalNameAndFolder(String dirPredictions, Map<String, JButton> originalNewSelected) {
 		// TODO Auto-generated method stub
 		File dirPre = new File(dirPredictions);
@@ -646,9 +678,16 @@ public class FileFuntions {
 		}
 	}
 
+	/**
+	 * 
+	 * Searchs if in a folder there is original files (nd2 or tif)
+	 * 
+	 * @param folder folder to search original files
+	 * @return true if there is original images (nd2 or tif) in the folder
+	 */
 	public static boolean isOriginalImage(File folder) {
 		boolean originalIma = false;
-		// Comprobar si en la carpeta hay imagenes nd2
+		// check if the folder contains nd2 images
 		List<String> listImages = new ArrayList<String>();
 		Utils.searchDirectory(".*\\.nd2", folder, listImages);
 		if (listImages.size() != 0) {
@@ -662,13 +701,4 @@ public class FileFuntions {
 		return originalIma;
 	}
 
-	
-
-//	public static List<String> getPluginNames() {
-//		return pluginNames;
-//	}
-//
-//	public static void setPluginNames(List<String> pluginNames) {
-//		FileFuntions.pluginNames = pluginNames;
-//	}
 }
