@@ -81,7 +81,7 @@ public class DetectEsferoidMethods {
 					// imp3 = null;
 
 				}
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException e1) {
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
@@ -124,7 +124,7 @@ public class DetectEsferoidMethods {
 				name = name.replace("fluo", "");
 				impNoFluo = IJ.openImage(name);
 
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException e1) {
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
@@ -196,7 +196,7 @@ public class DetectEsferoidMethods {
 					IJ.run(imp2, bits, "");
 
 				}
-			} catch (IllegalAccessException | IllegalArgumentException | IOException | InvocationTargetException e1) {
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
@@ -307,7 +307,7 @@ public class DetectEsferoidMethods {
 
 				}
 
-			} catch (IllegalAccessException | IllegalArgumentException | IOException | InvocationTargetException e1) {
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");

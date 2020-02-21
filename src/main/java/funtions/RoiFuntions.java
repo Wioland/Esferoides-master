@@ -20,7 +20,7 @@ public class RoiFuntions {
 	 * 
 	 * @param pathOriginal path of the file in which the predictions folder is his
 	 *                     roi
-	 * @return
+	 * @return path of the roi file
 	 */
 	public static String getRoiPathPredicctions(String pathOriginal) {
 

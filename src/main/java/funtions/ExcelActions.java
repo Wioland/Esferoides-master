@@ -20,6 +20,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
 import ij.measure.ResultsTable;
@@ -80,6 +81,7 @@ public class ExcelActions {
 			fileOut = new FileOutputStream(filename);
 			workbook.write(fileOut);
 			fileOut.close();
+			workbook.close();
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -102,7 +104,7 @@ public class ExcelActions {
 	public static int findRow(HSSFSheet sheet, String cellContent) {
 		for (Row row : sheet) {
 			for (Cell cell : row) {
-				if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+				if (cell.getCellType() == CellType.STRING) {
 					if (cell.getRichStringCellValue().getString().trim().equals(cellContent)) {
 						return row.getRowNum();
 					}
@@ -516,20 +518,26 @@ public class ExcelActions {
 
 			if (newRow.getCell(i) != null) {
 				switch (newRow.getCell(i).getCellType()) {
-				case Cell.CELL_TYPE_BOOLEAN:
+				case BOOLEAN:
 					cell2Update.setCellValue(newRow.getCell(i).getBooleanCellValue());
 					break;
-				case Cell.CELL_TYPE_NUMERIC:
+				case NUMERIC:
 					cell2Update.setCellValue(newRow.getCell(i).getNumericCellValue());
 					break;
-				case Cell.CELL_TYPE_STRING:
+				case STRING:
 					cell2Update.setCellValue(newRow.getCell(i).getStringCellValue());
 					break;
-				case Cell.CELL_TYPE_BLANK:
+				case BLANK:
 					cell2Update.setCellValue(newRow.getCell(i).getStringCellValue());
 					break;
-				case Cell.CELL_TYPE_ERROR:
+				case ERROR:
 					cell2Update.setCellValue(newRow.getCell(i).getErrorCellValue());
+					break;
+				case FORMULA:
+					break;
+				case _NONE:
+					break;
+				default:
 					break;
 				}
 			}

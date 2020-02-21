@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -476,7 +475,7 @@ public class TabPanel extends JTabbedPane {
 	 * The same if there isn't any result excel in the current directory
 	 * 
 	 * @param tabName The tabpanel to add the new tab
-	 * @param jp
+	 * @param jp      contains the JTablepanel
 	 */
 	public void noFileText(String tabName, JViewport jp) {
 

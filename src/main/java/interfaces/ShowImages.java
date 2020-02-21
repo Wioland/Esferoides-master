@@ -38,14 +38,10 @@ public class ShowImages extends JPanel {
 	 */
 	public ShowImages(String directory, Component tp) {
 //we put them in one column
-		this.setLayout(new GridLayout(0, 1));
-
-		listImages = new ArrayList<String>();
-		listImagesPrev = new HashMap<String, JButton>();
-		lastModifyImage = new HashMap<String, Long>();
+		initializeComponents(1);
 
 		File folder = new File(directory);
-		createImageButton(folder, tp);
+		createImageButton(folder, tp, "");
 
 	}
 
@@ -59,14 +55,17 @@ public class ShowImages extends JPanel {
 	 */
 	public ShowImages(TabPanel tp, List<String> images, String originalName) {
 //we put then in two columns
-		this.setLayout(new GridLayout(0, 2));
-
-		listImages = new ArrayList<String>();
-		listImagesPrev = new HashMap<String, JButton>();
-		lastModifyImage = new HashMap<String, Long>();
-
+		initializeComponents(2);
 		createImageButton(tp, images, originalName);
 
+	}
+
+	public ShowImages(String directory, AlgorithmView algorithmView, String nameFileNoExt) {
+		// we put them in one column
+		initializeComponents(1);
+
+		File folder = new File(directory);
+		createImageButton(folder, algorithmView, nameFileNoExt);
 	}
 
 	// GETTERS Y SETTERS
@@ -106,16 +105,33 @@ public class ShowImages extends JPanel {
 	// METHOS
 
 	/**
+	 * Initialize the components of the class and set the number of columns of the
+	 * layout
+	 * 
+	 * @param columns number of columns we want to have in the layout
+	 */
+	public void initializeComponents(int columns) {
+		this.setLayout(new GridLayout(0, columns));
+
+		listImages = new ArrayList<String>();
+		listImagesPrev = new HashMap<String, JButton>();
+		lastModifyImage = new HashMap<String, Long>();
+	}
+
+	/**
 	 * Creates the buttons to show the images of the folder given
 	 * 
-	 * @param folder The location of the images
-	 * @param tp     the place we are going to show the images
+	 * @param folder        The location of the images
+	 * @param nameFileNoExt name of the file without extension of the file we wants
+	 *                      to find it's tiff in the predictions folder if "" all
+	 *                      the files
+	 * @param tp            the place we are going to show the images
 	 */
-	public void createImageButton(File folder, Component tp) {
+	public void createImageButton(File folder, Component tp, String nameFileNoExt) {
 
 		// We checks if the tiff files are in the predictions folder, if not we ask to
 		// move it there
-		listImages = FileFuntions.checkTiffNotPredictionsFolder(folder);
+		listImages = FileFuntions.checkTiffNotPredictionsFolder(folder, nameFileNoExt);
 
 		Collections.sort(listImages);
 		imageIcon = new ArrayList<ImageIcon>();

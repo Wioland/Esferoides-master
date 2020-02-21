@@ -12,7 +12,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 
 import funtions.FileFuntions;
-import funtions.Main;
+import funtions.Utils;
 
 public class GeneralView extends JFrame {
 
@@ -70,7 +70,7 @@ public class GeneralView extends JFrame {
 
 		if (dc != null) {
 			boolean selectAlgo = false;
-			selectAlgo = Main.optionAction();
+			selectAlgo = Utils.optionAction();
 			this.dir = dc;
 			createContent(dc, selectAlgo);
 			this.repaint();

@@ -17,7 +17,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import funtions.FileFuntions;
-import funtions.Main;
 import funtions.RoiFuntions;
 import funtions.Utils;
 
@@ -39,7 +38,7 @@ public class ImageTreePanel extends JSplitPane {
 		setDividerSize(1);
 		setContinuousLayout(true);
 
-		//WE create the tree of the directory
+		// WE create the tree of the directory
 		JPanel p = new JPanel();
 		createTree();
 		p.add(tree);// tree
@@ -191,7 +190,7 @@ public class ImageTreePanel extends JSplitPane {
 
 		if (resultTif.size() != 0 || resultNd2.size() != 0) {
 			JOptionPane.showMessageDialog(this, "Detected image files with the requered extension");
-			Main.callProgram(dir, this);
+			Utils.callProgram(dir, this);
 			if (!selectAlgo) {
 				switchFolder = changeDirActions(resultTiff, detectedFiles, oldPath, switchFolder);
 			} else {
@@ -230,7 +229,7 @@ public class ImageTreePanel extends JSplitPane {
 					extensionFile + " files detected", JOptionPane.YES_NO_OPTION);
 
 			if (n == 0) {
-				Main.createGeneralViewOrNot(this, this.dir, true);
+				Utils.createGeneralViewOrNot(this, this.dir, true);
 			} else {
 				JOptionPane.showMessageDialog(this, "Nothing to be done. Not changing to the selected folder");
 				this.dir = oldPath;
