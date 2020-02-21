@@ -220,46 +220,46 @@ public class DetectEsferoidImageMethods {
 
 	}
 
-	public static void processEsferoidUsingThresholdCombination(ImagePlus imp2, boolean noNeed, int noNeedde,
-			double Nonee, int noNE) {
-
-		ImagePlus imp1 = imp2.duplicate();
-
-		IJ.run(imp1, "Find Edges", "");
-		IJ.run(imp1, "Convert to Mask", "");
-		IJ.run(imp1, "Morphological Filters", "operation=[Black Top Hat] element=Square radius=5");
-		imp1.changes = false;
-		imp1.close();
-		ImagePlus imp4 = IJ.getImage();
-		IJ.run(imp4, "Dilate", "");
-		IJ.run(imp4, "Dilate", "");
-		IJ.run(imp4, "Fill Holes", "");
-		IJ.run(imp4, "Erode", "");
-		IJ.run(imp4, "Erode", "");
-
-		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
-			IJ.run(imp2, "Color Threshold...", "");
-
-		} else {
-			IJ.setAutoThreshold(imp2, "Otsu");
-		}
-
-		// IJ.setAutoThreshold(imp2, "Otsu");
-		IJ.run(imp2, "Convert to Mask", "");
-		IJ.run(imp2, "Dilate", "");
-		IJ.run(imp2, "Dilate", "");
-		IJ.run(imp2, "Fill Holes", "");
-		IJ.run(imp2, "Erode", "");
-		IJ.run(imp2, "Erode", "");
-		ImageCalculator ic = new ImageCalculator();
-		ImagePlus imp3 = ic.run("OR create", imp4, imp2);
-
-		imp4.changes = false;
-		imp4.close();
-
-		imp2 = imp3;
-
-	}
+//	public static void processEsferoidUsingThresholdCombination(ImagePlus imp2, boolean noNeed, int noNeedde,
+//			double Nonee, int noNE) {
+//
+//		ImagePlus imp1 = imp2.duplicate();
+//
+//		IJ.run(imp1, "Find Edges", "");
+//		IJ.run(imp1, "Convert to Mask", "");
+//		IJ.run(imp1, "Morphological Filters", "operation=[Black Top Hat] element=Square radius=5");
+//		imp1.changes = false;
+//		imp1.close();
+//		ImagePlus imp4 = IJ.getImage();
+//		IJ.run(imp4, "Dilate", "");
+//		IJ.run(imp4, "Dilate", "");
+//		IJ.run(imp4, "Fill Holes", "");
+//		IJ.run(imp4, "Erode", "");
+//		IJ.run(imp4, "Erode", "");
+//
+//		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
+//			IJ.run(imp2, "Color Threshold...", "");
+//
+//		} else {
+//			IJ.setAutoThreshold(imp2, "Otsu");
+//		}
+//
+//		// IJ.setAutoThreshold(imp2, "Otsu");
+//		IJ.run(imp2, "Convert to Mask", "");
+//		IJ.run(imp2, "Dilate", "");
+//		IJ.run(imp2, "Dilate", "");
+//		IJ.run(imp2, "Fill Holes", "");
+//		IJ.run(imp2, "Erode", "");
+//		IJ.run(imp2, "Erode", "");
+//		ImageCalculator ic = new ImageCalculator();
+//		ImagePlus imp3 = ic.run("OR create", imp4, imp2);
+//
+//		imp4.changes = false;
+//		imp4.close();
+//
+//		imp2 = imp3;
+//
+//	}
 
 	public static void processEsferoidUsingThresholdWithWatershed(ImagePlus imp2, boolean noNeed, int noNeedde,
 			double Nonee, int noNE) {
@@ -282,21 +282,22 @@ public class DetectEsferoidImageMethods {
 
 	}
 
-	public static void processEsferoidUsingFindEdges(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee,
-			int noNE) {
-		IJ.run(imp2, "Find Edges", "");
-		IJ.run(imp2, "Convert to Mask", "");
-		IJ.run(imp2, "Morphological Filters", "operation=[Black Top Hat] element=Square radius=5");
-		imp2.close();
-		ImagePlus imp3 = IJ.getImage();
-
-		IJ.run(imp3, "Dilate", "");
-		IJ.run(imp3, "Dilate", "");
-		IJ.run(imp3, "Fill Holes", "");
-		IJ.run(imp3, "Erode", "");
-		IJ.run(imp3, "Erode", "");
-
-	}
+//	public static void processEsferoidUsingFindEdges(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee,
+//			int noNE) {
+//		
+//		IJ.run(imp2, "Find Edges", "");
+//		IJ.run(imp2, "Convert to Mask", "");
+//		IJ.run(imp2, "Morphological Filters", "operation=[Black Top Hat] element=Square radius=5");
+//		imp2.close();
+//		ImagePlus imp3 = IJ.getImage();
+//
+//		IJ.run(imp3, "Dilate", "");
+//		IJ.run(imp3, "Dilate", "");
+//		IJ.run(imp3, "Fill Holes", "");
+//		IJ.run(imp3, "Erode", "");
+//		IJ.run(imp3, "Erode", "");
+//
+//	}
 
 	public static void processEsferoidVariance(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee, int noNE) {
 

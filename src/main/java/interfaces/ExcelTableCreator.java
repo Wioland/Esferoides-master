@@ -74,19 +74,19 @@ public class ExcelTableCreator extends JTable {
 						}
 						// gets the data from the cell
 						switch (cell.getCellType()) {
-						case Cell.CELL_TYPE_BOOLEAN:
+						case BOOLEAN:
 							obj[index] = cell.getBooleanCellValue();
 							break;
-						case Cell.CELL_TYPE_NUMERIC:
+						case NUMERIC:
 							obj[index] = cell.getNumericCellValue();
 							break;
-						case Cell.CELL_TYPE_STRING:
+						case STRING:
 							obj[index] = cell.getStringCellValue();
 							break;
-						case Cell.CELL_TYPE_BLANK:
+						case BLANK:
 							obj[index] = " ";
 							break;
-						case Cell.CELL_TYPE_FORMULA:
+						case FORMULA:
 							obj[index] = cell.getCellFormula();
 							break;
 						default:
@@ -101,11 +101,14 @@ public class ExcelTableCreator extends JTable {
 			} else {
 				JOptionPane.showMessageDialog(null, "Nothing to import", "Error", JOptionPane.ERROR_MESSAGE);
 			}
+			wb.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error while reading the excel", "Error saving",
 					JOptionPane.ERROR_MESSAGE);
 		}
+		
+	
 	}
 
 }

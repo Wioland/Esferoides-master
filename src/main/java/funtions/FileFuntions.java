@@ -48,11 +48,29 @@ public class FileFuntions {
 	 * assign the plugin folder for imageJ and creates a instance of imageJ
 	 */
 	public static void chargePlugins() {
-		PropertiesFileFuntions prop = new PropertiesFileFuntions();
-		prop.cheeckJarDirectoryChange();
-		System.setProperty("plugins.dir", prop.getProp().getProperty("jarDirectory"));
+//		PropertiesFileFuntions prop = new PropertiesFileFuntions();
+//		prop.cheeckJarDirectoryChange();
+//		System.out.println(System.getProperty("plugins.dir"));
+//		System.setProperty("plugins.dir", prop.getProp().getProperty("jarDirectory"));
+
+//		System.out.println(System.getProperty("plugins.dir"));
+//
+//		if (System.getProperty("plugins.dir") == null) {
+//			DirectoryChooser dc = new DirectoryChooser("Select the folder containing the jars");
+
+//			System.setProperty("plugins.dir", dc.getDirectory());
+//			System.setProperty("plugins.dir", "inra/ijpb/plugins");
+//		}
+
+		// System.setProperty("imagej.pluggin", value)
+//		System.setProperty("plugins.dir", System.getProperty("plugins.dir"));
+//		System.out.println(System.getProperty("plugins.dir"));
 
 		new ImageJ(2);// NO_SHOW MODE
+		// new ImageJ( ImageJ.EMBEDDED);
+		// new ImageJ();
+
+		// IJ.run("Install PlugIn...", "install=/dependencies/MorphoLibJ_-1.4.0.jar");
 
 		IJ.setForegroundColor(255, 0, 0);
 
@@ -114,7 +132,7 @@ public class FileFuntions {
 	 * the tiff and roi/zip and change the corresponding row on the result excel
 	 * 
 	 * @param selectedFile The temporal file to save
-	 * @param saveDirPath
+	 * @param saveDirPath  path of the save directory
 	 * @return true if the file is save false otherwise
 	 */
 	public static boolean saveSelectedImage(File selectedFile, String saveDirPath) {
@@ -211,7 +229,7 @@ public class FileFuntions {
 
 							out.close();
 						}
-
+						newdataExcel.close();
 					} catch (Exception e) {
 						e.printStackTrace();
 						JOptionPane.showMessageDialog(null, "Error changing the excel row", "Error saving",
@@ -401,10 +419,11 @@ public class FileFuntions {
 
 	/**
 	 * Check if the images shown still exist, the had been modify And change the
-	 * images that the showImages is showing
+	 * images that the showImages is showing. Close the ViewImagesBigger.
 	 * 
 	 * @param images       ShowImages with the images shown
 	 * @param actualImages List of the images of the directory
+	 * @param tp           The current tabPanel
 	 */
 	public static void checkStillExist(ShowImages images, List<String> actualImages, TabPanel tp) {
 		Iterator<String> imageModify = images.getLastModifyImage().keySet().iterator();
@@ -421,22 +440,18 @@ public class FileFuntions {
 							JOptionPane.WARNING_MESSAGE);
 
 					JButton imageButton = images.getListImagesPrev().get(imaPath);
-					
-					//ImageIcon ima = new ImageIcon(imaPath);
+
+					// ImageIcon ima = new ImageIcon(imaPath);
 					ImageIcon ima = ShowTiff.showTiffToImageIcon(imaPath);
 					ima.setDescription(imaPath);
-					
-					images.getImageIcon().set(images.getListImages().indexOf(imaPath), ima);
-					
-					ima= new ImageIcon(
-							ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
 
-					
+					images.getImageIcon().set(images.getListImages().indexOf(imaPath), ima);
+
+					ima = new ImageIcon(ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
 
 					ima.setDescription(imaPath);
 					imageButton.setIcon(ima);
 					imageButton.repaint();
-				
 
 					images.getListImagesPrev().put(imaPath, imageButton);
 					images.getLastModifyImage().put(imaPath, faux.lastModified());
@@ -488,10 +503,13 @@ public class FileFuntions {
 	 * the predictions folder In case of finding Tiff and roi files in the folder it
 	 * ask you if you want to move the files to a prediction folder
 	 * 
-	 * @param folder the folder to check if have tiff and roi files
-	 * @return List<String> the list of tiff files in the folder given
+	 * @param folder        the folder to check if have tiff and roi files
+	 * @param nameFileNoExt name of the file without extension of the file we wants
+	 *                      to find it's tiff in the predictions folder if "" all
+	 *                      the files
+	 * @return List of strings with the paths of tiff files in the folder given
 	 */
-	public static List<String> checkTiffNotPredictionsFolder(File folder) {
+	public static List<String> checkTiffNotPredictionsFolder(File folder, String nameFileNoExt) {
 
 		List<String> listImages = new ArrayList<String>();
 		File predictionsDir = new File(folder.getAbsolutePath() + File.separator + "predictions");
@@ -509,11 +527,19 @@ public class FileFuntions {
 
 			} else {
 				if (folder.getAbsolutePath().endsWith("temporal")) {
-					Utils.searchDirectory(".*\\.tiff", folder, listImages);
+
+					if (nameFileNoExt == "") {
+						Utils.searchDirectory(".*\\.tiff", folder, listImages);
+					} else {
+						nameFileNoExt = nameFileNoExt.replace("_pred", "");
+						Utils.searchDirectory(nameFileNoExt + ".*\\.tiff", folder, listImages);
+					}
+
 				}
 
 			}
 		} else {
+
 			Utils.searchDirectory(".*\\.tiff", folder, listImages);
 
 		}
@@ -578,7 +604,7 @@ public class FileFuntions {
 	 * 
 	 * @param <K>   Type of the key
 	 * @param <V>   Type of the value
-	 * @param map   Map<K,V> to search the key
+	 * @param map   Map to search the key
 	 * @param value the value we wants to know the key
 	 * @return the key of the current value
 	 */
@@ -620,7 +646,7 @@ public class FileFuntions {
 	 * @param tempoFolder    new folder
 	 */
 	public static void removeAllToOriginalFolder(String dirPredictions, File tempoFolder) {
-		// TODO Auto-generated method stub
+
 		File dirPre = new File(dirPredictions);
 		if (dirPre.exists() && dirPre.listFiles().length != 0) {
 			File[] files = dirPre.listFiles();
@@ -635,11 +661,13 @@ public class FileFuntions {
 	 * files (Jbutton) to the original ones checks if there is already a file with
 	 * that name in that case delete it and move the other from the temporal folder.
 	 * 
-	 * @param dirPredictions
-	 * @param originalNewSelected
+	 * @param dirPredictions      path of the images predicted
+	 * @param originalNewSelected map of string-JButton that contains the name of
+	 *                            the image- button selected with the image selected
+	 *                            to save
 	 */
 	public static void changeToriginalNameAndFolder(String dirPredictions, Map<String, JButton> originalNewSelected) {
-		// TODO Auto-generated method stub
+
 		File dirPre = new File(dirPredictions);
 
 		if (dirPre.exists() && dirPre.listFiles().length != 0) {

@@ -15,6 +15,7 @@ public class PropertiesFileFuntions {
 
 	private Properties prop;
 	private URL path = getClass().getClassLoader().getResource("program.properties");
+//	private URL path = getClass().getClassLoader().getResource("resources/program.properties");
 
 	public PropertiesFileFuntions() {
 		prop = getPropertyDirectory(this.path);
@@ -78,6 +79,8 @@ public class PropertiesFileFuntions {
 			Path resourceDirectory = Paths.get("src", "main", "resources");
 			String dir = resourceDirectory.toString();
 			out = new FileOutputStream(path.getFile());
+			// out = new FileOutputStream(path.getFile());
+
 			prop.setProperty("jarDirectory", dir);
 			prop.store(out, null);
 			out.close();
@@ -104,6 +107,9 @@ public class PropertiesFileFuntions {
 
 		try {
 			is = path.openStream();
+
+			// is = ClassLoader.getSystemResourceAsStream("resources/program.properties");
+
 			prop.load(is);
 			is.close();
 		} catch (IOException e) {
@@ -115,4 +121,5 @@ public class PropertiesFileFuntions {
 		return prop;
 
 	}
+
 }

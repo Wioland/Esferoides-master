@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
@@ -19,6 +21,7 @@ import ij.plugin.frame.RoiManager;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
 import interfaces.GeneralView;
+import interfaces.ImageTreePanel;
 
 public class Utils {
 
@@ -80,10 +83,9 @@ public class Utils {
 	 * @param goodRows  row of the result table we wants to save
 	 * @param nameClass name of the algorithm used to creates the roi
 	 * @param temp      true if we are creating files in the temporal folder
-	 * @throws IOException
 	 */
 	public static void showResultsAndSave(String dir, String name, ImagePlus imp1, RoiManager rm,
-			ArrayList<Integer> goodRows, String nameClass, boolean temp) throws IOException {
+			ArrayList<Integer> goodRows, String nameClass, boolean temp)  {
 		IJ.run(imp1, "RGB Color", "");
 		File folder;
 
@@ -304,8 +306,8 @@ public class Utils {
 	 * @param imp1       imagePlus to process
 	 * @param threshold1 upper threshold
 	 * @param threshold2 under threshold
-	 * @param num
-	 * @return
+	 * @param num	num to check the threshold
+	 * @return	true if in the middle of the threshold
 	 */
 	public static boolean countBetweenThresholdOver(ImagePlus imp1, int threshold1, int threshold2, int num) {
 
@@ -337,17 +339,85 @@ public class Utils {
 	}
 
 	public static String getCurrentDirectory() {
-		
-		Window[] openWindows= Window.getWindows();
+
+		Window[] openWindows = Window.getWindows();
 		for (Window window : openWindows) {
-			if(window.getClass().equals(GeneralView.class)) {
+			if (window.getClass().equals(GeneralView.class)) {
 				return ((GeneralView) window).getDir();
 			}
 		}
-		
-		
+
 		return "";
-		
+
+	}
+
+	// METHODS
+
+	/**
+	 * Creates the Main frame or looks if there is a current one to repain
+	 * 
+	 * 
+	 * @param dc         working directory
+	 * @param folderView ImageTreePanel that shows the tree directory
+	 */
+	public static void callProgram(String dc, ImageTreePanel folderView) {
+
+		if (dc != null) {
+			boolean b = optionAction();
+			if (b) {
+				b = FileFuntions.isOriginalImage(new File(dc));
+			}
+			createGeneralViewOrNot(folderView, dc, b);
+		}
+	}
+
+	/**
+	 * JoptionPanel that ask you which action do you what to perform (DEtect
+	 * esferoide or view results)
+	 * 
+	 * @return true if detected esferoide false if view result
+	 */
+	public static boolean optionAction() {
+
+		boolean b = false;
+
+		int selection = JOptionPane.showOptionDialog(null, "Select an option", "Option selecter",
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				new Object[] { "Detect esferoid", "View results" }, "Use algoritm");
+
+		switch (selection) {
+		case 0:
+			b = true;
+			break;
+		case 1:
+			b = false;
+
+			break;
+		default:
+			break;
+		}
+
+		return b;
+	}
+
+	/**
+	 * Checks if there is a main frame. if it is you repaint the tabpanel if not you
+	 * create a new one
+	 * 
+	 * @param folderView imageTreepanel that shows the tree directory
+	 * @param dc         the path of the current directory
+	 * @param selectAlgo true if you select previously detect esferoide and false
+	 *                   otherwise
+	 */
+	public static void createGeneralViewOrNot(ImageTreePanel folderView, String dc, boolean selectAlgo) {
+		if (folderView == null) { // if there isn't a main/GenearalWiew Jframe open we create a new one
+			new GeneralView(dc, selectAlgo);
+		} else {
+			// We repaint the tab panel with the new content
+			folderView.repaintTabPanel(selectAlgo);
+
+		}
+
 	}
 
 }
