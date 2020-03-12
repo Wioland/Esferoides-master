@@ -3,14 +3,22 @@ package funtions;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -729,4 +737,113 @@ public class FileFuntions {
 		return originalIma;
 	}
 
+	/**
+	 * If a new version of the jar is find and the user wants to update, calls the
+	 * updateJar and kills the execution of this jar
+	 */
+	public static void createUpdater() {
+		boolean newVersion = false;
+		PropertiesFileFuntions prop = new PropertiesFileFuntions();
+		String pathJArUpdater = getCurrentPAth()+ File.separator+"jarUpdater-1.0-SNAPSHOT-jar-with-dependencies.jar";
+//		pathJArUpdater = pathJArUpdater.replace("file:/", "");
+//		pathJArUpdater = pathJArUpdater.replace("/", File.separator);
+//		if (pathJArUpdater.endsWith(File.separator)) {
+//			pathJArUpdater = pathJArUpdater.substring(0, pathJArUpdater.length() - 1);
+//		}
+
+		System.out.println(pathJArUpdater);
+
+		
+		String urlVersion = prop.getProp().getProperty("urlVersionFile");
+		String currentVersion = prop.getProp().getProperty("version");
+
+		newVersion = checkNewVersionJAr(urlVersion, currentVersion);
+
+		if (newVersion) {
+			int op = JOptionPane.showConfirmDialog(null,
+					"A new update has been detected. \n Do you want to dowload it?", "Alerta!",
+					JOptionPane.YES_NO_OPTION);
+
+			if (op == 0) {
+
+//				urlDowloadNewJAr.replace("1.0-SNAPSHOT", currentVersion); // change the version of the jar for
+				// the one to download
+
+				try {
+
+//					final String commands[] = {
+//							"java -jar jarUpdater-1.0-SNAPSHOT-jar-with-dependencies.jar " + pathJArUpdater + " " + urlDowloadNewJAr }; // comandos
+//
+//					Process process = new ProcessBuilder(commands).start(); // se crea el proceso
+					// usando los comandos
+					Process process = Runtime.getRuntime()
+							.exec("java -jar " + pathJArUpdater);
+					InputStream inputstream = process.getInputStream();
+					BufferedInputStream bufferedinputstream = new BufferedInputStream(inputstream);
+
+					System.exit(0);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		}
+	}
+
+	private static boolean checkNewVersionJAr(String urlVerion, String currentJarVersion) {
+		boolean newJAr = false;
+		String newJArversion = "";
+
+		newJArversion = readversion(urlVerion);
+
+		if (!newJArversion.equals(currentJarVersion) && !newJArversion.equals("")) {
+			newJAr = true;
+		}
+
+		return newJAr;
+	}
+
+	public static String readversion(String urlVerion) {
+		String line = "";
+		// create the url
+		URL url;
+		try {
+			url = new URL(urlVerion);
+			// open the url stream, wrap it an a few "readers"
+			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+
+			// write the output to stdout
+
+			String linea;
+			while ((linea = reader.readLine()) != null) {
+				line = linea;
+			}
+
+			// close our reader
+			reader.close();
+
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return line;
+
+	}
+	public static String getCurrentPAth() {
+		String location = "";
+		CodeSource codeSource = Main.class.getProtectionDomain().getCodeSource();
+		File jarFile;
+		try {
+			jarFile = new File(codeSource.getLocation().toURI().getPath());
+			location = jarFile.getParentFile().getPath();
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return location;
+	}
 }
