@@ -190,7 +190,7 @@ public class ImageTreePanel extends JSplitPane {
 
 		if (resultTif.size() != 0 || resultNd2.size() != 0) {
 			JOptionPane.showMessageDialog(this, "Detected image files with the requered extension");
-			Utils.callProgram(dir, this);
+			Utils.callProgram(dir, this.getJFrameGeneral());
 			if (!selectAlgo) {
 				switchFolder = changeDirActions(resultTiff, detectedFiles, oldPath, switchFolder);
 			} else {
@@ -229,7 +229,7 @@ public class ImageTreePanel extends JSplitPane {
 					extensionFile + " files detected", JOptionPane.YES_NO_OPTION);
 
 			if (n == 0) {
-				Utils.createGeneralViewOrNot(this, this.dir, true);
+				Utils.createGeneralViewOrNot(this.getJFrameGeneral(), this.dir, true);
 			} else {
 				JOptionPane.showMessageDialog(this, "Nothing to be done. Not changing to the selected folder");
 				this.dir = oldPath;

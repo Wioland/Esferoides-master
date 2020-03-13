@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import ij.IJ;
@@ -359,14 +360,14 @@ public class Utils {
 	 * @param dc         working directory
 	 * @param folderView ImageTreePanel that shows the tree directory
 	 */
-	public static void callProgram(String dc, ImageTreePanel folderView) {
+	public static void callProgram(String dc, GeneralView geView) {
 
 		if (dc != null) {
 			boolean b = optionAction();
 			if (b) {
 				b = FileFuntions.isOriginalImage(new File(dc));
 			}
-			createGeneralViewOrNot(folderView, dc, b);
+			createGeneralViewOrNot(geView, dc, b);
 		}
 	}
 
@@ -408,9 +409,11 @@ public class Utils {
 	 * @param selectAlgo true if you select previously detect esferoide and false
 	 *                   otherwise
 	 */
-	public static void createGeneralViewOrNot(ImageTreePanel folderView, String dc, boolean selectAlgo) {
+	public static void createGeneralViewOrNot(GeneralView geView, String dc, boolean selectAlgo) {
+		ImageTreePanel folderView=geView.getImageTree();
 		if (folderView == null) { // if there isn't a main/GenearalWiew Jframe open we create a new one
-			new GeneralView(dc, selectAlgo);
+			geView.createRestOfConttext(dc, selectAlgo);
+			//new GeneralView(dc, selectAlgo);
 		} else {
 			// We repaint the tab panel with the new content
 			folderView.repaintTabPanel(selectAlgo);
