@@ -22,34 +22,18 @@ public class GeneralView extends JFrame {
 	private String dir;
 	private ImageTreePanel imageTree;
 
-	public GeneralView(String directory, boolean selectAlgo) {
-
-		// this.directory = directory;
+	public GeneralView() {
 		this.mb = new JMenuBar();
-		this.dir = directory;
-
 		// Window parameters
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(MAXIMIZED_BOTH);
 		setVisible(true);
 		setTitle("Main Frame");
 		setMinimumSize(new Dimension(1000, 700));
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-
-				File deleteFile = new File(directory + File.separator + "temporal");
-				FileFuntions.deleteFolder(deleteFile);
-
-			}
-		});
-
-		setJMenuBar(mb);
-		JMenuPropertiesFile menu = new JMenuPropertiesFile();
-		mb.add(menu);
-
-		createContent(directory, selectAlgo);
-
+		toFront();
 	}
+
+
 
 	// GETTERS AND SETTERS
 	public String getDir() {
@@ -60,11 +44,26 @@ public class GeneralView extends JFrame {
 		this.dir = dir;
 	}
 
+	
+	
+	public ImageTreePanel getImageTree() {
+		return imageTree;
+	}
+
+
+
+	public void setImageTree(ImageTreePanel imageTree) {
+		this.imageTree = imageTree;
+	}
+
+
+
 	// METHODS
 	/**
 	 * Paints the graphics of the main FRame
 	 * 
-	 * @param dc path of the current directory
+	 * @param dc
+	 *            path of the current directory
 	 */
 	public void paintMainFRame(String dc) {
 
@@ -81,8 +80,10 @@ public class GeneralView extends JFrame {
 	/**
 	 * Creates the graphics content of the frame
 	 * 
-	 * @param directory  current directory
-	 * @param selectAlgo if you are detecting esferoid
+	 * @param directory
+	 *            current directory
+	 * @param selectAlgo
+	 *            if you are detecting esferoid
 	 */
 	private void createContent(String directory, boolean selectAlgo) {
 		OurProgressBar pb = new OurProgressBar(this);
@@ -108,4 +109,32 @@ public class GeneralView extends JFrame {
 			}
 		}
 	}
+	
+	
+	public void createRestOfConttext(String directory, boolean selectAlgo) {
+
+		// this.directory = directory;
+
+		this.dir = directory;
+		
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+
+				File deleteFile = new File(directory + File.separator + "temporal");
+				FileFuntions.deleteFolder(deleteFile);
+
+			}
+		});
+
+		setJMenuBar(mb);
+		JMenuPropertiesFile menu = new JMenuPropertiesFile();
+		mb.add(menu);
+
+		createContent(directory, selectAlgo);
+
+	}
+	
+	
+
+	
 }
