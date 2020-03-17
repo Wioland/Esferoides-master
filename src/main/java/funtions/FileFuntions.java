@@ -789,7 +789,7 @@ public class FileFuntions {
 	public static void createUpdater() {
 		boolean newVersion = false;
 		PropertiesFileFuntions prop = new PropertiesFileFuntions();
-		String pathJArUpdater = getCurrentPAth() + File.separator + "jarUpdater-1.0-SNAPSHOT-jar-with-dependencies.jar";
+		String pathJArUpdater = getCurrentPAth() + File.separator +"updater"+File.separator +"jarUpdater-1.0-SNAPSHOT-jar-with-dependencies.jar";
 		// pathJArUpdater = pathJArUpdater.replace("file:/", "");
 		// pathJArUpdater = pathJArUpdater.replace("/", File.separator);
 		// if (pathJArUpdater.endsWith(File.separator)) {
