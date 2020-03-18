@@ -50,58 +50,14 @@ import task.ImagesTask;
 public class FileFuntions {
 
 	private static Map<String, Long> directoryLastChange;
-	// private static List<String> pluginNames;
 
 	/**
 	 * assign the plugin folder for imageJ and creates a instance of imageJ
 	 */
 	public static void chargePlugins() {
-		// PropertiesFileFuntions prop = new PropertiesFileFuntions();
-		// prop.cheeckJarDirectoryChange();
-		// System.out.println(System.getProperty("plugins.dir"));
-		// System.setProperty("plugins.dir",
-		// prop.getProp().getProperty("jarDirectory"));
-
-		// System.out.println(System.getProperty("plugins.dir"));
-		//
-		// if (System.getProperty("plugins.dir") == null) {
-		// DirectoryChooser dc = new DirectoryChooser("Select the folder
-		// containing the jars");
-
-		// System.setProperty("plugins.dir", dc.getDirectory());
-		// System.setProperty("plugins.dir", "inra/ijpb/plugins");
-		// }
-
-		// System.setProperty("imagej.pluggin", value)
-		// System.setProperty("plugins.dir", System.getProperty("plugins.dir"));
-		// System.out.println(System.getProperty("plugins.dir"));
-
 		new ImageJ(2);// NO_SHOW MODE
-		// new ImageJ( ImageJ.EMBEDDED);
-		// new ImageJ();
-
-		// IJ.run("Install PlugIn...",
-		// "install=/dependencies/MorphoLibJ_-1.4.0.jar");
-
 		IJ.setForegroundColor(255, 0, 0);
-
 	}
-
-	//
-	// public static void addMenuItem(Menu menu) {
-	// for (int i = 0; i < menu.countItems(); i++) {
-	// String claString=menu.getItem(i).getClass().getName();
-	//
-	// if(claString=="java.awt.Menu") {
-	// addMenuItem((Menu)menu.getItem(i));
-	// }else {
-	// getPluginNames().add(menu.getLabel()+" > "+menu.getItem(i).getLabel());
-	// }
-	//
-	//
-	// }
-	//
-	// }
 
 	/**
 	 * Returns the Path of the selected file in the tree
@@ -475,7 +431,6 @@ public class FileFuntions {
 
 					JButton imageButton = images.getListImagesPrev().get(imaPath);
 
-					// ImageIcon ima = new ImageIcon(imaPath);
 					ImageIcon ima = ShowTiff.showTiffToImageIcon(imaPath);
 					ima.setDescription(imaPath);
 
@@ -501,7 +456,7 @@ public class FileFuntions {
 					}
 
 				}
-			} else {// if it doesn´t exist we delete it from the map
+			} else {// if it doesn't exist we delete it from the map
 
 				JButton deleteImage = images.getListImagesPrev().get(imaPath);
 				images.remove(deleteImage);
@@ -789,47 +744,28 @@ public class FileFuntions {
 	public static void createUpdater() {
 		boolean newVersion = false;
 		PropertiesFileFuntions prop = new PropertiesFileFuntions();
-		String pathJArUpdater = getCurrentPAth() + File.separator +"updater"+File.separator +"jarUpdater-1.0-SNAPSHOT-jar-with-dependencies.jar";
-		// pathJArUpdater = pathJArUpdater.replace("file:/", "");
-		// pathJArUpdater = pathJArUpdater.replace("/", File.separator);
-		// if (pathJArUpdater.endsWith(File.separator)) {
-		// pathJArUpdater = pathJArUpdater.substring(0, pathJArUpdater.length()
-		// - 1);
-		// }
-
-		System.out.println(pathJArUpdater);
+		String pathJArUpdater = getCurrentPAth() + File.separator + "updater" + File.separator
+				+ "jarUpdater-1.0-SNAPSHOT-jar-with-dependencies.jar";
 
 		String urlVersion = prop.getProp().getProperty("urlVersionFile");
 		String currentVersion = prop.getProp().getProperty("version");
 
+		// We check if there is a new version of the app
 		newVersion = checkNewVersionJAr(urlVersion, currentVersion);
 
-		if (newVersion) {
+		if (newVersion) {// if there is a new version we ask to update or not
 			int op = JOptionPane.showConfirmDialog(null,
 					"A new update has been detected. \n Do you want to dowload it?", "Alerta!",
 					JOptionPane.YES_NO_OPTION);
 
 			if (op == 0) {
-
-				// urlDowloadNewJAr.replace("1.0-SNAPSHOT", currentVersion); //
-				// change the version of the jar for
-				// the one to download
-
+				// if yes we call the updater jar
 				try {
-
-					// final String commands[] = {
-					// "java -jar
-					// jarUpdater-1.0-SNAPSHOT-jar-with-dependencies.jar " +
-					// pathJArUpdater + " " + urlDowloadNewJAr }; // comandos
-					//
-					// Process process = new ProcessBuilder(commands).start();
-					// // se crea el proceso
-					// usando los comandos
-					Process process = Runtime.getRuntime().exec("java -jar " + "\"" + pathJArUpdater+ "\"" );
+					Process process = Runtime.getRuntime().exec("java -jar " + "\"" + pathJArUpdater + "\"");
 					InputStream inputstream = process.getInputStream();
 					BufferedInputStream bufferedinputstream = new BufferedInputStream(inputstream);
 
-					System.exit(0);
+					System.exit(0);// stop the execution of this jar
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -839,12 +775,23 @@ public class FileFuntions {
 		}
 	}
 
+	/**
+	 * Checks if there is a new version of this jar
+	 * 
+	 * @param urlVerion
+	 *            the url with the newest version of this jar in the web
+	 * @param currentJarVersion
+	 *            the version of this jar
+	 * @return true if there is a new version
+	 */
 	private static boolean checkNewVersionJAr(String urlVerion, String currentJarVersion) {
 		boolean newJAr = false;
 		String newJArversion = "";
 
-		newJArversion = readversion(urlVerion);
+		newJArversion = readversion(urlVerion); // gets the version in the web
 
+		// compare the versions in case they are different and the version from
+		// the url is not "" there is a new version
 		if (!newJArversion.equals(currentJarVersion) && !newJArversion.equals("")) {
 			newJAr = true;
 		}
@@ -852,6 +799,14 @@ public class FileFuntions {
 		return newJAr;
 	}
 
+	/**
+	 * Reads the version of the jar in the url given. This url is a txt only
+	 * with the version
+	 * 
+	 * @param urlVerion
+	 *            url where the file with the newest version is
+	 * @return the current version in the web
+	 */
 	public static String readversion(String urlVerion) {
 		String line = "";
 		// create the url
@@ -861,11 +816,10 @@ public class FileFuntions {
 			// open the url stream, wrap it an a few "readers"
 			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
 
-			// write the output to stdout
-
+			// read the file
 			String linea;
 			while ((linea = reader.readLine()) != null) {
-				line = linea;
+				line = linea;// gets the line with the version
 			}
 
 			// close our reader
@@ -882,6 +836,11 @@ public class FileFuntions {
 
 	}
 
+	/**
+	 * Gets the current path where this jar is
+	 * 
+	 * @return the current path of this jar
+	 */
 	public static String getCurrentPAth() {
 		String location = "";
 		CodeSource codeSource = Main.class.getProtectionDomain().getCodeSource();

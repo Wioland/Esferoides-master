@@ -8,13 +8,18 @@ import interfaces.GeneralView;
 public class Main {
 
 	public static void main(String[] args) {
-		GeneralView geView = new GeneralView();
-		FileFuntions.createUpdater();
-		FileFuntions.chargePlugins();
+		GeneralView geView = new GeneralView(); // the main JFrame is create
+		FileFuntions.createUpdater(); // see if there is a new version of the
+										// app
+		FileFuntions.chargePlugins(); // imageJ options
+
+		// Choose the directory to work with
 		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the images");
-		if (dc.getDirectory() != null) {
+		if (dc.getDirectory() != null) { // if a directory has been chosen
 
 			if (dc.getDirectory().endsWith("predictions")) {
+				// if the directory is the predictions directory, we work with
+				// the parent that contains the original images
 				Utils.callProgram(dc.getDirectory().replace("predictions", ""), geView);
 
 			} else {
@@ -25,7 +30,8 @@ public class Main {
 				}
 
 			}
-		}else{
+		} else {// if a directory hasn't been chosen the main JFrame is close
+				// (the program)
 			geView.dispose();
 		}
 

@@ -28,7 +28,7 @@ public class GeneralView extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(MAXIMIZED_BOTH);
 		setVisible(true);
-		setTitle("Main Frame");
+		setTitle("Detect esferoid program");
 		setMinimumSize(new Dimension(1000, 700));
 		toFront();
 	}
@@ -111,9 +111,13 @@ public class GeneralView extends JFrame {
 	}
 	
 	
+	/**
+	 * Generate the context of the main Jframe
+	 * 
+	 * @param directory	path of the directory selected by the user
+	 * @param selectAlgo	if you are detecting esferoid
+	 */
 	public void createRestOfConttext(String directory, boolean selectAlgo) {
-
-		// this.directory = directory;
 
 		this.dir = directory;
 		
