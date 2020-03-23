@@ -766,13 +766,26 @@ public class FileFuntions {
 			if (callFromMain) {
 				op = JOptionPane.showConfirmDialog(null, msgContent, "Alert!", JOptionPane.YES_NO_OPTION);
 				boolean remember = rememberChk.isSelected();
-				if (!remember) {
-					URL urlUpdater = getProgramProps();
-					if (urlUpdater != null) {
-						PropertiesFileFuntions propUpdater = new PropertiesFileFuntions(urlUpdater);
-						propUpdater.getProp().setProperty("showUpdater", String.valueOf(remember));
-						JOptionPane.showMessageDialog(null,
-								"You can update the program any time in: \n Properties -> Update");
+				if (remember) {
+					if (op != -1) {
+						URL urlUpdater = getProgramProps();
+						if (urlUpdater != null) {
+							PropertiesFileFuntions propUpdater = new PropertiesFileFuntions(urlUpdater);
+							propUpdater.getProp().setProperty("showUpdater", String.valueOf(!remember));
+
+							try {
+
+								propUpdater.getProp().store(new FileOutputStream(urlUpdater.getPath()),
+										"Show the updater");
+								JOptionPane.showMessageDialog(null,
+										"You can update the program any time in: \n Properties -> Update");
+
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+						}
 					}
 				}
 
@@ -887,7 +900,8 @@ public class FileFuntions {
 	 */
 	public static URL getProgramProps() {
 		try {
-			return new URL(FileFuntions.getCurrentPAth() + File.separator +"updater"+ File.separator+"program.properties");
+			return new URL("file:///" + FileFuntions.getCurrentPAth() + File.separator + "updater" + File.separator
+					+ "program.properties");
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -902,7 +916,7 @@ public class FileFuntions {
 		URL urlUpdater = getProgramProps();
 		if (urlUpdater != null) {
 			PropertiesFileFuntions propUpdater = new PropertiesFileFuntions(urlUpdater);
-			Boolean showUpdater = Boolean.getBoolean(propUpdater.getProp().getProperty("showUpdater"));
+			Boolean showUpdater = Boolean.valueOf(propUpdater.getProp().getProperty("showUpdater"));
 			if (showUpdater) {
 
 				createUpdater(true); // see if there is a new version of the

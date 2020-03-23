@@ -1,8 +1,6 @@
 package funtions;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import ij.io.DirectoryChooser;
 import interfaces.GeneralView;
