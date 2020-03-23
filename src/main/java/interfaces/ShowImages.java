@@ -102,7 +102,7 @@ public class ShowImages extends JPanel {
 		this.listImages = listImages;
 	}
 
-	// METHOS
+	// METHODS
 
 	/**
 	 * Initialize the components of the class and set the number of columns of the

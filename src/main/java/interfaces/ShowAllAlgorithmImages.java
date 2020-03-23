@@ -23,6 +23,7 @@ public class ShowAllAlgorithmImages extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private int labelsFontSize=14;
 
 	public ShowAllAlgorithmImages(String originalImage, TabPanel tp) {
 
@@ -39,7 +40,7 @@ public class ShowAllAlgorithmImages extends JPanel {
 		// black border
 		String imageName = FileFuntions.namewithoutExtension(originalImage);
 		originalImageLAbelName.setText(imageName);
-		Font newFont = new Font("Arial", Font.BOLD, 12);
+		Font newFont = new Font("Arial", Font.BOLD, labelsFontSize);
 		originalImageLAbelName.setFont(newFont);
 		originalImageLAbelName.setHorizontalAlignment(JLabel.CENTER);
 		originalImageLAbelName.setVerticalAlignment(JLabel.CENTER);

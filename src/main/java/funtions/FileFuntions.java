@@ -29,6 +29,7 @@ import java.util.Timer;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -741,9 +742,10 @@ public class FileFuntions {
 	 * If a new version of the jar is find and the user wants to update, calls
 	 * the updateJar and kills the execution of this jar
 	 */
-	public static void createUpdater() {
+	public static void createUpdater(Boolean callFromMain) {
 		boolean newVersion = false;
 		PropertiesFileFuntions prop = new PropertiesFileFuntions();
+
 		String pathJArUpdater = getCurrentPAth() + File.separator + "updater" + File.separator
 				+ "jarUpdater-1.0-SNAPSHOT-jar-with-dependencies.jar";
 
@@ -753,10 +755,30 @@ public class FileFuntions {
 		// We check if there is a new version of the app
 		newVersion = checkNewVersionJAr(urlVersion, currentVersion);
 
-		if (newVersion) {// if there is a new version we ask to update or not
-			int op = JOptionPane.showConfirmDialog(null,
-					"A new update has been detected. \n Do you want to dowload it?", "Alerta!",
-					JOptionPane.YES_NO_OPTION);
+		if (newVersion) {// if there is a new version we ask to update or
+							// not
+
+			JCheckBox rememberChk = new JCheckBox("Don't show this message again.");
+			String msg = "A new update has been detected. \n Do you want to dowload it?";
+			Object[] msgContent = { msg, rememberChk };
+			int op = 0;
+
+			if (callFromMain) {
+				op = JOptionPane.showConfirmDialog(null, msgContent, "Alert!", JOptionPane.YES_NO_OPTION);
+				boolean remember = rememberChk.isSelected();
+				if (!remember) {
+					URL urlUpdater = getProgramProps();
+					if (urlUpdater != null) {
+						PropertiesFileFuntions propUpdater = new PropertiesFileFuntions(urlUpdater);
+						propUpdater.getProp().setProperty("showUpdater", String.valueOf(remember));
+						JOptionPane.showMessageDialog(null,
+								"You can update the program any time in: \n Properties -> Update");
+					}
+				}
+
+			} else {
+				op = JOptionPane.showConfirmDialog(null, msg, "Alert!", JOptionPane.YES_NO_OPTION);
+			}
 
 			if (op == 0) {
 				// if yes we call the updater jar
@@ -773,6 +795,7 @@ public class FileFuntions {
 
 			}
 		}
+
 	}
 
 	/**
@@ -853,5 +876,39 @@ public class FileFuntions {
 			e1.printStackTrace();
 		}
 		return location;
+	}
+
+	/**
+	 * url of the program properties for the general program or null in case of
+	 * error
+	 * 
+	 * @return url of the program properties for the general program or null in
+	 *         case of error
+	 */
+	public static URL getProgramProps() {
+		try {
+			return new URL(FileFuntions.getCurrentPAth() + File.separator +"updater"+ File.separator+"program.properties");
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Checks if the update pop out will be shown
+	 */
+	public static void CheckIfUpdate() {
+		URL urlUpdater = getProgramProps();
+		if (urlUpdater != null) {
+			PropertiesFileFuntions propUpdater = new PropertiesFileFuntions(urlUpdater);
+			Boolean showUpdater = Boolean.getBoolean(propUpdater.getProp().getProperty("showUpdater"));
+			if (showUpdater) {
+
+				createUpdater(true); // see if there is a new version of the
+										// app
+			}
+		}
+
 	}
 }

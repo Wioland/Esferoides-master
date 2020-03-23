@@ -27,7 +27,8 @@ public class LensMEnuButtons extends JPanel {
 	/**
 	 * Creates a pair of buttons to change the size of the buttons given
 	 * 
-	 * @param listImagesPrev map that contains the pair nameFile - JButton shown
+	 * @param listImagesPrev
+	 *            map that contains the pair nameFile - JButton shown
 	 */
 	public LensMEnuButtons(Map<String, JButton> listImagesPrev) {
 
@@ -68,11 +69,55 @@ public class LensMEnuButtons extends JPanel {
 
 	}
 
+	// GETTERS AND SETTERS
+	public int getMaximunSize() {
+		return maximunSize;
+	}
+
+	public void setMaximunSize(int maximunSize) {
+		this.maximunSize = maximunSize;
+	}
+
+	public int getMinimunSize() {
+		return minimunSize;
+	}
+
+	public void setMinimunSize(int minimunSize) {
+		this.minimunSize = minimunSize;
+	}
+
+	public JButton getPluSizeBu() {
+		return pluSizeBu;
+	}
+
+	public void setPluSizeBu(JButton pluSizeBu) {
+		this.pluSizeBu = pluSizeBu;
+	}
+
+	public JButton getMinSizeBu() {
+		return minSizeBu;
+	}
+
+	public void setMinSizeBu(JButton minSizeBu) {
+		this.minSizeBu = minSizeBu;
+	}
+
+	public int getSubtractAddSize() {
+		return subtractAddSize;
+	}
+
+	public void setSubtractAddSize(int subtractAddSize) {
+		this.subtractAddSize = subtractAddSize;
+	}
+
+	//METHODS
 	/**
 	 * Action to perform in the case of clicking one button
 	 * 
-	 * @param e          acction event happened
-	 * @param typeAction type of the action plus is '+' button minus if '-' button
+	 * @param e
+	 *            acction event happened
+	 * @param typeAction
+	 *            type of the action plus is '+' button minus if '-' button
 	 */
 	public void action(ActionEvent e, String typeAction) {
 
@@ -87,7 +132,8 @@ public class LensMEnuButtons extends JPanel {
 			}
 		}
 
-		// if we are not in the max or min size of the image we transform all the images
+		// if we are not in the max or min size of the image we transform all
+		// the images
 		// to match the new size an the repaint
 		if ((!minSizeIma && typeAction.equals("minus")) || (subtract == -subtractAddSize)) {
 
@@ -118,7 +164,8 @@ public class LensMEnuButtons extends JPanel {
 	/**
 	 * Checks if the image if already in its min or max size
 	 * 
-	 * @param heightSize the current height of the images
+	 * @param heightSize
+	 *            the current height of the images
 	 */
 	public void isMAxorMinSizeIma(int heightSize) {
 		if (heightSize < minimunSize) {
@@ -143,8 +190,8 @@ public class LensMEnuButtons extends JPanel {
 	}
 
 	/**
-	 * GEts the current height of the images taking the height of the first image in
-	 * the array of buttons
+	 * GEts the current height of the images taking the height of the first
+	 * image in the array of buttons
 	 * 
 	 * @return the height of the images
 	 */
@@ -156,8 +203,10 @@ public class LensMEnuButtons extends JPanel {
 	 * Changes the number of images per row shown depending on the height of the
 	 * images
 	 * 
-	 * @param heightSize       current image height
-	 * @param buttonParentPane panel that contains the buttons with the images
+	 * @param heightSize
+	 *            current image height
+	 * @param buttonParentPane
+	 *            panel that contains the buttons with the images
 	 */
 	public void numberOfImagesPerRow(int heightSize, ShowImages buttonParentPane) {
 

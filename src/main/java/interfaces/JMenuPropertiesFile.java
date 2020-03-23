@@ -26,10 +26,22 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 	public JMenuPropertiesFile() {
 
 		this.setText("Properties");
+		this.setName("Properties");
 
 		addMEnuItem("Current Directory", this);
 		addMEnuItem("Update", this);
 
+	}
+	
+	/**
+	 * creates a jmenu without menuitems with the name given
+	 * 
+	 * @param name name of the jmenu
+	 */
+	public JMenuPropertiesFile(String name) {
+
+		this.setText(name);
+		this.setName(name);
 	}
 
 	/**
@@ -46,8 +58,7 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 	}
 
 	/**
-	 * Adds the Action to perform if you try to change the directory in the
-	 * JMenuPanel And the action to add more allowed file extensions
+	 *Actions to perform when a menu item of the Jmenu is click
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -60,7 +71,7 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 
 		} else {
 			if (menuNAme == "Update") {
-				FileFuntions.createUpdater();
+				FileFuntions.createUpdater(false);
 			}
 		}
 	}
@@ -105,8 +116,12 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 
 	}
 
-	// Action to add more allowed extensions
-	public void addFileExtension(ActionEvent e) {
+	
+	/**
+	 *  Action to add more allowed extensions
+	 * 
+	 */
+	public void addFileExtension() {
 		PropertiesFileFuntions prop = new PropertiesFileFuntions();
 		String text = "The current extensions are: \n";
 		String ext = prop.getProp().getProperty("imageFilesExtensions");
@@ -133,7 +148,7 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 								JOptionPane.ERROR_MESSAGE);
 					}
 
-					actionPerformed(e);
+					addFileExtension();
 
 				}
 			}

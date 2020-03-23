@@ -39,6 +39,8 @@ public class TabPanel extends JTabbedPane {
 	private int originalImagesNumber = 0;
 	private ShowImages images;
 	private LensMEnuButtons lens;
+	private int timeTaskExcel=60;
+	private int timeTaskImages=60;
 
 	public TabPanel(String directory, boolean selectAlgo) {
 
@@ -192,9 +194,9 @@ public class TabPanel extends JTabbedPane {
 
 		// We save the last time the directory was changed
 		FileFuntions.addModificationDirectory(dir + "predictions");
-		FileFuntions.imagescheckWithTime(this, 60);
+		FileFuntions.imagescheckWithTime(this, timeTaskImages);
 
-		ExcelActions.excelcheckWithTime(this, dir, 60);
+		ExcelActions.excelcheckWithTime(this, dir, timeTaskExcel);
 
 	}
 

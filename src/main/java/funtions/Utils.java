@@ -25,12 +25,15 @@ import interfaces.ImageTreePanel;
 public class Utils {
 
 	/**
-	 * Method to search the list of files that satisfies a pattern in a folder and
-	 * it child folders. The list of files is stored in the result list.
+	 * Method to search the list of files that satisfies a pattern in a folder
+	 * and it child folders. The list of files is stored in the result list.
 	 * 
-	 * @param pattern pattern that the files must have
-	 * @param folder  folder to look for the files
-	 * @param result  array with the path of the files that have the pattern
+	 * @param pattern
+	 *            pattern that the files must have
+	 * @param folder
+	 *            folder to look for the files
+	 * @param result
+	 *            array with the path of the files that have the pattern
 	 */
 	public static void search(final String pattern, final File folder, List<String> result) {
 		for (final File f : folder.listFiles()) {
@@ -49,12 +52,15 @@ public class Utils {
 	}
 
 	/**
-	 * Method to search the list of files that satisfies a pattern in a folder. The
-	 * list of files is stored in the result list.
+	 * Method to search the list of files that satisfies a pattern in a folder.
+	 * The list of files is stored in the result list.
 	 * 
-	 * @param pattern pattern that the files must have
-	 * @param folder  folder to look for the files
-	 * @param result  array with the path of the files that have the pattern
+	 * @param pattern
+	 *            pattern that the files must have
+	 * @param folder
+	 *            folder to look for the files
+	 * @param result
+	 *            array with the path of the files that have the pattern
 	 */
 	public static void searchDirectory(final String pattern, final File folder, List<String> result) {
 		for (final File f : folder.listFiles()) {
@@ -70,21 +76,28 @@ public class Utils {
 
 	/**
 	 * 
-	 * Method to draw the results stored in the roi manager into the image, and then
-	 * save the image in a given directory. Since we know that there is only one
-	 * esferoide per image, we only keep the ROI with the biggest area stored in the
-	 * ROI Manager.
+	 * Method to draw the results stored in the roi manager into the image, and
+	 * then save the image in a given directory. Since we know that there is
+	 * only one esferoide per image, we only keep the ROI with the biggest area
+	 * stored in the ROI Manager.
 	 * 
-	 * @param dir       path of the directory to save the files
-	 * @param name      name of the image
-	 * @param imp1      image in witch the roi was detected
-	 * @param rm        roi manager that contains the information of the roi image
-	 * @param goodRows  row of the result table we wants to save
-	 * @param nameClass name of the algorithm used to creates the roi
-	 * @param temp      true if we are creating files in the temporal folder
+	 * @param dir
+	 *            path of the directory to save the files
+	 * @param name
+	 *            name of the image
+	 * @param imp1
+	 *            image in witch the roi was detected
+	 * @param rm
+	 *            roi manager that contains the information of the roi image
+	 * @param goodRows
+	 *            row of the result table we wants to save
+	 * @param nameClass
+	 *            name of the algorithm used to creates the roi
+	 * @param temp
+	 *            true if we are creating files in the temporal folder
 	 */
 	public static void showResultsAndSave(String dir, String name, ImagePlus imp1, RoiManager rm,
-			ArrayList<Integer> goodRows, String nameClass, boolean temp)  {
+			ArrayList<Integer> goodRows, String nameClass, boolean temp) {
 		IJ.run(imp1, "RGB Color", "");
 		File folder;
 
@@ -201,10 +214,11 @@ public class Utils {
 
 	/**
 	 * 
-	 * Method to obtain the area from a polygon. Probably, there is a most direct
-	 * method to do this.
+	 * Method to obtain the area from a polygon. Probably, there is a most
+	 * direct method to do this.
 	 * 
-	 * @param p the polygon we want to know the area
+	 * @param p
+	 *            the polygon we want to know the area
 	 * @return the area of the poligon
 	 */
 	private static final double getArea(Polygon p) {
@@ -222,10 +236,11 @@ public class Utils {
 	}
 
 	/**
-	 * Method to keep the ROI with the biggest area stored in the ROIManager, the
-	 * rest of ROIs are deleted.
+	 * Method to keep the ROI with the biggest area stored in the ROIManager,
+	 * the rest of ROIs are deleted.
 	 * 
-	 * @param rm roi manager with all the measures
+	 * @param rm
+	 *            roi manager with all the measures
 	 */
 	private static void keepBiggestROI(RoiManager rm) {
 
@@ -254,9 +269,11 @@ public class Utils {
 	/**
 	 * Get the files from a directory with a given extension
 	 * 
-	 * @param format the extension of the file
-	 * @param result array with the path of the files with that extension in the
-	 *               folder
+	 * @param format
+	 *            the extension of the file
+	 * @param result
+	 *            array with the path of the files with that extension in the
+	 *            folder
 	 * @return the path of the directory
 	 */
 	public static String getByFormat(String format, List<String> result) {
@@ -281,8 +298,10 @@ public class Utils {
 	/**
 	 * Counts the pixels below the threshold
 	 * 
-	 * @param imp1      imagePlus to process
-	 * @param threshold threshold
+	 * @param imp1
+	 *            imagePlus to process
+	 * @param threshold
+	 *            threshold
 	 * @return number of pixels under the threshold
 	 */
 	public static int countBelowThreshold(ImagePlus imp1, int threshold) {
@@ -302,11 +321,15 @@ public class Utils {
 	/**
 	 * Counts between the threshold
 	 * 
-	 * @param imp1       imagePlus to process
-	 * @param threshold1 upper threshold
-	 * @param threshold2 under threshold
-	 * @param num	num to check the threshold
-	 * @return	true if in the middle of the threshold
+	 * @param imp1
+	 *            imagePlus to process
+	 * @param threshold1
+	 *            upper threshold
+	 * @param threshold2
+	 *            under threshold
+	 * @param num
+	 *            num to check the threshold
+	 * @return true if in the middle of the threshold
 	 */
 	public static boolean countBetweenThresholdOver(ImagePlus imp1, int threshold1, int threshold2, int num) {
 
@@ -337,6 +360,12 @@ public class Utils {
 
 	}
 
+	/**
+	 * Gets the current directory the one that the user has selected and the
+	 * program in
+	 * 
+	 * @return path of the current directory
+	 */
 	public static String getCurrentDirectory() {
 
 		Window[] openWindows = Window.getWindows();
@@ -356,8 +385,10 @@ public class Utils {
 	 * Creates the Main frame or looks if there is a current one to repain
 	 * 
 	 * 
-	 * @param dc         working directory
-	 * @param folderView ImageTreePanel that shows the tree directory
+	 * @param dc
+	 *            working directory
+	 * @param folderView
+	 *            ImageTreePanel that shows the tree directory
 	 */
 	public static void callProgram(String dc, GeneralView geView) {
 
@@ -400,19 +431,23 @@ public class Utils {
 	}
 
 	/**
-	 * Checks if there is a main frame. if it is you repaint the tabpanel if not you
-	 * create a new one
+	 * Checks if there is a main frame. if it is you repaint the tabpanel if not
+	 * you create a new one
 	 * 
-	 * @param folderView imageTreepanel that shows the tree directory
-	 * @param dc         the path of the current directory
-	 * @param selectAlgo true if you select previously detect esferoide and false
-	 *                   otherwise
+	 * @param folderView
+	 *            imageTreepanel that shows the tree directory
+	 * @param dc
+	 *            the path of the current directory
+	 * @param selectAlgo
+	 *            true if you select previously detect esferoide and false
+	 *            otherwise
 	 */
 	public static void createGeneralViewOrNot(GeneralView geView, String dc, boolean selectAlgo) {
-		ImageTreePanel folderView=geView.getImageTree();
-		if (folderView == null) { // if there isn't a main/GenearalWiew Jframe open we create a new one
+		ImageTreePanel folderView = geView.getImageTree();
+		if (folderView == null) { // if there isn't a main/GenearalWiew Jframe
+									// open we create a new one
 			geView.createRestOfConttext(dc, selectAlgo);
-			//new GeneralView(dc, selectAlgo);
+			// new GeneralView(dc, selectAlgo);
 		} else {
 			// We repaint the tab panel with the new content
 			folderView.repaintTabPanel(selectAlgo);

@@ -1,6 +1,8 @@
 package funtions;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import ij.io.DirectoryChooser;
 import interfaces.GeneralView;
@@ -9,8 +11,8 @@ public class Main {
 
 	public static void main(String[] args) {
 		GeneralView geView = new GeneralView(); // the main JFrame is create
-		FileFuntions.createUpdater(); // see if there is a new version of the
-										// app
+
+		FileFuntions.CheckIfUpdate();
 		FileFuntions.chargePlugins(); // imageJ options
 
 		// Choose the directory to work with
@@ -36,5 +38,7 @@ public class Main {
 		}
 
 	}
+
+	
 
 }
