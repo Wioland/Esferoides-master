@@ -738,9 +738,13 @@ public class FileFuntions {
 		return originalIma;
 	}
 
+	
 	/**
 	 * If a new version of the jar is find and the user wants to update, calls
 	 * the updateJar and kills the execution of this jar
+	 * 
+	 * @param callFromMain	true if the method is call in the main method
+	 * 						false if it is call in the JMEnu
 	 */
 	public static void createUpdater(Boolean callFromMain) {
 		boolean newVersion = false;

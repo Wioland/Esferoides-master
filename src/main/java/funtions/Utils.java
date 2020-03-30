@@ -400,14 +400,12 @@ public class Utils {
 
 	// METHODS
 
+	
 	/**
-	 * Creates the Main frame or looks if there is a current one to repain
+	 * Creates the Main frame or looks if there is a current one to repaint
 	 * 
-	 * 
-	 * @param dc
-	 *            working directory
-	 * @param folderView
-	 *            ImageTreePanel that shows the tree directory
+	 * @param dc	working directory
+	 * @param geView	main JFrame of the program
 	 */
 	public static void callProgram(String dc, GeneralView geView) {
 
@@ -422,9 +420,9 @@ public class Utils {
 
 	/**
 	 * JoptionPanel that ask you which action do you what to perform (DEtect
-	 * esferoide or view results)
+	 * esferoid or view results)
 	 * 
-	 * @return true if detected esferoide false if view result
+	 * @return true if detected esferoid false if view result
 	 */
 	public static boolean optionAction() {
 
@@ -449,16 +447,14 @@ public class Utils {
 		return b;
 	}
 
+	
 	/**
-	 * Checks if there is a main frame. if it is you repaint the tabpanel if not
+	 *  Checks if there is a main frame. if it is you repaint the tabpanel if not
 	 * you create a new one
 	 * 
-	 * @param folderView
-	 *            imageTreepanel that shows the tree directory
-	 * @param dc
-	 *            the path of the current directory
-	 * @param selectAlgo
-	 *            true if you select previously detect esferoide and false
+	 * @param geView	main JFrame of the program
+	 * @param dc	 the path of the current directory
+	 * @param selectAlgo true if you select previously detect esferoide and false
 	 *            otherwise
 	 */
 	public static void createGeneralViewOrNot(GeneralView geView, String dc, boolean selectAlgo) {
