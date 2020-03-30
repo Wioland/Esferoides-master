@@ -76,6 +76,9 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 		}
 	}
 
+	/**
+	 * Action to perform in order to change the current directory
+	 */
 	public void changeDirectory() {
 		GeneralView mainFrame = (GeneralView) this.getParent().getParent().getParent().getParent();
 		String text = "The current directory is: \n" + mainFrame.getDir() + "\n Do you what to change it?";

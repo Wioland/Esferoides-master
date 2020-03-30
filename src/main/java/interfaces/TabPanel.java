@@ -39,8 +39,8 @@ public class TabPanel extends JTabbedPane {
 	private int originalImagesNumber = 0;
 	private ShowImages images;
 	private LensMEnuButtons lens;
-	private int timeTaskExcel=60;
-	private int timeTaskImages=60;
+	private int timeTaskExcel = 60;
+	private int timeTaskImages = 60;
 
 	public TabPanel(String directory, boolean selectAlgo) {
 
@@ -105,9 +105,11 @@ public class TabPanel extends JTabbedPane {
 	// METHODS
 
 	/**
-	 * Function use to paint the tabpanel when there is tiff file in the directory
+	 * Function use to paint the tabpanel when there is tiff file in the
+	 * directory
 	 * 
-	 * @param directory the current directory
+	 * @param directory
+	 *            the current directory
 	 */
 	public void alreadyImageTiffFolderTab(String directory) {
 		// We search for the excel files
@@ -204,7 +206,8 @@ public class TabPanel extends JTabbedPane {
 	 * Function to use when you wants to paint the tabpanel when you have just
 	 * detected new esferoides with all the algorithms
 	 * 
-	 * @param directory the current directory
+	 * @param directory
+	 *            the current directory
 	 */
 	public void selectAlgorithmImagesTab(String directory) {
 
@@ -214,8 +217,10 @@ public class TabPanel extends JTabbedPane {
 		originalNewSelected = new HashMap<String, JButton>();
 		int i = 0;
 
-		// We look what type of format are the images of the current folder if it has
-		// files, for it we search the extension files we accept until the result list
+		// We look what type of format are the images of the current folder if
+		// it has
+		// files, for it we search the extension files we accept until the
+		// result list
 		// isn't empty or we haven't more extensions to check.
 
 		while (result.isEmpty() && i < listExtensions.size()) {
@@ -225,15 +230,48 @@ public class TabPanel extends JTabbedPane {
 			Utils.searchDirectory(".*\\." + listExtensions.get(i), new File(directory), result);
 			i++;
 		}
+
 		// If the folder is "empty" (hasn't go files with the extensions we are
 		// looking),
-		// we show that the folder is empty and call the main function to select another
+		// we show that the folder is empty and call the main function to select
+		// another
 		// folder and do actions with it
 		if (result.isEmpty()) {
 			alreadyImageTiffFolderTab(directory);
 
 			// if there is images we proceed to detect the esferoid
 		} else {
+
+			// check if in that folder there is more types of images and tell
+			// the user that only one type of images is going to be detected
+			if (i < listExtensions.size()) {
+				boolean containsExt = false;
+				List<String> otherExt = new ArrayList<String>();
+
+				while (i < listExtensions.size()) {
+					if (listExtensions.get(i).contentEquals("tiff")) {
+						i++;
+					}
+					containsExt = Utils.containsExtension(".*\\." + listExtensions.get(i), new File(directory));
+					if (containsExt) {
+						otherExt.add(listExtensions.get(i));
+					}
+					i++;
+				}
+
+				if (otherExt != null) {
+					String ex = "";
+					for (String string : otherExt) {
+						ex += " " + string;
+					}
+
+					JOptionPane.showMessageDialog(null,
+							"There is also files with this extensions:" + ex + "\n" + "But only the "
+									+ FileFuntions.extensionwithoutName(result.get(0))
+									+ " images are going to be detected");
+				}
+
+			}
 
 			// run the methods to process the images
 			new Methods(directory, result);
@@ -280,11 +318,13 @@ public class TabPanel extends JTabbedPane {
 	}
 
 	/**
-	 * Changes the selected images with the new selected one and shows the button
-	 * background yellow to show that that is the selected image
+	 * Changes the selected images with the new selected one and shows the
+	 * button background yellow to show that that is the selected image
 	 * 
-	 * @param newImage path of the old image selected
-	 * @param oldImage path of the new image selected
+	 * @param newImage
+	 *            path of the old image selected
+	 * @param oldImage
+	 *            path of the new image selected
 	 */
 	public void changeSelectedImage(String newImage, String oldImage) {
 
@@ -304,7 +344,8 @@ public class TabPanel extends JTabbedPane {
 	/**
 	 * Add to the given jpanel the jButtons save selection y clean selection
 	 * 
-	 * @param selectButtons jpanel to add the button
+	 * @param selectButtons
+	 *            jpanel to add the button
 	 */
 	private void addSelectedButtons(JPanel selectButtons) {
 
@@ -318,7 +359,8 @@ public class TabPanel extends JTabbedPane {
 			}
 		});
 
-		// puts the background of all the selected buttons to the original color and
+		// puts the background of all the selected buttons to the original color
+		// and
 		// cleans the map
 		// that contains witch button was selected
 		cleanSelection.addMouseListener(new MouseAdapter() {
@@ -337,8 +379,8 @@ public class TabPanel extends JTabbedPane {
 
 	/**
 	 * Saves the files selected from a group of buttons If there is already a
-	 * predictions folder and it isn't empty we ask for deleting the folder or to
-	 * choose the files to exchange
+	 * predictions folder and it isn't empty we ask for deleting the folder or
+	 * to choose the files to exchange
 	 */
 	private void saveImagesSelected() {
 		String dirPredictions = getDir();
@@ -351,12 +393,14 @@ public class TabPanel extends JTabbedPane {
 		File folder = new File(dirPredictions);
 		File tempoFolder = new File(dirPredictions.replace("predictions", "temporal"));
 
-		// if there isn't a button selected in each category we ask to select all
+		// if there isn't a button selected in each category we ask to select
+		// all
 		if (getOriginalNewSelected().values().isEmpty()
 				|| getOriginalNewSelected().values().size() != originalImagesNumber) {
 			JOptionPane.showMessageDialog(null, "Please select an image of each");
 		} else {
-			// if there is a predictions folder we ask to replace all files or to choose the
+			// if there is a predictions folder we ask to replace all files or
+			// to choose the
 			// ones to replace
 			if (folder.exists() && folder.listFiles().length != 0) {
 
@@ -366,7 +410,8 @@ public class TabPanel extends JTabbedPane {
 				int op = JOptionPane.showOptionDialog(null, message, "Warning", JOptionPane.YES_NO_OPTION, 2, null,
 						opciones, "Replace all");
 
-				if (op == 0) {// we delete the folder predictions and the excel and move save the new ones
+				if (op == 0) {// we delete the folder predictions and the excel
+								// and move save the new ones
 
 					FileFuntions.deleteFolder(folder);
 
@@ -394,7 +439,8 @@ public class TabPanel extends JTabbedPane {
 
 				try {
 
-					// merge all the excels in one and save the selected files in the new location
+					// merge all the excels in one and save the selected files
+					// in the new location
 					folder.mkdir();
 					moveFinalFilesToPredictions();
 
@@ -418,9 +464,9 @@ public class TabPanel extends JTabbedPane {
 	}
 
 	/**
-	 * Saves the selected files (tiff file and roi) in the temporal folder to the
-	 * predictions folder and merge the excels to have the results.xls excel with
-	 * all the data
+	 * Saves the selected files (tiff file and roi) in the temporal folder to
+	 * the predictions folder and merge the excels to have the results.xls excel
+	 * with all the data
 	 */
 	public void moveFinalFilesToPredictions() {
 		OurProgressBar pb = new OurProgressBar(getJFrameGeneral());
@@ -437,8 +483,8 @@ public class TabPanel extends JTabbedPane {
 			nameNoExtension = FileFuntions.getKey(getOriginalNewSelected(), nameFile);
 			nameNoPAth = FileFuntions.namewithoutExtension(nameFile.getName());
 
-			auxName = auxName.replace(nameNoPAth, nameNoExtension + "_pred"); // changing the name of the algorithm with
-																				// the original one
+			// changing the name of the algorithm with the original one
+			auxName = auxName.replace(nameNoPAth, nameNoExtension + "_pred");
 			auxFile.renameTo(new File(auxName));
 
 			auxFile = new File(nameFile.getName().replace("_pred.tiff", "_results.xls"));
@@ -471,13 +517,15 @@ public class TabPanel extends JTabbedPane {
 	}
 
 	/**
-	 * If there is no tiff files in the current director or the predictions folder,
-	 * we create a tab with an enable text to notify the user
+	 * If there is no tiff files in the current director or the predictions
+	 * folder, we create a tab with an enable text to notify the user
 	 * 
 	 * The same if there isn't any result excel in the current directory
 	 * 
-	 * @param tabName The tabpanel to add the new tab
-	 * @param jp      contains the JTablepanel
+	 * @param tabName
+	 *            The tabpanel to add the new tab
+	 * @param jp
+	 *            contains the JTablepanel
 	 */
 	public void noFileText(String tabName, JViewport jp) {
 

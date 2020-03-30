@@ -73,6 +73,25 @@ public class Utils {
 
 		}
 	}
+	/**
+	 * Check if there is any file with the pattern given
+	 * 
+	 * @param pattern	type of file to search
+	 * @param folder	the folder in with want to search the files
+	 * @return true id there is a file with that pattern
+	 */
+	public static boolean containsExtension(final String pattern, final File folder) {
+		for (final File f : folder.listFiles()) {
+
+			if (f.isFile()) {
+				if (f.getName().matches(pattern)) {
+					return true;
+				}
+			}
+
+		}
+		return false;
+	}
 
 	/**
 	 * 

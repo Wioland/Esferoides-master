@@ -35,6 +35,14 @@ public class ViewImagesBigger {
 	private List<ImageIcon> newDetectedImages;
 	private JPanelComparer JPComparer;
 
+	/**
+	 * Creates the tab that shows the image selected in its full size
+	 * 
+	 * @param image	selected image
+	 * @param listImages	images of the new images created by the algorithms
+	 * @param tp	the parent of this component and the place where it is going to be shown
+	 * @param selectALgo	true if algorithm comparer view to create a comparer
+	 */
 	public ViewImagesBigger(Icon image, List<ImageIcon> listImages, Component tp, boolean selectALgo) {
 
 		this.listImages = listImages;
@@ -92,6 +100,13 @@ public class ViewImagesBigger {
 
 	}
 
+	/**
+	 * Creates the tab that shows the imagen selected in its full size.
+	 * 
+	 * @param imagesInPredicctions	paths of the images tiff in prediction folder
+	 * @param newImagesSelected original name - button/image selected for this image
+	 * @param tp	the parent of this component and the place where it is going to be shown
+	 */
 	public ViewImagesBigger(List<String> imagesInPredicctions, Map<String, JButton> newImagesSelected, TabPanel tp) {
 
 		this.newDetectedImages = new ArrayList<ImageIcon>();

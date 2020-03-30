@@ -807,6 +807,10 @@ public class FileFuntions {
 				}
 
 			}
+		}else{
+			if(!callFromMain){
+				JOptionPane.showMessageDialog(null, "You already have the newest version");
+			}
 		}
 
 	}

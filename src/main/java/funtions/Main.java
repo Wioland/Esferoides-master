@@ -10,7 +10,7 @@ public class Main {
 	public static void main(String[] args) {
 		GeneralView geView = new GeneralView(); // the main JFrame is create
 
-		FileFuntions.CheckIfUpdate();
+		FileFuntions.CheckIfUpdate();	//Check if update the program
 		FileFuntions.chargePlugins(); // imageJ options
 
 		// Choose the directory to work with
