@@ -140,6 +140,6 @@ public class Methods {
 			JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
 		}
 
+	
 	}
-
 }
