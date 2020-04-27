@@ -1,6 +1,8 @@
 package funtions;
 
 import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedInputStream;
@@ -33,6 +35,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JViewport;
 import javax.swing.tree.TreePath;
 
@@ -43,6 +46,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import ij.IJ;
 import ij.ImageJ;
 import interfaces.JPanelComparer;
+import interfaces.LensMEnuButtons;
 import interfaces.ShowImages;
 import interfaces.TabPanel;
 import interfaces.ViewImagesBigger;
@@ -340,68 +344,99 @@ public class FileFuntions {
 					"Warning", JOptionPane.WARNING_MESSAGE);
 			addModificationDirectory(directory);
 
-			// we paint again the images
-			JPanel sp = (JPanel) tp.getComponent(0);
-			JScrollPane s = (JScrollPane) sp.getComponent(1);
-			JViewport jv = (JViewport) s.getComponent(0);
-			ShowImages images = (ShowImages) jv.getComponent(0);
+			if (tp.getComponent(0).getClass() != JPanel.class) {
 
-			List<String> actualImages = new ArrayList<String>();
-			Utils.search(".*\\.tiff", new File(directory), actualImages);
-			Collections.sort(actualImages);
+				ShowImages images = new ShowImages(directory, tp);
 
-			checkStillExist(images, actualImages, tp); // check if the images of
-														// the buttons still
-														// exist
+				if (images.getComponents().length != 0) {
 
-			if (actualImages.size() != 0) { // if we have new file we add them
+					LensMEnuButtons lens = new LensMEnuButtons(images.getListImagesPrev());
+					JPanel splitPane = tp.createJPanelToShowImages(images, lens);
 
-				ImageIcon iconoEscala;
-				JButton imageView;
-				File faux;
-				int height = tp.getLens().actualImageHeight();
+					tp.setComponentAt(0, splitPane);
+					tp.repaint();
+				}
 
-				for (String name : actualImages) {
-					// convert the format to show the image
-					ImageIcon image = ShowTiff.showTiffToImageIcon(name);
-					image.setDescription(name);
+			} else {
+				// we paint again the images
+				JPanel sp = (JPanel) tp.getComponent(0);
+				JScrollPane s = (JScrollPane) sp.getComponent(1);
+				JViewport jv = (JViewport) s.getComponent(0);
+				ShowImages images = (ShowImages) jv.getComponent(0);
 
-					// add the button
-					// we create an icon with the specific measures
-					iconoEscala = new ImageIcon(
-							image.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
-					imageView = new JButton(iconoEscala);
-					imageView.setIcon(iconoEscala);
-					imageView.setName(name);
-					images.getImageIcon().add(image);
-					imageView.repaint();
+				List<String> actualImages = new ArrayList<String>();
+				Utils.search(".*\\.tiff", new File(directory), actualImages);
+				Collections.sort(actualImages);
 
-					imageView.addMouseListener(new MouseAdapter() {
-						public void mouseClicked(MouseEvent e) {
+				checkStillExist(images, actualImages, tp); // check if the
+															// images of
+															// the buttons still
+															// exist
 
-							String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
-							if (tp != null) {
-								if (tp.indexOfTab(nombreTab) == -1) {
-									new ViewImagesBigger(image, images.getImageIcon(), tp, false);
+				if (actualImages.size() != 0) { // if we have new file we add
+												// them
+
+					ImageIcon iconoEscala;
+					JButton imageView;
+					File faux;
+					int height = tp.getLens().actualImageHeight();
+
+					for (String name : actualImages) {
+						// convert the format to show the image
+						ImageIcon image = ShowTiff.showTiffToImageIcon(name);
+						image.setDescription(name);
+
+						// add the button
+						// we create an icon with the specific measures
+						iconoEscala = new ImageIcon(
+								image.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
+						imageView = new JButton(iconoEscala);
+						imageView.setIcon(iconoEscala);
+						imageView.setName(name);
+						images.getImageIcon().add(image);
+						imageView.repaint();
+
+						imageView.addMouseListener(new MouseAdapter() {
+							public void mouseClicked(MouseEvent e) {
+
+								String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
+								if (tp != null) {
+									if (tp.indexOfTab(nombreTab) == -1) {
+										new ViewImagesBigger(image, images.getImageIcon(), tp, false);
+									}
+
 								}
 
 							}
+						});
 
-						}
-					});
+						images.getListImagesPrev().put(name, imageView);
 
-					images.getListImagesPrev().put(name, imageView);
+						faux = new File(name);
+						images.getLastModifyImage().put(name, faux.lastModified());
 
-					faux = new File(name);
-					images.getLastModifyImage().put(name, faux.lastModified());
-
-					images.add(imageView);
+						images.add(imageView);
+					}
 				}
+
+				
+				images.repaint();
+				
+				
+				if(images.getListImages().isEmpty()){ //If we dont have images we put the no file message
+					JTextArea j = new JTextArea();
+					j.setText("There is no such file in this folder");
+					j.setEnabled(false);
+					j.setName("Image");
+
+					JScrollPane scroll = new JScrollPane(j);
+					tp.setComponentAt(0, scroll);
+					tp.repaint();
+				}
+
 			}
-
-			images.repaint();
-
 		}
+
 	}
 
 	/**
@@ -738,13 +773,13 @@ public class FileFuntions {
 		return originalIma;
 	}
 
-	
 	/**
 	 * If a new version of the jar is find and the user wants to update, calls
 	 * the updateJar and kills the execution of this jar
 	 * 
-	 * @param callFromMain	true if the method is call in the main method
-	 * 						false if it is call in the JMEnu
+	 * @param callFromMain
+	 *            true if the method is call in the main method false if it is
+	 *            call in the JMEnu
 	 */
 	public static void createUpdater(Boolean callFromMain) {
 		boolean newVersion = false;
@@ -811,8 +846,8 @@ public class FileFuntions {
 				}
 
 			}
-		}else{
-			if(!callFromMain){
+		} else {
+			if (!callFromMain) {
 				JOptionPane.showMessageDialog(null, "You already have the newest version");
 			}
 		}

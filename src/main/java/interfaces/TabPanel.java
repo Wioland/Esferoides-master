@@ -134,22 +134,11 @@ public class TabPanel extends JTabbedPane {
 			noFileText("Images", null);
 			originalIma = FileFuntions.isOriginalImage(folder);
 		} else {
-			JPanel splitPane = new JPanel(new GridBagLayout());
 			lens = new LensMEnuButtons(images.getListImagesPrev());
-			JScrollPane s = new JScrollPane(images);
-			GridBagConstraints constraints = new GridBagConstraints();
-			constraints.fill = GridBagConstraints.BOTH;
-
-			constraints.gridx = 0;
-			constraints.gridy = 0;
-
-			splitPane.add(lens, constraints);
-
-			constraints.weightx = 1;
-			constraints.weighty = 1;
-			constraints.gridx = 0;
-			constraints.gridy = 1;
-			splitPane.add(s, constraints);
+			
+			JPanel splitPane = createJPanelToShowImages(images,lens);
+					
+			
 
 			addTab("Images", splitPane);
 
@@ -200,6 +189,26 @@ public class TabPanel extends JTabbedPane {
 
 		ExcelActions.excelcheckWithTime(this, dir, timeTaskExcel);
 
+	}
+
+	public JPanel createJPanelToShowImages(ShowImages images, LensMEnuButtons lens) {
+		JPanel splitPane = new JPanel(new GridBagLayout());
+		
+		JScrollPane s = new JScrollPane(images);
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+
+		splitPane.add(lens, constraints);
+
+		constraints.weightx = 1;
+		constraints.weighty = 1;
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		splitPane.add(s, constraints);
+		return splitPane;
 	}
 
 	/**
