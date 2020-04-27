@@ -274,7 +274,7 @@ public class TabPanel extends JTabbedPane {
 			}
 
 			// run the methods to process the images
-			new Methods(directory, result);
+			new Methods(directory, result,false);
 			originalImagesNumber = result.size();
 
 			// For each image we create a showimage

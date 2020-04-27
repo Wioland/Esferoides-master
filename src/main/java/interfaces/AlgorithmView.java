@@ -64,7 +64,7 @@ public class AlgorithmView extends JFrame {
 
 		List<String> result = new ArrayList<String>();
 		result.add(path);
-		new Methods(directory, result);
+		new Methods(directory, result,true);
 
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 

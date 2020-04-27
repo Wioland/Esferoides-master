@@ -424,7 +424,7 @@ public class ViewImagesBigger {
 		cancelBu.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				int op = JOptionPane.showConfirmDialog(tp.getJFrameGeneral(),
-						"Do you like to finish saving/selecting new data?");
+						"Do you like to finish saving/selecting new data?","Exit saving selection",JOptionPane.YES_NO_OPTION);
 				// If yes change the tab panel to show the view of the content of the
 				// folder/directory
 				if (op == 0) {

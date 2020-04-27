@@ -2,39 +2,75 @@ package esferoides;
 
 public class EsferoidProcessorFactory {
 
-	public static EsferoidProcessor createEsferoidProcessor(String name) {
+	public static EsferoidProcessor createEsferoidProcessor(String name, boolean all) {
 
 		EsferoidProcessor esferoidProcessor = null;
 
 		switch (name) {
 		case "suspension": {
-			esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesFluo,
-					DetectEsferoidMethods::detectEsferoideFluoSuspension);
+			if (all) {
+				esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesFluo,
+						DetectEsferoidMethods::detectEsferoideFluoSuspensionALLPRocess);
+			} else {
+				esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesFluo,
+						DetectEsferoidMethods::detectEsferoideFluoSuspension);
+			}
+
 			break;
 		}
 		case "colageno": {
-			esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesFluo,
-					DetectEsferoidMethods::detectEsferoideFluoColageno);
+			if (all) {
+				esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesFluo,
+						DetectEsferoidMethods::detectEsferoideFluoColagenoALLPRocess);
+			} else {
+				esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesFluo,
+						DetectEsferoidMethods::detectEsferoideFluoColageno);
+			}
+
 			break;
 		}
 		case "Hector no fluo v1": {
-			esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesHectorNoFluo,
-					DetectEsferoidMethods::detectEsferoideHectorv1);
+			if (all) {
+				esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesHectorNoFluo,
+						DetectEsferoidMethods::detectEsferoideHectorv1ALLPRocess);
+			} else {
+				esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesHectorNoFluo,
+						DetectEsferoidMethods::detectEsferoideHectorv1);
+			}
+
 			break;
 		}
 		case "Hector no fluo v2": {
-			esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesHectorNoFluo,
-					DetectEsferoidMethods::detectEsferoideHectorv2);
+			if (all) {
+				esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesHectorNoFluo,
+						DetectEsferoidMethods::detectEsferoideHectorv2ALLPRocess);
+			} else {
+				esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesHectorNoFluo,
+						DetectEsferoidMethods::detectEsferoideHectorv2);
+			}
+
 			break;
 		}
 		case "Teodora v1": {
-			esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesTeodora,
-					DetectEsferoidMethods::detectEsferoideTeodora);
+			if (all) {
+				esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesTeodora,
+						DetectEsferoidMethods::detectEsferoideTeodoraALLPRocess);
+			} else {
+				esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesTeodora,
+						DetectEsferoidMethods::detectEsferoideTeodora);
+			}
+
 			break;
 		}
 		case "Teodora Big": {
-			esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesTeodora,
-					DetectEsferoidMethods::detectEsferoideTeodoraBig);
+			if (all) {
+				esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesTeodora,
+						DetectEsferoidMethods::detectEsferoideTeodoraBigALLPRocess);
+			} else {
+				esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesTeodora,
+						DetectEsferoidMethods::detectEsferoideTeodoraBig);
+			}
+
 			break;
 		}
 

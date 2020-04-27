@@ -25,8 +25,8 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 
 	public JMenuPropertiesFile() {
 
-		this.setText("Properties");
-		this.setName("Properties");
+		this.setText("Options");
+		this.setName("Options");
 
 		addMEnuItem("Current Directory", this);
 		addMEnuItem("Update", this);
@@ -82,35 +82,42 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 	public void changeDirectory() {
 		GeneralView mainFrame = (GeneralView) this.getParent().getParent().getParent().getParent();
 		String text = "The current directory is: \n" + mainFrame.getDir() + "\n Do you what to change it?";
-		int op = JOptionPane.showConfirmDialog(mainFrame, text);
+		int op = JOptionPane.showConfirmDialog(mainFrame, text,"Change directory",JOptionPane.YES_NO_OPTION);
 
 		if (op == 0) {
 
 			DirectoryChooser dc = new DirectoryChooser("Select new directory");
 
-			// Closed all the windows that aren't the main frame
-			Window[] s = Window.getWindows();
-			for (Window window : s) {
-				if (window.getClass().equals(AlgorithmView.class)) {
-					window.dispose();
-				}
-			}
-
-			// Close the imageJ windows
-			if (IJ.isWindows()) {
-				IJ.run("Close All");
-				if (IJ.isResultsWindow()) {
-					IJ.selectWindow("Results");
-					IJ.run("Close");
-					IJ.selectWindow("ROI Manager");
-					IJ.run("Close");
+			if(dc.getDirectory()!=null){
+				// Closed all the windows that aren't the main frame
+				Window[] s = Window.getWindows();
+				for (Window window : s) {
+					if (window.getClass().equals(AlgorithmView.class)) {
+						window.dispose();
+					}
 				}
 
+				// Close the imageJ windows
+				if (IJ.isWindows()) {
+					IJ.run("Close All");
+					if (IJ.isResultsWindow()) {
+						IJ.selectWindow("Results");
+						IJ.run("Close");
+						IJ.selectWindow("ROI Manager");
+						IJ.run("Close");
+					}
+
+				}
+
+				mainFrame.paintMainFRame(dc.getDirectory());
+				JOptionPane.showMessageDialog(mainFrame, "Directory changed to " + dc.getDirectory());
+
+			}else {
+
+				JOptionPane.showMessageDialog(mainFrame, "Directory not changed");
+
 			}
-
-			mainFrame.paintMainFRame(dc.getDirectory());
-			JOptionPane.showMessageDialog(mainFrame, "Directory changed to " + dc.getDirectory());
-
+			
 		} else {
 
 			JOptionPane.showMessageDialog(mainFrame, "Directory not changed");

@@ -24,21 +24,21 @@ public class Methods {
 	 * @param directory current directory
 	 * @param result    List of the file paths of the current directory
 	 */
-	public Methods(String directory, List<String> result) {
+	public Methods(String directory, List<String> result,boolean all) {
 
 		temporalFolder = new File(directory + "temporal");
 
 		for (String type : algorithms) {
 			if (type.equals("suspension") || type.equals("colageno")) {
 				if (checkIfFluoImages(result)) {
-					createImagesMetods(result, directory, type);
+					createImagesMetods(result, directory, type,all);
 				}
 
 			} else {
 				if ((type.contains("Hector") && FileFuntions.isExtension(result, "tif"))
 						|| (type.equals("Teodora v1") && FileFuntions.isExtension(result, "nd2"))
 						|| (type.equals("Teodora Big") && FileFuntions.isExtension(result, "nd2"))) {
-					createImagesMetods(result, directory, type);
+					createImagesMetods(result, directory, type,all);
 				}
 
 			}
@@ -105,7 +105,7 @@ public class Methods {
 	 * @param directory temporal directory to store the images
 	 * @param type      the method used to create the images
 	 */
-	private void createImagesMetods(List<String> result, String directory, String type) {
+	private void createImagesMetods(List<String> result, String directory, String type,boolean all) {
 		try {
 
 			// In order to only take the tif images without the fluo ones
@@ -118,14 +118,14 @@ public class Methods {
 					}
 				}
 			}
-
+ 
 			// We initialize the ResultsTable
 			// ResultsTable rt = new ResultsTable();
 			ImporterOptions options = new ImporterOptions();
 
 			// We construct the EsferoidProcessorObject
 
-			EsferoidProcessor esferoidProcessor = EsferoidProcessorFactory.createEsferoidProcessor(type);
+			EsferoidProcessor esferoidProcessor = EsferoidProcessorFactory.createEsferoidProcessor(type,all);
 
 			// OurProgressBar pb = new OurProgressBar(null);
 			goodRows = new ArrayList<>();
