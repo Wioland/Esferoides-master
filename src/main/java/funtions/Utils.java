@@ -1,6 +1,7 @@
 package funtions;
 
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.Window;
 import java.io.File;
 import java.util.ArrayList;
@@ -11,12 +12,17 @@ import javax.swing.JOptionPane;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.Undo;
+import ij.gui.EllipseRoi;
+import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.io.DirectoryChooser;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.filter.Analyzer;
+import ij.plugin.frame.LineWidthAdjuster;
 import ij.plugin.frame.RoiManager;
+import ij.process.FloatPolygon;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
 import interfaces.GeneralView;
@@ -63,7 +69,8 @@ public class Utils {
 	 *            array with the path of the files that have the pattern
 	 */
 	public static void searchDirectory(final String pattern, final File folder, List<String> result) {
-		for (final File f : folder.listFiles()) {
+		if(folder.listFiles()!=null){
+			for (final File f : folder.listFiles()) {
 
 			if (f.isFile()) {
 				if (f.getName().matches(pattern)) {
@@ -72,6 +79,8 @@ public class Utils {
 			}
 
 		}
+		}
+		
 	}
 	/**
 	 * Check if there is any file with the pattern given
@@ -145,15 +154,21 @@ public class Utils {
 			Roi[] roi = rm.getRoisAsArray();
 
 			if (roi.length != 0) {
-
-				imp1.show();
-				rm.select(0);
-				IJ.run(imp1, "Fit Spline", "");
-				rm.addRoi(imp1.getRoi());
-				rm.select(0);
+				SelectionModify sM=new SelectionModify(imp1);
+				imp1.setRoi(rm.getRoi(0));
+				
 				rm.runCommand(imp1, "Delete");
-
+				rm.addRoi(sM.fitSpline());
 				roi = rm.getRoisAsArray();
+				
+//				imp1.show();
+//				rm.select(0);
+//				IJ.run(imp1, "Fit Spline", "");
+//				rm.addRoi(imp1.getRoi());
+//				rm.select(0);
+//				rm.runCommand(imp1, "Delete");
+//
+//				roi = rm.getRoisAsArray();
 
 				rm.runCommand(imp1, "Draw");
 				rm.runCommand("Save", folder.getAbsolutePath() + File.separator + name + ".zip");
@@ -410,6 +425,9 @@ public class Utils {
 	public static void callProgram(String dc, GeneralView geView) {
 
 		if (dc != null) {
+			
+			geView.cancelTimersCurrentDir();
+			
 			boolean b = optionAction();
 			if (b) {
 				b = FileFuntions.isOriginalImage(new File(dc));
@@ -444,6 +462,8 @@ public class Utils {
 			break;
 		}
 
+		
+		
 		return b;
 	}
 
@@ -465,10 +485,15 @@ public class Utils {
 			// new GeneralView(dc, selectAlgo);
 		} else {
 			// We repaint the tab panel with the new content
+			if(folderView.getDir()!=dc){
+				folderView.setDir(dc);
+			}
 			folderView.repaintTabPanel(selectAlgo);
 
 		}
 
 	}
+	
+
 
 }

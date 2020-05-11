@@ -219,18 +219,7 @@ tp.setSelectedIndex(0);
 
 					deleteExcelTab(excel, index, tp);
 					checkExcelTab(tp, dir, index);
-//					excel = tp.getIndexTabExcel().get(index);
-//
-//					boolean exist = excel.exists();
-//					boolean existindex = tp.getIndexTabExcel().containsKey(index);
-//
-//					while (!exist && existindex) { // checks if the next index
-//													// has an existing excel
-//						deleteExcelTab(excel, index, tp);
-//						excel = tp.getIndexTabExcel().get(index);
-//						exist = excel.exists();
-//						existindex = tp.getIndexTabExcel().containsKey(index);
-//					}
+
 				}
 
 			} else { // if the tab doesn't have an excel checks if there are new
@@ -287,25 +276,6 @@ tp.setSelectedIndex(0);
 					tp.getIndexTabExcel().remove(tp.getIndexTabExcel().size());
 				}
 				
-				
-//				Set<Integer> list = tp.getIndexTabExcel().keySet();
-//				List<Integer> auxList = new ArrayList<Integer>();
-//				for (Integer integer : list) { // we look for the excels tabs
-//												// that follow it
-//					if (integer > index) {
-//						auxList.add(integer);
-//
-//					}
-//				}
-//
-//				// we change the index of the after excel tabs in -1
-//				for (Integer integer : auxList) {
-//					tp.getIndexTabExcel().put(integer - 1, tp.getIndexTabExcel().get(integer));
-//					tp.getExcelModificationIndexTab().put(integer - 1, tp.getExcelModificationIndexTab().get(integer));
-//
-//					tp.getIndexTabExcel().remove(integer);
-//					tp.getExcelModificationIndexTab().remove(integer);
-//				}
 
 			}
 		}
@@ -419,11 +389,12 @@ tp.setSelectedIndex(0);
 	 * @param secons
 	 *            The seconds between calls
 	 */
-	public static void excelcheckWithTime(TabPanel tp, String directory, int secons) {
+	public static Timer excelcheckWithTime(TabPanel tp, String directory, int secons) {
 		ExcelTask exTask = new ExcelTask(tp, directory);
 		Timer temporizador = new Timer();
 
 		temporizador.scheduleAtFixedRate(exTask, 0, 1000 * secons);
+		return temporizador;
 	}
 
 	/**

@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -39,8 +40,8 @@ public class TabPanel extends JTabbedPane {
 	private int originalImagesNumber = 0;
 	private ShowImages images;
 	private LensMEnuButtons lens;
-	private int timeTaskExcel = 60;
-	private int timeTaskImages = 60;
+	private Thread t;
+
 
 	public TabPanel(String directory, boolean selectAlgo) {
 
@@ -135,10 +136,8 @@ public class TabPanel extends JTabbedPane {
 			originalIma = FileFuntions.isOriginalImage(folder);
 		} else {
 			lens = new LensMEnuButtons(images.getListImagesPrev());
-			
-			JPanel splitPane = createJPanelToShowImages(images,lens);
-					
-			
+
+			JPanel splitPane = createJPanelToShowImages(images, lens);
 
 			addTab("Images", splitPane);
 
@@ -185,15 +184,14 @@ public class TabPanel extends JTabbedPane {
 
 		// We save the last time the directory was changed
 		FileFuntions.addModificationDirectory(dir + "predictions");
-		FileFuntions.imagescheckWithTime(this, timeTaskImages);
 
-		ExcelActions.excelcheckWithTime(this, dir, timeTaskExcel);
+
 
 	}
 
 	public JPanel createJPanelToShowImages(ShowImages images, LensMEnuButtons lens) {
 		JPanel splitPane = new JPanel(new GridBagLayout());
-		
+
 		JScrollPane s = new JScrollPane(images);
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.BOTH;
@@ -247,6 +245,7 @@ public class TabPanel extends JTabbedPane {
 		// folder and do actions with it
 		if (result.isEmpty()) {
 			alreadyImageTiffFolderTab(directory);
+			
 
 			// if there is images we proceed to detect the esferoid
 		} else {
@@ -268,7 +267,7 @@ public class TabPanel extends JTabbedPane {
 					i++;
 				}
 
-				if (otherExt != null) {
+				if (otherExt.size() > 0) {
 					String ex = "";
 					for (String string : otherExt) {
 						ex += " " + string;
@@ -281,9 +280,19 @@ public class TabPanel extends JTabbedPane {
 				}
 
 			}
+			File folder= new File(directory);
+			String preDir=directory;
+			if(preDir.endsWith(File.separator)){
+				preDir+="predictions";
+			}else{
+				preDir+=File.separator+"predictions";
+			}
+			File predictionsDir=new File(directory);
+			
+			FileFuntions.moveTifffromParentToPredictions(folder, new ArrayList<String>(), predictionsDir);
 
 			// run the methods to process the images
-			new Methods(directory, result,false);
+			new Methods(directory, result, false);
 			originalImagesNumber = result.size();
 
 			// For each image we create a showimage
@@ -445,20 +454,32 @@ public class TabPanel extends JTabbedPane {
 				}
 
 			} else {
-
+				
 				try {
+					OurProgressBar pb= new OurProgressBar(getJFrameGeneral());
+					 t = new Thread() {
+						public void run() {
+							
+							// merge all the excels in one and save the selected files
+							// in the new location
+							folder.mkdir();
+							moveFinalFilesToPredictions();
 
-					// merge all the excels in one and save the selected files
-					// in the new location
-					folder.mkdir();
-					moveFinalFilesToPredictions();
+							// We delete the temporal folder
+							FileFuntions.deleteFolder(tempoFolder);
+							// change the tab to the already tiff view
 
-					// We delete the temporal folder
-					FileFuntions.deleteFolder(tempoFolder);
-					// change the tab to the already tiff view
-
-					((ImageTreePanel) this.getParent()).repaintTabPanel(false);
-
+							((ImageTreePanel) getParent()).repaintTabPanel(false);
+							
+							pb.dispose();
+							t.interrupt();
+							
+							
+						}};
+					
+					t.start();
+					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 

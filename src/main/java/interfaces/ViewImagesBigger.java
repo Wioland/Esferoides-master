@@ -38,10 +38,15 @@ public class ViewImagesBigger {
 	/**
 	 * Creates the tab that shows the image selected in its full size
 	 * 
-	 * @param image	selected image
-	 * @param listImages	images of the new images created by the algorithms
-	 * @param tp	the parent of this component and the place where it is going to be shown
-	 * @param selectALgo	true if algorithm comparer view to create a comparer
+	 * @param image
+	 *            selected image
+	 * @param listImages
+	 *            images of the new images created by the algorithms
+	 * @param tp
+	 *            the parent of this component and the place where it is going
+	 *            to be shown
+	 * @param selectALgo
+	 *            true if algorithm comparer view to create a comparer
 	 */
 	public ViewImagesBigger(Icon image, List<ImageIcon> listImages, Component tp, boolean selectALgo) {
 
@@ -103,9 +108,13 @@ public class ViewImagesBigger {
 	/**
 	 * Creates the tab that shows the imagen selected in its full size.
 	 * 
-	 * @param imagesInPredicctions	paths of the images tiff in prediction folder
-	 * @param newImagesSelected original name - button/image selected for this image
-	 * @param tp	the parent of this component and the place where it is going to be shown
+	 * @param imagesInPredicctions
+	 *            paths of the images tiff in prediction folder
+	 * @param newImagesSelected
+	 *            original name - button/image selected for this image
+	 * @param tp
+	 *            the parent of this component and the place where it is going
+	 *            to be shown
 	 */
 	public ViewImagesBigger(List<String> imagesInPredicctions, Map<String, JButton> newImagesSelected, TabPanel tp) {
 
@@ -138,7 +147,9 @@ public class ViewImagesBigger {
 		JPComparer = new JPanelComparer();
 		JPComparer.setLabelImageIcon(listImages.get(0));
 
-		if (listImages.size() == 1) { // if there is only one image , setenable=false the back and forward buttons
+		if (listImages.size() == 1) { // if there is only one image ,
+										// setenable=false the back and forward
+										// buttons
 										// showwbigger tab
 			JPComparer.getBackButton().setEnabled(false);
 			JPComparer.getForwarButtonButton().setEnabled(false);
@@ -189,7 +200,8 @@ public class ViewImagesBigger {
 	/**
 	 * Action performed to change the selected image in the comparer
 	 * 
-	 * @param originalImaLb label that shows the image selected in the comparer
+	 * @param originalImaLb
+	 *            label that shows the image selected in the comparer
 	 */
 	public void mouseSelectAction(JLabel originalImaLb) {
 		JOptionPane.showMessageDialog(tp.getJFrameGeneral(), "Changing the selected image");
@@ -205,8 +217,8 @@ public class ViewImagesBigger {
 	}
 
 	/**
-	 * Changes the name shown in the tab of the comparer/viewImagenBigger or changes
-	 * the selected image in the case of the AlgorithmView
+	 * Changes the name shown in the tab of the comparer/viewImagenBigger or
+	 * changes the selected image in the case of the AlgorithmView
 	 */
 	private void moreActionChangeIndexIma() {
 		JPComparer.setLabelImageIcon(listImages.get(indexImagenList));
@@ -223,7 +235,8 @@ public class ViewImagesBigger {
 	/**
 	 * Changes the name of the image shown in the tab name
 	 * 
-	 * @param tp tabpanel that contains the tab to change name
+	 * @param tp
+	 *            tabpanel that contains the tab to change name
 	 */
 	public void changetTabTitle(TabPanel tp) {
 
@@ -233,7 +246,8 @@ public class ViewImagesBigger {
 			tp.setTitleAt(indexTab, title);
 			tp.repaint();
 
-			// In the case the tab has an "X" button we change to the name shown in this
+			// In the case the tab has an "X" button we change to the name shown
+			// in this
 			// panel otherwise the name shown won't change
 			JPanel Xpane = (JPanel) tp.getTabComponentAt(indexTab);
 			if (Xpane != null) {
@@ -275,7 +289,8 @@ public class ViewImagesBigger {
 		gbc.weightx = 0;
 		pnlTab.add(btnClose, gbc);
 
-		// add the panel with button "X" and name to the tabpanel to create the tab
+		// add the panel with button "X" and name to the tabpanel to create the
+		// tab
 		this.tp.setTabComponentAt(index, pnlTab);
 
 		// Adds the action to perform to the "X" button
@@ -290,8 +305,8 @@ public class ViewImagesBigger {
 	}
 
 	/**
-	 * Changes the image of the label that shows the original image (the image saved
-	 * in predictions)
+	 * Changes the image of the label that shows the original image (the image
+	 * saved in predictions)
 	 */
 	public void changeOriginalImageLabel() {
 
@@ -302,13 +317,16 @@ public class ViewImagesBigger {
 	 * Adds the action to perform to the button given (the button select in the
 	 * JPanelComparer)
 	 * 
-	 * @param selectButton button select in the comparer
+	 * @param selectButton
+	 *            button select in the comparer
 	 */
 	public void addListenerSelectButton(JButton selectButton) {
 		selectButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				// if newDetectedImages isn't null, we are comparing the images saving in
-				// predictions with the selected images of the new images predicted
+				// if newDetectedImages isn't null, we are comparing the images
+				// saving in
+				// predictions with the selected images of the new images
+				// predicted
 				// with all the algorithms
 				if (newDetectedImages != null) {
 
@@ -321,27 +339,31 @@ public class ViewImagesBigger {
 						newDetectedImages.remove(indexImagenList);
 						indexImagenList = 0;
 
-						// If the isn't more images to save we change the view to show the content of
+						// If the isn't more images to save we change the view
+						// to show the content of
 						// the folder/directory
 						if (listImages.size() == 0) {
 
 							((ImageTreePanel) tp.getParent()).repaintTabPanel(false);
 
 						} else {
-							// if there is only one image left we disable the buttons
+							// if there is only one image left we disable the
+							// buttons
 							if (listImages.size() == 1) {
 								JPComparer.getBackButton().setEnabled(false);
 								JPComparer.getForwarButtonButton().setEnabled(false);
 
 							}
-							// changes the images shown to the first in the array
+							// changes the images shown to the first in the
+							// array
 							image = newDetectedImages.get(indexImagenList);
 							JPComparer.setOriginalImaLbIcon(image);
 							JPComparer.setLabelImageIcon(listImages.get(indexImagenList));
 						}
 					}
 
-					// Change the label of the original image label to the image of labelImage
+					// Change the label of the original image label to the image
+					// of labelImage
 				} else {
 					mouseSelectAction(JPComparer.getOriginalImaLb());
 				}
@@ -353,7 +375,8 @@ public class ViewImagesBigger {
 	/**
 	 * Close the tab of the button clicked
 	 * 
-	 * @param evt action event to perform
+	 * @param evt
+	 *            action event to perform
 	 */
 	public void closeTab(ActionEvent evt) {
 		JButton bu = (JButton) evt.getSource();
@@ -365,10 +388,13 @@ public class ViewImagesBigger {
 	/**
 	 * Adds the listeners to the buttons of the comparer
 	 * 
-	 * @param backBu    Button to go back in the list of images
-	 * @param forwardBu Button to go forward in the list of images
-	 * @param newVsOld  boolean to know if we are comparing new predicted images
-	 *                  with old ones
+	 * @param backBu
+	 *            Button to go back in the list of images
+	 * @param forwardBu
+	 *            Button to go forward in the list of images
+	 * @param newVsOld
+	 *            boolean to know if we are comparing new predicted images with
+	 *            old ones
 	 */
 	private void addlistenerButton(JButton backBu, JButton forwardBu, boolean newVsOld) {
 
@@ -384,7 +410,8 @@ public class ViewImagesBigger {
 				}
 				moreActionChangeIndexIma();
 
-				// if newvsOld we change to the original image if not we only change the
+				// if newvsOld we change to the original image if not we only
+				// change the
 				// labelImage
 				if (newVsOld) {
 					changeOriginalImageLabel();
@@ -405,7 +432,8 @@ public class ViewImagesBigger {
 				}
 
 				moreActionChangeIndexIma();
-				// if newvsOld we change to the original image if not we only change the
+				// if newvsOld we change to the original image if not we only
+				// change the
 				// labelImage
 				if (newVsOld) {
 					changeOriginalImageLabel();
@@ -415,17 +443,21 @@ public class ViewImagesBigger {
 	}
 
 	/**
-	 * Adds the action to perform to the cancel/Exit button If we want to exit the
-	 * selection/saving image view in the comparer and go to the view of the folder
+	 * Adds the action to perform to the cancel/Exit button If we want to exit
+	 * the selection/saving image view in the comparer and go to the view of the
+	 * folder
 	 * 
-	 * @param cancelBu Button cancel/Exit in the JComparer
+	 * @param cancelBu
+	 *            Button cancel/Exit in the JComparer
 	 */
 	private void addListenerCancelBu(JButton cancelBu) {
 		cancelBu.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				int op = JOptionPane.showConfirmDialog(tp.getJFrameGeneral(),
-						"Do you like to finish saving/selecting new data?","Exit saving selection",JOptionPane.YES_NO_OPTION);
-				// If yes change the tab panel to show the view of the content of the
+						"Do you like to finish saving/selecting new data?", "Exit saving selection",
+						JOptionPane.YES_NO_OPTION);
+				// If yes change the tab panel to show the view of the content
+				// of the
 				// folder/directory
 				if (op == 0) {
 					((ImageTreePanel) tp.getParent()).repaintTabPanel(false);
@@ -439,9 +471,12 @@ public class ViewImagesBigger {
 	/**
 	 * Adds to the buttons given
 	 * 
-	 * @param backBu      Back button
-	 * @param forwardBu   Forward Button
-	 * @param tryAlgoriBu Try another algorithm button
+	 * @param backBu
+	 *            Back button
+	 * @param forwardBu
+	 *            Forward Button
+	 * @param tryAlgoriBu
+	 *            Try another algorithm button
 	 */
 	private void addlistenerButton(JButton backBu, JButton forwardBu, JButton tryAlgoriBu) {
 
@@ -457,8 +492,8 @@ public class ViewImagesBigger {
 				ImageIcon i = listImages.get(listImages.indexOf(image));
 				File f = new File(i.getDescription());
 
-				new AlgorithmView(f, dir);
-
+			new AlgorithmView(f, dir);
+				
 			}
 		});
 

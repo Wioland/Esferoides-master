@@ -335,7 +335,7 @@ public class DetectEsferoidImageMethods {
 	public static void processEsferoidBig(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee, int noNE) {
 
 		ImagePlus imp1 = imp2.duplicate();
-		imp1.show();
+//		imp1.show();
 
 		if (imp1.getBitDepth() == 24 || imp1.getBitDepth() == 32) {
 			IJ.run(imp1, "Color Threshold...", "");

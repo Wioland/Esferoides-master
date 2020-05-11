@@ -89,28 +89,7 @@ public class JMenuPropertiesFile extends JMenu implements ActionListener {
 			DirectoryChooser dc = new DirectoryChooser("Select new directory");
 
 			if(dc.getDirectory()!=null){
-				// Closed all the windows that aren't the main frame
-				Window[] s = Window.getWindows();
-				for (Window window : s) {
-					if (window.getClass().equals(AlgorithmView.class)) {
-						window.dispose();
-					}
-				}
-
-				// Close the imageJ windows
-				if (IJ.isWindows()) {
-					IJ.run("Close All");
-					if (IJ.isResultsWindow()) {
-						IJ.selectWindow("Results");
-						IJ.run("Close");
-						IJ.selectWindow("ROI Manager");
-						IJ.run("Close");
-					}
-
-				}
-
-				mainFrame.paintMainFRame(dc.getDirectory());
-				JOptionPane.showMessageDialog(mainFrame, "Directory changed to " + dc.getDirectory());
+				FileFuntions.changeDirectory(dc.getDirectory(),mainFrame,false);
 
 			}else {
 

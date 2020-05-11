@@ -3,6 +3,7 @@ package funtions;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedInputStream;
@@ -45,6 +46,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import ij.IJ;
 import ij.ImageJ;
+import interfaces.AlgorithmView;
+import interfaces.GeneralView;
 import interfaces.JPanelComparer;
 import interfaces.LensMEnuButtons;
 import interfaces.ShowImages;
@@ -61,6 +64,7 @@ public class FileFuntions {
 	 */
 	public static void chargePlugins() {
 		new ImageJ(2);// NO_SHOW MODE
+
 		IJ.setForegroundColor(255, 0, 0);
 	}
 
@@ -419,11 +423,11 @@ public class FileFuntions {
 					}
 				}
 
-				
 				images.repaint();
-				
-				
-				if(images.getListImages().isEmpty()){ //If we dont have images we put the no file message
+
+				if (images.getListImages().isEmpty()) { // If we dont have
+														// images we put the no
+														// file message
 					JTextArea j = new JTextArea();
 					j.setText("There is no such file in this folder");
 					j.setEnabled(false);
@@ -519,11 +523,13 @@ public class FileFuntions {
 	 * @param secons
 	 *            the seconds between calls
 	 */
-	public static void imagescheckWithTime(TabPanel tp, int secons) {
+	public static Timer imagescheckWithTime(TabPanel tp, int secons) {
 		ImagesTask imatask = new ImagesTask(tp);
 		Timer temporizador = new Timer();
 
 		temporizador.scheduleAtFixedRate(imatask, 0, 1000 * secons);
+
+		return temporizador;
 	}
 
 	/**
@@ -565,6 +571,8 @@ public class FileFuntions {
 						Utils.searchDirectory(nameFileNoExt + ".*\\.tiff", folder, listImages);
 					}
 
+				}else{
+					moveTifffromParentToPredictions(folder, listImages, predictionsDir);
 				}
 
 			}
@@ -592,9 +600,12 @@ public class FileFuntions {
 		listImages.clear();
 
 		Utils.searchDirectory(".*\\.tiff", folder, listImages);
-		Utils.searchDirectory(".*\\.zip", folder, listImages);
+		
 		if (!listImages.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "There are tiff files in this folder, but tey aren´t in a predictions"
+			
+			Utils.searchDirectory(".*\\.zip", folder, listImages);
+			
+			JOptionPane.showMessageDialog(null, "There are tiff files in this folder, but they aren´t in a predictions"
 					+ " folder. Moving Tiff and Zip files to predictions folder");
 
 			if (!predictionsDir.exists()) {
@@ -968,4 +979,36 @@ public class FileFuntions {
 		}
 
 	}
+
+	public static void changeDirectory(String path, GeneralView mainFrame, boolean tree) {
+
+		// Closed all the windows that aren't the main frame
+		Window[] s = Window.getWindows();
+		for (Window window : s) {
+			if (window.getClass().equals(AlgorithmView.class)) {
+				window.dispose();
+			}
+		}
+
+		// Close the imageJ windows
+		if (IJ.isWindows()) {
+			IJ.run("Close All");
+			if (IJ.isResultsWindow()) {
+				IJ.selectWindow("Results");
+				IJ.run("Close");
+				IJ.selectWindow("ROI Manager");
+				IJ.run("Close");
+			}
+
+		}
+		if (tree) {
+			Utils.callProgram(path, mainFrame);
+		} else {
+			mainFrame.paintMainFRame(path);
+		}
+
+		JOptionPane.showMessageDialog(mainFrame, "Directory changed to " + path);
+
+	}
+
 }
