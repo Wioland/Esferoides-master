@@ -110,7 +110,7 @@ public class LensMEnuButtons extends JPanel {
 		this.subtractAddSize = subtractAddSize;
 	}
 
-	//METHODS
+	// METHODS
 	/**
 	 * Action to perform in the case of clicking one button
 	 * 
@@ -125,14 +125,15 @@ public class LensMEnuButtons extends JPanel {
 		int widthSize = ((JButton) listImagesPrev.values().toArray()[0]).getIcon().getIconWidth();
 		int subtract = subtractAddSize;
 
-		// Takes the quantity of pixels we wants to add or take from the image
+		// Takes the quantity of pixels we wants to add or take from the
+		// image
 		if (typeAction.equals("plus")) {
 			if (!maxSizeIma) {
 				subtract = -subtractAddSize;
 			}
 		}
-
-		// if we are not in the max or min size of the image we transform all
+		// if we are not in the max or min size of the image we
+		// transform all
 		// the images
 		// to match the new size an the repaint
 		if ((!minSizeIma && typeAction.equals("minus")) || (subtract == -subtractAddSize)) {

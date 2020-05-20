@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import org.python.modules.synchronize;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
@@ -63,21 +65,27 @@ public class Utils {
 	 *            array with the path of the files that have the pattern
 	 */
 	public static void searchDirectory(final String pattern, final File folder, List<String> result) {
-		for (final File f : folder.listFiles()) {
+		if (folder.listFiles() != null) {
+			for (final File f : folder.listFiles()) {
 
-			if (f.isFile()) {
-				if (f.getName().matches(pattern)) {
-					result.add(f.getAbsolutePath());
+				if (f.isFile()) {
+					if (f.getName().matches(pattern)) {
+						result.add(f.getAbsolutePath());
+					}
 				}
-			}
 
+			}
 		}
+
 	}
+
 	/**
 	 * Check if there is any file with the pattern given
 	 * 
-	 * @param pattern	type of file to search
-	 * @param folder	the folder in with want to search the files
+	 * @param pattern
+	 *            type of file to search
+	 * @param folder
+	 *            the folder in with want to search the files
 	 * @return true id there is a file with that pattern
 	 */
 	public static boolean containsExtension(final String pattern, final File folder) {
@@ -115,11 +123,14 @@ public class Utils {
 	 * @param temp
 	 *            true if we are creating files in the temporal folder
 	 */
-	public static void showResultsAndSave(String dir, String name, ImagePlus imp1, RoiManager rm,
+	public static synchronized void showResultsAndSave(String dir, String name, ImagePlus imp1, RoiManager rm,
 			ArrayList<Integer> goodRows, String nameClass, boolean temp) {
+
+		System.out.println(
+				"HE entrado en  save ............................................................................");
+
 		IJ.run(imp1, "RGB Color", "");
 		File folder;
-
 		name = name.substring(0, name.lastIndexOf("."));
 		name = name.replace(dir, "");
 		folder = new File(dir + "predictions");
@@ -138,6 +149,9 @@ public class Utils {
 		double perimeter = 0;
 		if (rm != null) {
 			rm.setVisible(false);
+
+			// List<Roi> roi=saveAllRoi(rm);
+
 			keepBiggestROI(rm);
 			rm.runCommand("Show None");
 			rm.runCommand("Show All");
@@ -145,15 +159,22 @@ public class Utils {
 			Roi[] roi = rm.getRoisAsArray();
 
 			if (roi.length != 0) {
+				System.out.println("Roi length " + roi.length);
+				SelectionModify sM = new SelectionModify(imp1);
+				imp1.setRoi(rm.getRoi(0));
 
-				imp1.show();
-				rm.select(0);
-				IJ.run(imp1, "Fit Spline", "");
-				rm.addRoi(imp1.getRoi());
-				rm.select(0);
 				rm.runCommand(imp1, "Delete");
-
+				rm.addRoi(sM.fitSpline());
 				roi = rm.getRoisAsArray();
+
+				// imp1.show();
+				// rm.select(0);
+				// IJ.run(imp1, "Fit Spline", "");
+				// rm.addRoi(imp1.getRoi());
+				// rm.select(0);
+				// rm.runCommand(imp1, "Delete");
+				//
+				// roi = rm.getRoisAsArray();
 
 				rm.runCommand(imp1, "Draw");
 				rm.runCommand("Save", folder.getAbsolutePath() + File.separator + name + ".zip");
@@ -182,9 +203,15 @@ public class Utils {
 
 				ResultsTable rt = ResultsTable.getResultsTable();
 				int nrows = Analyzer.getResultsTable().getCounter();
+				// if(nrows==0){
+				// rm.runCommand(imp1, "Measure");
+				// rt = ResultsTable.getResultsTable();
+				// nrows = Analyzer.getResultsTable().getCounter();
+				// }
 				goodRows.add(nrows - 1);
 
 				rt.setPrecision(2);
+				// System.out.println((nrows - 1)+ " "+name);
 				rt.setLabel(name, nrows - 1);
 				rt.addValue("Area", area);
 				rt.addValue("Area Fraction", aFraction);
@@ -400,16 +427,20 @@ public class Utils {
 
 	// METHODS
 
-	
 	/**
 	 * Creates the Main frame or looks if there is a current one to repaint
 	 * 
-	 * @param dc	working directory
-	 * @param geView	main JFrame of the program
+	 * @param dc
+	 *            working directory
+	 * @param geView
+	 *            main JFrame of the program
 	 */
 	public static void callProgram(String dc, GeneralView geView) {
 
 		if (dc != null) {
+
+			geView.cancelTimersCurrentDir();
+
 			boolean b = optionAction();
 			if (b) {
 				b = FileFuntions.isOriginalImage(new File(dc));
@@ -447,14 +478,16 @@ public class Utils {
 		return b;
 	}
 
-	
 	/**
-	 *  Checks if there is a main frame. if it is you repaint the tabpanel if not
+	 * Checks if there is a main frame. if it is you repaint the tabpanel if not
 	 * you create a new one
 	 * 
-	 * @param geView	main JFrame of the program
-	 * @param dc	 the path of the current directory
-	 * @param selectAlgo true if you select previously detect esferoide and false
+	 * @param geView
+	 *            main JFrame of the program
+	 * @param dc
+	 *            the path of the current directory
+	 * @param selectAlgo
+	 *            true if you select previously detect esferoide and false
 	 *            otherwise
 	 */
 	public static void createGeneralViewOrNot(GeneralView geView, String dc, boolean selectAlgo) {
@@ -465,9 +498,164 @@ public class Utils {
 			// new GeneralView(dc, selectAlgo);
 		} else {
 			// We repaint the tab panel with the new content
+			if (folderView.getDir() != dc) {
+				folderView.setDir(dc);
+			}
 			folderView.repaintTabPanel(selectAlgo);
 
 		}
+
+	}
+
+	public static synchronized void showResultsAndSave(String dir, String name, ImagePlus imp1, Roi[] rm,
+			ArrayList<Integer> goodRows, String nameClass, boolean temp) {
+		// TODO Auto-generated method stub
+		System.out.println(
+				"\n HE entrado en  save roi ............................................................................");
+
+		IJ.run(imp1, "RGB Color", "");
+		File folder;
+		name = name.substring(0, name.lastIndexOf("."));
+		name = name.replace(dir, "");
+		folder = new File(dir + "predictions");
+
+		if (!temp && !folder.exists()) {
+			folder.mkdir();
+		} else {
+
+			folder = new File(dir + "temporal");
+			name += "_" + nameClass.substring(nameClass.lastIndexOf(".") + 1);
+			folder.mkdir();
+		}
+
+		ImageStatistics stats = null;
+		double[] vFeret;
+		double perimeter = 0;
+		if (rm != null) {
+System.out.println("Rm no es nulo");
+			ResultsTable rt = new ResultsTable();
+			Roi r = keepBiggestROI2(rm);
+
+			// rm.runCommand("Show None");
+			// rm.runCommand("Show All");
+
+			// Roi[] roi = rm;
+
+			if (r != null) {
+				// System.out.println("Roi length "+ roi.length);
+				SelectionModify sM = new SelectionModify(imp1);
+				imp1.setRoi(r);
+
+				// rm.runCommand(imp1, "Delete");
+				// rm.addRoi(sM.fitSpline());
+				// roi = rm.getRoisAsArray();
+				r = sM.fitSpline();
+
+				RoiManager roma = new RoiManager(false);
+				roma.addRoi(r);
+				roma.runCommand(imp1, "Draw");
+				roma.runCommand("Save", folder.getAbsolutePath() + File.separator + name + ".zip");
+				roma.close();
+				// saving the roi
+				// compute the statistics (without calibrate)
+				stats = r.getStatistics();
+
+				vFeret = r.getFeretValues();
+				perimeter = r.getLength();
+				Calibration cal = imp1.getCalibration();
+				double pw, ph;
+				if (cal != null) {
+					pw = cal.pixelWidth;
+					ph = cal.pixelHeight;
+				} else {
+					pw = 1.0;
+					ph = 1.0;
+				}
+				// calibrate the measures
+				double area = stats.area * pw * ph;
+				double w = imp1.getWidth() * pw;
+				double h = imp1.getHeight() * ph;
+				double aFraction = area / (w * h) * 100;
+				double perim = perimeter * pw;
+
+				// ResultsTable rt = ResultsTable.getResultsTable();
+
+				rt = roma.multiMeasure(imp1);
+				int nrows = rt.getCounter();
+				// int nrows = Analyzer.getResultsTable().getCounter();
+				// if(nrows==0){
+				// rm.runCommand(imp1, "Measure");
+				// rt = ResultsTable.getResultsTable();
+				// nrows = Analyzer.getResultsTable().getCounter();
+				// }
+				goodRows.add(nrows - 1);
+
+				rt.setPrecision(2);
+				System.out.println((nrows - 1) + "   " + name + " " + rt.getRowAsString(0));
+				rt.setLabel(name, nrows - 1);
+				rt.addValue("Area", area);
+				rt.addValue("Area Fraction", aFraction);
+				rt.addValue("Perimeter", perim);
+				double circularity = perimeter == 0.0 ? 0.0 : 4.0 * Math.PI * (area / (perim * perim));
+				if (circularity > 1.0) {
+					circularity = 1.0;
+				}
+				rt.addValue("Circularity", circularity);
+				rt.addValue("Diam. Feret", vFeret[0]);
+				rt.addValue("Angle. Feret", vFeret[1]);
+				rt.addValue("Min. Feret", vFeret[2]);
+				rt.addValue("X Feret", vFeret[3]);
+				rt.addValue("Y Feret", vFeret[4]);
+				System.out.println((nrows - 1) + "   " + name + " " + rt.getRowAsString(0));
+			}
+
+			IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + File.separator + name + "_pred.tiff");
+
+			// ResultsTable rt = ResultsTable.getResultsTable();
+			int rows = rt.getCounter();
+			for (int i = rows; i > 0; i--) {
+				if (!(goodRows.contains(i - 1))) {
+					rt.deleteRow(i - 1);
+				} else {
+					String[] s = rt.getRowAsString(i - 1).split(",");
+					if (s.length == 1) {
+						s = rt.getRowAsString(i - 1).split("\t");
+					}
+
+					if (s[1].equals("")) {
+						rt.deleteRow(i - 1);
+					}
+				}
+
+			}
+			System.out.println(name + " " + rt.getRowAsString(0));
+			ExcelActions ete = new ExcelActions(rt, folder.getAbsolutePath() + File.separator);
+			ete.convertToExcel();
+
+			rt.reset();
+
+		}
+
+	}
+
+	private static Roi keepBiggestROI2(Roi[] rois) {
+
+		if (rois.length >= 1) {
+
+			Roi biggestROI = rois[0];
+
+			for (int i = 1; i < rois.length; i++) {
+
+				if (getArea(biggestROI.getPolygon()) < getArea(rois[i].getPolygon())) {
+
+					biggestROI = rois[i];
+				}
+
+			}
+			return biggestROI;
+
+		}
+		return rois[0];
 
 	}
 

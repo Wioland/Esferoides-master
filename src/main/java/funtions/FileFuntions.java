@@ -1,17 +1,18 @@
 package funtions;
 
+import java.awt.Button;
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.Frame;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -32,6 +33,7 @@ import java.util.Timer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -45,10 +47,13 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import ij.IJ;
 import ij.ImageJ;
+import interfaces.AlgorithmView;
+import interfaces.GeneralView;
 import interfaces.JPanelComparer;
 import interfaces.LensMEnuButtons;
 import interfaces.ShowImages;
 import interfaces.TabPanel;
+import interfaces.VersionInfo;
 import interfaces.ViewImagesBigger;
 import task.ImagesTask;
 
@@ -61,6 +66,7 @@ public class FileFuntions {
 	 */
 	public static void chargePlugins() {
 		new ImageJ(2);// NO_SHOW MODE
+
 		IJ.setForegroundColor(255, 0, 0);
 	}
 
@@ -419,11 +425,11 @@ public class FileFuntions {
 					}
 				}
 
-				
 				images.repaint();
-				
-				
-				if(images.getListImages().isEmpty()){ //If we dont have images we put the no file message
+
+				if (images.getListImages().isEmpty()) { // If we dont have
+														// images we put the no
+														// file message
 					JTextArea j = new JTextArea();
 					j.setText("There is no such file in this folder");
 					j.setEnabled(false);
@@ -519,11 +525,13 @@ public class FileFuntions {
 	 * @param secons
 	 *            the seconds between calls
 	 */
-	public static void imagescheckWithTime(TabPanel tp, int secons) {
+	public static Timer imagescheckWithTime(TabPanel tp, int secons) {
 		ImagesTask imatask = new ImagesTask(tp);
 		Timer temporizador = new Timer();
 
 		temporizador.scheduleAtFixedRate(imatask, 0, 1000 * secons);
+
+		return temporizador;
 	}
 
 	/**
@@ -565,6 +573,8 @@ public class FileFuntions {
 						Utils.searchDirectory(nameFileNoExt + ".*\\.tiff", folder, listImages);
 					}
 
+				} else {
+					moveTifffromParentToPredictions(folder, listImages, predictionsDir);
 				}
 
 			}
@@ -592,9 +602,12 @@ public class FileFuntions {
 		listImages.clear();
 
 		Utils.searchDirectory(".*\\.tiff", folder, listImages);
-		Utils.searchDirectory(".*\\.zip", folder, listImages);
+
 		if (!listImages.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "There are tiff files in this folder, but tey aren´t in a predictions"
+
+			Utils.searchDirectory(".*\\.zip", folder, listImages);
+
+			JOptionPane.showMessageDialog(null, "There are tiff files in this folder, but they aren´t in a predictions"
 					+ " folder. Moving Tiff and Zip files to predictions folder");
 
 			if (!predictionsDir.exists()) {
@@ -798,8 +811,22 @@ public class FileFuntions {
 							// not
 
 			JCheckBox rememberChk = new JCheckBox("Don't show this message again.");
+//			 Button b=new Button("Details >>>");
 			String msg = "A new update has been detected. \n Do you want to dowload it?";
 			Object[] msgContent = { msg, rememberChk };
+			
+//
+//			 Object[] msgContent = { msg, rememberChk ,b};
+//			 b.addActionListener(new ActionListener() {
+//			
+//			 @Override
+//			 public void actionPerformed(ActionEvent e) {
+//			 // TODO Auto-generated method stub
+//			VersionInfo veinf= new VersionInfo(null);
+//			veinf.inicialice(currentVersion, readversion(urlVersion));
+//			 }
+//			 });
+
 			int op = 0;
 
 			if (callFromMain) {
@@ -829,15 +856,17 @@ public class FileFuntions {
 				}
 
 			} else {
+
 				op = JOptionPane.showConfirmDialog(null, msg, "Alert!", JOptionPane.YES_NO_OPTION);
 			}
 
 			if (op == 0) {
 				// if yes we call the updater jar
 				try {
-					Process process = Runtime.getRuntime().exec("java -jar " + "\"" + pathJArUpdater + "\"");
-					InputStream inputstream = process.getInputStream();
-					BufferedInputStream bufferedinputstream = new BufferedInputStream(inputstream);
+					Runtime.getRuntime().exec("java -jar " + "\"" + pathJArUpdater + "\"");
+//					Process process = Runtime.getRuntime().exec("java -jar " + "\"" + pathJArUpdater + "\"");
+//					InputStream inputstream = process.getInputStream();
+//					BufferedInputStream bufferedinputstream = new BufferedInputStream(inputstream);
 
 					System.exit(0);// stop the execution of this jar
 				} catch (IOException e) {
@@ -846,6 +875,7 @@ public class FileFuntions {
 				}
 
 			}
+
 		} else {
 			if (!callFromMain) {
 				JOptionPane.showMessageDialog(null, "You already have the newest version");
@@ -899,6 +929,35 @@ public class FileFuntions {
 			String linea;
 			while ((linea = reader.readLine()) != null) {
 				line = linea;// gets the line with the version
+			}
+
+			// close our reader
+			reader.close();
+
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return line;
+
+	}
+	
+	public static List<String> readFile(String urlFile) {
+		List<String> line=new ArrayList<String>();
+		// create the url
+		URL url;
+		try {
+			url = new URL(urlFile);
+			// open the url stream, wrap it an a few "readers"
+			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+
+			// read the file
+			String linea;
+			while ((linea = reader.readLine()) != null) {
+				line.add(linea);
 			}
 
 			// close our reader
@@ -968,4 +1027,70 @@ public class FileFuntions {
 		}
 
 	}
+
+	public static void closeAlgorithmViewWindows() {
+		// Closed all the windows that aren't the main frame
+		Window[] s = Window.getWindows();
+		for (Window window : s) {
+			if (window.getClass().equals(AlgorithmView.class)) {
+				AlgorithmView al = (AlgorithmView) window;
+				
+				if(al.getT().isAlive()){
+					al.getT().interrupt();
+				}
+				
+				window.dispose();
+			}
+		}
+
+	}
+	
+	public static boolean windowAlgoWiewOfFile(File f){
+		boolean alreadyAlView =false;
+		System.gc();
+		Window[] s = Window.getWindows();
+		for (Window window : s) {
+			if(!window.isVisible()){
+				window.dispose();
+			}else{
+			if (window.getClass().equals(AlgorithmView.class)) {
+				AlgorithmView al = (AlgorithmView) window;
+
+				if (al.getImage().equals(f)) {
+					alreadyAlView = true;
+					al.toFront();
+					break;
+				}
+
+			}
+			}
+		}
+		return alreadyAlView;
+	}
+
+	public static void changeDirectory(String path, GeneralView mainFrame, boolean tree) {
+
+		closeAlgorithmViewWindows();
+
+		// Close the imageJ windows
+		if (IJ.isWindows()) {
+			IJ.run("Close All");
+			if (IJ.isResultsWindow()) {
+				IJ.selectWindow("Results");
+				IJ.run("Close");
+				IJ.selectWindow("ROI Manager");
+				IJ.run("Close");
+			}
+
+		}
+		if (tree) {
+			Utils.callProgram(path, mainFrame);
+		} else {
+			mainFrame.paintMainFRame(path);
+		}
+
+		JOptionPane.showMessageDialog(mainFrame, "Directory changed to " + path);
+
+	}
+
 }
