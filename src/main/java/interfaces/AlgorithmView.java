@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -50,6 +51,7 @@ public class AlgorithmView extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
+				
 				File folder = Methods.getTemporalFolder();
 				if (folder != null) {
 					folder.delete();
@@ -101,6 +103,14 @@ public class AlgorithmView extends JFrame {
 	}
 
 	// METHODS
+
+	public Thread getT() {
+		return t;
+	}
+
+	public void setT(Thread t) {
+		this.t = t;
+	}
 
 	public void initilice() {
 		String path = RoiFuntions.getOriginalFilePathFromPredictions(this.image.getAbsolutePath());

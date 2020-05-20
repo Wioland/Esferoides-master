@@ -1,6 +1,5 @@
 package interfaces;
 
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
@@ -14,7 +13,6 @@ import javax.swing.JOptionPane;
 
 import funtions.FileFuntions;
 import funtions.PropertiesFileFuntions;
-import ij.IJ;
 import ij.io.DirectoryChooser;
 
 public class JMenuPropertiesFile extends JMenu implements ActionListener {

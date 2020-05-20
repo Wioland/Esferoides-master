@@ -8,14 +8,17 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import funtions.FileFuntions;
+import ij.IJ;
 import loci.plugins.in.ImporterOptions;
+
 
 public class Methods {
 
 	private static String[] algorithms = { "suspension", "colageno", "Hector no fluo v1", "Hector no fluo v2",
 			"Teodora v1", "Teodora Big" };
 	private static File temporalFolder;
-	private ArrayList goodRows;
+	private ArrayList<Integer> goodRows;
+	private List<Thread> threads;
 
 	/**
 	 * Constructor. Creates the images with the methods given in the temporal
@@ -27,17 +30,20 @@ public class Methods {
 	 *            List of the file paths of the current directory
 	 */
 	public Methods(String directory, List<String> result, boolean all) {
-
+threads= new ArrayList<Thread>();
 		temporalFolder = new File(directory + "temporal");
-//int i=0;
+int i=0;
 		for (String type : algorithms) {
 			if (type.equals("suspension") || type.equals("colageno")) {
 				if (checkIfFluoImages(result)) {
 //					CreateImagesThread c = new CreateImagesThread(result, directory, type, all,i);
+//					threads.add(c);
+//					
 //					c.start();
 //					
+//
 //					i++;
-					
+//					
 					createImagesMetods( result,directory,  type, all);
 				}
 
@@ -46,6 +52,7 @@ public class Methods {
 						|| (type.equals("Teodora v1") && FileFuntions.isExtension(result, "nd2"))
 						|| (type.equals("Teodora Big") && FileFuntions.isExtension(result, "nd2"))) {
 //					CreateImagesThread c = new CreateImagesThread(result, directory, type, all,i);
+//					threads.add(c);
 //					c.start();
 //					
 //					i++;
@@ -56,6 +63,20 @@ public class Methods {
 			}
 
 		}
+		
+		
+		
+		
+//		for (Thread thread : threads) {
+//			try {
+//				thread.join();
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}	
+		
+		
 	}
 
 	// Getters and setters
@@ -111,9 +132,29 @@ public class Methods {
 			goodRows = new ArrayList<>();
 			// For each file in the folder we detect the esferoid on it.
 			for (String name : result) {
-				esferoidProcessor.getDetectEsferoid().apply(options, directory, name, goodRows, true);
+			 esferoidProcessor.getDetectEsferoid().apply(options, directory, name, goodRows, true);
 			}
-
+//			Thread t;
+//			for (String name : result) {
+//				t= new Thread() {
+//				    public void run() {
+//					    esferoidProcessor.getDetectEsferoid().apply(options, directory, name, goodRows, true);
+//					
+//					    }  
+//					};
+//				threads.add(t);
+//				t.start();
+//			}
+//			for (Thread thread : threads) {
+//				try {
+//					thread.join();
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//
+//System.out.println("fin for.........................");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

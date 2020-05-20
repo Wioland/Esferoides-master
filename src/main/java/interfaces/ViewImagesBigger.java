@@ -492,8 +492,12 @@ public class ViewImagesBigger {
 				ImageIcon i = listImages.get(listImages.indexOf(image));
 				File f = new File(i.getDescription());
 
-			new AlgorithmView(f, dir);
-				
+				boolean alreadyAlView = FileFuntions.windowAlgoWiewOfFile(f);
+
+				if (!alreadyAlView) {
+					new AlgorithmView(f, dir);
+				}
+
 			}
 		});
 

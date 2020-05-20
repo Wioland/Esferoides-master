@@ -89,14 +89,21 @@ public class DetectEsferoidMethods {
 			ImagePlus imp2 = imp.duplicate();
 			imp2.setTitle(title);
 			RoiManager rm = null;
+//			Roi[] rm=null;
 	//
 			DetectEsferoidImageMethods.processEsferoidUsingThreshold(imp2, true,0,0,0);
+//			rm = AnalyseParticleMethods.analyzeParticlesHectorRoi(imp2);
+//			if (rm == null || rm.length == 0) {
+//				DetectEsferoidImageMethods.processEsferoidUsingThreshold(imp2, false,0,0,0);
+//				rm = AnalyseParticleMethods.analyzeParticlesHectorRoi(imp2);
+//			}
+			
 			rm = AnalyseParticleMethods.analyzeParticlesHector(imp2);
 			if (rm == null || rm.getRoisAsArray().length == 0) {
 				DetectEsferoidImageMethods.processEsferoidUsingThreshold(imp2, false,0,0,0);
 				rm = AnalyseParticleMethods.analyzeParticlesHector(imp2);
 			}
-
+			
 			Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
 			imp.close();
 
@@ -115,8 +122,54 @@ public class DetectEsferoidMethods {
 			ImagePlus imp2 = imp.duplicate();
 			imp2.setTitle(title);
 			RoiManager rm = null;
+//			Roi[] rm=null;
 			//
 			DetectEsferoidImageMethods.processEsferoidUsingThreshold(imp2, true,0,0,0);
+//			rm = AnalyseParticleMethods.analyzeParticlesHectorRoi(imp2);
+//			if (rm == null || rm.length == 0) {
+//				DetectEsferoidImageMethods.processEsferoidUsingThreshold(imp2, false,0,0,0);
+//				rm = AnalyseParticleMethods.analyzeParticlesHectorRoi(imp2);
+//			}
+//
+//			if (rm == null || rm.length == 0) {
+//				double v = 1.75;
+//
+//				while ((rm == null || rm.length == 0) && v >= 1.0) {
+//					imp2 = imp.duplicate();
+//					DetectEsferoidImageMethods.processEsferoidesGeneralCaseHector(imp2,false, 3, v,0);
+//					rm = AnalyseParticleMethods.analyzeParticlesHectorRoi(imp2);
+//					v = v - 0.25;
+//				}
+//			}
+//
+//			if (rm == null || rm.length == 0) {
+//				double v = 1.75;
+//				while ((rm == null || rm.length == 0) && v >= 1.0) {
+//					imp2 = imp.duplicate();
+//					DetectEsferoidImageMethods.processEsferoidesGeneralCaseHector(imp2,false, 5, v,0);
+//					rm = AnalyseParticleMethods.analyzeParticlesHectorRoi(imp2);
+//					v = v - 0.25;
+//				}
+//			}
+//
+//			if (rm == null || rm.length == 0) {
+//				double v = 1.75;
+//				while ((rm == null || rm.length == 0) && v >= 1.0) {
+//					imp2 = imp.duplicate();
+//					DetectEsferoidImageMethods.processEsferoidesGeneralCaseHector(imp2,false, 7, v,0);
+//					rm = AnalyseParticleMethods.analyzeParticlesHectorRoi(imp2);
+//					v = v - 0.25;
+//				}
+//			}
+//
+//			if (rm == null || rm.length == 0) {
+//				imp2 = imp.duplicate();
+//				DetectEsferoidImageMethods.processEsferoidUsingThreshold(imp2, false,0,0,0);
+//				rm = AnalyseParticleMethods.analyzeParticlesHectorRoi(imp2);
+//
+//			}
+//System.out.println(name + "  "+ rm.length);
+			
 			rm = AnalyseParticleMethods.analyzeParticlesHector(imp2);
 			if (rm == null || rm.getRoisAsArray().length == 0) {
 				DetectEsferoidImageMethods.processEsferoidUsingThreshold(imp2, false,0,0,0);
@@ -160,7 +213,8 @@ public class DetectEsferoidMethods {
 				rm = AnalyseParticleMethods.analyzeParticlesHector(imp2);
 
 			}
-
+			
+			
 			Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
 			imp.close();
 

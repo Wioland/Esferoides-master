@@ -1,10 +1,8 @@
 package interfaces;
 
-import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -19,8 +17,6 @@ import javax.swing.tree.TreePath;
 
 import funtions.FileFuntions;
 import funtions.RoiFuntions;
-import funtions.Utils;
-import ij.IJ;
 
 public class ImageTreePanel extends JSplitPane {
 
