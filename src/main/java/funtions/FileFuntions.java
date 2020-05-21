@@ -896,12 +896,15 @@ public class FileFuntions {
 	private static boolean checkNewVersionJAr(String urlVerion, String currentJarVersion) {
 		boolean newJAr = false;
 		String newJArversion = "";
+		double cVersion=Double.parseDouble(currentJarVersion.replace("-SNAPSHOT", ""));
+		double nVersion;
 
 		newJArversion = readversion(urlVerion); // gets the version in the web
+		nVersion=Double.parseDouble(newJArversion.replace("-SNAPSHOT", ""));
 
 		// compare the versions in case they are different and the version from
 		// the url is not "" there is a new version
-		if (!newJArversion.equals(currentJarVersion) && !newJArversion.equals("")) {
+		if (!newJArversion.equals(currentJarVersion) && !newJArversion.equals("") && (nVersion>cVersion)) {
 			newJAr = true;
 		}
 
