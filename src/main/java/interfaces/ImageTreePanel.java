@@ -17,6 +17,7 @@ import javax.swing.tree.TreePath;
 
 import funtions.FileFuntions;
 import funtions.RoiFuntions;
+import funtions.Utils;
 
 public class ImageTreePanel extends JSplitPane {
 
@@ -102,12 +103,11 @@ public class ImageTreePanel extends JSplitPane {
 	}
 
 	/**
-	 * Action to perform when a click occurred in a tree node. If it is a folder
-	 * : - one click shows in the tree it content - Double click tries to change
-	 * the current directory If image: -opens it with imageJ
+	 * Action to perform when a click occurred in a tree node. If it is a folder : -
+	 * one click shows in the tree it content - Double click tries to change the
+	 * current directory If image: -opens it with imageJ
 	 * 
-	 * @param me
-	 *            mouse event
+	 * @param me mouse event
 	 */
 	private void doubleClickAction(MouseEvent me) {
 		if (me.getClickCount() == 2 && !me.isConsumed()) {
@@ -146,14 +146,14 @@ public class ImageTreePanel extends JSplitPane {
 										FileFuntions.deleteFolder(new File(dir + File.separator + "temporal"));
 									}
 									// we change the directory
-									FileFuntions.changeDirectory(path, getJFrameGeneral(), true);
+									FileFuntions.changeDirectory(path, true);
 								} else {
 									JOptionPane.showMessageDialog(this,
 											"No changing the directory. Nothing to be done");
 								}
 							} else {
 
-								FileFuntions.changeDirectory(path, getJFrameGeneral(), true);
+								FileFuntions.changeDirectory(path, true);
 							}
 
 						}
@@ -167,22 +167,12 @@ public class ImageTreePanel extends JSplitPane {
 	}
 
 	/**
-	 * Gets the main frame that contains the imageTRee
-	 * 
-	 * @return the main frame
-	 */
-	public GeneralView getJFrameGeneral() {
-		return (GeneralView) this.getParent().getParent().getParent().getParent();
-	}
-
-	/**
 	 * Repaints the content of the directory (the tab)
 	 * 
-	 * @param selectAlgo
-	 *            true if you are detecting esferoids
+	 * @param selectAlgo true if you are detecting esferoids
 	 */
 	public void repaintTabPanel(boolean selectAlgo) {
-		OurProgressBar pb = new OurProgressBar(this.getJFrameGeneral());
+		OurProgressBar pb = new OurProgressBar(Utils.mainFrame);
 		this.selectAlgo = selectAlgo;
 
 		t = new Thread() {
@@ -192,9 +182,11 @@ public class ImageTreePanel extends JSplitPane {
 				folderView = new TabPanel(dir, selectAlgo);
 				setRightComponent(folderView);
 				folderView.repaint();
-				getJFrameGeneral().setDir(dir);
+				Utils.mainFrame.setDir(dir);
 
-				getJFrameGeneral().returnTheTimers(folderView);
+				Utils.mainFrame.returnTheTimers(folderView);
+				Utils.mainFrame.activeRestOfMenuOPtionsOrDesactivate();
+
 				pb.dispose();
 				t.interrupt();
 			}
@@ -204,20 +196,17 @@ public class ImageTreePanel extends JSplitPane {
 	}
 
 	/**
-	 * Function to add the nodes to the tree Only shows the folders that
-	 * contains files with the extensions given except from tiff
+	 * Function to add the nodes to the tree Only shows the folders that contains
+	 * files with the extensions given except from tiff
 	 * 
-	 * @param parentNode
-	 *            parent node
-	 * @param parent
-	 *            file in the node parent
-	 * @param modelo
-	 *            tree model
+	 * @param parentNode parent node
+	 * @param parent     file in the node parent
+	 * @param modelo     tree model
 	 */
 	private void addChildTree(DefaultMutableTreeNode parentNode, File parent, DefaultTreeModel modelo) {
 
 		int index = 0;
-		List<String> listExtensions = JMenuPropertiesFile.getExtensions();
+		List<String> listExtensions = FileFuntions.getExtensions();
 		String extension;
 		DefaultMutableTreeNode child;
 

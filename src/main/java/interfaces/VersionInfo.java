@@ -2,14 +2,9 @@ package interfaces;
 
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridLayout;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 

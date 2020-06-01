@@ -35,7 +35,7 @@ public class SearchFilesMethods {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "An error occurred while searching Fluo images");
+			JOptionPane.showMessageDialog( Utils.mainFrame, "An error occurred while searching Fluo images");
 		}
 		return result;
 	}
@@ -59,7 +59,7 @@ public class SearchFilesMethods {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "An error occurred while searching Nd2 images");
+			JOptionPane.showMessageDialog( Utils.mainFrame, "An error occurred while searching Nd2 images");
 		}
 		return result;
 	}
@@ -88,7 +88,7 @@ public class SearchFilesMethods {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "An error occurred while searching tif images");
+			JOptionPane.showMessageDialog( Utils.mainFrame, "An error occurred while searching tif images");
 		}
 		return result;
 	}

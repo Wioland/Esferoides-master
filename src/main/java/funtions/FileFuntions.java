@@ -1,11 +1,7 @@
 package funtions;
 
-import java.awt.Button;
 import java.awt.Component;
-import java.awt.Frame;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
@@ -23,6 +19,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.CodeSource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,12 +30,13 @@ import java.util.Timer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JViewport;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.TreePath;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -47,13 +45,13 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import ij.IJ;
 import ij.ImageJ;
+import ij.io.DirectoryChooser;
 import interfaces.AlgorithmView;
 import interfaces.GeneralView;
 import interfaces.JPanelComparer;
 import interfaces.LensMEnuButtons;
 import interfaces.ShowImages;
 import interfaces.TabPanel;
-import interfaces.VersionInfo;
 import interfaces.ViewImagesBigger;
 import task.ImagesTask;
 
@@ -73,8 +71,7 @@ public class FileFuntions {
 	/**
 	 * Returns the Path of the selected file in the tree
 	 * 
-	 * @param tp
-	 *            The treePath created of the current directory
+	 * @param tp The treePath created of the current directory
 	 * @return The path of the selected file in the tree
 	 */
 	public static String getPathSelectedTreeFile(TreePath tp) {
@@ -98,8 +95,7 @@ public class FileFuntions {
 	/**
 	 * Get the path of the temporal folder from a file path
 	 * 
-	 * @param originalPath
-	 *            A file path
+	 * @param originalPath A file path
 	 * @return the path of the temporal folder
 	 */
 	public static File getTemporalFolderFromOriginalPath(String originalPath) {
@@ -109,15 +105,12 @@ public class FileFuntions {
 	}
 
 	/**
-	 * * Save the files from the temporal folder to the prediction folder
-	 * exchanging the original files in the prediction folder with the temporal
-	 * ones We save the tiff and roi/zip and change the corresponding row on the
-	 * result excel
+	 * * Save the files from the temporal folder to the prediction folder exchanging
+	 * the original files in the prediction folder with the temporal ones We save
+	 * the tiff and roi/zip and change the corresponding row on the result excel
 	 * 
-	 * @param selectedFile
-	 *            The temporal file to save
-	 * @param saveDirPath
-	 *            path of the save directory
+	 * @param selectedFile The temporal file to save
+	 * @param saveDirPath  path of the save directory
 	 * @return true if the file is save false otherwise
 	 */
 	public static boolean saveSelectedImage(File selectedFile, String saveDirPath) {
@@ -162,9 +155,9 @@ public class FileFuntions {
 				if (!f.getName().endsWith("xls")) {
 
 					/*
-					 * If the new file was successfully move to the predictions
-					 * folder if the original file exist we delete it and change
-					 * the name of the new file otherwise we only rename
+					 * If the new file was successfully move to the predictions folder if the
+					 * original file exist we delete it and change the name of the new file
+					 * otherwise we only rename
 					 */
 					for (String oriFilePath : originalFiles) {
 						extension = extensionwithoutName(s);
@@ -233,8 +226,7 @@ public class FileFuntions {
 	 * For delete a folder If we close the app or the algorithm view window we
 	 * delete the temporal folder
 	 * 
-	 * @param folder
-	 *            The folder to delete
+	 * @param folder The folder to delete
 	 */
 	public static void deleteFolder(File folder) {
 
@@ -258,10 +250,8 @@ public class FileFuntions {
 	 * 
 	 * check if all the files have the same extension
 	 * 
-	 * @param result
-	 *            list of path
-	 * @param extension
-	 *            extension to check
+	 * @param result    list of path
+	 * @param extension extension to check
 	 * @return true if all files have the same extension false otherwise
 	 */
 	public static boolean isExtension(List<String> result, String extension) {
@@ -278,8 +268,7 @@ public class FileFuntions {
 	/**
 	 * From a file path we get the name of the file without the file extension
 	 * 
-	 * @param filePath
-	 *            the path of the file
+	 * @param filePath the path of the file
 	 * @return the name of the file with out the extension
 	 */
 	public static String namewithoutExtension(String filePath) {
@@ -292,8 +281,7 @@ public class FileFuntions {
 	/**
 	 * We get the extension of a file
 	 * 
-	 * @param filePath
-	 *            the path of the file we want to know the extension
+	 * @param filePath the path of the file we want to know the extension
 	 * @return the extension of the file
 	 */
 	public static String extensionwithoutName(String filePath) {
@@ -307,11 +295,10 @@ public class FileFuntions {
 	}
 
 	/**
-	 * Creates the directoryLastChange if it wasn't all ready created and add
-	 * the last modification of the directory
+	 * Creates the directoryLastChange if it wasn't all ready created and add the
+	 * last modification of the directory
 	 * 
-	 * @param directory
-	 *            The path of the directory
+	 * @param directory The path of the directory
 	 */
 	public static void addModificationDirectory(String directory) {
 		if (directoryLastChange == null) {
@@ -325,8 +312,7 @@ public class FileFuntions {
 	/**
 	 * check if a directory has been modify
 	 * 
-	 * @param directory
-	 *            The path of the directory
+	 * @param directory The path of the directory
 	 * @return true if the directory has been modify
 	 */
 	public static boolean directoryHasChange(String directory) {
@@ -338,10 +324,8 @@ public class FileFuntions {
 	 * check if the directory has change If true, we change the content of the
 	 * tabpanel adding or deleting images
 	 * 
-	 * @param directory
-	 *            the path of the directory
-	 * @param tp
-	 *            The tabPanel that shows the content of the directory
+	 * @param directory the path of the directory
+	 * @param tp        The tabPanel that shows the content of the directory
 	 */
 	public static void isDirectoryContentModify(String directory, TabPanel tp) {
 
@@ -449,12 +433,9 @@ public class FileFuntions {
 	 * Check if the images shown still exist, the had been modify And change the
 	 * images that the showImages is showing. Close the ViewImagesBigger.
 	 * 
-	 * @param images
-	 *            ShowImages with the images shown
-	 * @param actualImages
-	 *            List of the images of the directory
-	 * @param tp
-	 *            The current tabPanel
+	 * @param images       ShowImages with the images shown
+	 * @param actualImages List of the images of the directory
+	 * @param tp           The current tabPanel
 	 */
 	public static void checkStillExist(ShowImages images, List<String> actualImages, TabPanel tp) {
 		Iterator<String> imageModify = images.getLastModifyImage().keySet().iterator();
@@ -520,10 +501,8 @@ public class FileFuntions {
 	 * We check if the images on the directory has been modified, deleted or new
 	 * ones has been added in the seconds given
 	 * 
-	 * @param tp
-	 *            The tabpanel that contains the tab with the images
-	 * @param secons
-	 *            the seconds between calls
+	 * @param tp     The tabpanel that contains the tab with the images
+	 * @param secons the seconds between calls
 	 */
 	public static Timer imagescheckWithTime(TabPanel tp, int secons) {
 		ImagesTask imatask = new ImagesTask(tp);
@@ -535,15 +514,14 @@ public class FileFuntions {
 	}
 
 	/**
-	 * Function that checks if there is tiff and roi files in the folder but not
-	 * in the predictions folder In case of finding Tiff and roi files in the
-	 * folder it ask you if you want to move the files to a prediction folder
+	 * Function that checks if there is tiff and roi files in the folder but not in
+	 * the predictions folder In case of finding Tiff and roi files in the folder it
+	 * ask you if you want to move the files to a prediction folder
 	 * 
-	 * @param folder
-	 *            the folder to check if have tiff and roi files
-	 * @param nameFileNoExt
-	 *            name of the file without extension of the file we wants to
-	 *            find it's tiff in the predictions folder if "" all the files
+	 * @param folder        the folder to check if have tiff and roi files
+	 * @param nameFileNoExt name of the file without extension of the file we wants
+	 *                      to find it's tiff in the predictions folder if "" all
+	 *                      the files
 	 * @return List of strings with the paths of tiff files in the folder given
 	 */
 	public static List<String> checkTiffNotPredictionsFolder(File folder, String nameFileNoExt) {
@@ -590,12 +568,9 @@ public class FileFuntions {
 	/**
 	 * Moves the tiff and roi files from the folder to the predictionsDir
 	 * 
-	 * @param folder
-	 *            the folder to check if have tiff and roi files
-	 * @param listImages
-	 *            the list of tiff files
-	 * @param predictionsDir
-	 *            the folder predictions
+	 * @param folder         the folder to check if have tiff and roi files
+	 * @param listImages     the list of tiff files
+	 * @param predictionsDir the folder predictions
 	 */
 	public static void moveTifffromParentToPredictions(File folder, List<String> listImages, File predictionsDir) {
 
@@ -648,14 +623,10 @@ public class FileFuntions {
 	/**
 	 * From a map return the key giving the value, there is no repeated values
 	 * 
-	 * @param <K>
-	 *            Type of the key
-	 * @param <V>
-	 *            Type of the value
-	 * @param map
-	 *            Map to search the key
-	 * @param value
-	 *            the value we wants to know the key
+	 * @param <K>   Type of the key
+	 * @param <V>   Type of the value
+	 * @param map   Map to search the key
+	 * @param value the value we wants to know the key
 	 * @return the key of the current value
 	 */
 	public static <K, V> K getKey(Map<K, V> map, V value) {
@@ -669,13 +640,11 @@ public class FileFuntions {
 
 	/**
 	 * 
-	 * GEts the key of a map, giving the description of a button, repeted values
-	 * in the map
+	 * GEts the key of a map, giving the description of a button, repeted values in
+	 * the map
 	 * 
-	 * @param map
-	 *            map to search the key
-	 * @param value
-	 *            description of the button
+	 * @param map   map to search the key
+	 * @param value description of the button
 	 * @return the key of a button
 	 */
 	public static String getKeyFRomButtonDescription(Map<String, JButton> map, String value) {
@@ -694,10 +663,8 @@ public class FileFuntions {
 	/**
 	 * Moves all the files from the dirpredictions to the temporal folder
 	 * 
-	 * @param dirPredictions
-	 *            current folder
-	 * @param tempoFolder
-	 *            new folder
+	 * @param dirPredictions current folder
+	 * @param tempoFolder    new folder
 	 */
 	public static void removeAllToOriginalFolder(String dirPredictions, File tempoFolder) {
 
@@ -711,16 +678,14 @@ public class FileFuntions {
 	}
 
 	/**
-	 * Moves the files to the predictions folder, changes the name of the
-	 * selected files (Jbutton) to the original ones checks if there is already
-	 * a file with that name in that case delete it and move the other from the
-	 * temporal folder.
+	 * Moves the files to the predictions folder, changes the name of the selected
+	 * files (Jbutton) to the original ones checks if there is already a file with
+	 * that name in that case delete it and move the other from the temporal folder.
 	 * 
-	 * @param dirPredictions
-	 *            path of the images predicted
-	 * @param originalNewSelected
-	 *            map of string-JButton that contains the name of the image-
-	 *            button selected with the image selected to save
+	 * @param dirPredictions      path of the images predicted
+	 * @param originalNewSelected map of string-JButton that contains the name of
+	 *                            the image- button selected with the image selected
+	 *                            to save
 	 */
 	public static void changeToriginalNameAndFolder(String dirPredictions, Map<String, JButton> originalNewSelected) {
 
@@ -766,8 +731,7 @@ public class FileFuntions {
 	 * 
 	 * Searchs if in a folder there is original files (nd2 or tif)
 	 * 
-	 * @param folder
-	 *            folder to search original files
+	 * @param folder folder to search original files
 	 * @return true if there is original images (nd2 or tif) in the folder
 	 */
 	public static boolean isOriginalImage(File folder) {
@@ -787,12 +751,11 @@ public class FileFuntions {
 	}
 
 	/**
-	 * If a new version of the jar is find and the user wants to update, calls
-	 * the updateJar and kills the execution of this jar
+	 * If a new version of the jar is find and the user wants to update, calls the
+	 * updateJar and kills the execution of this jar
 	 * 
-	 * @param callFromMain
-	 *            true if the method is call in the main method false if it is
-	 *            call in the JMEnu
+	 * @param callFromMain true if the method is call in the main method false if it
+	 *                     is call in the JMEnu
 	 */
 	public static void createUpdater(Boolean callFromMain) {
 		boolean newVersion = false;
@@ -814,7 +777,7 @@ public class FileFuntions {
 //			 Button b=new Button("Details >>>");
 			String msg = "A new update has been detected. \n Do you want to dowload it?";
 			Object[] msgContent = { msg, rememberChk };
-			
+
 //
 //			 Object[] msgContent = { msg, rememberChk ,b};
 //			 b.addActionListener(new ActionListener() {
@@ -849,6 +812,8 @@ public class FileFuntions {
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
+								JOptionPane.showMessageDialog(null,
+										"Error trying to update. \n Check if you have the update folder with its files whit this jar");
 							}
 
 						}
@@ -872,13 +837,16 @@ public class FileFuntions {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null,
+							"Error trying to update. \n Check if you have the update folder with its files whit this jar");
+
 				}
 
 			}
 
 		} else {
 			if (!callFromMain) {
-				JOptionPane.showMessageDialog(null, "You already have the newest version");
+				JOptionPane.showMessageDialog(Utils.mainFrame, "You already have the newest version");
 			}
 		}
 
@@ -887,24 +855,23 @@ public class FileFuntions {
 	/**
 	 * Checks if there is a new version of this jar
 	 * 
-	 * @param urlVerion
-	 *            the url with the newest version of this jar in the web
-	 * @param currentJarVersion
-	 *            the version of this jar
+	 * @param urlVerion         the url with the newest version of this jar in the
+	 *                          web
+	 * @param currentJarVersion the version of this jar
 	 * @return true if there is a new version
 	 */
 	private static boolean checkNewVersionJAr(String urlVerion, String currentJarVersion) {
 		boolean newJAr = false;
 		String newJArversion = "";
-		double cVersion=Double.parseDouble(currentJarVersion.replace("-SNAPSHOT", ""));
+		double cVersion = Double.parseDouble(currentJarVersion.replace("-SNAPSHOT", ""));
 		double nVersion;
 
 		newJArversion = readversion(urlVerion); // gets the version in the web
-		nVersion=Double.parseDouble(newJArversion.replace("-SNAPSHOT", ""));
+		nVersion = Double.parseDouble(newJArversion.replace("-SNAPSHOT", ""));
 
 		// compare the versions in case they are different and the version from
 		// the url is not "" there is a new version
-		if (!newJArversion.equals(currentJarVersion) && !newJArversion.equals("") && (nVersion>cVersion)) {
+		if (!newJArversion.equals(currentJarVersion) && !newJArversion.equals("") && (nVersion > cVersion)) {
 			newJAr = true;
 		}
 
@@ -912,11 +879,10 @@ public class FileFuntions {
 	}
 
 	/**
-	 * Reads the version of the jar in the url given. This url is a txt only
-	 * with the version
+	 * Reads the version of the jar in the url given. This url is a txt only with
+	 * the version
 	 * 
-	 * @param urlVerion
-	 *            url where the file with the newest version is
+	 * @param urlVerion url where the file with the newest version is
 	 * @return the current version in the web
 	 */
 	public static String readversion(String urlVerion) {
@@ -947,9 +913,9 @@ public class FileFuntions {
 		return line;
 
 	}
-	
+
 	public static List<String> readFile(String urlFile) {
-		List<String> line=new ArrayList<String>();
+		List<String> line = new ArrayList<String>();
 		// create the url
 		URL url;
 		try {
@@ -1000,8 +966,8 @@ public class FileFuntions {
 	 * url of the program properties for the general program or null in case of
 	 * error
 	 * 
-	 * @return url of the program properties for the general program or null in
-	 *         case of error
+	 * @return url of the program properties for the general program or null in case
+	 *         of error
 	 */
 	public static URL getProgramProps() {
 		try {
@@ -1037,41 +1003,41 @@ public class FileFuntions {
 		for (Window window : s) {
 			if (window.getClass().equals(AlgorithmView.class)) {
 				AlgorithmView al = (AlgorithmView) window;
-				
-				if(al.getT().isAlive()){
+
+				if (al.getT().isAlive()) {
 					al.getT().interrupt();
 				}
-				
+
 				window.dispose();
 			}
 		}
 
 	}
-	
-	public static boolean windowAlgoWiewOfFile(File f){
-		boolean alreadyAlView =false;
+
+	public static boolean windowAlgoWiewOfFile(File f) {
+		boolean alreadyAlView = false;
 		System.gc();
 		Window[] s = Window.getWindows();
 		for (Window window : s) {
-			if(!window.isVisible()){
+			if (!window.isVisible()) {
 				window.dispose();
-			}else{
-			if (window.getClass().equals(AlgorithmView.class)) {
-				AlgorithmView al = (AlgorithmView) window;
+			} else {
+				if (window.getClass().equals(AlgorithmView.class)) {
+					AlgorithmView al = (AlgorithmView) window;
 
-				if (al.getImage().equals(f)) {
-					alreadyAlView = true;
-					al.toFront();
-					break;
+					if (al.getImage().equals(f)) {
+						alreadyAlView = true;
+						al.toFront();
+						break;
+					}
+
 				}
-
-			}
 			}
 		}
 		return alreadyAlView;
 	}
 
-	public static void changeDirectory(String path, GeneralView mainFrame, boolean tree) {
+	public static void changeDirectory(String path, boolean tree) {
 
 		closeAlgorithmViewWindows();
 
@@ -1087,13 +1053,212 @@ public class FileFuntions {
 
 		}
 		if (tree) {
-			Utils.callProgram(path, mainFrame);
+			Utils.callProgram(path);
 		} else {
-			mainFrame.paintMainFRame(path);
+			Utils.mainFrame.paintMainFRame(path);
 		}
 
-		JOptionPane.showMessageDialog(mainFrame, "Directory changed to " + path);
+		JOptionPane.showMessageDialog(Utils.mainFrame, "Directory changed to " + path);
 
+	}
+
+	/**
+	 * Action to perform in order to change the current directory
+	 */
+	public static void changeDirectory() {
+		GeneralView mainFrame = Utils.mainFrame;
+
+		String text = "The current directory is: \n" + mainFrame.getDir() + "\n Do you what to change it?";
+		int op = JOptionPane.showConfirmDialog(mainFrame, text, "Change directory", JOptionPane.YES_NO_OPTION);
+
+		if (op == 0) {
+
+			DirectoryChooser dc = new DirectoryChooser("Select new directory");
+
+			if (dc.getDirectory() != null) {
+				// Desactivate the menu options until the panel is paint
+				Utils.mainFrame.activeRestOfMenuOPtionsOrDesactivate();
+				FileFuntions.changeDirectory(dc.getDirectory(), false);
+
+			} else {
+
+				JOptionPane.showMessageDialog(mainFrame, "Directory not changed");
+
+			}
+
+		} else {
+
+			JOptionPane.showMessageDialog(mainFrame, "Directory not changed");
+
+		}
+
+	}
+
+	public static void inicializeGeneralViewDirectory() {
+//		 Choose the directory to work with
+		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the images");
+		if (dc.getDirectory() != null) { // if a directory has been chosen
+
+			if (dc.getDirectory().endsWith("predictions")) {
+				// if the directory is the predictions directory, we work with
+				// the parent that contains the original images
+				Utils.callProgram(dc.getDirectory().replace("predictions", ""));
+
+			} else {
+				if (dc.getDirectory().endsWith("predictions" + File.separator)) {
+					Utils.callProgram(dc.getDirectory().replace("predictions" + File.separator, ""));
+				} else {
+					Utils.callProgram(dc.getDirectory());
+				}
+
+			}
+		} else {
+			JOptionPane.showMessageDialog(Utils.mainFrame, "Nothing to do. No directory choosen");
+		}
+	}
+
+	/**
+	 * Action to add more allowed extensions
+	 * 
+	 */
+	public void addFileExtension() {
+		PropertiesFileFuntions prop = new PropertiesFileFuntions();
+		String text = "The current extensions are: \n";
+		String ext = prop.getProp().getProperty("imageFilesExtensions");
+		if (ext != null) {
+			List<String> list = getExtensions();
+
+			for (String s : list) {
+				text += s + " \n";
+			}
+
+			String seleccion = JOptionPane.showInputDialog(text);
+			if (seleccion != null) {
+				if (seleccion != "") {
+					ext += "," + seleccion;
+					prop.getProp().setProperty("imageFilesExtensions", ext);
+					try {
+						FileOutputStream out = new FileOutputStream(prop.getPath().getFile());
+						prop.getProp().store(out, null);
+						out.close();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Error while doing the required action", "Error saving",
+								JOptionPane.ERROR_MESSAGE);
+					}
+
+					addFileExtension();
+
+				}
+			}
+		}
+	}
+
+	/**
+	 * GEts the allowed file extension from the properties file
+	 * 
+	 * @return the list of allowed file extensions
+	 */
+	public static List<String> getExtensions() {
+		List<String> list = null;
+		PropertiesFileFuntions prop = new PropertiesFileFuntions();
+		String ext = prop.getProp().getProperty("imageFilesExtensions");
+		if (ext != null) {
+			String[] extensionSplit = ext.split(",");
+			list = Arrays.asList(extensionSplit);
+		}
+		return list;
+	}
+
+	public static void changeDirOrNot() {
+		if (Utils.getCurrentDirectory() != null) {
+			changeDirectory();
+		} else {
+			inicializeGeneralViewDirectory();
+		}
+	}
+
+	public static void detectAlgoImageMEnu() {
+		// TODO Auto-generated method stub
+		JFileChooser chooser = new JFileChooser(Utils.getCurrentDirectory());
+		chooser.setDialogTitle("Select an image of the current directory or subdirectories");
+		List<String> exten = FileFuntions.getExtensions();
+		FileNameExtensionFilter filter;
+
+		for (String name : exten) {
+			filter = new FileNameExtensionFilter(name, name);
+			chooser.setFileFilter(filter);
+		}
+		chooser.setVisible(true);
+		int returnVal = chooser.showOpenDialog(Utils.mainFrame);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File image = chooser.getSelectedFile();
+			if (image != null) {
+				if (!image.getAbsolutePath().contains(Utils.getCurrentDirectory())) {
+					JOptionPane.showMessageDialog(Utils.mainFrame,
+							"Please select an image of the current directory or subdirectoties");
+					detectAlgoImageMEnu();
+				} else {
+					new AlgorithmView(image, Utils.getCurrentDirectory());
+				}
+			}
+		}
+
+	}
+
+	public static void saveAlgorithmConfi(String selectedItemFluo, String selectedItemTif, String selectedItemNd2) {
+
+		URL urlUpdater = getProgramProps();
+		if (urlUpdater != null) {
+			PropertiesFileFuntions propUpdater = new PropertiesFileFuntions(urlUpdater);
+
+			String fluoSave = propUpdater.getProp().getProperty("SelectFluoAlgo");
+			String tifSave = propUpdater.getProp().getProperty("SelectTifAlgo");
+			String nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
+
+			if (!fluoSave.equals(selectedItemFluo)) {
+				propUpdater.getProp().setProperty("SelectFluoAlgo", selectedItemFluo);
+			}
+			if (!tifSave.equals(selectedItemTif)) {
+				propUpdater.getProp().setProperty("SelectTifAlgo", selectedItemTif);
+			}
+			if (!nd2Save.equals(selectedItemNd2)) {
+				propUpdater.getProp().setProperty("SelectNd2Algo", selectedItemNd2);
+			}
+
+			try {
+
+				propUpdater.getProp().store(new FileOutputStream(urlUpdater.getPath()), "Selected algoritms");
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	public static boolean changedCombox(String selectedItemFluo, String selectedItemTif, String selectedItemNd2) {
+		URL urlUpdater = getProgramProps();
+		if (urlUpdater != null) {
+			PropertiesFileFuntions propUpdater = new PropertiesFileFuntions(urlUpdater);
+
+			String fluoSave = propUpdater.getProp().getProperty("SelectFluoAlgo");
+			String tifSave = propUpdater.getProp().getProperty("SelectTifAlgo");
+			String nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
+
+			if (!fluoSave.equals(selectedItemFluo)) {
+				return true;
+			}
+			if (!tifSave.equals(selectedItemTif)) {
+				return true;
+			}
+			if (!nd2Save.equals(selectedItemNd2)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

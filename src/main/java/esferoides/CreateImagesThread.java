@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import funtions.Utils;
 import loci.plugins.in.ImporterOptions;
 
 public class CreateImagesThread extends Thread {
@@ -107,7 +108,7 @@ System.out.println("Hilo "+ this.num);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
+			JOptionPane.showMessageDialog( Utils.mainFrame, "An error occurred while detecting the esferoid");
 		}
 	}
 

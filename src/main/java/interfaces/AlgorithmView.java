@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -24,6 +23,7 @@ import javax.swing.JScrollPane;
 import esferoides.Methods;
 import funtions.FileFuntions;
 import funtions.RoiFuntions;
+import funtions.Utils;
 import ij.IJ;
 
 public class AlgorithmView extends JFrame {
@@ -51,7 +51,17 @@ public class AlgorithmView extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
+				File folder = Methods.getTemporalFolder();
+				if (folder != null) {
+					folder.delete();
+				}
+
+			}
+
+			public void windowClosed(WindowEvent e) {
+				// TODO Auto-generated method stub
+
 				File folder = Methods.getTemporalFolder();
 				if (folder != null) {
 					folder.delete();
@@ -64,16 +74,15 @@ public class AlgorithmView extends JFrame {
 		this.directory = dir;
 		jSp = new JPanel(new GridBagLayout());
 		this.add(jSp);
-		
+
 		pb = new OurProgressBar(this);
-		t= new Thread() {
-		    public void run() {
-		    initilice();
-		    }  
+		t = new Thread() {
+			public void run() {
+				initilice();
+			}
 		};
 
 		t.start();
-		
 
 	}
 
@@ -128,7 +137,7 @@ public class AlgorithmView extends JFrame {
 
 		if (panelImage.getListImages().size() == 0) {
 			pb.dispose();
-			JOptionPane.showMessageDialog(null, "Nothing detected in the image given");
+			JOptionPane.showMessageDialog(this, "Nothing detected in the image given");
 
 			this.dispose();
 		}
@@ -146,7 +155,6 @@ public class AlgorithmView extends JFrame {
 
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.BOTH;
-		
 
 		JScrollPane s = new JScrollPane(panelImage);
 
@@ -174,18 +182,19 @@ public class AlgorithmView extends JFrame {
 		IJ.run("Close All");
 		this.pack();
 //		pack();
+		if (!Utils.mainFrame.getMb().isEnabled()) {
+			Utils.mainFrame.getMb().setEnabled(true);
+		}
 		t.interrupt();
 	}
 
 	/**
-	 * Action to perform when a button with an image is clicked. -One click
-	 * select the button and makes it the selected -Two opens a comparer in the
-	 * JFRame to compare with the image in predictions
+	 * Action to perform when a button with an image is clicked. -One click select
+	 * the button and makes it the selected -Two opens a comparer in the JFRame to
+	 * compare with the image in predictions
 	 * 
-	 * @param me
-	 *            Mouse event
-	 * @param imageIcon
-	 *            ImageIco in the button clicked
+	 * @param me        Mouse event
+	 * @param imageIcon ImageIco in the button clicked
 	 */
 	public void mouseClick(MouseEvent me, ImageIcon imageIcon) {
 		if (!me.isConsumed()) {
@@ -215,11 +224,10 @@ public class AlgorithmView extends JFrame {
 	}
 
 	/**
-	 * Adds the comparer interface to the JFRame and deletes the JScrollpanel
-	 * with all the images
+	 * Adds the comparer interface to the JFRame and deletes the JScrollpanel with
+	 * all the images
 	 * 
-	 * @param vi
-	 *            the JPanel with the comparer interface
+	 * @param vi the JPanel with the comparer interface
 	 */
 	public void addComparer(ViewImagesBigger vi) {
 
@@ -248,8 +256,7 @@ public class AlgorithmView extends JFrame {
 	 * 
 	 * Gets the button associated with the given image
 	 * 
-	 * @param imagPath
-	 *            image path
+	 * @param imagPath image path
 	 * @return A JButton associated with the image given
 	 */
 	public JButton getButtonFromImage(String imagPath) {
@@ -259,15 +266,12 @@ public class AlgorithmView extends JFrame {
 	}
 
 	/**
-	 * adds the action to perform when the save button is clicked adds the
-	 * action to perform when the modify button is clicked
+	 * adds the action to perform when the save button is clicked adds the action to
+	 * perform when the modify button is clicked
 	 * 
-	 * @param saveImageBt
-	 *            The button to add the save action
-	 * @param modifiSelectionBu
-	 *            the button to add the modify action
-	 * @param pIma
-	 *            panel with the buttons with the images to select
+	 * @param saveImageBt       The button to add the save action
+	 * @param modifiSelectionBu the button to add the modify action
+	 * @param pIma              panel with the buttons with the images to select
 	 */
 	private void addButtonListener(JButton saveImageBt, JButton modifiSelectionBu, JPanel pIma) {
 
@@ -305,9 +309,9 @@ public class AlgorithmView extends JFrame {
 	}
 
 	/**
-	 * SAves the image given in predictions folder, changing it with the current
-	 * one already in the folder predictions if the comparer is open exchange
-	 * the original image with this new one
+	 * SAves the image given in predictions folder, changing it with the current one
+	 * already in the folder predictions if the comparer is open exchange the
+	 * original image with this new one
 	 * 
 	 * @param filePath
 	 */
@@ -322,8 +326,7 @@ public class AlgorithmView extends JFrame {
 	/**
 	 * Modufy the roi selection
 	 * 
-	 * @param filename
-	 *            the image in with you modify the roi selection
+	 * @param filename the image in with you modify the roi selection
 	 */
 	private void modifySeclection(String filename) {
 		String fileRoi = filename.replace("_pred.tiff", ".zip");

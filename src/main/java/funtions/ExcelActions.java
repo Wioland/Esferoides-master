@@ -1,5 +1,6 @@
 package funtions;
 
+import java.awt.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -86,21 +87,20 @@ public class ExcelActions {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "An error occurred while creating the excel associated with the image");
+			JOptionPane.showMessageDialog(Utils.mainFrame,
+					"An error occurred while creating the excel associated with the image");
 		}
 
 	}
 
 	/**
-	 * Method that find the row of an object in an excel file based on the name
-	 * it has on the first column
+	 * Method that find the row of an object in an excel file based on the name it
+	 * has on the first column
 	 * 
-	 * @param sheet
-	 *            sheet of the excel where you wanted to find the object
-	 * @param cellContent
-	 *            id of the object in the excel
-	 * @return the row number of the object or -1 if the object isn't in the
-	 *         excel sheet
+	 * @param sheet       sheet of the excel where you wanted to find the object
+	 * @param cellContent id of the object in the excel
+	 * @return the row number of the object or -1 if the object isn't in the excel
+	 *         sheet
 	 */
 
 	public static int findRow(HSSFSheet sheet, String cellContent) {
@@ -117,15 +117,12 @@ public class ExcelActions {
 	}
 
 	/**
-	 * Changes the content of the row all Except from the first column with
-	 * contains the id
+	 * Changes the content of the row all Except from the first column with contains
+	 * the id
 	 * 
-	 * @param rowIndex
-	 *            the excel row we are going to change
-	 * @param sheet
-	 *            the sheet of the excel in witch we are going to change a row
-	 * @param newRow
-	 *            a row with the new content
+	 * @param rowIndex the excel row we are going to change
+	 * @param sheet    the sheet of the excel in witch we are going to change a row
+	 * @param newRow   a row with the new content
 	 */
 	public static void changeRow(int rowIndex, HSSFSheet sheet, Row newRow) {
 
@@ -137,17 +134,15 @@ public class ExcelActions {
 	}
 
 	/**
-	 * If an excel is been shown in the tabPanel, it checks if the excel has
-	 * been modified or deleted. If there weren't excels checks if now there are
-	 * and add them.
+	 * If an excel is been shown in the tabPanel, it checks if the excel has been
+	 * modified or deleted. If there weren't excels checks if now there are and add
+	 * them.
 	 * 
-	 * @param tp
-	 *            The tabPanel that contains the excels tabs
-	 * @param dir
-	 *            the directory where the excel is
+	 * @param tp  The tabPanel that contains the excels tabs
+	 * @param dir the directory where the excel is
 	 */
 	public static void checkAllExcelTab(TabPanel tp, String dir) {
-tp.setSelectedIndex(0);
+		tp.setSelectedIndex(0);
 		List<Integer> lAux = new ArrayList<Integer>();
 		for (Integer tbIndex : tp.getIndexTabExcel().keySet()) {
 			lAux.add(tbIndex);
@@ -171,12 +166,9 @@ tp.setSelectedIndex(0);
 	/**
 	 * Checks is the excel of it tab have change or if an
 	 * 
-	 * @param tp
-	 *            TabPanel that contains the excel tab
-	 * @param dir
-	 *            The excel directory
-	 * @param index
-	 *            The tab index to check
+	 * @param tp    TabPanel that contains the excel tab
+	 * @param dir   The excel directory
+	 * @param index The tab index to check
 	 */
 	public static void checkExcelTab(TabPanel tp, String dir, int index) {
 
@@ -201,7 +193,7 @@ tp.setSelectedIndex(0);
 					if (!modTab.equals(excelMod)) { // if it hasn't been
 													// modified
 
-						JOptionPane.showMessageDialog(null,
+						JOptionPane.showMessageDialog(Utils.mainFrame,
 								"The excel " + excel.getName() + " was modified. Updating it´s tab");
 
 						JScrollPane sp = (JScrollPane) tp.getComponent(index);
@@ -232,22 +224,19 @@ tp.setSelectedIndex(0);
 	}
 
 	/**
-	 * If the excel has been deleted we delete the tab in the tabPane if the tab
-	 * is the last having an excel in the tabPanel we doesn't delete it and we
+	 * If the excel has been deleted we delete the tab in the tabPane if the tab is
+	 * the last having an excel in the tabPanel we doesn't delete it and we
 	 * transform it in a noFile tab
 	 * 
-	 * @param excel
-	 *            the excel file
-	 * @param index
-	 *            the index of the tab in the tabPane
-	 * @param tp
-	 *            The tabPanel
+	 * @param excel the excel file
+	 * @param index the index of the tab in the tabPane
+	 * @param tp    The tabPanel
 	 */
 	public static void deleteExcelTab(File excel, int index, TabPanel tp) {
 
-		
-		if (index <= tp.countComponents()&& index>0) {
-			JOptionPane.showMessageDialog(null, "The excel " + excel.getName() + " was deleted");
+//		tp.countComponents()
+		if (index <= tp.getComponents().length && index > 0) {
+			JOptionPane.showMessageDialog(Utils.mainFrame, "The excel " + excel.getName() + " was deleted");
 			JScrollPane sp = (JScrollPane) tp.getComponentAt(index);
 			JViewport jP = (JViewport) sp.getComponent(0);
 
@@ -263,18 +252,17 @@ tp.setSelectedIndex(0);
 
 			} else {
 				tp.remove(index); // we remove it
-				int indexTabExcelSize=tp.getIndexTabExcel().size();
-				
+				int indexTabExcelSize = tp.getIndexTabExcel().size();
+
 				tp.getIndexTabExcel().remove(index);
-				
-				if(index!=(indexTabExcelSize+1)){
-					int i=0;
-					for (i=index;i<(indexTabExcelSize+1);i++ ) {
-						tp.getIndexTabExcel().put(i, tp.getIndexTabExcel().get(i+1));
+
+				if (index != (indexTabExcelSize + 1)) {
+					int i = 0;
+					for (i = index; i < (indexTabExcelSize + 1); i++) {
+						tp.getIndexTabExcel().put(i, tp.getIndexTabExcel().get(i + 1));
 					}
 					tp.getIndexTabExcel().remove(tp.getIndexTabExcel().size());
 				}
-				
 
 			}
 		}
@@ -284,10 +272,8 @@ tp.setSelectedIndex(0);
 	/**
 	 * add an new excel to the tabPanel When a new excel appear in the directory
 	 * 
-	 * @param result
-	 *            list of excel paths
-	 * @param tp
-	 *            The tabPanel
+	 * @param result list of excel paths
+	 * @param tp     The tabPanel
 	 */
 	public static void addedExcelToTheTab(List<String> result, TabPanel tp) {
 
@@ -295,7 +281,7 @@ tp.setSelectedIndex(0);
 		// int tpSize = tp.getIndexTabExcel().size();
 		if (result.size() > tp.getIndexTabExcel().size()) { // if the folder
 
-			JOptionPane.showMessageDialog(null, "Detected an excel file");
+			JOptionPane.showMessageDialog(Utils.mainFrame, "Detected an excel file");
 			boolean firstCheck = false;
 			if (!tp.getIndexTabExcel().isEmpty()) {
 				firstCheck = true;
@@ -342,10 +328,8 @@ tp.setSelectedIndex(0);
 	/**
 	 * Add a new excelTab to the tabPanel
 	 * 
-	 * @param excel
-	 *            The excel file to add
-	 * @param tp
-	 *            The Tabpanel
+	 * @param excel The excel file to add
+	 * @param tp    The Tabpanel
 	 */
 	public static void addExcelPanel(File excel, TabPanel tp) {
 
@@ -378,15 +362,12 @@ tp.setSelectedIndex(0);
 	}
 
 	/**
-	 * Methods for checking the excel tabs in the seconds given in order to know
-	 * if the excels had change or new ones have appear
+	 * Methods for checking the excel tabs in the seconds given in order to know if
+	 * the excels had change or new ones have appear
 	 * 
-	 * @param tp
-	 *            The tabPanel
-	 * @param directory
-	 *            The current directory to check
-	 * @param secons
-	 *            The seconds between calls
+	 * @param tp        The tabPanel
+	 * @param directory The current directory to check
+	 * @param secons    The seconds between calls
 	 */
 	public static Timer excelcheckWithTime(TabPanel tp, String directory, int secons) {
 		ExcelTask exTask = new ExcelTask(tp, directory);
@@ -399,8 +380,7 @@ tp.setSelectedIndex(0);
 	/**
 	 * Deletes all the excels in the directory given
 	 * 
-	 * @param directory
-	 *            folder in with we are going to delete the excel files
+	 * @param directory folder in with we are going to delete the excel files
 	 */
 	public static void deleteAllExcels(File directory) {
 
@@ -420,12 +400,9 @@ tp.setSelectedIndex(0);
 	 * Merges different excels in the results.xls excel, if it doesn't exist the
 	 * excel given transforms in to it
 	 * 
-	 * @param excel
-	 *            the excel to merge
-	 * @param originalName
-	 *            original name of the image associated with the data
-	 * @param directory
-	 *            the directory in with the merge takes place
+	 * @param excel        the excel to merge
+	 * @param originalName original name of the image associated with the data
+	 * @param directory    the directory in with the merge takes place
 	 */
 	public static void mergeExcels(File excel, String originalName, File directory) {
 
@@ -490,12 +467,9 @@ tp.setSelectedIndex(0);
 	/**
 	 * Gets a row from an excel file
 	 * 
-	 * @param excel
-	 *            excel file
-	 * @param indexSheet
-	 *            index of the sheet to take the row
-	 * @param indexRow
-	 *            index of the row you wants to get
+	 * @param excel      excel file
+	 * @param indexSheet index of the sheet to take the row
+	 * @param indexRow   index of the row you wants to get
 	 * @return the row of the excel in the position given
 	 */
 	private static HSSFRow getRow(File excel, int indexSheet, int indexRow) {
@@ -515,16 +489,11 @@ tp.setSelectedIndex(0);
 	/**
 	 * Modify the value of an excel cell
 	 * 
-	 * @param workbook
-	 *            the workbook of the excel
-	 * @param indexSheet
-	 *            index of the sheet
-	 * @param indexRow
-	 *            index of the row
-	 * @param indexCell
-	 *            index of the cell
-	 * @param newValue
-	 *            new value of the cell
+	 * @param workbook   the workbook of the excel
+	 * @param indexSheet index of the sheet
+	 * @param indexRow   index of the row
+	 * @param indexCell  index of the cell
+	 * @param newValue   new value of the cell
 	 */
 	public static void modifyCell(HSSFWorkbook workbook, int indexSheet, int indexRow, int indexCell, String newValue) {
 		HSSFSheet sheet = workbook.getSheetAt(indexSheet);
@@ -536,12 +505,9 @@ tp.setSelectedIndex(0);
 	 * 
 	 * Adds a new row to the excel given
 	 * 
-	 * @param workbook
-	 *            workbook of the excel
-	 * @param indexSheet
-	 *            index of the sheet
-	 * @param newRow
-	 *            row to insert
+	 * @param workbook   workbook of the excel
+	 * @param indexSheet index of the sheet
+	 * @param newRow     row to insert
 	 */
 	public static void addRow(HSSFWorkbook workbook, int indexSheet, HSSFRow newRow) {
 		HSSFSheet sheet = workbook.getSheetAt(indexSheet);
@@ -590,10 +556,8 @@ tp.setSelectedIndex(0);
 	/**
 	 * Separates each row of the current excel in diferrent excels
 	 * 
-	 * @param pathFile
-	 *            path of the excel to unmerge
-	 * @param originalNewSelected
-	 *            has the current label of the row and the old/new
+	 * @param pathFile            path of the excel to unmerge
+	 * @param originalNewSelected has the current label of the row and the old/new
 	 */
 	public static void unMergeExcel(String pathFile, Map<String, JButton> originalNewSelected) {
 		if (pathFile.endsWith(File.separator)) {
@@ -642,14 +606,11 @@ tp.setSelectedIndex(0);
 	/**
 	 * Creates a new excel from a row
 	 * 
-	 * @param pathFile
-	 *            the path to save the file. That is the path of the image
-	 *            associated with the data, so we have to change the extension
-	 *            and name in the funtion
-	 * @param headings
-	 *            the row that contains the headings of the new data
-	 * @param data
-	 *            the row with the data
+	 * @param pathFile the path to save the file. That is the path of the image
+	 *                 associated with the data, so we have to change the extension
+	 *                 and name in the funtion
+	 * @param headings the row that contains the headings of the new data
+	 * @param data     the row with the data
 	 */
 	private static void createExcelFromOtherExcelRow(String pathFile, HSSFRow headings, HSSFRow data) {
 		HSSFWorkbook workbook = new HSSFWorkbook();
@@ -675,8 +636,35 @@ tp.setSelectedIndex(0);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "An error occurred while creating the excel associated with the image");
+			JOptionPane.showMessageDialog(Utils.mainFrame,
+					"An error occurred while creating the excel associated with the image");
 		}
 
+	}
+	
+	
+	public static void saveExcel( ArrayList<Integer> goodRows, File folder) {
+		ResultsTable rt = ResultsTable.getResultsTable();
+		int rows = rt.getCounter();
+		for (int i = rows; i > 0; i--) {
+			if (!(goodRows.contains(i - 1))) {
+				rt.deleteRow(i - 1);
+			} else {
+				String[] s = rt.getRowAsString(i - 1).split(",");
+				if (s.length == 1) {
+					s = rt.getRowAsString(i - 1).split("\t");
+				}
+
+				if (s[1].equals("")) {
+					rt.deleteRow(i - 1);
+				}
+			}
+
+		}
+
+		ExcelActions ete = new ExcelActions(rt, folder.getAbsolutePath() + File.separator);
+		ete.convertToExcel();
+
+		rt.reset();
 	}
 }

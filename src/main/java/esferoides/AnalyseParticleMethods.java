@@ -1,7 +1,5 @@
 package esferoides;
 
-import org.python.modules.synchronize;
-
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;

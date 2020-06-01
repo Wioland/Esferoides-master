@@ -41,11 +41,12 @@ public class TabPanel extends JTabbedPane {
 	private LensMEnuButtons lens;
 	private Thread t;
 
-
 	public TabPanel(String directory, boolean selectAlgo) {
 
 		if (selectAlgo) {
+
 			selectAlgorithmImagesTab(directory);
+
 		} else {
 			alreadyImageTiffFolderTab(directory);
 		}
@@ -105,11 +106,9 @@ public class TabPanel extends JTabbedPane {
 	// METHODS
 
 	/**
-	 * Function use to paint the tabpanel when there is tiff file in the
-	 * directory
+	 * Function use to paint the tabpanel when there is tiff file in the directory
 	 * 
-	 * @param directory
-	 *            the current directory
+	 * @param directory the current directory
 	 */
 	public void alreadyImageTiffFolderTab(String directory) {
 		// We search for the excel files
@@ -184,8 +183,6 @@ public class TabPanel extends JTabbedPane {
 		// We save the last time the directory was changed
 		FileFuntions.addModificationDirectory(dir + "predictions");
 
-
-
 	}
 
 	public JPanel createJPanelToShowImages(ShowImages images, LensMEnuButtons lens) {
@@ -212,14 +209,13 @@ public class TabPanel extends JTabbedPane {
 	 * Function to use when you wants to paint the tabpanel when you have just
 	 * detected new esferoides with all the algorithms
 	 * 
-	 * @param directory
-	 *            the current directory
+	 * @param directory the current directory
 	 */
 	public void selectAlgorithmImagesTab(String directory) {
 
 		this.dir = directory;
 		List<String> result = new ArrayList<String>();
-		List<String> listExtensions = JMenuPropertiesFile.getExtensions();
+		List<String> listExtensions = FileFuntions.getExtensions();
 		originalNewSelected = new HashMap<String, JButton>();
 		int i = 0;
 
@@ -244,7 +240,6 @@ public class TabPanel extends JTabbedPane {
 		// folder and do actions with it
 		if (result.isEmpty()) {
 			alreadyImageTiffFolderTab(directory);
-			
 
 			// if there is images we proceed to detect the esferoid
 		} else {
@@ -279,73 +274,81 @@ public class TabPanel extends JTabbedPane {
 				}
 
 			}
-			File folder= new File(directory);
-			String preDir=directory;
-			if(preDir.endsWith(File.separator)){
-				preDir+="predictions";
-			}else{
-				preDir+=File.separator+"predictions";
+			File folder = new File(directory);
+			String preDir = directory;
+			boolean showtiff = false;
+
+			if (preDir.endsWith(File.separator)) {
+				preDir += "predictions";
+			} else {
+				preDir += File.separator + "predictions";
 			}
-			File predictionsDir=new File(directory);
-			
+			File predictionsDir = new File(preDir);
+
 			FileFuntions.moveTifffromParentToPredictions(folder, new ArrayList<String>(), predictionsDir);
 
+			if (predictionsDir.exists()) {
+				showtiff = true;
+			}
 			// run the methods to process the images
-			new Methods(directory, result, false);
-			
-			
-			
-			
-			originalImagesNumber = result.size();
+			new Methods(directory, result);
 
-			// For each image we create a showimage
-			ShowAllAlgorithmImages imaCreated = null;
-			JPanel imagesPanel = new JPanel(new GridLayout(0, 2));
+			if (showtiff) {
 
-			for (String pathOriginalImage : result) {
-				imaCreated = new ShowAllAlgorithmImages(pathOriginalImage, this);
-				imagesPanel.add(imaCreated);
-			}
+				originalImagesNumber = result.size();
 
-			JPanel splitPane = new JPanel(new GridBagLayout());
-			JPanel selectButtons = new JPanel();
-			JScrollPane s = new JScrollPane(imagesPanel);
+				// For each image we create a showimage
+				ShowAllAlgorithmImages imaCreated = null;
+				JPanel imagesPanel = new JPanel(new GridLayout(0, 2));
 
-			addSelectedButtons(selectButtons);
+				for (String pathOriginalImage : result) {
+					imaCreated = new ShowAllAlgorithmImages(pathOriginalImage, this);
+					imagesPanel.add(imaCreated);
+				}
 
-			GridBagConstraints constraints = new GridBagConstraints();
-			constraints.fill = GridBagConstraints.BOTH;
+				JPanel splitPane = new JPanel(new GridBagLayout());
+				JPanel selectButtons = new JPanel();
+				JScrollPane s = new JScrollPane(imagesPanel);
 
-			constraints.gridx = 0;
-			constraints.gridy = 0;
+				addSelectedButtons(selectButtons);
 
-			splitPane.add(selectButtons, constraints);
+				GridBagConstraints constraints = new GridBagConstraints();
+				constraints.fill = GridBagConstraints.BOTH;
 
-			constraints.weightx = 1;
-			constraints.weighty = 1;
-			constraints.gridx = 0;
-			constraints.gridy = 1;
+				constraints.gridx = 0;
+				constraints.gridy = 0;
 
-			if (result.size() == 1) {
-				splitPane.add(imaCreated, constraints);
+				splitPane.add(selectButtons, constraints);
 
+				constraints.weightx = 1;
+				constraints.weighty = 1;
+				constraints.gridx = 0;
+				constraints.gridy = 1;
+
+				if (result.size() == 1) {
+					splitPane.add(imaCreated, constraints);
+
+				} else {
+					splitPane.add(s, constraints);
+				}
+
+				addTab("Images", splitPane);
 			} else {
-				splitPane.add(s, constraints);
+
+				alreadyImageTiffFolderTab(directory);
+
 			}
 
-			addTab("Images", splitPane);
 		}
 
 	}
 
 	/**
-	 * Changes the selected images with the new selected one and shows the
-	 * button background yellow to show that that is the selected image
+	 * Changes the selected images with the new selected one and shows the button
+	 * background yellow to show that that is the selected image
 	 * 
-	 * @param newImage
-	 *            path of the old image selected
-	 * @param oldImage
-	 *            path of the new image selected
+	 * @param newImage path of the old image selected
+	 * @param oldImage path of the new image selected
 	 */
 	public void changeSelectedImage(String newImage, String oldImage) {
 
@@ -365,8 +368,7 @@ public class TabPanel extends JTabbedPane {
 	/**
 	 * Add to the given jpanel the jButtons save selection y clean selection
 	 * 
-	 * @param selectButtons
-	 *            jpanel to add the button
+	 * @param selectButtons jpanel to add the button
 	 */
 	private void addSelectedButtons(JPanel selectButtons) {
 
@@ -400,8 +402,8 @@ public class TabPanel extends JTabbedPane {
 
 	/**
 	 * Saves the files selected from a group of buttons If there is already a
-	 * predictions folder and it isn't empty we ask for deleting the folder or
-	 * to choose the files to exchange
+	 * predictions folder and it isn't empty we ask for deleting the folder or to
+	 * choose the files to exchange
 	 */
 	private void saveImagesSelected() {
 		String dirPredictions = getDir();
@@ -457,12 +459,12 @@ public class TabPanel extends JTabbedPane {
 				}
 
 			} else {
-				
+
 				try {
-					OurProgressBar pb= new OurProgressBar(getJFrameGeneral());
-					 t = new Thread() {
+					OurProgressBar pb = new OurProgressBar(Utils.mainFrame);
+					t = new Thread() {
 						public void run() {
-							
+
 							// merge all the excels in one and save the selected files
 							// in the new location
 							folder.mkdir();
@@ -473,16 +475,15 @@ public class TabPanel extends JTabbedPane {
 							// change the tab to the already tiff view
 
 							((ImageTreePanel) getParent()).repaintTabPanel(false);
-							
+
 							pb.dispose();
 							t.interrupt();
-							
-							
-						}};
-					
+
+						}
+					};
+
 					t.start();
-					
-					
+
 				} catch (Exception e) {
 					e.printStackTrace();
 
@@ -497,13 +498,13 @@ public class TabPanel extends JTabbedPane {
 	}
 
 	/**
-	 * Saves the selected files (tiff file and roi) in the temporal folder to
-	 * the predictions folder and merge the excels to have the results.xls excel
-	 * with all the data
+	 * Saves the selected files (tiff file and roi) in the temporal folder to the
+	 * predictions folder and merge the excels to have the results.xls excel with
+	 * all the data
 	 */
 	public void moveFinalFilesToPredictions() {
-		OurProgressBar pb = new OurProgressBar(getJFrameGeneral());
-		JOptionPane.showMessageDialog(getJFrameGeneral(), "Saving the images in the predicction folder");
+		OurProgressBar pb = new OurProgressBar(Utils.mainFrame);
+		JOptionPane.showMessageDialog(Utils.mainFrame, "Saving the images in the predicction folder");
 		String auxName = "";
 		File auxFile = null;
 		String nameNoExtension = "";
@@ -535,30 +536,19 @@ public class TabPanel extends JTabbedPane {
 					new File(fileExcel.getAbsolutePath().replace(fileExcel.getName(), "")));
 
 		}
-		JOptionPane.showMessageDialog(getJFrameGeneral(), "Images save");
+		JOptionPane.showMessageDialog(Utils.mainFrame, "Images save");
 		pb.dispose();
 
 	}
 
 	/**
-	 * Gets the main frame
-	 * 
-	 * @return the main frame of the application
-	 */
-	public GeneralView getJFrameGeneral() {
-		return (GeneralView) ((ImageTreePanel) this.getParent()).getJFrameGeneral();
-	}
-
-	/**
-	 * If there is no tiff files in the current director or the predictions
-	 * folder, we create a tab with an enable text to notify the user
+	 * If there is no tiff files in the current director or the predictions folder,
+	 * we create a tab with an enable text to notify the user
 	 * 
 	 * The same if there isn't any result excel in the current directory
 	 * 
-	 * @param tabName
-	 *            The tabpanel to add the new tab
-	 * @param jp
-	 *            contains the JTablepanel
+	 * @param tabName The tabpanel to add the new tab
+	 * @param jp      contains the JTablepanel
 	 */
 	public void noFileText(String tabName, JViewport jp) {
 

@@ -2,15 +2,20 @@ package esferoides;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import bsh.util.Util;
+import funtions.ExcelActions;
 import funtions.FileFuntions;
+import funtions.PropertiesFileFuntions;
+import funtions.Utils;
 import ij.IJ;
+import ij.ImagePlus;
 import loci.plugins.in.ImporterOptions;
-
 
 public class Methods {
 
@@ -18,21 +23,43 @@ public class Methods {
 			"Teodora v1", "Teodora Big" };
 	private static File temporalFolder;
 	private ArrayList<Integer> goodRows;
-	private List<Thread> threads;
+	private boolean setScale = false;
+//	private List<Thread> threads;
+
+	public Methods(String directory, List<String> result) {
+		URL urlUpdater = FileFuntions.getProgramProps();
+		if (urlUpdater != null) {
+			PropertiesFileFuntions propUpdater = new PropertiesFileFuntions(urlUpdater);
+			String fluoSave = propUpdater.getProp().getProperty("SelectFluoAlgo");
+			String tifSave = propUpdater.getProp().getProperty("SelectTifAlgo");
+			String nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
+
+			if (FileFuntions.isExtension(result, "nd2")) {
+				createImagesMetods(result, directory, nd2Save, false);
+			}
+			if (FileFuntions.isExtension(result, "tif")) {
+				if (checkIfFluoImages(result)) {
+					createImagesMetods(result, directory, fluoSave, false);
+				} else {
+					createImagesMetods(result, directory, tifSave, false);
+				}
+			}
+			
+			
+		}
+	}
 
 	/**
-	 * Constructor. Creates the images with the methods given in the temporal
-	 * folder if it's possible
+	 * Constructor. Creates the images with the methods given in the temporal folder
+	 * if it's possible
 	 * 
-	 * @param directory
-	 *            current directory
-	 * @param result
-	 *            List of the file paths of the current directory
+	 * @param directory current directory
+	 * @param result    List of the file paths of the current directory
 	 */
 	public Methods(String directory, List<String> result, boolean all) {
-threads= new ArrayList<Thread>();
+//		threads = new ArrayList<Thread>();
 		temporalFolder = new File(directory + "temporal");
-int i=0;
+//		int i = 0;
 		for (String type : algorithms) {
 			if (type.equals("suspension") || type.equals("colageno")) {
 				if (checkIfFluoImages(result)) {
@@ -44,7 +71,7 @@ int i=0;
 //
 //					i++;
 //					
-					createImagesMetods( result,directory,  type, all);
+					createImagesMetods(result, directory, type, all);
 				}
 
 			} else {
@@ -56,17 +83,14 @@ int i=0;
 //					c.start();
 //					
 //					i++;
-					
-					createImagesMetods( result,directory,  type, all);
+
+					createImagesMetods(result, directory, type, all);
 				}
 
 			}
 
 		}
-		
-		
-		
-		
+
 //		for (Thread thread : threads) {
 //			try {
 //				thread.join();
@@ -75,8 +99,7 @@ int i=0;
 //				e.printStackTrace();
 //			}
 //		}	
-		
-		
+
 	}
 
 	// Getters and setters
@@ -106,7 +129,7 @@ int i=0;
 	 * @param directory temporal directory to store the images
 	 * @param type      the method used to create the images
 	 */
-	private void createImagesMetods(List<String> result, String directory, String type,boolean all) {
+	private void createImagesMetods(List<String> result, String directory, String type, boolean all) {
 		try {
 
 			// In order to only take the tif images without the fluo ones
@@ -119,21 +142,39 @@ int i=0;
 					}
 				}
 			}
- 
+
+			int op = JOptionPane.showConfirmDialog(Utils.mainFrame, "Do you want to set the scale?", "Set scale",
+					JOptionPane.YES_NO_OPTION);
+			if (op == 0) {
+				setScale = true;
+			}
+			if (setScale) {
+
+				ImagePlus imp = IJ.createImage("Untitled", "8-bit white", 1, 1, 1);
+				IJ.run(imp, "Set Scale...", "");
+				imp.close();
+			}
+
 			// We initialize the ResultsTable
 			// ResultsTable rt = new ResultsTable();
 			ImporterOptions options = new ImporterOptions();
 
 			// We construct the EsferoidProcessorObject
 
-			EsferoidProcessor esferoidProcessor = EsferoidProcessorFactory.createEsferoidProcessor(type,all);
+			EsferoidProcessor esferoidProcessor = EsferoidProcessorFactory.createEsferoidProcessor(type, all);
 
 			// OurProgressBar pb = new OurProgressBar(null);
 			goodRows = new ArrayList<>();
 			// For each file in the folder we detect the esferoid on it.
 			for (String name : result) {
-			 esferoidProcessor.getDetectEsferoid().apply(options, directory, name, goodRows, true);
+				esferoidProcessor.getDetectEsferoid().apply(options, directory, name, goodRows, true);
 			}
+			
+			if(!all) {
+				ExcelActions.saveExcel(goodRows, new File(directory));
+			}
+			
+			
 //			Thread t;
 //			for (String name : result) {
 //				t= new Thread() {
@@ -158,18 +199,17 @@ int i=0;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
+			JOptionPane.showMessageDialog(Utils.mainFrame, "An error occurred while detecting the esferoid");
 		}
 
-	
 	}
+
 	/**
 	 * Checks all the files in the directory has a fluo image
 	 * 
-	 * @param result
-	 *            list path of the files
-	 * @return true if all have fluo images false if none of then have a fluo
-	 *         image or some of then haven't it
+	 * @param result list path of the files
+	 * @return true if all have fluo images false if none of then have a fluo image
+	 *         or some of then haven't it
 	 */
 	private boolean checkIfFluoImages(List<String> result) {
 		boolean haveFluo = true;

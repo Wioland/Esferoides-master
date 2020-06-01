@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 
 import funtions.FileFuntions;
 import funtions.ShowTiff;
+import funtions.Utils;
 
 public class ViewImagesBigger {
 
@@ -204,7 +205,7 @@ public class ViewImagesBigger {
 	 *            label that shows the image selected in the comparer
 	 */
 	public void mouseSelectAction(JLabel originalImaLb) {
-		JOptionPane.showMessageDialog(tp.getJFrameGeneral(), "Changing the selected image");
+		JOptionPane.showMessageDialog( Utils.mainFrame, "Changing the selected image");
 
 		tp.changeSelectedImage(listImages.get(indexImagenList).getDescription(),
 				listImages.get(clickImageIndex).getDescription());
@@ -212,7 +213,7 @@ public class ViewImagesBigger {
 		originalImaLb.setIcon(JPComparer.getLabelImageIcon());
 		JPComparer.repaint();
 
-		JOptionPane.showMessageDialog(tp.getJFrameGeneral(), "Image changed");
+		JOptionPane.showMessageDialog( Utils.mainFrame, "Image changed");
 
 	}
 
@@ -453,7 +454,7 @@ public class ViewImagesBigger {
 	private void addListenerCancelBu(JButton cancelBu) {
 		cancelBu.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				int op = JOptionPane.showConfirmDialog(tp.getJFrameGeneral(),
+				int op = JOptionPane.showConfirmDialog( Utils.mainFrame,
 						"Do you like to finish saving/selecting new data?", "Exit saving selection",
 						JOptionPane.YES_NO_OPTION);
 				// If yes change the tab panel to show the view of the content

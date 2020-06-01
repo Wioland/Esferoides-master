@@ -1,12 +1,8 @@
 package funtions;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
@@ -46,59 +42,59 @@ public class PropertiesFileFuntions {
 
 	// METHODS
 
-	/**
-	 * Checks if there is a jar directory in the resource file or if it still
-	 * exist In case not having directory or not existing it ask you to change
-	 * the directory
-	 */
-	public void cheeckJarDirectoryChange() {
-
-		String text = "There is no jar directory assigned to the program or the one assigned no longer exist. Do you want to add one now?";
-
-		if (prop != null) {
-			if (prop.getProperty("jarDirectory") == "") {
-				changeJarDirectory("", text);
-			} else {
-				File directory = new File(prop.getProperty("jarDirectory"));
-				if (!directory.exists()) {
-					changeJarDirectory(prop.getProperty("jarDirectory"), text);
-				}
-			}
-		} else {
-
-			JOptionPane.showMessageDialog(null, "properties file not found");
-		}
-
-	}
-
-	/**
-	 * Changes the current jar directory in the resource file for the giving one
-	 * 
-	 * @param dirname
-	 *            path of the new directory
-	 * @param text
-	 *            Text of the message shown
-	 */
-	public void changeJarDirectory(String dirname, String text) {
-		FileOutputStream out;
-		try {
-
-			Path resourceDirectory = Paths.get("src", "main", "resources");
-			String dir = resourceDirectory.toString();
-			out = new FileOutputStream(path.getFile());
-
-			prop.setProperty("jarDirectory", dir);
-			prop.store(out, null);
-			out.close();
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error changing the Jar directory", "Error saving",
-					JOptionPane.ERROR_MESSAGE);
-		}
-
-	}
+//	/**
+//	 * Checks if there is a jar directory in the resource file or if it still
+//	 * exist In case not having directory or not existing it ask you to change
+//	 * the directory
+//	 */
+//	public void cheeckJarDirectoryChange() {
+//
+//		String text = "There is no jar directory assigned to the program or the one assigned no longer exist. Do you want to add one now?";
+//
+//		if (prop != null) {
+//			if (prop.getProperty("jarDirectory") == "") {
+//				changeJarDirectory("", text);
+//			} else {
+//				File directory = new File(prop.getProperty("jarDirectory"));
+//				if (!directory.exists()) {
+//					changeJarDirectory(prop.getProperty("jarDirectory"), text);
+//				}
+//			}
+//		} else {
+//
+//			JOptionPane.showMessageDialog( Utils.mainFrame, "properties file not found");
+//		}
+//
+//	}
+//
+//	/**
+//	 * Changes the current jar directory in the resource file for the giving one
+//	 * 
+//	 * @param dirname
+//	 *            path of the new directory
+//	 * @param text
+//	 *            Text of the message shown
+//	 */
+//	public void changeJarDirectory(String dirname, String text) {
+//		FileOutputStream out;
+//		try {
+//
+//			Path resourceDirectory = Paths.get("src", "main", "resources");
+//			String dir = resourceDirectory.toString();
+//			out = new FileOutputStream(path.getFile());
+//
+//			prop.setProperty("jarDirectory", dir);
+//			prop.store(out, null);
+//			out.close();
+//
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			JOptionPane.showMessageDialog( Utils.mainFrame, "Error changing the Jar directory", "Error saving",
+//					JOptionPane.ERROR_MESSAGE);
+//		}
+//
+//	}
 
 	/**
 	 * Initialize Properties with the resource file given in the URL
@@ -118,7 +114,8 @@ public class PropertiesFileFuntions {
 			is.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error getting the properties file", "Error saving",
+			JOptionPane.showMessageDialog( Utils.mainFrame, "Error getting the properties file. \n  Please check if you have"
+					+ "the jar file with the update folder and its files", "Error saving",
 					JOptionPane.ERROR_MESSAGE);
 
 		}

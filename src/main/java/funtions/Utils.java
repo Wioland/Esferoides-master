@@ -1,15 +1,24 @@
 package funtions;
 
+import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.Polygon;
-import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
-import org.python.modules.synchronize;
+import javax.swing.JPanel;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -23,19 +32,19 @@ import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
 import interfaces.GeneralView;
 import interfaces.ImageTreePanel;
+import interfaces.JMenuPropertiesFile;
 
 public class Utils {
 
+	public static GeneralView mainFrame = null;
+
 	/**
-	 * Method to search the list of files that satisfies a pattern in a folder
-	 * and it child folders. The list of files is stored in the result list.
+	 * Method to search the list of files that satisfies a pattern in a folder and
+	 * it child folders. The list of files is stored in the result list.
 	 * 
-	 * @param pattern
-	 *            pattern that the files must have
-	 * @param folder
-	 *            folder to look for the files
-	 * @param result
-	 *            array with the path of the files that have the pattern
+	 * @param pattern pattern that the files must have
+	 * @param folder  folder to look for the files
+	 * @param result  array with the path of the files that have the pattern
 	 */
 	public static void search(final String pattern, final File folder, List<String> result) {
 		for (final File f : folder.listFiles()) {
@@ -54,15 +63,12 @@ public class Utils {
 	}
 
 	/**
-	 * Method to search the list of files that satisfies a pattern in a folder.
-	 * The list of files is stored in the result list.
+	 * Method to search the list of files that satisfies a pattern in a folder. The
+	 * list of files is stored in the result list.
 	 * 
-	 * @param pattern
-	 *            pattern that the files must have
-	 * @param folder
-	 *            folder to look for the files
-	 * @param result
-	 *            array with the path of the files that have the pattern
+	 * @param pattern pattern that the files must have
+	 * @param folder  folder to look for the files
+	 * @param result  array with the path of the files that have the pattern
 	 */
 	public static void searchDirectory(final String pattern, final File folder, List<String> result) {
 		if (folder.listFiles() != null) {
@@ -82,10 +88,8 @@ public class Utils {
 	/**
 	 * Check if there is any file with the pattern given
 	 * 
-	 * @param pattern
-	 *            type of file to search
-	 * @param folder
-	 *            the folder in with want to search the files
+	 * @param pattern type of file to search
+	 * @param folder  the folder in with want to search the files
 	 * @return true id there is a file with that pattern
 	 */
 	public static boolean containsExtension(final String pattern, final File folder) {
@@ -103,25 +107,18 @@ public class Utils {
 
 	/**
 	 * 
-	 * Method to draw the results stored in the roi manager into the image, and
-	 * then save the image in a given directory. Since we know that there is
-	 * only one esferoide per image, we only keep the ROI with the biggest area
-	 * stored in the ROI Manager.
+	 * Method to draw the results stored in the roi manager into the image, and then
+	 * save the image in a given directory. Since we know that there is only one
+	 * esferoide per image, we only keep the ROI with the biggest area stored in the
+	 * ROI Manager.
 	 * 
-	 * @param dir
-	 *            path of the directory to save the files
-	 * @param name
-	 *            name of the image
-	 * @param imp1
-	 *            image in witch the roi was detected
-	 * @param rm
-	 *            roi manager that contains the information of the roi image
-	 * @param goodRows
-	 *            row of the result table we wants to save
-	 * @param nameClass
-	 *            name of the algorithm used to creates the roi
-	 * @param temp
-	 *            true if we are creating files in the temporal folder
+	 * @param dir       path of the directory to save the files
+	 * @param name      name of the image
+	 * @param imp1      image in witch the roi was detected
+	 * @param rm        roi manager that contains the information of the roi image
+	 * @param goodRows  row of the result table we wants to save
+	 * @param nameClass name of the algorithm used to creates the roi
+	 * @param temp      true if we are creating files in the temporal folder
 	 */
 	public static synchronized void showResultsAndSave(String dir, String name, ImagePlus imp1, RoiManager rm,
 			ArrayList<Integer> goodRows, String nameClass, boolean temp) {
@@ -231,28 +228,7 @@ public class Utils {
 
 			IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + File.separator + name + "_pred.tiff");
 
-			ResultsTable rt = ResultsTable.getResultsTable();
-			int rows = rt.getCounter();
-			for (int i = rows; i > 0; i--) {
-				if (!(goodRows.contains(i - 1))) {
-					rt.deleteRow(i - 1);
-				} else {
-					String[] s = rt.getRowAsString(i - 1).split(",");
-					if (s.length == 1) {
-						s = rt.getRowAsString(i - 1).split("\t");
-					}
-
-					if (s[1].equals("")) {
-						rt.deleteRow(i - 1);
-					}
-				}
-
-			}
-
-			ExcelActions ete = new ExcelActions(rt, folder.getAbsolutePath() + File.separator);
-			ete.convertToExcel();
-
-			rt.reset();
+			ExcelActions.saveExcel(goodRows, folder);
 
 		}
 
@@ -260,11 +236,10 @@ public class Utils {
 
 	/**
 	 * 
-	 * Method to obtain the area from a polygon. Probably, there is a most
-	 * direct method to do this.
+	 * Method to obtain the area from a polygon. Probably, there is a most direct
+	 * method to do this.
 	 * 
-	 * @param p
-	 *            the polygon we want to know the area
+	 * @param p the polygon we want to know the area
 	 * @return the area of the poligon
 	 */
 	private static final double getArea(Polygon p) {
@@ -282,11 +257,10 @@ public class Utils {
 	}
 
 	/**
-	 * Method to keep the ROI with the biggest area stored in the ROIManager,
-	 * the rest of ROIs are deleted.
+	 * Method to keep the ROI with the biggest area stored in the ROIManager, the
+	 * rest of ROIs are deleted.
 	 * 
-	 * @param rm
-	 *            roi manager with all the measures
+	 * @param rm roi manager with all the measures
 	 */
 	private static void keepBiggestROI(RoiManager rm) {
 
@@ -315,11 +289,9 @@ public class Utils {
 	/**
 	 * Get the files from a directory with a given extension
 	 * 
-	 * @param format
-	 *            the extension of the file
-	 * @param result
-	 *            array with the path of the files with that extension in the
-	 *            folder
+	 * @param format the extension of the file
+	 * @param result array with the path of the files with that extension in the
+	 *               folder
 	 * @return the path of the directory
 	 */
 	public static String getByFormat(String format, List<String> result) {
@@ -344,10 +316,8 @@ public class Utils {
 	/**
 	 * Counts the pixels below the threshold
 	 * 
-	 * @param imp1
-	 *            imagePlus to process
-	 * @param threshold
-	 *            threshold
+	 * @param imp1      imagePlus to process
+	 * @param threshold threshold
 	 * @return number of pixels under the threshold
 	 */
 	public static int countBelowThreshold(ImagePlus imp1, int threshold) {
@@ -367,14 +337,10 @@ public class Utils {
 	/**
 	 * Counts between the threshold
 	 * 
-	 * @param imp1
-	 *            imagePlus to process
-	 * @param threshold1
-	 *            upper threshold
-	 * @param threshold2
-	 *            under threshold
-	 * @param num
-	 *            num to check the threshold
+	 * @param imp1       imagePlus to process
+	 * @param threshold1 upper threshold
+	 * @param threshold2 under threshold
+	 * @param num        num to check the threshold
 	 * @return true if in the middle of the threshold
 	 */
 	public static boolean countBetweenThresholdOver(ImagePlus imp1, int threshold1, int threshold2, int num) {
@@ -407,21 +373,14 @@ public class Utils {
 	}
 
 	/**
-	 * Gets the current directory the one that the user has selected and the
-	 * program in
+	 * Gets the current directory the one that the user has selected and the program
+	 * in
 	 * 
 	 * @return path of the current directory
 	 */
 	public static String getCurrentDirectory() {
 
-		Window[] openWindows = Window.getWindows();
-		for (Window window : openWindows) {
-			if (window.getClass().equals(GeneralView.class)) {
-				return ((GeneralView) window).getDir();
-			}
-		}
-
-		return "";
+		return mainFrame.getDir();
 
 	}
 
@@ -430,71 +389,79 @@ public class Utils {
 	/**
 	 * Creates the Main frame or looks if there is a current one to repaint
 	 * 
-	 * @param dc
-	 *            working directory
-	 * @param geView
-	 *            main JFrame of the program
+	 * @param dc     working directory
+	 * @param geView main JFrame of the program
 	 */
-	public static void callProgram(String dc, GeneralView geView) {
+	public static void callProgram(String dc) {
 
 		if (dc != null) {
 
-			geView.cancelTimersCurrentDir();
-
+			mainFrame.cancelTimersCurrentDir();
+			mainFrame.setDir(dc);
 			boolean b = optionAction();
 			if (b) {
 				b = FileFuntions.isOriginalImage(new File(dc));
 			}
-			createGeneralViewOrNot(geView, dc, b);
+			createGeneralViewOrNot(dc, b);
 		}
 	}
 
-	/**
-	 * JoptionPanel that ask you which action do you what to perform (DEtect
-	 * esferoid or view results)
-	 * 
-	 * @return true if detected esferoid false if view result
-	 */
+//	/**
+//	 * JoptionPanel that ask you which action do you what to perform (DEtect
+//	 * esferoid or view results)
+//	 * 
+//	 * @return true if detected esferoid false if view result
+//	 */
+//	public static boolean optionAction() {
+//
+//		boolean b = false;
+//
+//		int selection = JOptionPane.showOptionDialog( Utils.mainFrame, "Select an option", "Option selecter",
+//				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+//				new Object[] { "Detect esferoid", "View results" }, "Use algoritm");
+//
+//		switch (selection) {
+//		case 0:
+//			b = true;
+//			break;
+//		case 1:
+//			b = false;
+//
+//			break;
+//		default:
+//			break;
+//		}
+//
+//		return b;
+//	}
+
 	public static boolean optionAction() {
+		boolean detect = true;
 
-		boolean b = false;
+		List<String> result = new ArrayList<String>();
+		Utils.search(".*\\.tiff", new File(getCurrentDirectory()), result);
 
-		int selection = JOptionPane.showOptionDialog(null, "Select an option", "Option selecter",
-				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-				new Object[] { "Detect esferoid", "View results" }, "Use algoritm");
-
-		switch (selection) {
-		case 0:
-			b = true;
-			break;
-		case 1:
-			b = false;
-
-			break;
-		default:
-			break;
+		if (!result.isEmpty()) {
+			detect = false;
 		}
-
-		return b;
+		return detect;
 	}
 
 	/**
-	 * Checks if there is a main frame. if it is you repaint the tabpanel if not
-	 * you create a new one
+	 * Checks if there is a main frame. if it is you repaint the tabpanel if not you
+	 * create a new one
 	 * 
-	 * @param geView
-	 *            main JFrame of the program
-	 * @param dc
-	 *            the path of the current directory
-	 * @param selectAlgo
-	 *            true if you select previously detect esferoide and false
-	 *            otherwise
+	 * @param geView     main JFrame of the program
+	 * @param dc         the path of the current directory
+	 * @param selectAlgo true if you select previously detect esferoide and false
+	 *                   otherwise
 	 */
-	public static void createGeneralViewOrNot(GeneralView geView, String dc, boolean selectAlgo) {
-		ImageTreePanel folderView = geView.getImageTree();
+	public static void createGeneralViewOrNot(String dc, boolean selectAlgo) {
+
+		ImageTreePanel folderView = mainFrame.getImageTree();
 		if (folderView == null) { // if there isn't a main/GenearalWiew Jframe
 									// open we create a new one
-			geView.createRestOfConttext(dc, selectAlgo);
+			mainFrame.createRestOfConttext(dc, selectAlgo);
 			// new GeneralView(dc, selectAlgo);
 		} else {
 			// We repaint the tab panel with the new content
@@ -507,11 +474,135 @@ public class Utils {
 
 	}
 
-	public static synchronized void showResultsAndSave(String dir, String name, ImagePlus imp1, Roi[] rm,
-			ArrayList<Integer> goodRows, String nameClass, boolean temp) {
+	public static boolean menuItemActive(String nameMenuItem) {
+		boolean isActive = false;
+
+		Component[] menulist = mainFrame.getMb().getComponents();
+		for (Component component : menulist) {
+			JMenuPropertiesFile jm = (JMenuPropertiesFile) component;
+
+			if (jm.getListMenus().containsKey(nameMenuItem)) {
+				isActive = jm.getListMenus().get(nameMenuItem).isEnabled();
+				break;
+			}
+
+		}
+
+		return isActive;
+
+	}
+
+	public static void changeUsedAlgoritms() {
 		// TODO Auto-generated method stub
+
+		JDialog jDia = new JDialog(mainFrame);
+
+		String sus = "suspension";
+		String col = "colageno";
+		String hv1 = "Hector no fluo v1";
+		String hv2 = "Hector no fluo v2";
+		String tv1 = "Teodora v1";
+		String tbg = "Teodora Big";
+
+		String fluoSave = hv2;
+		String tifSave = hv2;
+		String nd2Save = tbg;
+
+		URL urlUpdater = FileFuntions.getProgramProps();
+		if (urlUpdater != null) {
+			PropertiesFileFuntions propUpdater = new PropertiesFileFuntions(urlUpdater);
+
+			fluoSave = propUpdater.getProp().getProperty("SelectFluoAlgo");
+			tifSave = propUpdater.getProp().getProperty("SelectTifAlgo");
+			nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
+		}
+
+		JComboBox<String> tiffFluoCombobox = new JComboBox<String>();
+		tiffFluoCombobox.addItem(sus);
+		tiffFluoCombobox.addItem(col);
+		tiffFluoCombobox.addItem(hv1);
+		tiffFluoCombobox.addItem(hv2);
+		tiffFluoCombobox.setSelectedItem(fluoSave);
+
+		JComboBox<String> tiffCombobox = new JComboBox<String>();
+		tiffCombobox.addItem(hv1);
+		tiffCombobox.addItem(hv2);
+		tiffCombobox.setSelectedItem(tifSave);
+
+		JComboBox<String> nd2Combobox = new JComboBox<String>();
+		nd2Combobox.addItem(tbg);
+		nd2Combobox.addItem(tv1);
+		nd2Combobox.setSelectedItem(nd2Save);
+
+		JLabel tiffFluoLAbel = new JLabel("Tiff fluo:");
+		JLabel tiffLAbel = new JLabel("Tiff:");
+		JLabel nd2Label = new JLabel("ND2:");
+
+		JPanel tiffPanel = new JPanel(new GridLayout(0, 2));
+		JPanel tifFluoPanel = new JPanel(new GridLayout(0, 2));
+		JPanel nd2Panel = new JPanel(new GridLayout(0, 2));
+		JPanel principalPanel = new JPanel(new GridLayout(4, 0));
+
+		tifFluoPanel.add(tiffFluoLAbel);
+		tifFluoPanel.add(tiffFluoCombobox);
+
+		tiffPanel.add(tiffLAbel);
+		tiffPanel.add(tiffCombobox);
+
+		nd2Panel.add(nd2Label);
+		nd2Panel.add(nd2Combobox);
+
+		JButton saveButton = new JButton("Save configuraion");
+		saveButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (FileFuntions.changedCombox((String) tiffFluoCombobox.getSelectedItem(),
+						(String) tiffCombobox.getSelectedItem(), (String) nd2Combobox.getSelectedItem())) {
+					FileFuntions.saveAlgorithmConfi((String) tiffFluoCombobox.getSelectedItem(),
+							(String) tiffCombobox.getSelectedItem(), (String) nd2Combobox.getSelectedItem());
+					JOptionPane.showMessageDialog(mainFrame, "Changes saved");
+					jDia.dispose();
+				} else {
+					JOptionPane.showMessageDialog(mainFrame, "No changes detected");
+				}
+			}
+		});
+
+		jDia.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+
+				if (FileFuntions.changedCombox((String) tiffFluoCombobox.getSelectedItem(),
+						(String) tiffCombobox.getSelectedItem(), (String) nd2Combobox.getSelectedItem())) {
+					int op = JOptionPane.showConfirmDialog(jDia,
+							"The current changes have not been save. \n Do you want to do it now?", "Confirm save",
+							JOptionPane.YES_NO_OPTION);
+
+					if (op == 0) {
+						saveButton.doClick();
+					}
+
+				}
+
+			}
+
+		});
+
+		principalPanel.add(tifFluoPanel);
+		principalPanel.add(tiffPanel);
+		principalPanel.add(nd2Panel);
+		principalPanel.add(saveButton);
+
+		jDia.add(principalPanel);
+		jDia.setVisible(true);
+		jDia.pack();
+	}
+
+	public static synchronized void showResultsAndSaveNormal(String dir, String name, ImagePlus imp1, RoiManager rm,
+			ArrayList<Integer> goodRows) {
+
 		System.out.println(
-				"\n HE entrado en  save roi ............................................................................");
+				"HE entrado en  save normal ............................................................................");
 
 		IJ.run(imp1, "RGB Color", "");
 		File folder;
@@ -519,12 +610,7 @@ public class Utils {
 		name = name.replace(dir, "");
 		folder = new File(dir + "predictions");
 
-		if (!temp && !folder.exists()) {
-			folder.mkdir();
-		} else {
-
-			folder = new File(dir + "temporal");
-			name += "_" + nameClass.substring(nameClass.lastIndexOf(".") + 1);
+		if (!folder.exists()) {
 			folder.mkdir();
 		}
 
@@ -532,36 +618,43 @@ public class Utils {
 		double[] vFeret;
 		double perimeter = 0;
 		if (rm != null) {
-System.out.println("Rm no es nulo");
-			ResultsTable rt = new ResultsTable();
-			Roi r = keepBiggestROI2(rm);
+			rm.setVisible(false);
 
-			// rm.runCommand("Show None");
-			// rm.runCommand("Show All");
+			// List<Roi> roi=saveAllRoi(rm);
 
-			// Roi[] roi = rm;
+			keepBiggestROI(rm);
+			rm.runCommand("Show None");
+			rm.runCommand("Show All");
 
-			if (r != null) {
-				// System.out.println("Roi length "+ roi.length);
+			Roi[] roi = rm.getRoisAsArray();
+
+			if (roi.length != 0) {
+				System.out.println("Roi length " + roi.length);
 				SelectionModify sM = new SelectionModify(imp1);
-				imp1.setRoi(r);
+				imp1.setRoi(rm.getRoi(0));
 
+				rm.runCommand(imp1, "Delete");
+				rm.addRoi(sM.fitSpline());
+				roi = rm.getRoisAsArray();
+
+				// imp1.show();
+				// rm.select(0);
+				// IJ.run(imp1, "Fit Spline", "");
+				// rm.addRoi(imp1.getRoi());
+				// rm.select(0);
 				// rm.runCommand(imp1, "Delete");
-				// rm.addRoi(sM.fitSpline());
+				//
 				// roi = rm.getRoisAsArray();
-				r = sM.fitSpline();
 
-				RoiManager roma = new RoiManager(false);
-				roma.addRoi(r);
-				roma.runCommand(imp1, "Draw");
-				roma.runCommand("Save", folder.getAbsolutePath() + File.separator + name + ".zip");
-				roma.close();
+				rm.runCommand(imp1, "Draw");
+				rm.runCommand("Save", folder.getAbsolutePath() + File.separator + name + ".zip");
+				rm.close();
 				// saving the roi
 				// compute the statistics (without calibrate)
-				stats = r.getStatistics();
+				stats = roi[0].getStatistics();
 
-				vFeret = r.getFeretValues();
-				perimeter = r.getLength();
+				vFeret = roi[0].getFeretValues();
+				perimeter = roi[0].getLength();
 				Calibration cal = imp1.getCalibration();
 				double pw, ph;
 				if (cal != null) {
@@ -578,11 +671,8 @@ System.out.println("Rm no es nulo");
 				double aFraction = area / (w * h) * 100;
 				double perim = perimeter * pw;
 
-				// ResultsTable rt = ResultsTable.getResultsTable();
-
-				rt = roma.multiMeasure(imp1);
-				int nrows = rt.getCounter();
-				// int nrows = Analyzer.getResultsTable().getCounter();
+				ResultsTable rt = ResultsTable.getResultsTable();
+				int nrows = Analyzer.getResultsTable().getCounter();
 				// if(nrows==0){
 				// rm.runCommand(imp1, "Measure");
 				// rt = ResultsTable.getResultsTable();
@@ -591,7 +681,7 @@ System.out.println("Rm no es nulo");
 				goodRows.add(nrows - 1);
 
 				rt.setPrecision(2);
-				System.out.println((nrows - 1) + "   " + name + " " + rt.getRowAsString(0));
+				// System.out.println((nrows - 1)+ " "+name);
 				rt.setLabel(name, nrows - 1);
 				rt.addValue("Area", area);
 				rt.addValue("Area Fraction", aFraction);
@@ -606,56 +696,12 @@ System.out.println("Rm no es nulo");
 				rt.addValue("Min. Feret", vFeret[2]);
 				rt.addValue("X Feret", vFeret[3]);
 				rt.addValue("Y Feret", vFeret[4]);
-				System.out.println((nrows - 1) + "   " + name + " " + rt.getRowAsString(0));
+
 			}
 
 			IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + File.separator + name + "_pred.tiff");
 
-			// ResultsTable rt = ResultsTable.getResultsTable();
-			int rows = rt.getCounter();
-			for (int i = rows; i > 0; i--) {
-				if (!(goodRows.contains(i - 1))) {
-					rt.deleteRow(i - 1);
-				} else {
-					String[] s = rt.getRowAsString(i - 1).split(",");
-					if (s.length == 1) {
-						s = rt.getRowAsString(i - 1).split("\t");
-					}
-
-					if (s[1].equals("")) {
-						rt.deleteRow(i - 1);
-					}
-				}
-
-			}
-			System.out.println(name + " " + rt.getRowAsString(0));
-			ExcelActions ete = new ExcelActions(rt, folder.getAbsolutePath() + File.separator);
-			ete.convertToExcel();
-
-			rt.reset();
-
 		}
-
-	}
-
-	private static Roi keepBiggestROI2(Roi[] rois) {
-
-		if (rois.length >= 1) {
-
-			Roi biggestROI = rois[0];
-
-			for (int i = 1; i < rois.length; i++) {
-
-				if (getArea(biggestROI.getPolygon()) < getArea(rois[i].getPolygon())) {
-
-					biggestROI = rois[i];
-				}
-
-			}
-			return biggestROI;
-
-		}
-		return rois[0];
 
 	}
 

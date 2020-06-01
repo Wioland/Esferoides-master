@@ -32,7 +32,7 @@ public class DetectEsferoidMethods {
 				ArrayList<Integer> goodRows, boolean temp) {
 
 			ImagePlus impFluo = IJ.openImage(name);
-			String nameClass="FluoColageno";
+//			String nameClass="FluoColageno";
 			name = name.replace("fluo", "");
 			ImagePlus impNoFluo = IJ.openImage(name);
 
@@ -51,7 +51,8 @@ public class DetectEsferoidMethods {
 			imp3.close();
 			impFluo.close();
 			impNoFluo.close();
-			Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
+			Utils.showResultsAndSaveNormal(dir, name, imp, rm, goodRows);
+//			Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
 			imp.close();
 
 		}
@@ -61,7 +62,7 @@ public class DetectEsferoidMethods {
 				ArrayList<Integer> goodRows, boolean temp) {
 
 			ImagePlus impFluo = IJ.openImage(name);
-			String nameClass="FluoSuspension";
+//			String nameClass="FluoSuspension";
 			name = name.replace("fluo", "");
 			ImagePlus impNoFluo = IJ.openImage(name);
 
@@ -69,8 +70,8 @@ public class DetectEsferoidMethods {
 			RoiManager rm = AnalyseParticleMethods.analyzeParticlesFluo(impFluo);
 
 			impFluo.close();
-
-			Utils.showResultsAndSave(dir, name, impNoFluo, rm, goodRows, nameClass, temp);
+			Utils.showResultsAndSaveNormal(dir, name, impNoFluo, rm, goodRows);
+//			Utils.showResultsAndSave(dir, name, impNoFluo, rm, goodRows, nameClass, temp);
 
 			impNoFluo.close();
 
@@ -81,7 +82,7 @@ public class DetectEsferoidMethods {
 				ArrayList<Integer> goodRows, boolean temp) {
 			ImagePlus impb = IJ.openImage(name);
 			String title = impb.getTitle();
-			String nameClass="Hectorv2";
+//			String nameClass="Hectorv2";
 
 			ImagePlus imp = impb.duplicate();
 			imp.setTitle(title);
@@ -103,8 +104,8 @@ public class DetectEsferoidMethods {
 				DetectEsferoidImageMethods.processEsferoidUsingThreshold(imp2, false,0,0,0);
 				rm = AnalyseParticleMethods.analyzeParticlesHector(imp2);
 			}
-			
-			Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
+			Utils.showResultsAndSaveNormal(dir, name, imp, rm, goodRows);
+//			Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
 			imp.close();
 
 		}
@@ -114,7 +115,7 @@ public class DetectEsferoidMethods {
 				ArrayList<Integer> goodRows, boolean temp) {
 			ImagePlus impb = IJ.openImage(name);
 			String title = impb.getTitle();
-			String nameClass="Hectorv1";
+//			String nameClass="Hectorv1";
 
 			ImagePlus imp = impb.duplicate();
 			imp.setTitle(title);
@@ -214,8 +215,8 @@ public class DetectEsferoidMethods {
 
 			}
 			
-			
-			Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
+			Utils.showResultsAndSaveNormal(dir, name, imp, rm, goodRows);
+//			Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
 			imp.close();
 
 		}
@@ -224,7 +225,7 @@ public class DetectEsferoidMethods {
 		public static void detectEsferoideTeodora(ImporterOptions options, String dir, String name,
 				ArrayList<Integer> goodRows, boolean temp) {
 			options.setId(name);
-			String nameClass="Teodora";
+//			String nameClass="Teodora";
 
 			ImagePlus[] imps;
 			try {
@@ -243,8 +244,8 @@ public class DetectEsferoidMethods {
 					rm = AnalyseParticleMethods.analyseParticlesTeodora(imp2, false,true);
 					iters++;
 				}
-
-				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
+				Utils.showResultsAndSaveNormal(dir, name, imp, rm, goodRows);
+//				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
 				imp.close();
 			} catch (FormatException | IOException e) {
 				// TODO Auto-generated catch block
@@ -258,7 +259,7 @@ public class DetectEsferoidMethods {
 		public static void detectEsferoideTeodoraBig(ImporterOptions options, String dir, String name,
 				ArrayList<Integer> goodRows, boolean temp) {
 			options.setId(name);
-			String nameClass="TeodoraBig";
+//			String nameClass="TeodoraBig";
 
 			ImagePlus[] imps;
 			try {
@@ -294,8 +295,8 @@ public class DetectEsferoidMethods {
 					iters++;
 				}
 				
-
-				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
+				Utils.showResultsAndSaveNormal(dir, name, imp, rm, goodRows);
+//				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
 				imp.close();
 			} catch (FormatException | IOException e) {
 				// TODO Auto-generated catch block
@@ -381,7 +382,7 @@ public class DetectEsferoidMethods {
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
+				JOptionPane.showMessageDialog( Utils.mainFrame, "An error occurred while detecting the esferoid");
 			}
 
 		}
@@ -424,7 +425,7 @@ public class DetectEsferoidMethods {
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
+				JOptionPane.showMessageDialog( Utils.mainFrame, "An error occurred while detecting the esferoid");
 			}
 
 		}
@@ -496,7 +497,7 @@ public class DetectEsferoidMethods {
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
+				JOptionPane.showMessageDialog( Utils.mainFrame, "An error occurred while detecting the esferoid");
 			}
 		}
 		imp.close();
@@ -607,7 +608,7 @@ public class DetectEsferoidMethods {
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
+				JOptionPane.showMessageDialog( Utils.mainFrame, "An error occurred while detecting the esferoid");
 			}
 
 		}
@@ -686,7 +687,7 @@ public class DetectEsferoidMethods {
 				| InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
+			JOptionPane.showMessageDialog( Utils.mainFrame, "An error occurred while detecting the esferoid");
 		}
 
 	}
@@ -771,7 +772,7 @@ public class DetectEsferoidMethods {
 				| InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "An error occurred while detecting the esferoid");
+			JOptionPane.showMessageDialog( Utils.mainFrame, "An error occurred while detecting the esferoid");
 		}
 
 	}
