@@ -137,10 +137,10 @@ public class Utils {
 		} else {
 
 			folder = new File(dir + "temporal");
-			if(!nameClass.equals("")) {
+			if (!nameClass.equals("")) {
 				name += "_" + nameClass.substring(nameClass.lastIndexOf(".") + 1);
 			}
-			
+
 			folder.mkdir();
 		}
 
@@ -522,6 +522,28 @@ public class Utils {
 			tifSave = propUpdater.getProp().getProperty("SelectTifAlgo");
 			nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
 			jpgSave = propUpdater.getProp().getProperty("SelectJpgAlgo");
+			boolean noPropertiesValue = false;
+
+			if (fluoSave == null) {
+				fluoSave = hv2;
+				noPropertiesValue = true;
+			}
+			if (tifSave == null) {
+				tifSave = hv2;
+				noPropertiesValue = true;
+			}
+			if (nd2Save == null) {
+				nd2Save = tbg;
+				noPropertiesValue = true;
+			}
+			if (jpgSave == null) {
+				jpgSave = tp;
+				noPropertiesValue = true;
+			}
+
+			if (noPropertiesValue) {
+				FileFuntions.saveAlgorithmConfi(fluoSave, tifSave, nd2Save, jpgSave);
+			}
 		}
 
 		JComboBox<String> tiffFluoCombobox = new JComboBox<String>();
@@ -543,8 +565,8 @@ public class Utils {
 		nd2Combobox.setSelectedItem(nd2Save);
 
 		JComboBox<String> jpgCombobox = new JComboBox<String>();
-		nd2Combobox.addItem(tp);
-		nd2Combobox.setSelectedItem(jpgSave);
+		jpgCombobox.addItem(tp);
+		jpgCombobox.setSelectedItem(jpgSave);
 
 		JLabel tiffFluoLAbel = new JLabel("Tiff fluo:");
 		JLabel tiffLAbel = new JLabel("Tiff:");
@@ -555,7 +577,7 @@ public class Utils {
 		JPanel tifFluoPanel = new JPanel(new GridLayout(0, 2));
 		JPanel nd2Panel = new JPanel(new GridLayout(0, 2));
 		JPanel jpgPanel = new JPanel(new GridLayout(0, 2));
-		JPanel principalPanel = new JPanel(new GridLayout(4, 0));
+		JPanel principalPanel = new JPanel(new GridLayout(5, 0));
 
 		tifFluoPanel.add(tiffFluoLAbel);
 		tifFluoPanel.add(tiffFluoCombobox);

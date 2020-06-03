@@ -1243,16 +1243,16 @@ public class FileFuntions {
 			String nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
 			String jpgSave = propUpdater.getProp().getProperty("SelectJpgAlgo");
 
-			if (!fluoSave.equals(selectedItemFluo)) {
+			if (fluoSave==null || !fluoSave.equals(selectedItemFluo)) {
 				propUpdater.getProp().setProperty("SelectFluoAlgo", selectedItemFluo);
 			}
-			if (!tifSave.equals(selectedItemTif)) {
+			if (tifSave==null ||!tifSave.equals(selectedItemTif)) {
 				propUpdater.getProp().setProperty("SelectTifAlgo", selectedItemTif);
 			}
-			if (!nd2Save.equals(selectedItemNd2)) {
+			if (nd2Save==null ||!nd2Save.equals(selectedItemNd2)) {
 				propUpdater.getProp().setProperty("SelectNd2Algo", selectedItemNd2);
 			}
-			if (!jpgSave.equals(selectedItemJPG)) {
+			if (jpgSave==null ||!jpgSave.equals(selectedItemJPG)) {
 				propUpdater.getProp().setProperty("SelectJpgAlgo", selectedItemJPG);
 			}
 
@@ -1278,19 +1278,24 @@ public class FileFuntions {
 			String tifSave = propUpdater.getProp().getProperty("SelectTifAlgo");
 			String nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
 			String jpgSave = propUpdater.getProp().getProperty("SelectJpgAlgo");
+			
+			if (fluoSave == null || tifSave == null || nd2Save == null || jpgSave == null) {
+				return true;
+			} else {
+				if (!fluoSave.equals(selectedItemFluo)) {
+					return true;
+				}
+				if (!tifSave.equals(selectedItemTif)) {
+					return true;
+				}
+				if (!nd2Save.equals(selectedItemNd2)) {
+					return true;
+				}
+				if (!jpgSave.equals(selectedItemJPG)) {
+					return true;
+				}
+			}
 
-			if (!fluoSave.equals(selectedItemFluo)) {
-				return true;
-			}
-			if (!tifSave.equals(selectedItemTif)) {
-				return true;
-			}
-			if (!nd2Save.equals(selectedItemNd2)) {
-				return true;
-			}
-			if (!jpgSave.equals(selectedItemJPG)) {
-				return true;
-			}
 		}
 		return false;
 	}
