@@ -233,7 +233,7 @@ public class TabPanel extends JTabbedPane {
 			i++;
 		}
 
-		// If the folder is "empty" (hasn't go files with the extensions we are
+		// If the folder is "empty" (hasn't got files with the extensions we are
 		// looking),
 		// we show that the folder is empty and call the main function to select
 		// another
@@ -290,57 +290,75 @@ public class TabPanel extends JTabbedPane {
 			if (predictionsDir.exists()) {
 				showtiff = true;
 			}
-			// run the methods to process the images
-			new Methods(directory, result);
 
 			if (showtiff) {
+				// run the methods to process the images
+				int op = JOptionPane.showOptionDialog(Utils.mainFrame,
+						"Do you want to use all the algoritms or use the selected ones?", "Select algorithms to use",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+						new Object[] { "Selected Algorithms", "All Algorithms" }, "Selected Algorithms");
 
-				originalImagesNumber = result.size();
-
-				// For each image we create a showimage
-				ShowAllAlgorithmImages imaCreated = null;
-				JPanel imagesPanel = new JPanel(new GridLayout(0, 2));
-
-				for (String pathOriginalImage : result) {
-					imaCreated = new ShowAllAlgorithmImages(pathOriginalImage, this);
-					imagesPanel.add(imaCreated);
-				}
-
-				JPanel splitPane = new JPanel(new GridBagLayout());
-				JPanel selectButtons = new JPanel();
-				JScrollPane s = new JScrollPane(imagesPanel);
-
-				addSelectedButtons(selectButtons);
-
-				GridBagConstraints constraints = new GridBagConstraints();
-				constraints.fill = GridBagConstraints.BOTH;
-
-				constraints.gridx = 0;
-				constraints.gridy = 0;
-
-				splitPane.add(selectButtons, constraints);
-
-				constraints.weightx = 1;
-				constraints.weighty = 1;
-				constraints.gridx = 0;
-				constraints.gridy = 1;
-
-				if (result.size() == 1) {
-					splitPane.add(imaCreated, constraints);
-
+				if (op == 0) {
+					new Methods(directory, result, true);
+					
+					saveImagesOneAlgo(predictionsDir);
+					
 				} else {
-					splitPane.add(s, constraints);
+					new Methods(directory, result);
+					createViewImagesAllAlgo(result);
 				}
 
-				addTab("Images", splitPane);
+		
 			} else {
-
+				// run the methods to process the images
+				new Methods(directory, result, false);
 				alreadyImageTiffFolderTab(directory);
 
 			}
 
 		}
 
+	}
+
+	public void createViewImagesAllAlgo(List<String> result) {
+		originalImagesNumber = result.size();
+
+		// For each image we create a showimage
+		ShowAllAlgorithmImages imaCreated = null;
+		JPanel imagesPanel = new JPanel(new GridLayout(0, 2));
+
+		for (String pathOriginalImage : result) {
+			imaCreated = new ShowAllAlgorithmImages(pathOriginalImage, this);
+			imagesPanel.add(imaCreated);
+		}
+
+		JPanel splitPane = new JPanel(new GridBagLayout());
+		JPanel selectButtons = new JPanel();
+		JScrollPane s = new JScrollPane(imagesPanel);
+
+		addSelectedButtons(selectButtons);
+
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+
+		splitPane.add(selectButtons, constraints);
+
+		constraints.weightx = 1;
+		constraints.weighty = 1;
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+
+		if (result.size() == 1) {
+			splitPane.add(imaCreated, constraints);
+
+		} else {
+			splitPane.add(s, constraints);
+		}
+
+		addTab("Images", splitPane);
 	}
 
 	/**
@@ -398,6 +416,108 @@ public class TabPanel extends JTabbedPane {
 		selectButtons.add(cleanSelection);
 		selectButtons.add(saveSelection);
 
+	}
+
+	public void saveImagesOneAlgo(File folderDir) {
+		// if there is a predictions folder we ask to replace all files or
+		// to choose the
+		// ones to replace
+		if (folderDir.exists() && folderDir.listFiles().length != 0) {
+			File tempoFolder = new File(folderDir.getAbsolutePath().replace("predictions", "temporal"));
+			String message = "There is already images that detected the esferoides in this folder. Do you want to replace the all the current images with the new ones or do you prefere with ones you change?";
+			Object[] opciones = { "Replace all", "Choose images" };
+
+			int op = JOptionPane.showOptionDialog(null, message, "Warning", JOptionPane.YES_NO_OPTION, 2, null,
+					opciones, "Replace all");
+
+			if (op == 0) {// we delete the folder predictions and the excel
+							// and move save the new ones
+
+//							FileFuntions.deleteFolder(folderDir);
+//
+				String excelPath = getDir();
+				if (!excelPath.endsWith(File.separator)) {
+					excelPath += File.separator;
+				}
+				excelPath += "results.xls";
+				File excel = new File(excelPath);
+//							excel.delete();
+
+				String tempPath = getDir();
+				if (!tempPath.endsWith(File.separator)) {
+					tempPath += File.separator;
+				}
+				tempPath += "temp" + File.separator;
+				File newTempPredic = new File(tempPath);
+				newTempPredic.mkdir();
+				folderDir.renameTo(new File(tempPath + folderDir.getName()));
+				excel.renameTo(new File(tempPath + excel.getName()));
+
+				try {
+					OurProgressBar pb = new OurProgressBar(Utils.mainFrame);
+					t = new Thread() {
+						public void run() {
+
+							// merge all the excels in one and save the selected files
+							// in the new location
+//							folderDir.mkdir();
+//							moveFinalFilesToPredictions();
+
+							
+							tempoFolder.renameTo(folderDir);
+							
+							List<String> excelList= new ArrayList<String>();
+							Utils.searchDirectory(".*results.xls", folderDir, excelList);
+							String nameNoExtension="";
+							for (String fileExcel : excelList) {
+								File aux= new File(fileExcel);
+								nameNoExtension=aux.getName().replace("_results.xls", "");
+								// merge the excel
+								ExcelActions.mergeExcels(aux, nameNoExtension,
+										new File(aux.getAbsolutePath().replace(aux.getName(), "")));
+								
+							}
+							File excel = new File(folderDir+File.separator+"results.xls");
+							excel.renameTo(new File(excel.getAbsolutePath().replace("predictions"+File.separator, "")));
+							// We delete the temporal folder
+							FileFuntions.deleteFolder(newTempPredic);
+							// change the tab to the already tiff view
+
+							((ImageTreePanel) getParent()).repaintTabPanel(false);
+
+							pb.dispose();
+							t.interrupt();
+
+						}
+					};
+
+					t.start();
+
+				} catch (Exception e) {
+					e.printStackTrace();
+
+					JOptionPane.showMessageDialog(null,
+							"Error moving the images to the final folder. Please try again");
+					FileFuntions.deleteFolder(folderDir);
+					folderDir.renameTo(new File(folderDir.getAbsolutePath().replace("temp"+File.separator, "")));
+					excel.renameTo(new File(folderDir.getAbsolutePath().replace("temp"+File.separator, "")));
+				}
+
+			} else {
+				// we open a comparer to
+				List<String> result = new ArrayList<String>();
+				Utils.searchDirectory(".*\\.tiff", folderDir, result);
+				
+				List<String> newresult = new ArrayList<String>();
+				Utils.searchDirectory(".*\\.tiff", tempoFolder, newresult);
+
+				ViewImagesBigger vi = new ViewImagesBigger(result,newresult , this);
+
+				this.removeAll();
+				this.add("Compare Images", vi.getJPComparer());
+			}
+
+		}
 	}
 
 	/**

@@ -863,11 +863,35 @@ public class FileFuntions {
 	private static boolean checkNewVersionJAr(String urlVerion, String currentJarVersion) {
 		boolean newJAr = false;
 		String newJArversion = "";
-		double cVersion = Double.parseDouble(currentJarVersion.replace("-SNAPSHOT", ""));
-		double nVersion;
+		double cVersion = 0;
+		double nVersion = 0;
 
-		newJArversion = readversion(urlVerion); // gets the version in the web
-		nVersion = Double.parseDouble(newJArversion.replace("-SNAPSHOT", ""));
+		newJArversion = (readversion(urlVerion)).replace("-SNAPSHOT", ""); // gets the version in the web
+		currentJarVersion = currentJarVersion.replace("-SNAPSHOT", "");
+
+		String[] newVerSplit = newJArversion.split("\\.");
+		String[] cuVerSplit = currentJarVersion.split("\\.");
+
+		if (newVerSplit.length > 2) {
+			newJArversion = newVerSplit[0] + "." + newVerSplit[1];
+			for (int i = 1; i < newVerSplit.length; i++) {
+				newJArversion += newVerSplit[i];
+			}
+
+		}
+
+		if (cuVerSplit.length > 2) {
+			currentJarVersion = cuVerSplit[0] + "." + cuVerSplit[1];
+			for (int i = 1; i < newVerSplit.length; i++) {
+				currentJarVersion += cuVerSplit[i];
+			}
+		}
+		cVersion = Double.parseDouble(currentJarVersion);
+		nVersion = Double.parseDouble(newJArversion);
+
+		System.out.println("Current version  " + cVersion);
+		System.out.println("New version  " + nVersion);
+		System.out.println("MAyor version  " + (nVersion > cVersion));
 
 		// compare the versions in case they are different and the version from
 		// the url is not "" there is a new version
@@ -1207,7 +1231,8 @@ public class FileFuntions {
 
 	}
 
-	public static void saveAlgorithmConfi(String selectedItemFluo, String selectedItemTif, String selectedItemNd2) {
+	public static void saveAlgorithmConfi(String selectedItemFluo, String selectedItemTif, String selectedItemNd2,
+			String selectedItemJPG) {
 
 		URL urlUpdater = getProgramProps();
 		if (urlUpdater != null) {
@@ -1216,6 +1241,7 @@ public class FileFuntions {
 			String fluoSave = propUpdater.getProp().getProperty("SelectFluoAlgo");
 			String tifSave = propUpdater.getProp().getProperty("SelectTifAlgo");
 			String nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
+			String jpgSave = propUpdater.getProp().getProperty("SelectJpgAlgo");
 
 			if (!fluoSave.equals(selectedItemFluo)) {
 				propUpdater.getProp().setProperty("SelectFluoAlgo", selectedItemFluo);
@@ -1225,6 +1251,9 @@ public class FileFuntions {
 			}
 			if (!nd2Save.equals(selectedItemNd2)) {
 				propUpdater.getProp().setProperty("SelectNd2Algo", selectedItemNd2);
+			}
+			if (!jpgSave.equals(selectedItemJPG)) {
+				propUpdater.getProp().setProperty("SelectJpgAlgo", selectedItemJPG);
 			}
 
 			try {
@@ -1239,7 +1268,8 @@ public class FileFuntions {
 
 	}
 
-	public static boolean changedCombox(String selectedItemFluo, String selectedItemTif, String selectedItemNd2) {
+	public static boolean changedCombox(String selectedItemFluo, String selectedItemTif, String selectedItemNd2,
+			String selectedItemJPG) {
 		URL urlUpdater = getProgramProps();
 		if (urlUpdater != null) {
 			PropertiesFileFuntions propUpdater = new PropertiesFileFuntions(urlUpdater);
@@ -1247,6 +1277,7 @@ public class FileFuntions {
 			String fluoSave = propUpdater.getProp().getProperty("SelectFluoAlgo");
 			String tifSave = propUpdater.getProp().getProperty("SelectTifAlgo");
 			String nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
+			String jpgSave = propUpdater.getProp().getProperty("SelectJpgAlgo");
 
 			if (!fluoSave.equals(selectedItemFluo)) {
 				return true;
@@ -1255,6 +1286,9 @@ public class FileFuntions {
 				return true;
 			}
 			if (!nd2Save.equals(selectedItemNd2)) {
+				return true;
+			}
+			if (!jpgSave.equals(selectedItemJPG)) {
 				return true;
 			}
 		}

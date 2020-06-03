@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import bsh.util.Util;
 import funtions.ExcelActions;
 import funtions.FileFuntions;
 import funtions.PropertiesFileFuntions;
@@ -20,32 +19,37 @@ import loci.plugins.in.ImporterOptions;
 public class Methods {
 
 	private static String[] algorithms = { "suspension", "colageno", "Hector no fluo v1", "Hector no fluo v2",
-			"Teodora v1", "Teodora Big" };
+			"Teodora v1", "Teodora Big", "Hector fluo stack", "Teniposide" };
 	private static File temporalFolder;
 	private ArrayList<Integer> goodRows;
 	private boolean setScale = false;
 //	private List<Thread> threads;
 
-	public Methods(String directory, List<String> result) {
+	public Methods(String directory, List<String> result,boolean temp) {
 		URL urlUpdater = FileFuntions.getProgramProps();
 		if (urlUpdater != null) {
 			PropertiesFileFuntions propUpdater = new PropertiesFileFuntions(urlUpdater);
 			String fluoSave = propUpdater.getProp().getProperty("SelectFluoAlgo");
 			String tifSave = propUpdater.getProp().getProperty("SelectTifAlgo");
 			String nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
+			String jpgSave = propUpdater.getProp().getProperty("SelectJpgAlgo");
 
 			if (FileFuntions.isExtension(result, "nd2")) {
-				createImagesMetods(result, directory, nd2Save, false);
+				createImagesMetods(result, directory, nd2Save, false,temp);
 			}
+
+			if (FileFuntions.isExtension(result, "jpg") || FileFuntions.isExtension(result, "JPG")) {
+				createImagesMetods(result, directory, jpgSave, false,temp);
+			}
+
 			if (FileFuntions.isExtension(result, "tif")) {
 				if (checkIfFluoImages(result)) {
-					createImagesMetods(result, directory, fluoSave, false);
+					createImagesMetods(result, directory, fluoSave, false,temp);
 				} else {
-					createImagesMetods(result, directory, tifSave, false);
+					createImagesMetods(result, directory, tifSave, false,temp);
 				}
 			}
-			
-			
+
 		}
 	}
 
@@ -56,7 +60,7 @@ public class Methods {
 	 * @param directory current directory
 	 * @param result    List of the file paths of the current directory
 	 */
-	public Methods(String directory, List<String> result, boolean all) {
+	public Methods(String directory, List<String> result) {
 //		threads = new ArrayList<Thread>();
 		temporalFolder = new File(directory + "temporal");
 //		int i = 0;
@@ -71,20 +75,22 @@ public class Methods {
 //
 //					i++;
 //					
-					createImagesMetods(result, directory, type, all);
+					createImagesMetods(result, directory, type, true,true);
 				}
 
 			} else {
 				if ((type.contains("Hector") && FileFuntions.isExtension(result, "tif"))
 						|| (type.equals("Teodora v1") && FileFuntions.isExtension(result, "nd2"))
-						|| (type.equals("Teodora Big") && FileFuntions.isExtension(result, "nd2"))) {
+						|| (type.equals("Teodora Big") && FileFuntions.isExtension(result, "nd2"))
+						|| (type.equals("Teniposide") && (FileFuntions.isExtension(result, "jpg")
+								|| FileFuntions.isExtension(result, "JPG")))) {
 //					CreateImagesThread c = new CreateImagesThread(result, directory, type, all,i);
 //					threads.add(c);
 //					c.start();
 //					
 //					i++;
 
-					createImagesMetods(result, directory, type, all);
+					createImagesMetods(result, directory, type, true,true);
 				}
 
 			}
@@ -129,7 +135,7 @@ public class Methods {
 	 * @param directory temporal directory to store the images
 	 * @param type      the method used to create the images
 	 */
-	private void createImagesMetods(List<String> result, String directory, String type, boolean all) {
+	private void createImagesMetods(List<String> result, String directory, String type, boolean all,boolean temp) {
 		try {
 
 			// In order to only take the tif images without the fluo ones
@@ -167,14 +173,13 @@ public class Methods {
 			goodRows = new ArrayList<>();
 			// For each file in the folder we detect the esferoid on it.
 			for (String name : result) {
-				esferoidProcessor.getDetectEsferoid().apply(options, directory, name, goodRows, true);
+				esferoidProcessor.getDetectEsferoid().apply(options, directory, name, goodRows, temp);
 			}
-			
-			if(!all) {
+
+			if (!all&&!temp) {
 				ExcelActions.saveExcel(goodRows, new File(directory));
 			}
-			
-			
+
 //			Thread t;
 //			for (String name : result) {
 //				t= new Thread() {

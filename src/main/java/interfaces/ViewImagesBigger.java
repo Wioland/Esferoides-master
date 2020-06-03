@@ -163,6 +163,56 @@ public class ViewImagesBigger {
 		addListenerCancelBu(JPComparer.getExitButton());
 
 	}
+	
+	
+	
+	public ViewImagesBigger(List<String> imagesInPredicctions, List<String> newImagesSelected, TabPanel tp) {
+
+		this.newDetectedImages = new ArrayList<ImageIcon>();
+		this.listImages = new ArrayList<ImageIcon>();
+
+		this.indexImagenList = 0;
+		this.clickImageIndex = 0;
+		this.indexImageView = "ImageViewer ";
+		this.tp = tp;
+		dir = this.tp.getDir();
+
+		ImageIcon i;
+		int j=0;
+		for (String string : imagesInPredicctions) {
+			i = ShowTiff.showTiffToImageIcon(string);
+			i.setDescription(string);
+			newDetectedImages.add(i);
+
+			
+			i = ShowTiff.showTiffToImageIcon(newImagesSelected.get(j));
+			i.setDescription(newImagesSelected.get(j));
+			listImages.add(i);
+			j++;
+		}
+
+		this.image = newDetectedImages.get(0);
+
+		// Initialized the JComparer with the elements needed
+		JPComparer = new JPanelComparer();
+		JPComparer.setLabelImageIcon(listImages.get(0));
+
+		if (listImages.size() == 1) { // if there is only one image ,
+										// setenable=false the back and forward
+										// buttons
+										// showwbigger tab
+			JPComparer.getBackButton().setEnabled(false);
+			JPComparer.getForwarButtonButton().setEnabled(false);
+
+		}
+
+		// Create the comparer and adding the listener to the buttons used
+		createComparer();
+		addlistenerButton(JPComparer.getBackButton(), JPComparer.getForwarButtonButton(), true);
+		addListenerCancelBu(JPComparer.getExitButton());
+
+	}
+
 
 	// GETTERS AND SETTERS
 	public JPanelComparer getJPComparer() {

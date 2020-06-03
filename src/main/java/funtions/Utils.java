@@ -137,7 +137,10 @@ public class Utils {
 		} else {
 
 			folder = new File(dir + "temporal");
-			name += "_" + nameClass.substring(nameClass.lastIndexOf(".") + 1);
+			if(!nameClass.equals("")) {
+				name += "_" + nameClass.substring(nameClass.lastIndexOf(".") + 1);
+			}
+			
 			folder.mkdir();
 		}
 
@@ -242,7 +245,7 @@ public class Utils {
 	 * @param p the polygon we want to know the area
 	 * @return the area of the poligon
 	 */
-	private static final double getArea(Polygon p) {
+	public static final double getArea(Polygon p) {
 		if (p == null)
 			return Double.NaN;
 		int carea = 0;
@@ -262,28 +265,28 @@ public class Utils {
 	 * 
 	 * @param rm roi manager with all the measures
 	 */
-	private static void keepBiggestROI(RoiManager rm) {
+	public static void keepBiggestROI(RoiManager rm) {
+		if (rm != null) {
+			Roi[] rois = rm.getRoisAsArray();
 
-		Roi[] rois = rm.getRoisAsArray();
+			if (rois.length >= 1) {
+				rm.runCommand("Select All");
+				rm.runCommand("Delete");
 
-		if (rois.length >= 1) {
-			rm.runCommand("Select All");
-			rm.runCommand("Delete");
+				Roi biggestROI = rois[0];
 
-			Roi biggestROI = rois[0];
+				for (int i = 1; i < rois.length; i++) {
 
-			for (int i = 1; i < rois.length; i++) {
+					if (getArea(biggestROI.getPolygon()) < getArea(rois[i].getPolygon())) {
 
-				if (getArea(biggestROI.getPolygon()) < getArea(rois[i].getPolygon())) {
+						biggestROI = rois[i];
+					}
 
-					biggestROI = rois[i];
 				}
+				rm.addRoi(biggestROI);
 
 			}
-			rm.addRoi(biggestROI);
-
 		}
-
 	}
 
 	/**
@@ -503,10 +506,13 @@ public class Utils {
 		String hv2 = "Hector no fluo v2";
 		String tv1 = "Teodora v1";
 		String tbg = "Teodora Big";
+		String hfs = "Hector fluo stack";
+		String tp = "Teniposide";
 
 		String fluoSave = hv2;
 		String tifSave = hv2;
 		String nd2Save = tbg;
+		String jpgSave = tp;
 
 		URL urlUpdater = FileFuntions.getProgramProps();
 		if (urlUpdater != null) {
@@ -515,6 +521,7 @@ public class Utils {
 			fluoSave = propUpdater.getProp().getProperty("SelectFluoAlgo");
 			tifSave = propUpdater.getProp().getProperty("SelectTifAlgo");
 			nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
+			jpgSave = propUpdater.getProp().getProperty("SelectJpgAlgo");
 		}
 
 		JComboBox<String> tiffFluoCombobox = new JComboBox<String>();
@@ -522,6 +529,7 @@ public class Utils {
 		tiffFluoCombobox.addItem(col);
 		tiffFluoCombobox.addItem(hv1);
 		tiffFluoCombobox.addItem(hv2);
+		tiffFluoCombobox.addItem(hfs);
 		tiffFluoCombobox.setSelectedItem(fluoSave);
 
 		JComboBox<String> tiffCombobox = new JComboBox<String>();
@@ -534,13 +542,19 @@ public class Utils {
 		nd2Combobox.addItem(tv1);
 		nd2Combobox.setSelectedItem(nd2Save);
 
+		JComboBox<String> jpgCombobox = new JComboBox<String>();
+		nd2Combobox.addItem(tp);
+		nd2Combobox.setSelectedItem(jpgSave);
+
 		JLabel tiffFluoLAbel = new JLabel("Tiff fluo:");
 		JLabel tiffLAbel = new JLabel("Tiff:");
 		JLabel nd2Label = new JLabel("ND2:");
+		JLabel jpgLabel = new JLabel("JPG:");
 
 		JPanel tiffPanel = new JPanel(new GridLayout(0, 2));
 		JPanel tifFluoPanel = new JPanel(new GridLayout(0, 2));
 		JPanel nd2Panel = new JPanel(new GridLayout(0, 2));
+		JPanel jpgPanel = new JPanel(new GridLayout(0, 2));
 		JPanel principalPanel = new JPanel(new GridLayout(4, 0));
 
 		tifFluoPanel.add(tiffFluoLAbel);
@@ -552,15 +566,22 @@ public class Utils {
 		nd2Panel.add(nd2Label);
 		nd2Panel.add(nd2Combobox);
 
+		jpgPanel.add(jpgLabel);
+		jpgPanel.add(jpgCombobox);
+
 		JButton saveButton = new JButton("Save configuraion");
 		saveButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (FileFuntions.changedCombox((String) tiffFluoCombobox.getSelectedItem(),
-						(String) tiffCombobox.getSelectedItem(), (String) nd2Combobox.getSelectedItem())) {
+						(String) tiffCombobox.getSelectedItem(), (String) nd2Combobox.getSelectedItem(),
+						(String) jpgCombobox.getSelectedItem())) {
+
 					FileFuntions.saveAlgorithmConfi((String) tiffFluoCombobox.getSelectedItem(),
-							(String) tiffCombobox.getSelectedItem(), (String) nd2Combobox.getSelectedItem());
+							(String) tiffCombobox.getSelectedItem(), (String) nd2Combobox.getSelectedItem(),
+							(String) jpgCombobox.getSelectedItem());
+
 					JOptionPane.showMessageDialog(mainFrame, "Changes saved");
 					jDia.dispose();
 				} else {
@@ -573,7 +594,9 @@ public class Utils {
 			public void windowClosing(WindowEvent e) {
 
 				if (FileFuntions.changedCombox((String) tiffFluoCombobox.getSelectedItem(),
-						(String) tiffCombobox.getSelectedItem(), (String) nd2Combobox.getSelectedItem())) {
+						(String) tiffCombobox.getSelectedItem(), (String) nd2Combobox.getSelectedItem(),
+						(String) jpgCombobox.getSelectedItem())) {
+
 					int op = JOptionPane.showConfirmDialog(jDia,
 							"The current changes have not been save. \n Do you want to do it now?", "Confirm save",
 							JOptionPane.YES_NO_OPTION);
@@ -591,6 +614,7 @@ public class Utils {
 		principalPanel.add(tifFluoPanel);
 		principalPanel.add(tiffPanel);
 		principalPanel.add(nd2Panel);
+		principalPanel.add(jpgPanel);
 		principalPanel.add(saveButton);
 
 		jDia.add(principalPanel);

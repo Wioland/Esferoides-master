@@ -42,7 +42,8 @@ public class AlgorithmView extends JFrame {
 
 	public AlgorithmView(File image, String dir) {
 		// Window parameters
-
+		Utils.mainFrame.getMb().setEnabled(false);
+		
 		setExtendedState(MAXIMIZED_BOTH);
 		setTitle("Algorithm view selecter");
 		this.setVisible(true);
@@ -56,7 +57,9 @@ public class AlgorithmView extends JFrame {
 				if (folder != null) {
 					folder.delete();
 				}
-
+				if (!Utils.mainFrame.getMb().isEnabled()) {
+					Utils.mainFrame.getMb().setEnabled(true);
+				}
 			}
 
 			public void windowClosed(WindowEvent e) {
@@ -66,7 +69,9 @@ public class AlgorithmView extends JFrame {
 				if (folder != null) {
 					folder.delete();
 				}
-
+				if (!Utils.mainFrame.getMb().isEnabled()) {
+					Utils.mainFrame.getMb().setEnabled(true);
+				}
 			}
 		});
 
@@ -126,7 +131,7 @@ public class AlgorithmView extends JFrame {
 
 		List<String> result = new ArrayList<String>();
 		result.add(path);
-		new Methods(directory, result, true);
+		new Methods(directory, result);
 
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 

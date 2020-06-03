@@ -73,7 +73,21 @@ public class EsferoidProcessorFactory {
 
 			break;
 		}
+		case "Hector fluo stack": {
 
+			esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesTeodora,
+					DetectEsferoidMethods::detectEsferoideFluoStack);
+
+			break;
+		}
+
+		case "Teniposide": {
+
+			esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesJPG,
+					DetectEsferoidMethods::detectEsferoideTeniposide);
+
+			break;
+		}
 		}
 
 		return esferoidProcessor;
