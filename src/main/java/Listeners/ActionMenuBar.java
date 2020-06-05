@@ -49,6 +49,14 @@ public class ActionMenuBar implements ActionListener {
 			System.out.println("Update");
 			FileFuntions.createUpdater(false);
 			break;
+		case "UserManual":
+			System.out.println("UserManual");
+			FileFuntions.openUserManual();
+			break;
+		case "About":
+			System.out.println("About");
+			FileFuntions.openAboutSection();
+			break;
 
 		default:
 			break;

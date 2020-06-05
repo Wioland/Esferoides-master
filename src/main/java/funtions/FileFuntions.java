@@ -1,6 +1,7 @@
 package funtions;
 
 import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -30,7 +31,9 @@ import java.util.Timer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -48,8 +51,10 @@ import ij.ImageJ;
 import ij.io.DirectoryChooser;
 import interfaces.AlgorithmView;
 import interfaces.GeneralView;
+import interfaces.ImageTreePanel;
 import interfaces.JPanelComparer;
 import interfaces.LensMEnuButtons;
+import interfaces.OurProgressBar;
 import interfaces.ShowImages;
 import interfaces.TabPanel;
 import interfaces.ViewImagesBigger;
@@ -738,15 +743,27 @@ public class FileFuntions {
 		boolean originalIma = false;
 		// check if the folder contains nd2 images
 		List<String> listImages = new ArrayList<String>();
-		Utils.searchDirectory(".*\\.nd2", folder, listImages);
-		if (listImages.size() != 0) {
-			originalIma = true;
-		} else {
-			Utils.searchDirectory(".*\\.tif", folder, listImages);
-			if (listImages.size() != 0) {
-				originalIma = true;
+		List<String> listExtensions = FileFuntions.getExtensions();
+		
+		for (String ext : listExtensions) {
+			if(!ext.equals("tiff")) {
+				Utils.searchDirectory(".*\\."+ext, folder, listImages);
+				if (listImages.size() != 0) {
+					originalIma = true;
+					break;
+				}
 			}
 		}
+		
+//		Utils.searchDirectory(".*\\."+ext, folder, listImages);
+//		if (listImages.size() != 0) {
+//			originalIma = true;
+//		} else {
+//			Utils.searchDirectory(".*\\.tif", folder, listImages);
+//			if (listImages.size() != 0) {
+//				originalIma = true;
+//			}
+//		}
 		return originalIma;
 	}
 
@@ -807,7 +824,7 @@ public class FileFuntions {
 								propUpdater.getProp().store(new FileOutputStream(urlUpdater.getPath()),
 										"Show the updater");
 								JOptionPane.showMessageDialog(null,
-										"You can update the program any time in: \n Properties -> Update");
+										"You can update the program any time in: \n Help -> Update");
 
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
@@ -1298,6 +1315,103 @@ public class FileFuntions {
 
 		}
 		return false;
+	}
+
+	public static void openUserManual() {
+		// TODO Auto-generated method stub
+		 try {
+			 PropertiesFileFuntions prop = new PropertiesFileFuntions();
+			 String currentVersion = prop.getProp().getProperty("version"); 
+			 String pathpdf = getCurrentPAth() + File.separator + "updater" + File.separator
+						+ "Manual_"+currentVersion+".pdf";
+	            File filePDF = new File(pathpdf);
+	            
+	            if(!filePDF.exists()) {
+	            	JOptionPane.showMessageDialog(Utils.mainFrame, "The manual file not exist or the current file is not the last version. "
+	            			+ "\n Downloading the new version please wait.");
+	            	
+	            	OurProgressBar pb= new OurProgressBar(Utils.mainFrame);
+	            	Thread t = new Thread() {
+	        			public void run() {
+	        				
+	        				String urlPDF = prop.getProp().getProperty("urlUserManual"); 
+	    	            	urlPDF+=currentVersion+".pdf";
+	    	            	String location=getCurrentPAth() + File.separator + "updater" ;
+	    	            	URL url;
+							try {
+								url = new URL(urlPDF);
+								File aux=Utils.download(url, location);
+								
+								if(aux!=null) {
+									if(aux.exists()) {
+										 Process p = Runtime.getRuntime().exec ("rundll32 SHELL32.DLL,"
+								                    + "ShellExec_RunDLL " + aux.getAbsolutePath());
+									}else {
+										JOptionPane.showMessageDialog(Utils.mainFrame, "Error downloading the file");
+									}
+								}else {
+									JOptionPane.showMessageDialog(Utils.mainFrame, "Error downloading the file");
+								}
+		    	            	pb.dispose();
+							} catch (MalformedURLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+	        			}
+	        		};
+
+	        		t.start();
+	        		
+	            	
+	            	
+	            }else {
+	            	 Process p = Runtime.getRuntime().exec ("rundll32 SHELL32.DLL,"
+	 	                    + "ShellExec_RunDLL " + filePDF.getAbsolutePath());
+	            }
+	           
+	           
+	        } catch (Exception evvv) {
+	            JOptionPane.showMessageDialog(null, "The file can not be open ,"
+	                    + " maybe it was deleted ","ERROR",JOptionPane.ERROR_MESSAGE);
+	        }
+	}
+
+	public static void openAboutSection() {
+		// TODO Auto-generated method stub
+//		JOptionPane.showMessageDialog(Utils.mainFrame, "Not created section");
+		PropertiesFileFuntions prop= new PropertiesFileFuntions();
+
+		String version = prop.getProp().getProperty("version");
+		String about = prop.getProp().getProperty("about");
+		
+		JDialog jDia= new JDialog(Utils.mainFrame);
+		jDia.setTitle("About Esferoid APP");
+		
+		JLabel versionTextLabel= new JLabel("Version: ");
+		JLabel versionLabel= new JLabel(version);
+		JLabel aboutTextLabel= new JLabel("About: ");
+		JLabel aboutLabel= new JLabel(about);
+		JLabel name= new JLabel("ESFEROIDJ APP");
+		
+		JPanel vePAnel= new JPanel(new GridLayout(0, 2));
+		JPanel abPAnel= new JPanel(new GridLayout(0, 2));
+		
+		vePAnel.add(versionTextLabel);
+		vePAnel.add(versionLabel);
+		abPAnel.add(aboutTextLabel);
+		abPAnel.add(aboutLabel);
+		
+		JPanel principalPanel= new JPanel(new GridLayout(3,0));
+		principalPanel.add(name);
+		principalPanel.add(vePAnel);
+		principalPanel.add(abPAnel);
+
+		jDia.add(principalPanel);
+		jDia.setVisible(true);
+		jDia.pack();
 	}
 
 }

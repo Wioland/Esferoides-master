@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -26,6 +27,7 @@ import javax.swing.event.ChangeListener;
 import esferoides.Methods;
 import funtions.ExcelActions;
 import funtions.FileFuntions;
+import funtions.ShowTiff;
 import funtions.Utils;
 
 public class TabPanel extends JTabbedPane {
@@ -38,6 +40,7 @@ public class TabPanel extends JTabbedPane {
 	private Map<String, JButton> originalNewSelected;
 	private int originalImagesNumber = 0;
 	private ShowImages images;
+	private ViewImagesBigger viewImagen;
 	private LensMEnuButtons lens;
 	private Thread t;
 
@@ -103,6 +106,13 @@ public class TabPanel extends JTabbedPane {
 		this.lens = lens;
 	}
 
+	public ViewImagesBigger getViewImagen() {
+		return viewImagen;
+	}
+
+	public void setViewImagen(ViewImagesBigger viewImagen) {
+		this.viewImagen = viewImagen;
+	}
 	// METHODS
 
 	/**
@@ -123,23 +133,29 @@ public class TabPanel extends JTabbedPane {
 		Utils.searchDirectory(".*\\.xls", folder, result);
 		Collections.sort(result);
 
+		List<String> imageIconString = new ArrayList<String>();
+
+		List<ImageIcon> imageIcon = new ArrayList<ImageIcon>();
+		Utils.search(".*\\.tiff", folder, imageIconString);
+		ImageIcon image;
+		for (String ima : imageIconString) {
+			image = ShowTiff.showTiffToImageIcon(ima);
+			image.setDescription(ima);
+			imageIcon.add(image);
+		}
+
 		// create the jpanel, it content and we add the name to the tab
 
 		// the images tab
 
-		images = new ShowImages(directory, this);
+//		if (imageIcon.isEmpty()) {
+//			noFileText("Images", null);
+//			originalIma = FileFuntions.isOriginalImage(folder);
+//		} else {
 
-		if (images.getComponents().length == 0) {
-			noFileText("Images", null);
-			originalIma = FileFuntions.isOriginalImage(folder);
-		} else {
-			lens = new LensMEnuButtons(images.getListImagesPrev());
+		viewImagen = new ViewImagesBigger(imageIcon, this);
 
-			JPanel splitPane = createJPanelToShowImages(images, lens);
-
-			addTab("Images", splitPane);
-
-		}
+//		}
 
 		// the excels tab
 
@@ -182,6 +198,19 @@ public class TabPanel extends JTabbedPane {
 
 		// We save the last time the directory was changed
 		FileFuntions.addModificationDirectory(dir + "predictions");
+
+	}
+
+	public void scrollView() {
+		images = new ShowImages(this.dir, this);
+
+		lens = new LensMEnuButtons(images.getListImagesPrev());
+
+		JPanel splitPane = createJPanelToShowImages(images, lens);
+
+		addTab("Images Scroll", splitPane);
+
+		this.setSelectedIndex(this.indexOfComponent(splitPane));
 
 	}
 
@@ -300,15 +329,14 @@ public class TabPanel extends JTabbedPane {
 
 				if (op == 0) {
 					new Methods(directory, result, true);
-					
+
 					saveImagesOneAlgo(predictionsDir);
-					
+
 				} else {
 					new Methods(directory, result);
 					createViewImagesAllAlgo(result);
 				}
 
-		
 			} else {
 				// run the methods to process the images
 				new Methods(directory, result, false);
@@ -463,22 +491,22 @@ public class TabPanel extends JTabbedPane {
 //							folderDir.mkdir();
 //							moveFinalFilesToPredictions();
 
-							
 							tempoFolder.renameTo(folderDir);
-							
-							List<String> excelList= new ArrayList<String>();
+
+							List<String> excelList = new ArrayList<String>();
 							Utils.searchDirectory(".*results.xls", folderDir, excelList);
-							String nameNoExtension="";
+							String nameNoExtension = "";
 							for (String fileExcel : excelList) {
-								File aux= new File(fileExcel);
-								nameNoExtension=aux.getName().replace("_results.xls", "");
+								File aux = new File(fileExcel);
+								nameNoExtension = aux.getName().replace("_results.xls", "");
 								// merge the excel
 								ExcelActions.mergeExcels(aux, nameNoExtension,
 										new File(aux.getAbsolutePath().replace(aux.getName(), "")));
-								
+
 							}
-							File excel = new File(folderDir+File.separator+"results.xls");
-							excel.renameTo(new File(excel.getAbsolutePath().replace("predictions"+File.separator, "")));
+							File excel = new File(folderDir + File.separator + "results.xls");
+							excel.renameTo(
+									new File(excel.getAbsolutePath().replace("predictions" + File.separator, "")));
 							// We delete the temporal folder
 							FileFuntions.deleteFolder(newTempPredic);
 							// change the tab to the already tiff view
@@ -499,19 +527,19 @@ public class TabPanel extends JTabbedPane {
 					JOptionPane.showMessageDialog(null,
 							"Error moving the images to the final folder. Please try again");
 					FileFuntions.deleteFolder(folderDir);
-					folderDir.renameTo(new File(folderDir.getAbsolutePath().replace("temp"+File.separator, "")));
-					excel.renameTo(new File(folderDir.getAbsolutePath().replace("temp"+File.separator, "")));
+					folderDir.renameTo(new File(folderDir.getAbsolutePath().replace("temp" + File.separator, "")));
+					excel.renameTo(new File(folderDir.getAbsolutePath().replace("temp" + File.separator, "")));
 				}
 
 			} else {
 				// we open a comparer to
 				List<String> result = new ArrayList<String>();
 				Utils.searchDirectory(".*\\.tiff", folderDir, result);
-				
+
 				List<String> newresult = new ArrayList<String>();
 				Utils.searchDirectory(".*\\.tiff", tempoFolder, newresult);
 
-				ViewImagesBigger vi = new ViewImagesBigger(result,newresult , this);
+				ViewImagesBigger vi = new ViewImagesBigger(result, newresult, this);
 
 				this.removeAll();
 				this.add("Compare Images", vi.getJPComparer());

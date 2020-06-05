@@ -99,8 +99,7 @@ public class GeneralView extends JFrame {
 			}
 			this.dir = dc;
 			createContent(dc, selectAlgo);
-			
-			
+
 			this.repaint();
 		}
 
@@ -116,8 +115,7 @@ public class GeneralView extends JFrame {
 			}
 			this.dir = dc;
 			createContent(dc, selectAlgo);
-			
-			
+
 			this.repaint();
 		}
 
@@ -132,11 +130,11 @@ public class GeneralView extends JFrame {
 			Collection<JMenuItem> items = jm.getListMenusNotEnable().values();
 			for (JMenuItem menu : items) {
 //				if (!menu.isEnabled()) {
-					menu.setEnabled(!menu.isEnabled());
+				menu.setEnabled(!menu.isEnabled());
 //				}
 			}
 		}
-		
+
 		mb.repaint();
 	}
 
@@ -170,7 +168,7 @@ public class GeneralView extends JFrame {
 
 					imageTree.repaintTabPanel(!selectAlgo);
 
-				}else {
+				} else {
 					activeRestOfMenuOPtionsOrDesactivate();
 				}
 
@@ -221,7 +219,6 @@ public class GeneralView extends JFrame {
 		JMenuPropertiesFile menuFile = new JMenuPropertiesFile("File");
 		menuFile.addMEnuItem("Open Dir", "Open Dir  Ctrl+O", actionListe, true);
 		menuFile.addMEnuItem("Close Dir", "Close Dir  Ctrl+C", actionListe, false);
-		menuFile.addMEnuItem("Update", "Update  Ctrl+U", actionListe, true);
 		menuFile.addMEnuItem("Close", "Close  Ctrl+W", actionListe, true);
 
 		JMenuPropertiesFile menuDetect = new JMenuPropertiesFile("Detect");
@@ -229,8 +226,14 @@ public class GeneralView extends JFrame {
 		menuDetect.addMEnuItem("Detect in image", "Detect in image  Ctrl+F", actionListe, false);
 		menuDetect.addMEnuItem("Change detection algorithm", "Change detection algorithm  Ctrl+G", actionListe, true);
 
+		JMenuPropertiesFile menuDetectHelp = new JMenuPropertiesFile("Help");
+		menuDetectHelp.addMEnuItem("Update", "Update  Ctrl+U", actionListe, true);
+		menuDetectHelp.addMEnuItem("About", "About  Ctrl+A", actionListe, true);
+		menuDetectHelp.addMEnuItem("UserManual", "User Manual  Ctrl+M", actionListe, true);
+
 		mb.add(menuFile);
 		mb.add(menuDetect);
+		mb.add(menuDetectHelp);
 		this.mb.setVisible(true);
 		this.repaint();
 		this.addKeyListener(new KeyActionsProgram());

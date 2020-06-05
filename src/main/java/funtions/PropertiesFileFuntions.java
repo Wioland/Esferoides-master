@@ -114,7 +114,7 @@ public class PropertiesFileFuntions {
 			is.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog( Utils.mainFrame, "Error getting the properties file. \n  Please check if you have"
+			JOptionPane.showMessageDialog( Utils.mainFrame, "Error getting the properties file. \n  Please check if you have "
 					+ "the jar file with the update folder and its files", "Error saving",
 					JOptionPane.ERROR_MESSAGE);
 

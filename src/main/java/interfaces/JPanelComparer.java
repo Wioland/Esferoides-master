@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -42,12 +44,14 @@ public class JPanelComparer extends JPanel {
 		JButton tryAlgoriBu = new JButton("Try other algorithms");
 		JButton selectButton = new JButton("Select");
 		JButton ExitButton = new JButton("Exit");
+		JButton menuScrolltButton = new JButton("Scroll view");
 
 		backBu.setName("backBu");
 		forwardBu.setName("forwardBu");
 		tryAlgoriBu.setName("tryAlgoriBu");
 		selectButton.setName("selectButton");
 		ExitButton.setName("exitButton");
+		menuScrolltButton.setName("scrollView");
 
 		panelButtons = new JPanel();
 
@@ -56,6 +60,7 @@ public class JPanelComparer extends JPanel {
 		panelButtons.add(tryAlgoriBu);
 		panelButtons.add(selectButton);
 		panelButtons.add(ExitButton);
+		panelButtons.add(menuScrolltButton);
 
 		// Add the split panel that contains the labels with the images (images label)
 		splitPanelLabelsImages = new JSplitPane();
@@ -118,6 +123,8 @@ public class JPanelComparer extends JPanel {
 		this.add(vi, constraints);
 
 		this.setVisible(true);
+
+
 	}
 
 	// GETTERS Y SETTERS
@@ -170,7 +177,7 @@ public class JPanelComparer extends JPanel {
 	}
 
 	public JButton getTryAlgoButton() {
-		if (panelButtons.getComponents().length == 5) {
+		if (panelButtons.getComponents().length == 6) {
 			return (JButton) panelButtons.getComponent(2);
 		} else {
 			for (Component c : panelButtons.getComponents()) {
@@ -184,7 +191,7 @@ public class JPanelComparer extends JPanel {
 	}
 
 	public JButton getSelectButton() {
-		if (panelButtons.getComponents().length == 5) {
+		if (panelButtons.getComponents().length == 6) {
 			return (JButton) panelButtons.getComponent(3);
 		} else {
 			for (Component c : panelButtons.getComponents()) {
@@ -198,11 +205,24 @@ public class JPanelComparer extends JPanel {
 	}
 
 	public JButton getExitButton() {
-		if (panelButtons.getComponents().length == 5) {
+		if (panelButtons.getComponents().length == 6) {
 			return (JButton) panelButtons.getComponent(4);
 		} else {
 			for (Component c : panelButtons.getComponents()) {
 				if (c.getName() == "exitButton") {
+					return (JButton) c;
+				}
+			}
+		}
+		return null;
+	}
+
+	public JButton getScrollButton() {
+		if (panelButtons.getComponents().length == 6) {
+			return (JButton) panelButtons.getComponent(5);
+		} else {
+			for (Component c : panelButtons.getComponents()) {
+				if (c.getName() == "scrollView") {
 					return (JButton) c;
 				}
 			}

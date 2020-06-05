@@ -3,8 +3,12 @@ package Listeners;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import org.scijava.ui.swing.script.FileFunctions;
+
 import funtions.FileFuntions;
 import funtions.Utils;
+import interfaces.JPanelComparer;
+import interfaces.TabPanel;
 
 public class KeyActionsProgram implements KeyListener {
 
@@ -54,6 +58,38 @@ public class KeyActionsProgram implements KeyListener {
 			if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_G) {
 				System.out.println("Control + G    ver todos los algoritmos y cambiarlos ");
 				Utils.changeUsedAlgoritms();
+			}
+			if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_A) {
+				System.out.println("Control + A    ver seccion about ");
+				FileFuntions.openAboutSection();
+			}
+			if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_M) {
+				System.out.println("Control + M    ver manual ");
+				FileFuntions.openUserManual();
+			}
+		}
+
+		if (Utils.mainFrame.getImageTree() != null) {
+			TabPanel tp = Utils.mainFrame.getImageTree().getFolderView();
+			if (tp != null) {
+
+				if (tp.getSelectedComponent().getClass().equals(JPanelComparer.class)) {
+
+					switch (evt.getKeyCode()) {
+					case KeyEvent.VK_LEFT:
+						tp.getViewImagen().getJPComparer().getBackButton().doClick();
+
+						break;
+
+					case KeyEvent.VK_RIGHT:
+						tp.getViewImagen().getJPComparer().getForwarButtonButton().doClick();
+						break;
+
+					default:
+						break;
+					}
+				}
+
 			}
 		}
 

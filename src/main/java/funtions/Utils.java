@@ -8,7 +8,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -750,5 +754,47 @@ public class Utils {
 		}
 
 	}
+	
+	
+	public static File download(final URL url, String location) {
+
+		try {
+			URLConnection urlConnection = url.openConnection();
+			InputStream inputStream = urlConnection.getInputStream();
+			String p = url.getFile();
+			String name = p.substring(p.lastIndexOf("/") + 1, p.length());
+
+			System.out.println("Nombre del archivo: " + name);
+
+			File downloadFile = new File(location + File.separator + name);
+			FileOutputStream fileOutputStream = new FileOutputStream(downloadFile);
+			try {
+				System.out.println("Descargando...");
+
+				byte[] buffer = new byte[1024];
+				int len = 0;
+				int off = 0;
+				while ((len = inputStream.read(buffer)) >= 0) {
+					fileOutputStream.write(buffer, off, len);
+					fileOutputStream.flush();
+				}
+				System.out.println("Descarga completada: " + location);
+
+				return downloadFile;
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					fileOutputStream.close();
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 }
