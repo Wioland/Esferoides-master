@@ -5,12 +5,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +19,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-import com.sleepycat.je.tree.Key;
 
 import funtions.FileFuntions;
 import funtions.ShowTiff;
@@ -39,6 +36,8 @@ public class ViewImagesBigger {
 	private int clickImageIndex;
 	private List<ImageIcon> newDetectedImages;
 	private JPanelComparer JPComparer;
+	private String title;
+	private Map<String,Integer> indexImage;
 
 	public ViewImagesBigger(List<ImageIcon> listImages, TabPanel tp) {
 		this.listImages = listImages;
@@ -48,10 +47,10 @@ public class ViewImagesBigger {
 		this.indexImageView = "ImageViewer ";
 		this.tp = tp;
 		this.dir = this.tp.getDir();
+		indexImage= new HashMap< String,Integer>();
 
 		JPComparer = new JPanelComparer();
 		JPComparer.setLabelImageIcon(image);
-		
 
 		if (listImages.size() == 1) {
 			JPComparer.getBackButton().setEnabled(false);
@@ -71,19 +70,24 @@ public class ViewImagesBigger {
 			addlistenerButton(JPComparer.getBackButton(), JPComparer.getForwarButtonButton(),
 					JPComparer.getTryAlgoButton());
 			addListenerMenuScroll(JPComparer.getScrollButton());
-
+initialiceMap();
 			addTotab();
 
 		} else {
 			createComparer();
 			addlistenerButton(JPComparer.getBackButton(), JPComparer.getForwarButtonButton(), false);
 		}
-		
-		
 
 	}
 
-	
+	private void initialiceMap() {
+		int i=0;
+		for (ImageIcon imageIcon : listImages) {
+			this.indexImage.put( imageIcon.getDescription(),i);
+			i++;
+		}
+		
+	}
 
 	private void addListenerMenuScroll(JButton scrollButton) {
 		// TODO Auto-generated method stub
@@ -93,10 +97,8 @@ public class ViewImagesBigger {
 				scrollButton.setEnabled(false);
 			}
 		});
-		
+
 	}
-
-
 
 	private void addTotab() {
 		// TODO Auto-generated method stub
@@ -112,14 +114,12 @@ public class ViewImagesBigger {
 		JPanel pnlTab = new JPanel(new GridBagLayout());
 		pnlTab.setOpaque(false);
 		JLabel lblTitle = new JLabel(title);
-		
 
 		// Add the title and the button side by side in a panel
-
+		this.title = title;
 
 		pnlTab.add(lblTitle);
 
-		
 		// add the panel with button "X" and name to the tabpanel to create the
 		// tab
 		this.tp.setTabComponentAt(index, pnlTab);
@@ -179,7 +179,7 @@ public class ViewImagesBigger {
 
 				addlistenerButton(JPComparer.getBackButton(), JPComparer.getForwarButtonButton(),
 						JPComparer.getTryAlgoButton());
-				
+
 				JPComparer.getPanelButtons().remove(JPComparer.getScrollButton());
 
 			}
@@ -304,8 +304,24 @@ public class ViewImagesBigger {
 		JPComparer = jPComparer;
 	}
 
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	// METHODS
 
+	public void setImage(String image) {
+		
+		
+		indexImagenList=this.indexImage.get(image);
+		 moreActionChangeIndexIma();
+	}
+	
+	
 	/**
 	 * Creates the comparer if the comparer is in the algorithmView frame
 	 */
@@ -375,6 +391,7 @@ public class ViewImagesBigger {
 			String title = indexImageView + (new File(listImages.get(indexImagenList).getDescription()).getName());
 			tp.setTitleAt(indexTab, title);
 			tp.repaint();
+			this.title = title;
 
 			// In the case the tab has an "X" button we change to the name shown
 			// in this
@@ -406,6 +423,7 @@ public class ViewImagesBigger {
 		pnlTab.setOpaque(false);
 		JLabel lblTitle = new JLabel(title);
 		JButton btnClose = new JButton("x");
+		this.title = title;
 
 		// Add the title and the button side by side in a panel
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -527,7 +545,7 @@ public class ViewImagesBigger {
 			changeOriginalImageLabel();
 		}
 	}
-	
+
 	/**
 	 * Adds the listeners to the buttons of the comparer
 	 * 
@@ -544,7 +562,7 @@ public class ViewImagesBigger {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				backActionPerform( newVsOld);
+				backActionPerform(newVsOld);
 
 			}
 		});

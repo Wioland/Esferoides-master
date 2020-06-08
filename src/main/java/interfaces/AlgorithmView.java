@@ -55,7 +55,7 @@ public class AlgorithmView extends JFrame {
 
 				File folder = Methods.getTemporalFolder();
 				if (folder != null) {
-					folder.delete();
+					FileFuntions.deleteFolder(folder);
 				}
 				if (!Utils.mainFrame.getMb().isEnabled()) {
 					Utils.mainFrame.getMb().setEnabled(true);
@@ -67,7 +67,7 @@ public class AlgorithmView extends JFrame {
 
 				File folder = Methods.getTemporalFolder();
 				if (folder != null) {
-					folder.delete();
+					FileFuntions.deleteFolder(folder);
 				}
 				if (!Utils.mainFrame.getMb().isEnabled()) {
 					Utils.mainFrame.getMb().setEnabled(true);

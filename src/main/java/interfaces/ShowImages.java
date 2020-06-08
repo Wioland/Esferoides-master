@@ -33,10 +33,8 @@ public class ShowImages extends JPanel {
 	/**
 	 * For showing the tiff images like buttons
 	 * 
-	 * @param directory
-	 *            the current directory path
-	 * @param tp
-	 *            the container where the buttons are going to be shown
+	 * @param directory the current directory path
+	 * @param tp        the container where the buttons are going to be shown
 	 */
 	public ShowImages(String directory, Component tp) {
 		// we put them in one column
@@ -50,13 +48,10 @@ public class ShowImages extends JPanel {
 	/**
 	 * For showing the tiff images like buttons
 	 * 
-	 * @param tp
-	 *            the tabpanel in which the buttons are going to be shown
-	 * @param images
-	 *            the images we want to show in the buttons
-	 * @param originalName
-	 *            the original name of the group of files (the name of the nd2
-	 *            or tiff file)
+	 * @param tp           the tabpanel in which the buttons are going to be shown
+	 * @param images       the images we want to show in the buttons
+	 * @param originalName the original name of the group of files (the name of the
+	 *                     nd2 or tiff file)
 	 */
 	public ShowImages(TabPanel tp, List<String> images, String originalName) {
 		// we put then in two columns
@@ -68,13 +63,11 @@ public class ShowImages extends JPanel {
 	/**
 	 * For showing the tiff images like buttons in the algoritm view
 	 * 
-	 * @param directory
-	 *            the current working folder path
-	 * @param algorithmView
-	 *            the Jframe for showing the algorithm images
-	 * @param nameFileNoExt
-	 *            name of the file without extension. the file we wants to find
-	 *            it's tiff in the predictions folder if "" all the files
+	 * @param directory     the current working folder path
+	 * @param algorithmView the Jframe for showing the algorithm images
+	 * @param nameFileNoExt name of the file without extension. the file we wants to
+	 *                      find it's tiff in the predictions folder if "" all the
+	 *                      files
 	 */
 	public ShowImages(String directory, AlgorithmView algorithmView, String nameFileNoExt) {
 		// we put them in one column
@@ -121,11 +114,10 @@ public class ShowImages extends JPanel {
 	// METHODS
 
 	/**
-	 * Initialize the components of the class and set the number of columns of
-	 * the layout
+	 * Initialize the components of the class and set the number of columns of the
+	 * layout
 	 * 
-	 * @param columns
-	 *            number of columns we want to have in the layout
+	 * @param columns number of columns we want to have in the layout
 	 */
 	public void initializeComponents(int columns) {
 		this.setLayout(new GridLayout(0, columns));
@@ -138,13 +130,11 @@ public class ShowImages extends JPanel {
 	/**
 	 * Creates the buttons to show the images of the folder given
 	 * 
-	 * @param folder
-	 *            The location of the images
-	 * @param nameFileNoExt
-	 *            name of the file without extension of the file we wants to
-	 *            find it's tiff in the predictions folder if "" all the files
-	 * @param tp
-	 *            the place we are going to show the images
+	 * @param folder        The location of the images
+	 * @param nameFileNoExt name of the file without extension of the file we wants
+	 *                      to find it's tiff in the predictions folder if "" all
+	 *                      the files
+	 * @param tp            the place we are going to show the images
 	 */
 	public void createImageButton(File folder, Component tp, String nameFileNoExt) {
 
@@ -184,9 +174,15 @@ public class ShowImages extends JPanel {
 					if (tp.getClass().equals(TabPanel.class)) {
 						tap = (TabPanel) tp;
 						String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
-						if (tap != null && tap.indexOfTab(nombreTab) == -1) {
+						if (tap != null) {
 
-							new ViewImagesBigger(imageIcon.get(listImages.indexOf(name)), imageIcon, tap, false);
+							tap.setSelectedIndex(tap.indexOfTab(tap.getViewImagen().getTitle()));
+
+							if (tap.indexOfTab(nombreTab) == -1) {
+
+								tap.getViewImagen().setImage(image.getDescription());
+							}
+//							new ViewImagesBigger(imageIcon.get(listImages.indexOf(name)), imageIcon, tap, false);
 
 						}
 					} else {
@@ -213,12 +209,9 @@ public class ShowImages extends JPanel {
 	/**
 	 * Creates the buttons of the list of images given
 	 * 
-	 * @param tp
-	 *            the tap panel to show the buttons
-	 * @param images
-	 *            the list of images to show
-	 * @param origianlName
-	 *            the name of the nd2 or tif file without extension
+	 * @param tp           the tap panel to show the buttons
+	 * @param images       the list of images to show
+	 * @param origianlName the name of the nd2 or tif file without extension
 	 */
 	public void createImageButton(TabPanel tp, List<String> images, String origianlName) {
 
@@ -262,14 +255,10 @@ public class ShowImages extends JPanel {
 	/**
 	 * Adds the actions to the buttons to select or open a comparer
 	 * 
-	 * @param e
-	 *            mouse even
-	 * @param tp
-	 *            the tab panel where the images are
-	 * @param image
-	 *            the image of the button clicked
-	 * @param origianlName
-	 *            the name of the nd2 or tif image without extension
+	 * @param e            mouse even
+	 * @param tp           the tab panel where the images are
+	 * @param image        the image of the button clicked
+	 * @param origianlName the name of the nd2 or tif image without extension
 	 */
 	private void clickImageButtonAlgoritm(MouseEvent e, TabPanel tp, ImageIcon image, String origianlName) {
 		if (e.getClickCount() == 2 && !e.isConsumed()) {
