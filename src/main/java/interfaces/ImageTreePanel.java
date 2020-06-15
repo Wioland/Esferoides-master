@@ -185,7 +185,6 @@ public class ImageTreePanel extends JSplitPane {
 				Utils.mainFrame.setDir(dir);
 
 				Utils.mainFrame.returnTheTimers(folderView);
-				Utils.mainFrame.activeRestOfMenuOPtionsOrDesactivate();
 
 				pb.dispose();
 				t.interrupt();
@@ -214,7 +213,7 @@ public class ImageTreePanel extends JSplitPane {
 
 			extension = FileFuntions.extensionwithoutName(f.getAbsolutePath());
 
-			if (f.isFile() && !f.getName().endsWith("xls") && listExtensions.contains(extension)) {
+			if (f.isFile() && !f.getName().endsWith("xls") && listExtensions.contains(extension.toLowerCase())) {
 				child = new DefaultMutableTreeNode(f.getName());
 				modelo.insertNodeInto(child, parentNode, index);
 				index++;

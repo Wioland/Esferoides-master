@@ -36,7 +36,6 @@ public class TabPanel extends JTabbedPane {
 	private Map<Integer, Long> excelModificationIndexTab;
 	private Map<Integer, File> indexTabExcel;
 	private String dir;
-	private boolean originalIma;
 	private Map<String, JButton> originalNewSelected;
 	private int originalImagesNumber = 0;
 	private ShowImages images;
@@ -64,14 +63,6 @@ public class TabPanel extends JTabbedPane {
 
 	public void setDir(String dir) {
 		this.dir = dir;
-	}
-
-	public boolean isOriginalIma() {
-		return originalIma;
-	}
-
-	public void setOriginalIma(boolean originalIma) {
-		this.originalIma = originalIma;
 	}
 
 	public Map<Integer, Long> getExcelModificationIndexTab() {
@@ -128,15 +119,15 @@ public class TabPanel extends JTabbedPane {
 		excelModificationIndexTab = new HashMap<Integer, Long>();
 		indexTabExcel = new HashMap<Integer, File>();
 		this.dir = directory;
-		originalIma = false;
 
-		Utils.searchDirectory(".*\\.xls", folder, result);
+
+		Utils.search(".*\\.xls", folder, result,1);
 		Collections.sort(result);
 
 		List<String> imageIconString = new ArrayList<String>();
 
 		List<ImageIcon> imageIcon = new ArrayList<ImageIcon>();
-		Utils.search(".*\\.tiff", folder, imageIconString);
+		Utils.search(".*\\.tiff", folder, imageIconString,2);
 		ImageIcon image;
 		for (String ima : imageIconString) {
 			image = ShowTiff.showTiffToImageIcon(ima);
@@ -148,15 +139,21 @@ public class TabPanel extends JTabbedPane {
 
 		// the images tab
 
-//		if (imageIcon.isEmpty()) {
-//			noFileText("Images", null);
-//			originalIma = FileFuntions.isOriginalImage(folder);
-//		} else {
+		if (imageIcon.isEmpty()) {
+			noFileText("Images", null);
+			if(!Utils.mainFrame.isAskedCreateImages()) {
+				boolean proessImages=Utils.mainFrame.checkOriginalAndAskProcess( this.dir);
+				if(proessImages) {
+					Utils.mainFrame.getImageTree().repaintTabPanel(proessImages);
+				}
+			}
+			
+		} else {
 
 		viewImagen = new ViewImagesBigger(imageIcon, this);
 
-//		}
-
+		}
+		Utils.mainFrame.setAskedCreateImages(false);
 		// the excels tab
 
 		if (result.size() == 0) {
@@ -201,8 +198,13 @@ public class TabPanel extends JTabbedPane {
 
 	}
 
-	public void scrollView() {
-		images = new ShowImages(this.dir, this);
+	public void scrollView(ShowImages imagesShow) {
+		if(imagesShow==null) {
+			images = new ShowImages(this.dir, this);
+		}else {
+			images=imagesShow;
+		}
+		
 
 		lens = new LensMEnuButtons(images.getListImagesPrev());
 
@@ -258,7 +260,7 @@ public class TabPanel extends JTabbedPane {
 			if (listExtensions.get(i).contentEquals("tiff")) {
 				i++;
 			}
-			Utils.searchDirectory(".*\\." + listExtensions.get(i), new File(directory), result);
+			Utils.search(".*\\." + listExtensions.get(i), new File(directory), result,1);
 			i++;
 		}
 
@@ -494,7 +496,7 @@ public class TabPanel extends JTabbedPane {
 							tempoFolder.renameTo(folderDir);
 
 							List<String> excelList = new ArrayList<String>();
-							Utils.searchDirectory(".*results.xls", folderDir, excelList);
+							Utils.search(".*results.xls", folderDir, excelList,1);
 							String nameNoExtension = "";
 							for (String fileExcel : excelList) {
 								File aux = new File(fileExcel);
@@ -534,10 +536,10 @@ public class TabPanel extends JTabbedPane {
 			} else {
 				// we open a comparer to
 				List<String> result = new ArrayList<String>();
-				Utils.searchDirectory(".*\\.tiff", folderDir, result);
+				Utils.search(".*\\.tiff", folderDir, result,2);
 
 				List<String> newresult = new ArrayList<String>();
-				Utils.searchDirectory(".*\\.tiff", tempoFolder, newresult);
+				Utils.search(".*\\.tiff", tempoFolder, newresult,2);
 
 				ViewImagesBigger vi = new ViewImagesBigger(result, newresult, this);
 
@@ -598,7 +600,7 @@ public class TabPanel extends JTabbedPane {
 				} else {
 					// we open a comparer to
 					List<String> result = new ArrayList<String>();
-					Utils.searchDirectory(".*\\.tiff", folder, result);
+					Utils.search(".*\\.tiff", folder, result,2);
 
 					ViewImagesBigger vi = new ViewImagesBigger(result, getOriginalNewSelected(), this);
 

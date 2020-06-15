@@ -146,8 +146,8 @@ public class FileFuntions {
 			oldNameNoExt += ".*\\.*";
 			oldNameNoExt = oldNameNoExt.replace("_pred", "");
 
-			Utils.search(oldNameNoExt, oldFolder, temporalFiles);
-			Utils.search(pattern, saveDir, originalFiles);
+			Utils.search(oldNameNoExt, oldFolder, temporalFiles,1);
+			Utils.search(pattern, saveDir, originalFiles,1);
 
 			File f;
 			File orFile;
@@ -166,7 +166,7 @@ public class FileFuntions {
 					 */
 					for (String oriFilePath : originalFiles) {
 						extension = extensionwithoutName(s);
-						if (oriFilePath.endsWith(extension)) {
+						if (oriFilePath.toUpperCase().endsWith(extension.toUpperCase())) {
 							orFile = new File(oriFilePath);
 							if (orFile.exists()) {
 
@@ -262,7 +262,7 @@ public class FileFuntions {
 	public static boolean isExtension(List<String> result, String extension) {
 		boolean isTif = true;
 		for (String name : result) {
-			if (!name.endsWith(extension)) {
+			if (!name.toUpperCase().endsWith(extension.toUpperCase())) {
 				isTif = false;
 				break;
 			}
@@ -360,7 +360,7 @@ public class FileFuntions {
 				ShowImages images = (ShowImages) jv.getComponent(0);
 
 				List<String> actualImages = new ArrayList<String>();
-				Utils.search(".*\\.tiff", new File(directory), actualImages);
+				Utils.search(".*\\.tiff", new File(directory), actualImages,2);
 				Collections.sort(actualImages);
 
 				checkStillExist(images, actualImages, tp); // check if the
@@ -746,8 +746,15 @@ public class FileFuntions {
 		List<String> listExtensions = FileFuntions.getExtensions();
 		
 		for (String ext : listExtensions) {
-			if(!ext.equals("tiff")) {
-				Utils.searchDirectory(".*\\."+ext, folder, listImages);
+			if(!ext.equals("tiff")|| !ext.equals("jpeg")) {
+				
+				Utils.search(".*\\."+ext, folder, listImages,1);
+				
+				if(ext.equals("jpg")) {
+					ext="jpeg";
+					Utils.search(".*\\."+ext, folder, listImages,1);
+				}
+				
 				if (listImages.size() != 0) {
 					originalIma = true;
 					break;
@@ -1118,7 +1125,6 @@ public class FileFuntions {
 
 			if (dc.getDirectory() != null) {
 				// Desactivate the menu options until the panel is paint
-				Utils.mainFrame.activeRestOfMenuOPtionsOrDesactivate();
 				FileFuntions.changeDirectory(dc.getDirectory(), false);
 
 			} else {
@@ -1241,7 +1247,7 @@ public class FileFuntions {
 							"Please select an image of the current directory or subdirectoties");
 					detectAlgoImageMEnu();
 				} else {
-					new AlgorithmView(image, Utils.getCurrentDirectory());
+					new AlgorithmView(image);
 				}
 			}
 		}

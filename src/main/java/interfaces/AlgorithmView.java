@@ -40,7 +40,7 @@ public class AlgorithmView extends JFrame {
 	private OurProgressBar pb;
 	private Thread t;
 
-	public AlgorithmView(File image, String dir) {
+	public AlgorithmView(File image) {
 		// Window parameters
 		Utils.mainFrame.getMb().setEnabled(false);
 		
@@ -76,7 +76,7 @@ public class AlgorithmView extends JFrame {
 		});
 
 		this.image = image;
-		this.directory = dir;
+		this.directory = image.getAbsolutePath().replace("predictions"+File.separator+image.getName(), "");
 		jSp = new JPanel(new GridBagLayout());
 		this.add(jSp);
 

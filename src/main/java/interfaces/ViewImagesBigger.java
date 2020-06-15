@@ -93,7 +93,8 @@ initialiceMap();
 		// TODO Auto-generated method stub
 		scrollButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				tp.scrollView();
+				ShowImages ima= new ShowImages(listImages, tp) ;
+				tp.scrollView(ima);
 				scrollButton.setEnabled(false);
 			}
 		});
@@ -637,7 +638,7 @@ initialiceMap();
 				boolean alreadyAlView = FileFuntions.windowAlgoWiewOfFile(f);
 
 				if (!alreadyAlView) {
-					new AlgorithmView(f, dir);
+					new AlgorithmView(f);
 				}
 
 			}

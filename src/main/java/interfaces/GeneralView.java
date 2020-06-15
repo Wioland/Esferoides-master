@@ -1,6 +1,7 @@
 
 package interfaces;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
@@ -11,9 +12,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Timer;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JToolBar;
 
 import Listeners.ActionMenuBar;
 import Listeners.KeyActionsProgram;
@@ -27,15 +32,19 @@ public class GeneralView extends JFrame {
 	private static final long serialVersionUID = 1L;
 	// private String directory;
 	private JMenuBar mb;
+	private JToolBar toolBar;
 	private String dir;
 	private ImageTreePanel imageTree;
 	private Thread t;
 	private List<Timer> timers;
 	private int timeTaskExcel = 60;
 	private int timeTaskImages = 60;
+	private List<JButton> disableButonToolBar;
+	private boolean askedCreateImages = false;
 
 	public GeneralView() {
 		this.mb = new JMenuBar();
+		this.toolBar = new JToolBar();
 		this.timers = new ArrayList<Timer>();
 
 		inicialiceMenus();
@@ -83,6 +92,14 @@ public class GeneralView extends JFrame {
 		this.mb = mb;
 	}
 
+	public boolean isAskedCreateImages() {
+		return askedCreateImages;
+	}
+
+	public void setAskedCreateImages(boolean askedCreateImages) {
+		this.askedCreateImages = askedCreateImages;
+	}
+
 	// METHODS
 	/**
 	 * Paints the graphics of the main FRame
@@ -92,11 +109,7 @@ public class GeneralView extends JFrame {
 	public void paintMainFRame(String dc) {
 
 		if (dc != null) {
-			boolean selectAlgo = false;
-			selectAlgo = Utils.optionAction();
-			if (selectAlgo) {
-				selectAlgo = FileFuntions.isOriginalImage(new File(dc));
-			}
+			boolean selectAlgo = checkOriginalAndAskProcess(dc);
 			this.dir = dc;
 			createContent(dc, selectAlgo);
 
@@ -122,8 +135,7 @@ public class GeneralView extends JFrame {
 	}
 
 	public void activeRestOfMenuOPtionsOrDesactivate() {
-		// TODO Auto-generated method stub
-
+		System.out.println("Reactivo desactivo las opciones");
 		Component[] menulist = mb.getComponents();
 		for (Component component : menulist) {
 			JMenuPropertiesFile jm = (JMenuPropertiesFile) component;
@@ -135,6 +147,13 @@ public class GeneralView extends JFrame {
 			}
 		}
 
+		for (JButton jb : this.disableButonToolBar) {
+
+			jb.setEnabled(!jb.isEnabled());
+
+		}
+
+		toolBar.repaint();
 		mb.repaint();
 	}
 
@@ -160,17 +179,15 @@ public class GeneralView extends JFrame {
 				pb.setVisible(false);
 				pb.dispose();
 
-				if (!selectAlgo) {
-					returnTheTimers(imageTree.getFolderView());
-				}
+//				if (!selectAlgo) {
+				returnTheTimers(imageTree.getFolderView());
+//				}
 
-				if (imageTree.getFolderView().isOriginalIma()) {
-
-					imageTree.repaintTabPanel(!selectAlgo);
-
-				} else {
-					activeRestOfMenuOPtionsOrDesactivate();
-				}
+//				if (imageTree.getFolderView().isOriginalIma()) {
+//
+//					imageTree.repaintTabPanel(!selectAlgo);
+//
+//				} 
 
 				t.interrupt();
 			}
@@ -213,6 +230,68 @@ public class GeneralView extends JFrame {
 	}
 
 	public void inicialiceMenus() {
+		initialiceMenuOptions();
+		initialiceToolBAr();
+	}
+
+	public void initialiceToolBAr() {
+		ActionMenuBar actionListe = new ActionMenuBar();
+
+		int height = 20;
+		ImageIcon ima = new ImageIcon(
+				getClass().getClassLoader().getResource("images" + File.separator + "openDir.png"));
+		ImageIcon i = new ImageIcon(ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
+
+		JButton btnOpenDir = new JButton(i);
+		btnOpenDir.setName("Open Dir");
+		btnOpenDir.addActionListener(actionListe);
+
+		ima = new ImageIcon(getClass().getClassLoader().getResource("images" + File.separator + "closeDir.png"));
+		i = new ImageIcon(ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
+
+		JButton btnCloseDir = new JButton(i);
+		btnCloseDir.setName("Close Dir");
+		btnCloseDir.addActionListener(actionListe);
+
+		ima = new ImageIcon(getClass().getClassLoader().getResource("images" + File.separator + "detectDir.png"));
+		i = new ImageIcon(ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
+
+		JButton btnDetectDir = new JButton(i);
+		btnDetectDir.setName("Detect in directory");
+		btnDetectDir.addActionListener(actionListe);
+
+		ima = new ImageIcon(getClass().getClassLoader().getResource("images" + File.separator + "detectFile.png"));
+		i = new ImageIcon(ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
+
+		JButton btnDetectFile = new JButton(i);
+		btnDetectFile.setName("Detect in image");
+		btnDetectFile.addActionListener(actionListe);
+
+		ima = new ImageIcon(getClass().getClassLoader().getResource("images" + File.separator + "changeAlgo.png"));
+		i = new ImageIcon(ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
+
+		JButton btnChangeAlgo = new JButton(i);
+		btnChangeAlgo.setName("Change detection algorithm");
+		btnChangeAlgo.addActionListener(actionListe);
+
+		disableButonToolBar = new ArrayList<JButton>();
+		disableButonToolBar.add(btnDetectFile);
+		disableButonToolBar.add(btnDetectDir);
+
+		btnDetectFile.setEnabled(false);
+		btnDetectDir.setEnabled(false);
+
+		toolBar.add(btnOpenDir);
+		toolBar.add(btnCloseDir);
+		toolBar.add(btnDetectDir);
+		toolBar.add(btnDetectFile);
+		toolBar.add(btnChangeAlgo);
+
+		this.add(toolBar, BorderLayout.PAGE_START);
+
+	}
+
+	public void initialiceMenuOptions() {
 		setJMenuBar(mb);
 		ActionMenuBar actionListe = new ActionMenuBar();
 
@@ -253,6 +332,7 @@ public class GeneralView extends JFrame {
 
 			}
 			this.getTimers().clear();
+			activeRestOfMenuOPtionsOrDesactivate();
 			System.out.println("Se ha parado el timer");
 		}
 	}
@@ -262,6 +342,7 @@ public class GeneralView extends JFrame {
 
 		Timer tIma = FileFuntions.imagescheckWithTime(tab, timeTaskImages);
 		Timer tExcel = ExcelActions.excelcheckWithTime(tab, dir, timeTaskExcel);
+		activeRestOfMenuOPtionsOrDesactivate();
 
 		this.getTimers().add(tExcel);
 		this.getTimers().add(tIma);
@@ -288,10 +369,26 @@ public class GeneralView extends JFrame {
 
 		}
 
-		this.activeRestOfMenuOPtionsOrDesactivate();
-
 		this.repaint();
 
+	}
+
+	public boolean checkOriginalAndAskProcess(String dc) {
+		boolean selectAlgo = false;
+		selectAlgo = Utils.optionAction();
+		if (selectAlgo) {
+			selectAlgo = FileFuntions.isOriginalImage(new File(dc));
+			if (selectAlgo) {
+				int op = JOptionPane.showConfirmDialog(this,
+						"This directory do not contain tiff files, but images can be process. \n Do you want to process them?",
+						"Process images?", JOptionPane.YES_NO_OPTION);
+				if (op != 0) {
+					selectAlgo = false;
+				}
+				askedCreateImages = true;
+			}
+		}
+		return selectAlgo;
 	}
 
 }

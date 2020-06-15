@@ -49,7 +49,7 @@ public class ShowAllAlgorithmImages extends JPanel {
 		originalImageLAbelName.setBackground(Color.white);
 		originalImageLAbelName.setOpaque(true);
 
-		Utils.searchDirectory(imageName + ".*\\.tiff", new File(directory), aux);
+		Utils.search(imageName + ".*\\.tiff", new File(directory), aux,1);
 
 		ShowImages sI = new ShowImages(tp, aux, imageName);
 

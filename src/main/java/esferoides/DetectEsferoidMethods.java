@@ -420,6 +420,22 @@ public class DetectEsferoidMethods {
 			ArrayList<Integer> goodRows, boolean temp) {
 
 		ImagePlus imp = IJ.openImage(name);
+		if (imp == null) {
+			options.setId(name);
+
+			ImagePlus[] imps;
+
+			try {
+				imps = BF.openImagePlus(options);
+				imp = imps[0];
+			} catch (FormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 		ImagePlus impD = imp.duplicate();
 

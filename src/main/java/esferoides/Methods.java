@@ -38,7 +38,7 @@ public class Methods {
 				createImagesMetods(result, directory, nd2Save, false,temp);
 			}
 
-			if (FileFuntions.isExtension(result, "jpg") || FileFuntions.isExtension(result, "JPG")) {
+			if (FileFuntions.isExtension(result, "jpg") || FileFuntions.isExtension(result, "JPEG")) {
 				createImagesMetods(result, directory, jpgSave, false,temp);
 			}
 
@@ -83,7 +83,7 @@ public class Methods {
 						|| (type.equals("Teodora v1") && FileFuntions.isExtension(result, "nd2"))
 						|| (type.equals("Teodora Big") && FileFuntions.isExtension(result, "nd2"))
 						|| (type.equals("Teniposide") && (FileFuntions.isExtension(result, "jpg")
-								|| FileFuntions.isExtension(result, "JPG")))) {
+								|| FileFuntions.isExtension(result, "JPEG")))) {
 //					CreateImagesThread c = new CreateImagesThread(result, directory, type, all,i);
 //					threads.add(c);
 //					c.start();

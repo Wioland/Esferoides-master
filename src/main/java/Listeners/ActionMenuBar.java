@@ -3,6 +3,7 @@ package Listeners;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JMenuItem;
 
 import funtions.FileFuntions;
@@ -17,8 +18,17 @@ public class ActionMenuBar implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		JMenuItem menuItem = (JMenuItem) e.getSource();
-		String name = menuItem.getName();
+		String name ="";
+		
+		if(e.getSource().getClass().equals(JMenuItem.class)) {
+			JMenuItem menuItem = (JMenuItem) e.getSource();
+			 name = menuItem.getName();
+		}
+		else {
+			JButton menuItem = (JButton) e.getSource();
+			 name = menuItem.getName();
+		}
+		
 
 		switch (name) {
 		case "Open Dir":

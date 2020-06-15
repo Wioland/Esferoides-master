@@ -50,23 +50,23 @@ public class Utils {
 	 * @param folder  folder to look for the files
 	 * @param result  array with the path of the files that have the pattern
 	 */
-	public static void search(final String pattern, final File folder, List<String> result) {
-	
+	public static void search(final String pattern, final File folder, List<String> result, int deep) {
+		if (deep != -1) {
 			for (final File f : folder.listFiles()) {
 
 				if (f.isDirectory()) {
-					search(pattern, f, result);
+					search(pattern, f, result, deep - 1);
 				}
 
 				if (f.isFile()) {
-					if (f.getName().matches(pattern)) {
+					if (f.getName().toUpperCase().matches(pattern.toUpperCase())) {
 						result.add(f.getAbsolutePath());
 					}
 				}
 
 			}
-		
-	
+		}
+
 	}
 
 	/**
@@ -314,7 +314,7 @@ public class Utils {
 			// We store the list of nd2 files in the result list.
 			File folder = new File(dir);
 
-			Utils.search(".*\\." + format, folder, result);
+			Utils.search(".*\\." + format, folder, result, 1);
 			Collections.sort(result);
 			return dir;
 		}
@@ -408,10 +408,7 @@ public class Utils {
 
 			mainFrame.cancelTimersCurrentDir();
 			mainFrame.setDir(dc);
-			boolean b = optionAction();
-			if (b) {
-				b = FileFuntions.isOriginalImage(new File(dc));
-			}
+		boolean b=mainFrame.checkOriginalAndAskProcess(dc);
 			createGeneralViewOrNot(dc, b);
 		}
 	}
@@ -449,7 +446,7 @@ public class Utils {
 		boolean detect = true;
 
 		List<String> result = new ArrayList<String>();
-		Utils.search(".*\\.tiff", new File(getCurrentDirectory()), result);
+		Utils.search(".*\\.tiff", new File(getCurrentDirectory()), result, 2);
 
 		if (!result.isEmpty()) {
 			detect = false;
@@ -661,11 +658,28 @@ public class Utils {
 		File folder;
 		name = name.substring(0, name.lastIndexOf("."));
 		name = name.replace(dir, "");
+//		boolean moreThanOneFolder=false;
+//		String name2="";
+//		File folder2=null;
+		if (name.contains(File.separator)) {
+//			moreThanOneFolder=true;
+//			name2=name.replace(File.separator, File.separator+"predictions"+File.separator);
+//			name=name.replace(File.separator, "_");
+//			folder2=new File(dir);
+			String subFolder = name.substring(0, name.lastIndexOf(File.separator) + 1);
+			name = name.substring(name.lastIndexOf(File.separator) + 1, name.length());
+			dir += subFolder;
+		}
 		folder = new File(dir + "predictions");
 
 		if (!folder.exists()) {
 			folder.mkdir();
 		}
+//		if(folder2!=null) {
+//			if (!folder2.exists()) {
+//				folder2.mkdir();
+//			}
+//		}
 
 		ImageStatistics stats = null;
 		double[] vFeret;
@@ -701,6 +715,9 @@ public class Utils {
 
 				rm.runCommand(imp1, "Draw");
 				rm.runCommand("Save", folder.getAbsolutePath() + File.separator + name + ".zip");
+//				if(moreThanOneFolder) {
+//					rm.runCommand("Save", folder2.getAbsolutePath()+ File.separator  + name2 + ".zip");
+//				}
 				rm.close();
 				// saving the roi
 				// compute the statistics (without calibrate)
@@ -753,12 +770,14 @@ public class Utils {
 			}
 
 			IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + File.separator + name + "_pred.tiff");
+//			if(moreThanOneFolder) {
+//				IJ.saveAs(imp1, "Tiff",  folder2.getAbsolutePath() + File.separator + name2 + "_pred.tiff");
+//			}
 
 		}
 
 	}
-	
-	
+
 	public static File download(final URL url, String location) {
 
 		try {
@@ -798,6 +817,5 @@ public class Utils {
 		}
 		return null;
 	}
-
 
 }

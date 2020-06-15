@@ -3,8 +3,6 @@ package Listeners;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import org.scijava.ui.swing.script.FileFunctions;
-
 import funtions.FileFuntions;
 import funtions.Utils;
 import interfaces.JPanelComparer;

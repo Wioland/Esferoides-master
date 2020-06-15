@@ -155,7 +155,7 @@ public class ExcelActions {
 		List<String> result = new ArrayList<String>();
 		File folder = new File(dir);
 
-		Utils.searchDirectory(".*\\.xls", folder, result);
+		Utils.search(".*\\.xls", folder, result,1);
 		Collections.sort(result);
 
 		// checks if the are new excels
@@ -178,7 +178,7 @@ public class ExcelActions {
 			List<String> result = new ArrayList<String>();
 			File folder = new File(dir);
 
-			Utils.searchDirectory(".*\\.xls", folder, result);
+			Utils.search(".*\\.xls", folder, result,1);
 			Collections.sort(result);
 
 			if (excel != null) { // if it tab has an excel it tab isn't a
@@ -385,7 +385,7 @@ public class ExcelActions {
 
 		String pattern = ".*\\_results.xls";
 		List<String> result = new ArrayList<String>();
-		Utils.searchDirectory(pattern, directory, result);
+		Utils.search(pattern, directory, result,1);
 
 		File aux = null;
 		for (String string : result) {
@@ -407,7 +407,7 @@ public class ExcelActions {
 
 		List<String> result = new ArrayList<String>();
 
-		Utils.searchDirectory("results.xls", directory, result);
+		Utils.search("results.xls", directory, result,1);
 
 		FileInputStream inputStream;
 		HSSFWorkbook wb;

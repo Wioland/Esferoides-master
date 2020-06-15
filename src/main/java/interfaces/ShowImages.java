@@ -44,6 +44,14 @@ public class ShowImages extends JPanel {
 		createImageButton(folder, tp, "");
 
 	}
+	public ShowImages(List<ImageIcon> images, Component tp) {
+		// we put them in one column
+		initializeComponents(1);
+this.imageIcon=images;
+		createImageButton(tp);
+
+	}
+
 
 	/**
 	 * For showing the tiff images like buttons
@@ -205,7 +213,66 @@ public class ShowImages extends JPanel {
 			this.add(imageView);
 		}
 	}
+	private void createImageButton(Component tp) {
+		ImageIcon iconoEscala;
+		JButton imageView;
+		File faux;
 
+		for (ImageIcon image : imageIcon) {
+			// we transform the images to imageIcon for showing them in the
+			// interface
+		
+
+			// add the button
+			// Get a icon with the specific dimension
+			iconoEscala = new ImageIcon(image.getImage().getScaledInstance(700, 700, java.awt.Image.SCALE_DEFAULT));
+			imageView = new JButton(iconoEscala);
+			imageView.setIcon(iconoEscala);
+			imageView.setName(image.getDescription());
+
+
+			// Adds the mouse click actions of the button
+			imageView.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					AlgorithmView al = null;
+					TabPanel tap = null;
+
+					// if the button is inside a tab panel we create a new tab
+					if (tp.getClass().equals(TabPanel.class)) {
+						tap = (TabPanel) tp;
+						String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
+						if (tap != null) {
+
+							tap.setSelectedIndex(tap.indexOfTab(tap.getViewImagen().getTitle()));
+
+							if (tap.indexOfTab(nombreTab) == -1) {
+
+								tap.getViewImagen().setImage(image.getDescription());
+							}
+//							new ViewImagesBigger(imageIcon.get(listImages.indexOf(name)), imageIcon, tap, false);
+
+						}
+					} else {
+						// if we are in an algorithm view we change create a
+						// comparer
+						if (tp.getClass().equals(AlgorithmView.class)) {
+							al = (AlgorithmView) tp;
+							al.mouseClick(e, image);
+						}
+					}
+
+				}
+			});
+
+			listImagesPrev.put(image.getDescription(), imageView);
+			// save the last time the file was modify
+			faux = new File(image.getDescription());
+			lastModifyImage.put(image.getDescription(), faux.lastModified());
+
+			this.add(imageView);
+		}
+		
+	}
 	/**
 	 * Creates the buttons of the list of images given
 	 * 

@@ -28,7 +28,7 @@ public class SearchFilesMethods {
 			// We store the list of tiff files in the result list.
 			File folder = new File(dir);
 
-			Utils.search(".*fluo.tif", folder, result);
+			Utils.search(".*fluo.tif", folder, result,1);
 			Collections.sort(result);
 			result.add(0, dir);
 
@@ -109,7 +109,7 @@ public class SearchFilesMethods {
 			// We store the list of tiff files in the result list.
 			File folder = new File(dir);
 
-			Utils.search(".*\\.tif", folder, result);
+			Utils.search(".*\\.tif", folder, result,1);
 			Collections.sort(result);
 			result.add(0, dir);
 			for (String f : result) {
@@ -141,8 +141,8 @@ public class SearchFilesMethods {
 			// We store the list of tiff files in the result list.
 			File folder = new File(dir);
 
-			Utils.search(".*\\.JPG", folder, result);
-			Utils.search(".*\\.jpg", folder, result);
+			Utils.search(".*\\.JPG", folder, result,1);
+			Utils.search(".*\\.jpg", folder, result,1);
 
 			Collections.sort(result);
 			result.add(0, dir);
