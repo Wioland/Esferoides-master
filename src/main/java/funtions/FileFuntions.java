@@ -51,7 +51,6 @@ import ij.ImageJ;
 import ij.io.DirectoryChooser;
 import interfaces.AlgorithmView;
 import interfaces.GeneralView;
-import interfaces.ImageTreePanel;
 import interfaces.JPanelComparer;
 import interfaces.LensMEnuButtons;
 import interfaces.OurProgressBar;
@@ -70,7 +69,8 @@ public class FileFuntions {
 	public static void chargePlugins() {
 		new ImageJ(2);// NO_SHOW MODE
 
-		IJ.setForegroundColor(255, 0, 0);
+		IJ.setForegroundColor(255, 255, 0); //Yellow
+//		IJ.setForegroundColor(255, 0, 0); //Red
 	}
 
 	/**
