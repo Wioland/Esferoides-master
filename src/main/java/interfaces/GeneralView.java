@@ -118,16 +118,14 @@ public class GeneralView extends JFrame {
 
 	}
 
-	public void paintMainFRameDetectAlgo() {
+	public void DetectAlgoDirectory() {
 		boolean selectAlgo = true;
-		String dc = this.dir;
 
-		if (dc != null) {
-			if (selectAlgo) {
-				selectAlgo = FileFuntions.isOriginalImage(new File(dc));
-			}
-			this.dir = dc;
-			createContent(dc, selectAlgo);
+		if (this.dir != null) {
+
+			selectAlgo = FileFuntions.isOriginalImage(new File(this.dir));
+			this.cancelTimersCurrentDir();
+			this.imageTree.repainTabNoTimers(selectAlgo);
 
 			this.repaint();
 		}

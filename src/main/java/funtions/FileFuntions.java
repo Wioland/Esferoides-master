@@ -69,7 +69,7 @@ public class FileFuntions {
 	public static void chargePlugins() {
 		new ImageJ(2);// NO_SHOW MODE
 
-		IJ.setForegroundColor(255, 255, 0); //Yellow
+		IJ.setForegroundColor(255, 255, 0); // Yellow
 //		IJ.setForegroundColor(255, 0, 0); //Red
 	}
 
@@ -146,8 +146,8 @@ public class FileFuntions {
 			oldNameNoExt += ".*\\.*";
 			oldNameNoExt = oldNameNoExt.replace("_pred", "");
 
-			Utils.search(oldNameNoExt, oldFolder, temporalFiles,1);
-			Utils.search(pattern, saveDir, originalFiles,1);
+			Utils.search(oldNameNoExt, oldFolder, temporalFiles, 1);
+			Utils.search(pattern, saveDir, originalFiles, 1);
 
 			File f;
 			File orFile;
@@ -333,103 +333,105 @@ public class FileFuntions {
 	 * @param tp        The tabPanel that shows the content of the directory
 	 */
 	public static void isDirectoryContentModify(String directory, TabPanel tp) {
+		if (tp != null && tp.getComponents().length != 0) {
+			if (directoryHasChange(directory)) {
+				JOptionPane.showMessageDialog(null, "The content of the directoy has change. Painting again the images",
+						"Warning", JOptionPane.WARNING_MESSAGE);
+				addModificationDirectory(directory);
 
-		if (directoryHasChange(directory)) {
-			JOptionPane.showMessageDialog(null, "The content of the directoy has change. Painting again the images",
-					"Warning", JOptionPane.WARNING_MESSAGE);
-			addModificationDirectory(directory);
+				if (tp.getComponent(0).getClass() != JPanel.class) {
 
-			if (tp.getComponent(0).getClass() != JPanel.class) {
+					ShowImages images = new ShowImages(directory, tp);
 
-				ShowImages images = new ShowImages(directory, tp);
+					if (images.getComponents().length != 0) {
 
-				if (images.getComponents().length != 0) {
+						LensMEnuButtons lens = new LensMEnuButtons(images.getListImagesPrev());
+						JPanel splitPane = tp.createJPanelToShowImages(images, lens);
 
-					LensMEnuButtons lens = new LensMEnuButtons(images.getListImagesPrev());
-					JPanel splitPane = tp.createJPanelToShowImages(images, lens);
+						tp.setComponentAt(0, splitPane);
+						tp.repaint();
+					}
 
-					tp.setComponentAt(0, splitPane);
-					tp.repaint();
-				}
+				} else {
+					// we paint again the images
+					JPanel sp = (JPanel) tp.getComponent(0);
+					JScrollPane s = (JScrollPane) sp.getComponent(1);
+					JViewport jv = (JViewport) s.getComponent(0);
+					ShowImages images = (ShowImages) jv.getComponent(0);
 
-			} else {
-				// we paint again the images
-				JPanel sp = (JPanel) tp.getComponent(0);
-				JScrollPane s = (JScrollPane) sp.getComponent(1);
-				JViewport jv = (JViewport) s.getComponent(0);
-				ShowImages images = (ShowImages) jv.getComponent(0);
+					List<String> actualImages = new ArrayList<String>();
+					Utils.search(".*\\.tiff", new File(directory), actualImages, 2);
+					Collections.sort(actualImages);
 
-				List<String> actualImages = new ArrayList<String>();
-				Utils.search(".*\\.tiff", new File(directory), actualImages,2);
-				Collections.sort(actualImages);
+					checkStillExist(images, actualImages, tp); // check if the
+																// images of
+																// the buttons still
+																// exist
 
-				checkStillExist(images, actualImages, tp); // check if the
-															// images of
-															// the buttons still
-															// exist
+					if (actualImages.size() != 0) { // if we have new file we add
+													// them
 
-				if (actualImages.size() != 0) { // if we have new file we add
-												// them
+						ImageIcon iconoEscala;
+						JButton imageView;
+						File faux;
+						int height = tp.getLens().actualImageHeight();
 
-					ImageIcon iconoEscala;
-					JButton imageView;
-					File faux;
-					int height = tp.getLens().actualImageHeight();
+						for (String name : actualImages) {
+							// convert the format to show the image
+							ImageIcon image = ShowTiff.showTiffToImageIcon(name);
+							image.setDescription(name);
 
-					for (String name : actualImages) {
-						// convert the format to show the image
-						ImageIcon image = ShowTiff.showTiffToImageIcon(name);
-						image.setDescription(name);
+							// add the button
+							// we create an icon with the specific measures
+							iconoEscala = new ImageIcon(
+									image.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
+							imageView = new JButton(iconoEscala);
+							imageView.setIcon(iconoEscala);
+							imageView.setName(name);
+							images.getImageIcon().add(image);
+							imageView.repaint();
 
-						// add the button
-						// we create an icon with the specific measures
-						iconoEscala = new ImageIcon(
-								image.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
-						imageView = new JButton(iconoEscala);
-						imageView.setIcon(iconoEscala);
-						imageView.setName(name);
-						images.getImageIcon().add(image);
-						imageView.repaint();
+							imageView.addMouseListener(new MouseAdapter() {
+								public void mouseClicked(MouseEvent e) {
 
-						imageView.addMouseListener(new MouseAdapter() {
-							public void mouseClicked(MouseEvent e) {
+									String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
+									if (tp != null) {
+										if (tp.indexOfTab(nombreTab) == -1) {
+											new ViewImagesBigger(image, images.getImageIcon(), tp, false);
+										}
 
-								String nombreTab = "ImageViewer " + (new File(image.getDescription()).getName());
-								if (tp != null) {
-									if (tp.indexOfTab(nombreTab) == -1) {
-										new ViewImagesBigger(image, images.getImageIcon(), tp, false);
 									}
 
 								}
+							});
 
-							}
-						});
+							images.getListImagesPrev().put(name, imageView);
 
-						images.getListImagesPrev().put(name, imageView);
+							faux = new File(name);
+							images.getLastModifyImage().put(name, faux.lastModified());
 
-						faux = new File(name);
-						images.getLastModifyImage().put(name, faux.lastModified());
-
-						images.add(imageView);
+							images.add(imageView);
+						}
 					}
+
+					images.repaint();
+
+					if (images.getListImages().isEmpty()) { // If we dont have
+															// images we put the no
+															// file message
+						JTextArea j = new JTextArea();
+						j.setText("There is no such file in this folder");
+						j.setEnabled(false);
+						j.setName("Image");
+
+						JScrollPane scroll = new JScrollPane(j);
+						tp.setComponentAt(0, scroll);
+						tp.repaint();
+					}
+
 				}
-
-				images.repaint();
-
-				if (images.getListImages().isEmpty()) { // If we dont have
-														// images we put the no
-														// file message
-					JTextArea j = new JTextArea();
-					j.setText("There is no such file in this folder");
-					j.setEnabled(false);
-					j.setName("Image");
-
-					JScrollPane scroll = new JScrollPane(j);
-					tp.setComponentAt(0, scroll);
-					tp.repaint();
-				}
-
 			}
+
 		}
 
 	}
@@ -744,24 +746,24 @@ public class FileFuntions {
 		// check if the folder contains nd2 images
 		List<String> listImages = new ArrayList<String>();
 		List<String> listExtensions = FileFuntions.getExtensions();
-		
+
 		for (String ext : listExtensions) {
-			if(!ext.equals("tiff")|| !ext.equals("jpeg")) {
-				
-				Utils.search(".*\\."+ext, folder, listImages,1);
-				
-				if(ext.equals("jpg")) {
-					ext="jpeg";
-					Utils.search(".*\\."+ext, folder, listImages,1);
+			if (!ext.equals("tiff") || !ext.equals("jpeg")) {
+
+				Utils.search(".*\\." + ext, folder, listImages, 1);
+
+				if (ext.equals("jpg")) {
+					ext = "jpeg";
+					Utils.search(".*\\." + ext, folder, listImages, 1);
 				}
-				
+
 				if (listImages.size() != 0) {
 					originalIma = true;
 					break;
 				}
 			}
 		}
-		
+
 //		Utils.searchDirectory(".*\\."+ext, folder, listImages);
 //		if (listImages.size() != 0) {
 //			originalIma = true;
@@ -1266,16 +1268,16 @@ public class FileFuntions {
 			String nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
 			String jpgSave = propUpdater.getProp().getProperty("SelectJpgAlgo");
 
-			if (fluoSave==null || !fluoSave.equals(selectedItemFluo)) {
+			if (fluoSave == null || !fluoSave.equals(selectedItemFluo)) {
 				propUpdater.getProp().setProperty("SelectFluoAlgo", selectedItemFluo);
 			}
-			if (tifSave==null ||!tifSave.equals(selectedItemTif)) {
+			if (tifSave == null || !tifSave.equals(selectedItemTif)) {
 				propUpdater.getProp().setProperty("SelectTifAlgo", selectedItemTif);
 			}
-			if (nd2Save==null ||!nd2Save.equals(selectedItemNd2)) {
+			if (nd2Save == null || !nd2Save.equals(selectedItemNd2)) {
 				propUpdater.getProp().setProperty("SelectNd2Algo", selectedItemNd2);
 			}
-			if (jpgSave==null ||!jpgSave.equals(selectedItemJPG)) {
+			if (jpgSave == null || !jpgSave.equals(selectedItemJPG)) {
 				propUpdater.getProp().setProperty("SelectJpgAlgo", selectedItemJPG);
 			}
 
@@ -1301,7 +1303,7 @@ public class FileFuntions {
 			String tifSave = propUpdater.getProp().getProperty("SelectTifAlgo");
 			String nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
 			String jpgSave = propUpdater.getProp().getProperty("SelectJpgAlgo");
-			
+
 			if (fluoSave == null || tifSave == null || nd2Save == null || jpgSave == null) {
 				return true;
 			} else {
@@ -1325,92 +1327,90 @@ public class FileFuntions {
 
 	public static void openUserManual() {
 		// TODO Auto-generated method stub
-		 try {
-			 PropertiesFileFuntions prop = new PropertiesFileFuntions();
-			 String currentVersion = prop.getProp().getProperty("version"); 
-			 String pathpdf = getCurrentPAth() + File.separator + "updater" + File.separator
-						+ "Manual_"+currentVersion+".pdf";
-	            File filePDF = new File(pathpdf);
-	            
-	            if(!filePDF.exists()) {
-	            	JOptionPane.showMessageDialog(Utils.mainFrame, "The manual file not exist or the current file is not the last version. "
-	            			+ "\n Downloading the new version please wait.");
-	            	
-	            	OurProgressBar pb= new OurProgressBar(Utils.mainFrame);
-	            	Thread t = new Thread() {
-	        			public void run() {
-	        				
-	        				String urlPDF = prop.getProp().getProperty("urlUserManual"); 
-	    	            	urlPDF+=currentVersion+".pdf";
-	    	            	String location=getCurrentPAth() + File.separator + "updater" ;
-	    	            	URL url;
-							try {
-								url = new URL(urlPDF);
-								File aux=Utils.download(url, location);
-								
-								if(aux!=null) {
-									if(aux.exists()) {
-										 Process p = Runtime.getRuntime().exec ("rundll32 SHELL32.DLL,"
-								                    + "ShellExec_RunDLL " + aux.getAbsolutePath());
-									}else {
-										JOptionPane.showMessageDialog(Utils.mainFrame, "Error downloading the file");
-									}
-								}else {
+		try {
+			PropertiesFileFuntions prop = new PropertiesFileFuntions();
+			String currentVersion = prop.getProp().getProperty("version");
+			String pathpdf = getCurrentPAth() + File.separator + "updater" + File.separator + "Manual_" + currentVersion
+					+ ".pdf";
+			File filePDF = new File(pathpdf);
+
+			if (!filePDF.exists()) {
+				JOptionPane.showMessageDialog(Utils.mainFrame,
+						"The manual file not exist or the current file is not the last version. "
+								+ "\n Downloading the new version please wait.");
+
+				OurProgressBar pb = new OurProgressBar(Utils.mainFrame);
+				Thread t = new Thread() {
+					public void run() {
+
+						String urlPDF = prop.getProp().getProperty("urlUserManual");
+						urlPDF += currentVersion + ".pdf";
+						String location = getCurrentPAth() + File.separator + "updater";
+						URL url;
+						try {
+							url = new URL(urlPDF);
+							File aux = Utils.download(url, location);
+
+							if (aux != null) {
+								if (aux.exists()) {
+									Process p = Runtime.getRuntime().exec(
+											"rundll32 SHELL32.DLL," + "ShellExec_RunDLL " + aux.getAbsolutePath());
+								} else {
 									JOptionPane.showMessageDialog(Utils.mainFrame, "Error downloading the file");
 								}
-		    	            	pb.dispose();
-							} catch (MalformedURLException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+							} else {
+								JOptionPane.showMessageDialog(Utils.mainFrame, "Error downloading the file");
 							}
-	        			}
-	        		};
+							pb.dispose();
+						} catch (MalformedURLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				};
 
-	        		t.start();
-	        		
-	            	
-	            	
-	            }else {
-	            	 Process p = Runtime.getRuntime().exec ("rundll32 SHELL32.DLL,"
-	 	                    + "ShellExec_RunDLL " + filePDF.getAbsolutePath());
-	            }
-	           
-	           
-	        } catch (Exception evvv) {
-	            JOptionPane.showMessageDialog(null, "The file can not be open ,"
-	                    + " maybe it was deleted ","ERROR",JOptionPane.ERROR_MESSAGE);
-	        }
+				t.start();
+
+			} else {
+				Process p = Runtime.getRuntime()
+						.exec("rundll32 SHELL32.DLL," + "ShellExec_RunDLL " + filePDF.getAbsolutePath());
+			}
+
+		} catch (Exception evvv) {
+			JOptionPane.showMessageDialog(null, "The file can not be open ," + " maybe it was deleted ", "ERROR",
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	public static void openAboutSection() {
 		// TODO Auto-generated method stub
 //		JOptionPane.showMessageDialog(Utils.mainFrame, "Not created section");
-		PropertiesFileFuntions prop= new PropertiesFileFuntions();
+		PropertiesFileFuntions prop = new PropertiesFileFuntions();
 
 		String version = prop.getProp().getProperty("version");
 		String about = prop.getProp().getProperty("about");
-		
-		JDialog jDia= new JDialog(Utils.mainFrame);
+
+		JDialog jDia = new JDialog(Utils.mainFrame);
 		jDia.setTitle("About Esferoid APP");
-		
-		JLabel versionTextLabel= new JLabel("Version: ");
-		JLabel versionLabel= new JLabel(version);
-		JLabel aboutTextLabel= new JLabel("About: ");
-		JLabel aboutLabel= new JLabel(about);
-		JLabel name= new JLabel("ESFEROIDJ APP");
-		
-		JPanel vePAnel= new JPanel(new GridLayout(0, 2));
-		JPanel abPAnel= new JPanel(new GridLayout(0, 2));
-		
+
+		JLabel versionTextLabel = new JLabel("Version: ");
+		JLabel versionLabel = new JLabel(version);
+		JLabel aboutTextLabel = new JLabel("About: ");
+		JLabel aboutLabel = new JLabel(about);
+		JLabel name = new JLabel("ESFEROIDJ APP");
+
+		JPanel vePAnel = new JPanel(new GridLayout(0, 2));
+		JPanel abPAnel = new JPanel(new GridLayout(0, 2));
+
 		vePAnel.add(versionTextLabel);
 		vePAnel.add(versionLabel);
 		abPAnel.add(aboutTextLabel);
 		abPAnel.add(aboutLabel);
-		
-		JPanel principalPanel= new JPanel(new GridLayout(3,0));
+
+		JPanel principalPanel = new JPanel(new GridLayout(3, 0));
 		principalPanel.add(name);
 		principalPanel.add(vePAnel);
 		principalPanel.add(abPAnel);

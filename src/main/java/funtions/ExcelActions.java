@@ -141,25 +141,28 @@ public class ExcelActions {
 	 * @param dir the directory where the excel is
 	 */
 	public static void checkAllExcelTab(TabPanel tp, String dir) {
-		tp.setSelectedIndex(0);
+//		tp.setSelectedIndex(0);
 		List<Integer> lAux = new ArrayList<Integer>();
-		for (Integer tbIndex : tp.getIndexTabExcel().keySet()) {
-			lAux.add(tbIndex);
+		if(tp.getIndexTabExcel()!=null) {
+			for (Integer tbIndex : tp.getIndexTabExcel().keySet()) {
+				lAux.add(tbIndex);
+			}
+
+			// for all the excel tabs checks id they have changed
+			for (Integer tbIndex : lAux) {
+				checkExcelTab(tp, dir, tbIndex);
+			}
+
+			List<String> result = new ArrayList<String>();
+			File folder = new File(dir);
+
+			Utils.search(".*\\.xls", folder, result,0);
+			Collections.sort(result);
+
+			// checks if the are new excels
+			addedExcelToTheTab(result, tp);
 		}
-
-		// for all the excel tabs checks id they have changed
-		for (Integer tbIndex : lAux) {
-			checkExcelTab(tp, dir, tbIndex);
-		}
-
-		List<String> result = new ArrayList<String>();
-		File folder = new File(dir);
-
-		Utils.search(".*\\.xls", folder, result,1);
-		Collections.sort(result);
-
-		// checks if the are new excels
-		addedExcelToTheTab(result, tp);
+		
 	}
 
 	/**
@@ -178,7 +181,7 @@ public class ExcelActions {
 			List<String> result = new ArrayList<String>();
 			File folder = new File(dir);
 
-			Utils.search(".*\\.xls", folder, result,1);
+			Utils.search(".*\\.xls", folder, result,0);
 			Collections.sort(result);
 
 			if (excel != null) { // if it tab has an excel it tab isn't a

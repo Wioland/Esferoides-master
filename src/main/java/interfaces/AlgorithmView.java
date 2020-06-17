@@ -43,7 +43,7 @@ public class AlgorithmView extends JFrame {
 	public AlgorithmView(File image) {
 		// Window parameters
 		Utils.mainFrame.getMb().setEnabled(false);
-		
+
 		setExtendedState(MAXIMIZED_BOTH);
 		setTitle("Algorithm view selecter");
 		this.setVisible(true);
@@ -76,7 +76,12 @@ public class AlgorithmView extends JFrame {
 		});
 
 		this.image = image;
-		this.directory = image.getAbsolutePath().replace("predictions"+File.separator+image.getName(), "");
+		if(image.getAbsolutePath().contains("predictions" )) {
+			this.directory = image.getAbsolutePath().replace("predictions" + File.separator + image.getName(), "");
+		}else {
+			this.directory = image.getAbsolutePath().replace( image.getName(), "");
+		}
+		
 		jSp = new JPanel(new GridBagLayout());
 		this.add(jSp);
 
@@ -323,8 +328,9 @@ public class AlgorithmView extends JFrame {
 	private void SaveImageAndDelete(String filePath) {
 		File ima = new File(filePath);
 		FileFuntions.saveSelectedImage(ima, this.directory + "predictions");
-
-		vi.getJPComparer().setOriginalImaLbIcon(vi.getJPComparer().getLabelImageIcon());
+		if (vi != null) {
+			vi.getJPComparer().setOriginalImaLbIcon(vi.getJPComparer().getLabelImageIcon());
+		}
 
 	}
 

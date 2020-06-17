@@ -44,7 +44,7 @@ public class KeyActionsProgram implements KeyListener {
 			if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_D) {
 				System.out.println("Control + D  detectar en directorio");
 				if (Utils.menuItemActive("Detect in directory")) {
-					Utils.mainFrame.paintMainFRameDetectAlgo();
+					Utils.mainFrame.DetectAlgoDirectory();
 				}
 			}
 			if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_F) {

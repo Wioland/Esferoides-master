@@ -121,7 +121,7 @@ public class TabPanel extends JTabbedPane {
 		this.dir = directory;
 
 
-		Utils.search(".*\\.xls", folder, result,1);
+		Utils.search(".*\\.xls", folder, result,0);
 		Collections.sort(result);
 
 		List<String> imageIconString = new ArrayList<String>();
@@ -324,20 +324,19 @@ public class TabPanel extends JTabbedPane {
 
 			if (showtiff) {
 				// run the methods to process the images
-				int op = JOptionPane.showOptionDialog(Utils.mainFrame,
-						"Do you want to use all the algoritms or use the selected ones?", "Select algorithms to use",
-						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-						new Object[] { "Selected Algorithms", "All Algorithms" }, "Selected Algorithms");
-
-				if (op == 0) {
+//				int op = JOptionPane.showOptionDialog(Utils.mainFrame,
+//						"Do you want to use all the algoritms or use the selected ones?", "Select algorithms to use",
+//						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+//						new Object[] { "Selected Algorithms", "All Algorithms" }, "Selected Algorithms");
+//
+//				if (op == 0) {
 					new Methods(directory, result, true);
-
 					saveImagesOneAlgo(predictionsDir);
 
-				} else {
-					new Methods(directory, result);
-					createViewImagesAllAlgo(result);
-				}
+//				} else {
+//					new Methods(directory, result);
+//					createViewImagesAllAlgo(result);
+//				}
 
 			} else {
 				// run the methods to process the images

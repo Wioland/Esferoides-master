@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import esferoides.Methods;
 import funtions.FileFuntions;
 import funtions.ShowTiff;
 import funtions.Utils;
@@ -336,7 +337,7 @@ initialiceMap();
 			JPComparer.getPanelButtons().remove(JPComparer.getSelectButton());
 
 		} else {
-
+			JPComparer.getPanelButtons().remove(JPComparer.getScrollButton());
 			JPComparer.setOriginalImaLbIcon(image);
 			JPComparer.getPanelButtons().remove(JPComparer.getTryAlgoButton());
 			addListenerSelectButton(JPComparer.getSelectButton());
@@ -478,8 +479,8 @@ initialiceMap();
 				// with all the algorithms
 				if (newDetectedImages != null) {
 
-					File f = new File(newDetectedImages.get(indexImagenList).getDescription());
-					boolean b = FileFuntions.saveSelectedImage(f, dir);
+					File f = new File(listImages.get(indexImagenList).getDescription());
+					boolean b = FileFuntions.saveSelectedImage(f, dir+"predictions");
 
 					// If we save the image
 					if (b) {
@@ -491,8 +492,7 @@ initialiceMap();
 						// to show the content of
 						// the folder/directory
 						if (listImages.size() == 0) {
-
-							((ImageTreePanel) tp.getParent()).repaintTabPanel(false);
+							deleteTemporalAndRepaintView();
 
 						} else {
 							// if there is only one image left we disable the
@@ -606,12 +606,22 @@ initialiceMap();
 				// of the
 				// folder/directory
 				if (op == 0) {
-					((ImageTreePanel) tp.getParent()).repaintTabPanel(false);
-				}
-
-			}
+					deleteTemporalAndRepaintView();
+			}}
 		});
 
+	}
+	
+	public void deleteTemporalAndRepaintView() {
+		File temporal= null;
+		if(dir.endsWith(File.separator)) {
+			temporal= new File(dir+"temporal");
+		}else {
+			temporal= new File(dir+File.separator+"temporal");
+		}
+		FileFuntions.deleteFolder(temporal);
+		((ImageTreePanel) tp.getParent()).repaintTabPanel(false);
+	
 	}
 
 	/**

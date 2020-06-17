@@ -172,6 +172,11 @@ public class ImageTreePanel extends JSplitPane {
 	 * @param selectAlgo true if you are detecting esferoids
 	 */
 	public void repaintTabPanel(boolean selectAlgo) {
+		repainTabNoTimers(selectAlgo);
+		Utils.mainFrame.returnTheTimers(folderView);
+	}
+	
+	public void repainTabNoTimers(boolean selectAlgo) {
 		OurProgressBar pb = new OurProgressBar(Utils.mainFrame);
 		this.selectAlgo = selectAlgo;
 
@@ -184,7 +189,7 @@ public class ImageTreePanel extends JSplitPane {
 				folderView.repaint();
 				Utils.mainFrame.setDir(dir);
 
-				Utils.mainFrame.returnTheTimers(folderView);
+			
 
 				pb.dispose();
 				t.interrupt();

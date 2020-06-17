@@ -45,7 +45,7 @@ public class ActionMenuBar implements ActionListener {
 			break;
 		case "Detect in directory":
 			System.out.println("detect dir");
-			Utils.mainFrame.paintMainFRameDetectAlgo();
+			Utils.mainFrame.DetectAlgoDirectory();
 			break;
 		case "Detect in image":
 			System.out.println("detect ima");

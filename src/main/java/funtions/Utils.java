@@ -595,7 +595,7 @@ public class Utils {
 		jpgPanel.add(jpgLabel);
 		jpgPanel.add(jpgCombobox);
 
-		JButton saveButton = new JButton("Save configuraion");
+		JButton saveButton = new JButton("Save configuration");
 		saveButton.addActionListener(new ActionListener() {
 
 			@Override
