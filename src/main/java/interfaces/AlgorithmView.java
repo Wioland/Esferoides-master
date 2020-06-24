@@ -327,7 +327,8 @@ public class AlgorithmView extends JFrame {
 	 */
 	private void SaveImageAndDelete(String filePath) {
 		File ima = new File(filePath);
-		FileFuntions.saveSelectedImage(ima, this.directory + "predictions");
+		String saveDir=ima.getAbsolutePath().replace("temporal"+File.separator+ima.getName(), "predictions");
+		FileFuntions.saveSelectedImage(ima, saveDir);
 		if (vi != null) {
 			vi.getJPComparer().setOriginalImaLbIcon(vi.getJPComparer().getLabelImageIcon());
 		}

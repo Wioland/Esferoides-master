@@ -2,6 +2,7 @@ package funtions;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -24,7 +25,8 @@ public class ShowTiff {
 		BufferedImage image = null;
 		try {
 			File f = new File(path);
-
+//			FileInputStream fis = new FileInputStream(f);  
+//			image = ImageIO.read(fis);
 			image = ImageIO.read(f);
 			// String[] formatNames = ImageIO.getReaderFormatNames();
 

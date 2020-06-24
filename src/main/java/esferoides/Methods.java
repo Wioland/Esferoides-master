@@ -25,7 +25,10 @@ public class Methods {
 	private boolean setScale = false;
 //	private List<Thread> threads;
 
-	public Methods(String directory, List<String> result,boolean temp) {
+	public Methods(String directory, List<String> result, boolean temp) {
+
+//		setEscale();
+
 		URL urlUpdater = FileFuntions.getProgramProps();
 		if (urlUpdater != null) {
 			PropertiesFileFuntions propUpdater = new PropertiesFileFuntions(urlUpdater);
@@ -34,19 +37,27 @@ public class Methods {
 			String nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
 			String jpgSave = propUpdater.getProp().getProperty("SelectJpgAlgo");
 
+			if (fluoSave == null || tifSave == null || nd2Save == null || jpgSave == null) {
+				String hv2 = "Hector no fluo v2";
+				String tbg = "Teodora Big";
+				String tp = "Teniposide";
+
+				FileFuntions.saveAlgorithmConfi(hv2, hv2, tbg, tp);
+			}
+
 			if (FileFuntions.isExtension(result, "nd2")) {
-				createImagesMetods(result, directory, nd2Save, false,temp);
+				createImagesMetods(result, directory, nd2Save, false, temp);
 			}
 
 			if (FileFuntions.isExtension(result, "jpg") || FileFuntions.isExtension(result, "JPEG")) {
-				createImagesMetods(result, directory, jpgSave, false,temp);
+				createImagesMetods(result, directory, jpgSave, false, temp);
 			}
 
 			if (FileFuntions.isExtension(result, "tif")) {
 				if (checkIfFluoImages(result)) {
-					createImagesMetods(result, directory, fluoSave, false,temp);
+					createImagesMetods(result, directory, fluoSave, false, temp);
 				} else {
-					createImagesMetods(result, directory, tifSave, false,temp);
+					createImagesMetods(result, directory, tifSave, false, temp);
 				}
 			}
 
@@ -61,6 +72,7 @@ public class Methods {
 	 * @param result    List of the file paths of the current directory
 	 */
 	public Methods(String directory, List<String> result) {
+//		setEscale();
 //		threads = new ArrayList<Thread>();
 		temporalFolder = new File(directory + "temporal");
 //		int i = 0;
@@ -75,7 +87,7 @@ public class Methods {
 //
 //					i++;
 //					
-					createImagesMetods(result, directory, type, true,true);
+					createImagesMetods(result, directory, type, true, true);
 				}
 
 			} else {
@@ -90,7 +102,7 @@ public class Methods {
 //					
 //					i++;
 
-					createImagesMetods(result, directory, type, true,true);
+					createImagesMetods(result, directory, type, true, true);
 				}
 
 			}
@@ -135,7 +147,7 @@ public class Methods {
 	 * @param directory temporal directory to store the images
 	 * @param type      the method used to create the images
 	 */
-	private void createImagesMetods(List<String> result, String directory, String type, boolean all,boolean temp) {
+	private void createImagesMetods(List<String> result, String directory, String type, boolean all, boolean temp) {
 		try {
 
 			// In order to only take the tif images without the fluo ones
@@ -147,18 +159,6 @@ public class Methods {
 						i++;
 					}
 				}
-			}
-
-			int op = JOptionPane.showConfirmDialog(Utils.mainFrame, "Do you want to set the scale?", "Set scale",
-					JOptionPane.YES_NO_OPTION);
-			if (op == 0) {
-				setScale = true;
-			}
-			if (setScale) {
-
-				ImagePlus imp = IJ.createImage("Untitled", "8-bit white", 1, 1, 1);
-				IJ.run(imp, "Set Scale...", "");
-				imp.close();
 			}
 
 			// We initialize the ResultsTable
@@ -176,7 +176,7 @@ public class Methods {
 				esferoidProcessor.getDetectEsferoid().apply(options, directory, name, goodRows, temp);
 			}
 
-			if (!all&&!temp) {
+			if (!all && !temp) {
 				ExcelActions.saveExcel(goodRows, new File(directory));
 			}
 
@@ -243,4 +243,18 @@ public class Methods {
 		return haveFluo;
 	}
 
+	private void setEscale() {
+
+		int op = JOptionPane.showConfirmDialog(Utils.mainFrame, "Do you want to set the scale?", "Set scale",
+				JOptionPane.YES_NO_OPTION);
+		if (op == 0) {
+			setScale = true;
+		}
+		if (setScale) {
+
+			ImagePlus imp = IJ.createImage("Untitled", "8-bit white", 1, 1, 1);
+			IJ.run(imp, "Set Scale...", "");
+			imp.close();
+		}
+	}
 }

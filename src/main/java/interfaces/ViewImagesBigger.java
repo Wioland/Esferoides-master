@@ -20,7 +20,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import esferoides.Methods;
 import funtions.FileFuntions;
 import funtions.ShowTiff;
 import funtions.Utils;
@@ -38,7 +37,7 @@ public class ViewImagesBigger {
 	private List<ImageIcon> newDetectedImages;
 	private JPanelComparer JPComparer;
 	private String title;
-	private Map<String,Integer> indexImage;
+	private Map<String, Integer> indexImage;
 
 	public ViewImagesBigger(List<ImageIcon> listImages, TabPanel tp) {
 		this.listImages = listImages;
@@ -48,7 +47,7 @@ public class ViewImagesBigger {
 		this.indexImageView = "ImageViewer ";
 		this.tp = tp;
 		this.dir = this.tp.getDir();
-		indexImage= new HashMap< String,Integer>();
+		indexImage = new HashMap<String, Integer>();
 
 		JPComparer = new JPanelComparer();
 		JPComparer.setLabelImageIcon(image);
@@ -71,7 +70,7 @@ public class ViewImagesBigger {
 			addlistenerButton(JPComparer.getBackButton(), JPComparer.getForwarButtonButton(),
 					JPComparer.getTryAlgoButton());
 			addListenerMenuScroll(JPComparer.getScrollButton());
-initialiceMap();
+			initialiceMap();
 			addTotab();
 
 		} else {
@@ -82,19 +81,19 @@ initialiceMap();
 	}
 
 	private void initialiceMap() {
-		int i=0;
+		int i = 0;
 		for (ImageIcon imageIcon : listImages) {
-			this.indexImage.put( imageIcon.getDescription(),i);
+			this.indexImage.put(imageIcon.getDescription(), i);
 			i++;
 		}
-		
+
 	}
 
 	private void addListenerMenuScroll(JButton scrollButton) {
-		// TODO Auto-generated method stub
+
 		scrollButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				ShowImages ima= new ShowImages(listImages, tp) ;
+				ShowImages ima = new ShowImages(listImages, tp);
 				tp.scrollView(ima);
 				scrollButton.setEnabled(false);
 			}
@@ -103,7 +102,6 @@ initialiceMap();
 	}
 
 	private void addTotab() {
-		// TODO Auto-generated method stub
 
 		// Gets the name of the tab and add the title
 		String nombreImagen = (new File(listImages.get(indexImagenList).getDescription())).getName();
@@ -251,7 +249,8 @@ initialiceMap();
 
 	}
 
-	public ViewImagesBigger(List<String> imagesInPredicctions, List<String> newImagesSelected, TabPanel tp) {
+	public ViewImagesBigger(Map<String, String> imagesInPredicctions, Map<String, String> newImagesSelected,
+			TabPanel tp) {
 
 		this.newDetectedImages = new ArrayList<ImageIcon>();
 		this.listImages = new ArrayList<ImageIcon>();
@@ -263,16 +262,30 @@ initialiceMap();
 		dir = this.tp.getDir();
 
 		ImageIcon i;
-		int j = 0;
-		for (String string : imagesInPredicctions) {
-			i = ShowTiff.showTiffToImageIcon(string);
-			i.setDescription(string);
-			newDetectedImages.add(i);
 
-			i = ShowTiff.showTiffToImageIcon(newImagesSelected.get(j));
-			i.setDescription(newImagesSelected.get(j));
-			listImages.add(i);
-			j++;
+		for (String oriname : imagesInPredicctions.keySet()) {
+			if (newImagesSelected.get(oriname) != null && imagesInPredicctions.get(oriname) != null) {
+				i = ShowTiff.showTiffToImageIcon(imagesInPredicctions.get(oriname));
+				i.setDescription(imagesInPredicctions.get(oriname));
+				newDetectedImages.add(i);
+
+				i = ShowTiff.showTiffToImageIcon(newImagesSelected.get(oriname));
+				i.setDescription(newImagesSelected.get(oriname));
+				listImages.add(i);
+
+			} else {
+
+				if (newImagesSelected.get(oriname) != null && imagesInPredicctions.get(oriname) == null) {
+					JOptionPane.showMessageDialog(Utils.mainFrame, "The image " + oriname
+							+ "previously had not got a processed image.\n Saving the one detected with this algoritm");
+
+					File f = new File(newImagesSelected.get(oriname));
+
+					FileFuntions.saveImageNoBeforeProcess(f, this.dir, oriname);
+
+				}
+			}
+
 		}
 
 		this.image = newDetectedImages.get(0);
@@ -317,13 +330,11 @@ initialiceMap();
 	// METHODS
 
 	public void setImage(String image) {
-		
-		
-		indexImagenList=this.indexImage.get(image);
-		 moreActionChangeIndexIma();
+
+		indexImagenList = this.indexImage.get(image);
+		moreActionChangeIndexIma();
 	}
-	
-	
+
 	/**
 	 * Creates the comparer if the comparer is in the algorithmView frame
 	 */
@@ -448,7 +459,7 @@ initialiceMap();
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+
 				closeTab(e);
 			}
 		});
@@ -480,7 +491,9 @@ initialiceMap();
 				if (newDetectedImages != null) {
 
 					File f = new File(listImages.get(indexImagenList).getDescription());
-					boolean b = FileFuntions.saveSelectedImage(f, dir+"predictions");
+					String saveDir = f.getAbsolutePath().replace("temporal" + File.separator + f.getName(),
+							"predictions");
+					boolean b = FileFuntions.saveSelectedImage(f, saveDir);
 
 					// If we save the image
 					if (b) {
@@ -607,21 +620,24 @@ initialiceMap();
 				// folder/directory
 				if (op == 0) {
 					deleteTemporalAndRepaintView();
-			}}
+				}
+			}
 		});
 
 	}
-	
+
 	public void deleteTemporalAndRepaintView() {
-		File temporal= null;
-		if(dir.endsWith(File.separator)) {
-			temporal= new File(dir+"temporal");
-		}else {
-			temporal= new File(dir+File.separator+"temporal");
+		File temporal = null;
+		List<String> temporalFolders = new ArrayList<String>();
+		Utils.searchFoldersName(new File(this.dir), "temporal", temporalFolders, 2);
+
+		for (String string : temporalFolders) {
+			temporal = new File(string);
+			FileFuntions.deleteFolder(temporal);
 		}
-		FileFuntions.deleteFolder(temporal);
+
 		((ImageTreePanel) tp.getParent()).repaintTabPanel(false);
-	
+
 	}
 
 	/**

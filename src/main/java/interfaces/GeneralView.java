@@ -236,36 +236,42 @@ public class GeneralView extends JFrame {
 		ActionMenuBar actionListe = new ActionMenuBar();
 
 		int height = 20;
+//		ImageIcon ima = new ImageIcon(
+//				getClass().getClassLoader().getResource(File.separator+"images" + File.separator + "openDir.png"));
 		ImageIcon ima = new ImageIcon(
-				getClass().getClassLoader().getResource("images" + File.separator + "openDir.png"));
+				getClass().getClassLoader().getResource("images/openDir.png"));
 		ImageIcon i = new ImageIcon(ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
 
 		JButton btnOpenDir = new JButton(i);
 		btnOpenDir.setName("Open Dir");
 		btnOpenDir.addActionListener(actionListe);
 
-		ima = new ImageIcon(getClass().getClassLoader().getResource("images" + File.separator + "closeDir.png"));
+//		ima = new ImageIcon(getClass().getClassLoader().getResource(File.separator+"images" + File.separator + "closeDir.png"));
+		ima = new ImageIcon(getClass().getClassLoader().getResource("images/closeDir.png"));
 		i = new ImageIcon(ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
 
 		JButton btnCloseDir = new JButton(i);
 		btnCloseDir.setName("Close Dir");
 		btnCloseDir.addActionListener(actionListe);
 
-		ima = new ImageIcon(getClass().getClassLoader().getResource("images" + File.separator + "detectDir.png"));
+//		ima = new ImageIcon(getClass().getClassLoader().getResource(File.separator+"images" + File.separator + "detectDir.png"));
+		ima = new ImageIcon(getClass().getClassLoader().getResource("images/detectDir.png"));
 		i = new ImageIcon(ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
 
 		JButton btnDetectDir = new JButton(i);
 		btnDetectDir.setName("Detect in directory");
 		btnDetectDir.addActionListener(actionListe);
 
-		ima = new ImageIcon(getClass().getClassLoader().getResource("images" + File.separator + "detectFile.png"));
+//		ima = new ImageIcon(getClass().getClassLoader().getResource(File.separator+"images" + File.separator + "detectFile.png"));
+		ima = new ImageIcon(getClass().getClassLoader().getResource("images/detectFile.png"));
 		i = new ImageIcon(ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
 
 		JButton btnDetectFile = new JButton(i);
 		btnDetectFile.setName("Detect in image");
 		btnDetectFile.addActionListener(actionListe);
 
-		ima = new ImageIcon(getClass().getClassLoader().getResource("images" + File.separator + "changeAlgo.png"));
+//		ima = new ImageIcon(getClass().getClassLoader().getResource("images" + File.separator + "changeAlgo.png"));
+		ima = new ImageIcon(getClass().getClassLoader().getResource("images/changeAlgo.png"));
 		i = new ImageIcon(ima.getImage().getScaledInstance(height, height, java.awt.Image.SCALE_DEFAULT));
 
 		JButton btnChangeAlgo = new JButton(i);

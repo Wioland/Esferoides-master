@@ -77,7 +77,7 @@ public class ExcelActions {
 				filename = this.dir + name + "_results.xls";
 
 			}
-
+			
 			fileOut = new FileOutputStream(filename);
 			workbook.write(fileOut);
 			fileOut.close();
@@ -143,7 +143,7 @@ public class ExcelActions {
 	public static void checkAllExcelTab(TabPanel tp, String dir) {
 //		tp.setSelectedIndex(0);
 		List<Integer> lAux = new ArrayList<Integer>();
-		if(tp.getIndexTabExcel()!=null) {
+		if (tp.getIndexTabExcel() != null) {
 			for (Integer tbIndex : tp.getIndexTabExcel().keySet()) {
 				lAux.add(tbIndex);
 			}
@@ -156,13 +156,13 @@ public class ExcelActions {
 			List<String> result = new ArrayList<String>();
 			File folder = new File(dir);
 
-			Utils.search(".*\\.xls", folder, result,0);
+			Utils.search(".*\\.xls", folder, result, 0);
 			Collections.sort(result);
 
 			// checks if the are new excels
 			addedExcelToTheTab(result, tp);
 		}
-		
+
 	}
 
 	/**
@@ -181,7 +181,7 @@ public class ExcelActions {
 			List<String> result = new ArrayList<String>();
 			File folder = new File(dir);
 
-			Utils.search(".*\\.xls", folder, result,0);
+			Utils.search(".*\\.xls", folder, result, 0);
 			Collections.sort(result);
 
 			if (excel != null) { // if it tab has an excel it tab isn't a
@@ -388,7 +388,7 @@ public class ExcelActions {
 
 		String pattern = ".*\\_results.xls";
 		List<String> result = new ArrayList<String>();
-		Utils.search(pattern, directory, result,1);
+		Utils.search(pattern, directory, result, 1);
 
 		File aux = null;
 		for (String string : result) {
@@ -396,6 +396,74 @@ public class ExcelActions {
 			aux.delete();
 		}
 
+	}
+
+	public static void mergeExcelsDirectoryAndSubdir(File directory, int deep) {
+
+		List<String> result = new ArrayList<String>();
+
+		Utils.search("results.xls", directory, result, deep);
+		if (!result.isEmpty()) {
+			FileInputStream inputStream;
+			HSSFWorkbook wb;
+			try {
+
+//The first one is the new excel 
+				File excel = new File(result.get(0));
+				String path = directory.getAbsolutePath();
+				if (path.endsWith(File.separator)) {
+					path += File.separator;
+				}
+				path += "results.xls";
+
+				excel.renameTo(new File(path));
+				excel = new File(path);
+
+				FileOutputStream outputFile = new FileOutputStream(excel);
+				inputStream = new FileInputStream(excel);
+				wb = new HSSFWorkbook(inputStream);
+
+				File excelGetRow = null;
+				HSSFRow newRow = null;
+
+				for (int i = 1; i < result.size(); i++) {
+					excelGetRow = new File(result.get(i));
+
+					int num = getNumberLastRow(excelGetRow, 0);
+
+					for (int j = 1; j < num + 1; j++) {
+						newRow = getRow(excel, 0, j);
+						addRow(wb, 0, newRow);
+						wb.write(outputFile);
+					}
+					excelGetRow.delete();
+				}
+
+				inputStream.close();
+
+				outputFile.close();
+				wb.close();
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private static int getNumberLastRow(File excel, int sheet) {
+		HSSFWorkbook oldExcel;
+		int n = 0;
+		try {
+			oldExcel = new HSSFWorkbook(new FileInputStream(excel));
+			n = oldExcel.getSheetAt(sheet).getLastRowNum();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return n;
 	}
 
 	/**
@@ -410,7 +478,7 @@ public class ExcelActions {
 
 		List<String> result = new ArrayList<String>();
 
-		Utils.search("results.xls", directory, result,1);
+		Utils.search("results.xls", directory, result, 1);
 
 		FileInputStream inputStream;
 		HSSFWorkbook wb;
@@ -643,9 +711,8 @@ public class ExcelActions {
 		}
 
 	}
-	
-	
-	public static void saveExcel( ArrayList<Integer> goodRows, File folder) {
+
+	public static void saveExcel(ArrayList<Integer> goodRows, File folder) {
 		ResultsTable rt = ResultsTable.getResultsTable();
 		int rows = rt.getCounter();
 		for (int i = rows; i > 0; i--) {
@@ -669,4 +736,5 @@ public class ExcelActions {
 
 		rt.reset();
 	}
+
 }

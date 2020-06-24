@@ -69,6 +69,46 @@ public class Utils {
 
 	}
 
+	public static void search(final String nameFolder, final String patternName, final File folder, List<String> result,
+			int deep) {
+		if (deep != -1) {
+			for (final File f : folder.listFiles()) {
+
+				if (f.isDirectory()) {
+					if (!f.getName().equals(nameFolder)) {
+						search(nameFolder, patternName, f, result, deep - 1);
+					} else {
+						for (final File fo : f.listFiles()) {
+							if (fo.isFile()) {
+								if (fo.getName().toUpperCase().matches(patternName.toUpperCase())) {
+									result.add(fo.getAbsolutePath());
+								}
+							}
+						}
+					}
+				}
+
+			}
+		}
+
+	}
+
+	public static void searchFolders(File parentDir, List<String> folderList, int deep) {
+		if (deep != -1) {
+			for (final File f : parentDir.listFiles()) {
+
+				if (f.isDirectory()) {
+					if (!f.getName().equals("predictions") && !f.getName().equals("temporal")) {
+						searchFolders(f, folderList, deep - 1);
+						folderList.add(f.getAbsolutePath());
+					}
+
+				}
+
+			}
+		}
+	}
+
 	/**
 	 * Method to search the list of files that satisfies a pattern in a folder. The
 	 * list of files is stored in the result list.
@@ -85,6 +125,26 @@ public class Utils {
 					if (f.getName().matches(pattern)) {
 						result.add(f.getAbsolutePath());
 					}
+				}
+
+			}
+		}
+
+	}
+
+	public static void searchFoldersName(File parentDir, String folderName, List<String> listResult,
+			int deep) {
+		if (deep != -1) {
+			for (final File f : parentDir.listFiles()) {
+
+				if (f.isDirectory()) {
+					if (f.getName().equals(folderName)) {
+
+						listResult.add(f.getAbsolutePath());
+					} else {
+						searchFoldersName(f,folderName, listResult, deep - 1);
+					}
+
 				}
 
 			}
@@ -408,7 +468,7 @@ public class Utils {
 
 			mainFrame.cancelTimersCurrentDir();
 			mainFrame.setDir(dc);
-		boolean b=mainFrame.checkOriginalAndAskProcess(dc);
+			boolean b = mainFrame.checkOriginalAndAskProcess(dc);
 			createGeneralViewOrNot(dc, b);
 		}
 	}
@@ -500,7 +560,7 @@ public class Utils {
 	}
 
 	public static void changeUsedAlgoritms() {
-		// TODO Auto-generated method stub
+	
 
 		JDialog jDia = new JDialog(mainFrame);
 

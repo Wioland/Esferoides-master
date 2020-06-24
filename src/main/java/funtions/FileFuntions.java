@@ -109,6 +109,46 @@ public class FileFuntions {
 		return folder;
 	}
 
+	public static void saveImageNoBeforeProcess(File f, String originalDir, String originalName) {
+		List<String> temporalFiles = new ArrayList<String>();
+		File oldFolder = new File(f.getAbsolutePath().replace(f.getName(), ""));
+		String newDir = f.getAbsolutePath().replace("temporal" + File.separator + f.getName(),
+				"predictions" + File.separator);
+
+		originalName += ".*\\.*";
+
+		Utils.search(originalName, oldFolder, temporalFiles, 1);
+
+		String to = null;
+		String extension = null;
+
+		for (String s : temporalFiles) {
+			f = new File(s);
+			if (!f.getName().endsWith("xls")) {
+
+				/*
+				 * If the new file was successfully move to the predictions folder if the
+				 * original file exist we delete it and change the name of the new file
+				 * otherwise we only rename
+				 */
+
+				extension = FileFuntions.extensionwithoutName(s);
+				to = newDir + originalName;
+				if (extension.contentEquals("tiff")) {
+					to += "_pred";
+				}
+				to += "." + extension;
+				f.renameTo(new File(to));
+
+			} else {
+
+				ExcelActions.mergeExcels(f, originalName, new File(originalDir));
+
+			}
+		}
+
+	}
+
 	/**
 	 * * Save the files from the temporal folder to the prediction folder exchanging
 	 * the original files in the prediction folder with the temporal ones We save
@@ -130,6 +170,22 @@ public class FileFuntions {
 		if (resp == 0) { // if yes
 			b = true;
 			JOptionPane.showMessageDialog(null, "Saving the images");
+
+			saveSelectedImageNoQuestion( selectedFile,  saveDirPath);
+
+			JOptionPane.showMessageDialog(null, "Save files in prediccion folder succed");
+		}
+		return b;
+
+	}
+	
+	
+	public static void saveSelectedImageNoQuestion(File selectedFile, String saveDirPath) {
+
+		// We look for the tiff and zip files with the same as the selected file
+		// We take the files and take out he algorithm name
+		// We exchange the files in the saveDir
+	
 
 			List<String> temporalFiles = new ArrayList<String>();
 			List<String> originalFiles = new ArrayList<String>();
@@ -193,9 +249,16 @@ public class FileFuntions {
 
 					// we change the excel row to the new one
 					try {
+						String path = originalPath.replace(originalName, "");
+						File excelResults = new File(path + "results.xls");
+						if (!excelResults.exists()) {
+							path = path.substring(0, path.lastIndexOf(File.separator));
+							path = path.substring(0, path.lastIndexOf(File.separator) + 1);
 
-						modifyExcel = new HSSFWorkbook(
-								new FileInputStream(new File(originalPath.replace(originalName, "") + "results.xls")));
+							excelResults = new File(path + "results.xls");
+						}
+
+						modifyExcel = new HSSFWorkbook(new FileInputStream(excelResults));
 						HSSFWorkbook newdataExcel = new HSSFWorkbook(new FileInputStream(new File(s)));
 
 						HSSFSheet sheetResult = modifyExcel.getSheet("Results");
@@ -221,11 +284,12 @@ public class FileFuntions {
 				}
 			}
 
-			JOptionPane.showMessageDialog(null, "Save files in prediccion folder succed");
-		}
-		return b;
+			
+		
+		
 
 	}
+
 
 	/**
 	 * For delete a folder If we close the app or the algorithm view window we
@@ -611,7 +675,7 @@ public class FileFuntions {
 					Files.move(from, to, StandardCopyOption.REPLACE_EXISTING);
 
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(null,
 							"An error occurred while saving the images in the predicctions folder", "Error saving",
@@ -810,7 +874,7 @@ public class FileFuntions {
 //			
 //			 @Override
 //			 public void actionPerformed(ActionEvent e) {
-//			 // TODO Auto-generated method stub
+//			
 //			VersionInfo veinf= new VersionInfo(null);
 //			veinf.inicialice(currentVersion, readversion(urlVersion));
 //			 }
@@ -836,7 +900,7 @@ public class FileFuntions {
 										"You can update the program any time in: \n Help -> Update");
 
 							} catch (IOException e) {
-								// TODO Auto-generated catch block
+
 								e.printStackTrace();
 								JOptionPane.showMessageDialog(null,
 										"Error trying to update. \n Check if you have the update folder with its files whit this jar");
@@ -861,7 +925,7 @@ public class FileFuntions {
 
 					System.exit(0);// stop the execution of this jar
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(null,
 							"Error trying to update. \n Check if you have the update folder with its files whit this jar");
@@ -954,10 +1018,10 @@ public class FileFuntions {
 			reader.close();
 
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		return line;
@@ -983,10 +1047,10 @@ public class FileFuntions {
 			reader.close();
 
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		return line;
@@ -1006,7 +1070,7 @@ public class FileFuntions {
 			jarFile = new File(codeSource.getLocation().toURI().getPath());
 			location = jarFile.getParentFile().getPath();
 		} catch (URISyntaxException e1) {
-			// TODO Auto-generated catch block
+
 			e1.printStackTrace();
 		}
 		return location;
@@ -1024,7 +1088,7 @@ public class FileFuntions {
 			return new URL("file:///" + FileFuntions.getCurrentPAth() + File.separator + "updater" + File.separator
 					+ "program.properties");
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		return null;
@@ -1191,7 +1255,7 @@ public class FileFuntions {
 						prop.getProp().store(out, null);
 						out.close();
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
+
 						e1.printStackTrace();
 						JOptionPane.showMessageDialog(null, "Error while doing the required action", "Error saving",
 								JOptionPane.ERROR_MESSAGE);
@@ -1229,7 +1293,7 @@ public class FileFuntions {
 	}
 
 	public static void detectAlgoImageMEnu() {
-		// TODO Auto-generated method stub
+
 		JFileChooser chooser = new JFileChooser(Utils.getCurrentDirectory());
 		chooser.setDialogTitle("Select an image of the current directory or subdirectories");
 		List<String> exten = FileFuntions.getExtensions();
@@ -1286,7 +1350,7 @@ public class FileFuntions {
 				propUpdater.getProp().store(new FileOutputStream(urlUpdater.getPath()), "Selected algoritms");
 
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 			}
 		}
@@ -1326,7 +1390,7 @@ public class FileFuntions {
 	}
 
 	public static void openUserManual() {
-		// TODO Auto-generated method stub
+
 		try {
 			PropertiesFileFuntions prop = new PropertiesFileFuntions();
 			String currentVersion = prop.getProp().getProperty("version");
@@ -1363,10 +1427,10 @@ public class FileFuntions {
 							}
 							pb.dispose();
 						} catch (MalformedURLException e) {
-							// TODO Auto-generated catch block
+
 							e.printStackTrace();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
+
 							e.printStackTrace();
 						}
 					}
@@ -1386,7 +1450,7 @@ public class FileFuntions {
 	}
 
 	public static void openAboutSection() {
-		// TODO Auto-generated method stub
+
 //		JOptionPane.showMessageDialog(Utils.mainFrame, "Not created section");
 		PropertiesFileFuntions prop = new PropertiesFileFuntions();
 
