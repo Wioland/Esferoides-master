@@ -19,7 +19,7 @@ public class KeyActionsProgram implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent evt) {
 		// TODO Auto-generated method stub
-		System.out.println("Tecla presionada");
+		System.out.println("Tecla presionada "+evt.getSource());
 		if (Utils.mainFrame.getMb().isEnabled()) {
 			if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_O) {
 				System.out.println("Control + O   abrir un directorio o cambiar de directorio");

@@ -57,6 +57,8 @@ public class GeneralView extends JFrame {
 		setMinimumSize(new Dimension(1000, 700));
 
 		toFront();
+		
+		
 	}
 
 	// GETTERS AND SETTERS
@@ -234,6 +236,7 @@ public class GeneralView extends JFrame {
 
 	public void initialiceToolBAr() {
 		ActionMenuBar actionListe = new ActionMenuBar();
+		KeyActionsProgram keyAction=new KeyActionsProgram();
 
 		int height = 20;
 //		ImageIcon ima = new ImageIcon(
@@ -245,6 +248,7 @@ public class GeneralView extends JFrame {
 		JButton btnOpenDir = new JButton(i);
 		btnOpenDir.setName("Open Dir");
 		btnOpenDir.addActionListener(actionListe);
+		btnOpenDir.addKeyListener(keyAction);
 
 //		ima = new ImageIcon(getClass().getClassLoader().getResource(File.separator+"images" + File.separator + "closeDir.png"));
 		ima = new ImageIcon(getClass().getClassLoader().getResource("images/closeDir.png"));
@@ -253,6 +257,7 @@ public class GeneralView extends JFrame {
 		JButton btnCloseDir = new JButton(i);
 		btnCloseDir.setName("Close Dir");
 		btnCloseDir.addActionListener(actionListe);
+		btnCloseDir.addKeyListener(keyAction);
 
 //		ima = new ImageIcon(getClass().getClassLoader().getResource(File.separator+"images" + File.separator + "detectDir.png"));
 		ima = new ImageIcon(getClass().getClassLoader().getResource("images/detectDir.png"));
@@ -261,6 +266,7 @@ public class GeneralView extends JFrame {
 		JButton btnDetectDir = new JButton(i);
 		btnDetectDir.setName("Detect in directory");
 		btnDetectDir.addActionListener(actionListe);
+		btnDetectDir.addKeyListener(keyAction);
 
 //		ima = new ImageIcon(getClass().getClassLoader().getResource(File.separator+"images" + File.separator + "detectFile.png"));
 		ima = new ImageIcon(getClass().getClassLoader().getResource("images/detectFile.png"));
@@ -269,6 +275,7 @@ public class GeneralView extends JFrame {
 		JButton btnDetectFile = new JButton(i);
 		btnDetectFile.setName("Detect in image");
 		btnDetectFile.addActionListener(actionListe);
+		btnDetectFile.addKeyListener(keyAction);
 
 //		ima = new ImageIcon(getClass().getClassLoader().getResource("images" + File.separator + "changeAlgo.png"));
 		ima = new ImageIcon(getClass().getClassLoader().getResource("images/changeAlgo.png"));
@@ -277,6 +284,7 @@ public class GeneralView extends JFrame {
 		JButton btnChangeAlgo = new JButton(i);
 		btnChangeAlgo.setName("Change detection algorithm");
 		btnChangeAlgo.addActionListener(actionListe);
+		btnChangeAlgo.addKeyListener(keyAction);
 
 		disableButonToolBar = new ArrayList<JButton>();
 		disableButonToolBar.add(btnDetectFile);

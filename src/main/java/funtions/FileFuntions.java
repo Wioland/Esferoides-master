@@ -171,125 +171,118 @@ public class FileFuntions {
 			b = true;
 			JOptionPane.showMessageDialog(null, "Saving the images");
 
-			saveSelectedImageNoQuestion( selectedFile,  saveDirPath);
+			saveSelectedImageNoQuestion(selectedFile, saveDirPath);
 
 			JOptionPane.showMessageDialog(null, "Save files in prediccion folder succed");
 		}
 		return b;
 
 	}
-	
-	
+
 	public static void saveSelectedImageNoQuestion(File selectedFile, String saveDirPath) {
 
 		// We look for the tiff and zip files with the same as the selected file
 		// We take the files and take out he algorithm name
 		// We exchange the files in the saveDir
-	
 
-			List<String> temporalFiles = new ArrayList<String>();
-			List<String> originalFiles = new ArrayList<String>();
-			File saveDir = new File(saveDirPath);
+		List<String> temporalFiles = new ArrayList<String>();
+		List<String> originalFiles = new ArrayList<String>();
+		File saveDir = new File(saveDirPath);
 
-			String originalPath = RoiFuntions.getoriginalFilePathFromTempralTiff(selectedFile.getAbsolutePath());
-			File fOld = new File(originalPath);
-			String originalName = fOld.getName();
-			String extension = FileFuntions.extensionwithoutName(originalPath);
-			String pattern = originalName.replace(extension, ".*\\.*");
+		String originalPath = RoiFuntions.getoriginalFilePathFromTempralTiff(selectedFile.getAbsolutePath());
+		File fOld = new File(originalPath);
+		String originalName = fOld.getName();
+		String extension = FileFuntions.extensionwithoutName(originalPath);
+		String pattern = originalName.replace(extension, ".*\\.*");
 
-			File oldFolder = new File(selectedFile.getAbsolutePath().replace(selectedFile.getName(), ""));
-			String oldNameNoExt = namewithoutExtension(selectedFile.getAbsolutePath());
-			oldNameNoExt += ".*\\.*";
-			oldNameNoExt = oldNameNoExt.replace("_pred", "");
+		File oldFolder = new File(selectedFile.getAbsolutePath().replace(selectedFile.getName(), ""));
+		String oldNameNoExt = namewithoutExtension(selectedFile.getAbsolutePath());
+		oldNameNoExt += ".*\\.*";
+		oldNameNoExt = oldNameNoExt.replace("_pred", "");
 
-			Utils.search(oldNameNoExt, oldFolder, temporalFiles, 1);
-			Utils.search(pattern, saveDir, originalFiles, 1);
+		Utils.search(oldNameNoExt, oldFolder, temporalFiles, 1);
+		Utils.search(pattern, saveDir, originalFiles, 1);
 
-			File f;
-			File orFile;
-			Path from;
-			Path to;
-			HSSFWorkbook modifyExcel;
+		File f;
+		File orFile;
+		Path from;
+		Path to;
+		HSSFWorkbook modifyExcel;
 
-			for (String s : temporalFiles) {
-				f = new File(s);
-				if (!f.getName().endsWith("xls")) {
+		for (String s : temporalFiles) {
+			f = new File(s);
+			if (!f.getName().endsWith("xls")) {
 
-					/*
-					 * If the new file was successfully move to the predictions folder if the
-					 * original file exist we delete it and change the name of the new file
-					 * otherwise we only rename
-					 */
-					for (String oriFilePath : originalFiles) {
-						extension = extensionwithoutName(s);
-						if (oriFilePath.toUpperCase().endsWith(extension.toUpperCase())) {
-							orFile = new File(oriFilePath);
-							if (orFile.exists()) {
+				/*
+				 * If the new file was successfully move to the predictions folder if the
+				 * original file exist we delete it and change the name of the new file
+				 * otherwise we only rename
+				 */
+				for (String oriFilePath : originalFiles) {
+					extension = extensionwithoutName(s);
+					if (oriFilePath.toUpperCase().endsWith(extension.toUpperCase())) {
+						orFile = new File(oriFilePath);
+						if (orFile.exists()) {
 
-								from = f.toPath();
-								to = orFile.toPath();
-								try {
+							from = f.toPath();
+							to = orFile.toPath();
+							try {
 
-									Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
+								Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
 
-								} catch (IOException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-									JOptionPane.showMessageDialog(null,
-											"And error ocurred and the files couldn´t be saved", "Error saving",
-											JOptionPane.ERROR_MESSAGE);
-								}
-
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(null, "And error ocurred and the files couldn´t be saved",
+										"Error saving", JOptionPane.ERROR_MESSAGE);
 							}
 
 						}
 
 					}
-				} else {
 
-					// we change the excel row to the new one
-					try {
-						String path = originalPath.replace(originalName, "");
-						File excelResults = new File(path + "results.xls");
-						if (!excelResults.exists()) {
-							path = path.substring(0, path.lastIndexOf(File.separator));
-							path = path.substring(0, path.lastIndexOf(File.separator) + 1);
+				}
+			} else {
 
-							excelResults = new File(path + "results.xls");
-						}
+				// we change the excel row to the new one
+				try {
+					String path = originalPath.replace(originalName, "");
+					File excelResults = new File(path + "results.xls");
+					if (!excelResults.exists()) {
+						path = path.substring(0, path.lastIndexOf(File.separator));
+						path = path.substring(0, path.lastIndexOf(File.separator) + 1);
 
-						modifyExcel = new HSSFWorkbook(new FileInputStream(excelResults));
-						HSSFWorkbook newdataExcel = new HSSFWorkbook(new FileInputStream(new File(s)));
-
-						HSSFSheet sheetResult = modifyExcel.getSheet("Results");
-						HSSFRow newRow = newdataExcel.getSheet("Results").getRow(1);
-						extension = extensionwithoutName(originalName);
-						String auxOriginal = originalName.replace("." + extension, "");
-
-						int rowIndex = ExcelActions.findRow(sheetResult, auxOriginal);
-						if (rowIndex != -1) {
-							ExcelActions.changeRow(rowIndex, sheetResult, newRow);
-							FileOutputStream out = new FileOutputStream(
-									new File(originalPath.replace(originalName, "") + "results.xls"));
-							modifyExcel.write(out);
-
-							out.close();
-						}
-						newdataExcel.close();
-					} catch (Exception e) {
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(null, "Error changing the excel row", "Error saving",
-								JOptionPane.ERROR_MESSAGE);
+						excelResults = new File(path + "results.xls");
 					}
+
+					modifyExcel = new HSSFWorkbook(new FileInputStream(excelResults));
+					HSSFWorkbook newdataExcel = new HSSFWorkbook(new FileInputStream(new File(s)));
+
+					HSSFSheet sheetResult = modifyExcel.getSheet("Results");
+					HSSFRow newRow = newdataExcel.getSheet("Results").getRow(1);
+					extension = extensionwithoutName(originalName);
+					String auxOriginal = originalName.replace("." + extension, "");
+
+					int rowIndex = ExcelActions.findRow(sheetResult, auxOriginal);
+					if (rowIndex != -1) {
+						ExcelActions.changeRow(rowIndex, sheetResult, newRow);
+//							FileOutputStream out = new FileOutputStream(
+//									new File(originalPath.replace(originalName, "") + "results.xls"));
+						FileOutputStream out = new FileOutputStream(excelResults);
+						modifyExcel.write(out);
+
+						out.close();
+					}
+					newdataExcel.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Error changing the excel row", "Error saving",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
-
-			
-		
-		
+		}
 
 	}
-
 
 	/**
 	 * For delete a folder If we close the app or the algorithm view window we
