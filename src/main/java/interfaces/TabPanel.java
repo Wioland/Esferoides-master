@@ -1,6 +1,7 @@
 package interfaces;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -42,6 +43,7 @@ public class TabPanel extends JTabbedPane {
 	private ViewImagesBigger viewImagen;
 	private LensMEnuButtons lens;
 	private Thread t;
+
 
 	public TabPanel(String directory, boolean selectAlgo) {
 
@@ -204,7 +206,8 @@ public class TabPanel extends JTabbedPane {
 			images = imagesShow;
 		}
 
-		lens = new LensMEnuButtons(images.getListImagesPrev());
+		lens = new LensMEnuButtons();
+		lens.setListImagesPrev(images.getListImagesPrev());
 
 		JPanel splitPane = createJPanelToShowImages(images, lens);
 
@@ -214,7 +217,7 @@ public class TabPanel extends JTabbedPane {
 
 	}
 
-	public JPanel createJPanelToShowImages(ShowImages images, LensMEnuButtons lens) {
+	public static JPanel createJPanelToShowImages(Component images, LensMEnuButtons lens) {
 		JPanel splitPane = new JPanel(new GridBagLayout());
 
 		JScrollPane s = new JScrollPane(images);
@@ -276,7 +279,10 @@ public class TabPanel extends JTabbedPane {
 			List<String> folderList = new ArrayList<String>();
 			Utils.searchFolders(new File(dir), folderList, 1);
 			boolean compare = false;
-
+			
+				
+			
+			Utils.mainFrame.getPb().setTextMAxObject(result.size());
 			List<String> predictionsFolderPAth = new ArrayList<String>();
 			Utils.searchFoldersName(new File(this.dir), "predictions", predictionsFolderPAth, 1);
 			if (folderList.isEmpty() || predictionsFolderPAth.isEmpty()) {
@@ -353,8 +359,10 @@ public class TabPanel extends JTabbedPane {
 		if (predictionsDir.exists()) {
 			showtiff = true;
 		}
-
+		
+		
 		new Methods(dire, result, showtiff);
+		
 
 		return showtiff;
 
@@ -531,8 +539,8 @@ public class TabPanel extends JTabbedPane {
 		File folderDir = new File(pathFoldersPrediction.get(0));
 
 		try {
-			OurProgressBar pb = new OurProgressBar(Utils.mainFrame);
-
+			OurProgressBar pb = new OurProgressBar(Utils.mainFrame, false);
+			Utils.mainFrame.setPb(pb);
 			for (String path : pathFoldersPrediction) {
 
 				folderDir = new File(path);
@@ -571,7 +579,7 @@ public class TabPanel extends JTabbedPane {
 							// We delete the temporal folder
 							FileFuntions.deleteFolder(newTempPredic);
 
-							t.interrupt();
+//							t.interrupt();
 
 						}
 					};
@@ -587,7 +595,7 @@ public class TabPanel extends JTabbedPane {
 
 			}
 			// change the tab to the already tiff view
-			((ImageTreePanel) getParent()).repaintTabPanel(false);
+			Utils.mainFrame.getImageTree().repaintTabPanel(false);
 
 			pb.dispose();
 		} catch (Exception e) {
@@ -638,44 +646,62 @@ public class TabPanel extends JTabbedPane {
 																// and in temporal delete and replace
 				deletePredicctionsAndSetTemporalPredictions(predictionFolders);
 			} else {
+				OurProgressBar pb = new OurProgressBar(Utils.mainFrame, false);
+				Utils.mainFrame.setPb(pb);
+				Thread t = new Thread() {
+					public void run() {
 
-				int i = 0;
-				int j = 0;
+						int i = 0;
+						int j = 0;
 
-				for (String ori : originalNAmes) {
-					if (i < resultPredictions.size()) {
-						if (j < newresult.size()) {
-							if (resultPredictions.get(i).contains(ori) && newresult.get(j).contains(ori)) {
-								File aux = new File(resultPredictions.get(i));
+						for (String ori : originalNAmes) {
+							if (i < resultPredictions.size()) {
+								if (j < newresult.size()) {
+									if (resultPredictions.get(i).contains(ori) && newresult.get(j).contains(ori)) {
+										File aux = new File(resultPredictions.get(i));
 
-								FileFuntions.saveSelectedImageNoQuestion(new File(newresult.get(j)),
-										aux.getAbsolutePath().replace(aux.getName(), ""));
-								i++;
-								j++;
-							} else {
-								if (!resultPredictions.get(i).contains(ori) && newresult.get(j).contains(ori)) {
-									File f = new File(newresult.get(j));
-									FileFuntions.saveImageNoBeforeProcess(f, this.dir, ori);
-									j++;
-								} else {
-									if (resultPredictions.get(i).contains(ori) && !newresult.get(j).contains(ori)) {
-
+										FileFuntions.saveSelectedImageNoQuestion(new File(newresult.get(j)),
+												aux.getAbsolutePath().replace(aux.getName(), ""));
 										i++;
+										j++;
+									} else {
+										if (!resultPredictions.get(i).contains(ori) && newresult.get(j).contains(ori)) {
+											File f = new File(newresult.get(j));
+											FileFuntions.saveImageNoBeforeProcess(f, dir, ori);
+											j++;
+										} else {
+											if (resultPredictions.get(i).contains(ori)
+													&& !newresult.get(j).contains(ori)) {
+
+												i++;
+											}
+										}
 									}
+								} else {
+									break;
 								}
+
+							} else {
+
+								File f = new File(newresult.get(j));
+								FileFuntions.saveImageNoBeforeProcess(f, dir, ori);
+								j++;
+								break;
 							}
-						} else {
-							break;
+
 						}
-
-					} else {
-
-						File f = new File(newresult.get(j));
-						FileFuntions.saveImageNoBeforeProcess(f, this.dir, ori);
-						j++;
-						break;
+						pb.dispose();
+						// change the tab to the already tiff view
+						Utils.mainFrame.getImageTree().repaintTabPanel(false);
 					}
+				};
 
+				t.start();
+				try {
+					t.join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 
 			}
@@ -784,7 +810,8 @@ public class TabPanel extends JTabbedPane {
 			} else {
 
 				try {
-					OurProgressBar pb = new OurProgressBar(Utils.mainFrame);
+					OurProgressBar pb = new OurProgressBar(Utils.mainFrame, false);
+					Utils.mainFrame.setPb(pb);
 					t = new Thread() {
 						public void run() {
 
@@ -800,7 +827,7 @@ public class TabPanel extends JTabbedPane {
 							((ImageTreePanel) getParent()).repaintTabPanel(false);
 
 							pb.dispose();
-							t.interrupt();
+//							t.interrupt();
 
 						}
 					};
@@ -826,7 +853,8 @@ public class TabPanel extends JTabbedPane {
 	 * all the data
 	 */
 	public void moveFinalFilesToPredictions() {
-		OurProgressBar pb = new OurProgressBar(Utils.mainFrame);
+		OurProgressBar pb = new OurProgressBar(Utils.mainFrame, false);
+		Utils.mainFrame.setPb(pb);
 		JOptionPane.showMessageDialog(Utils.mainFrame, "Saving the images in the predicction folder");
 		String auxName = "";
 		File auxFile = null;

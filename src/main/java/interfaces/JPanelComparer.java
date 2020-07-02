@@ -10,7 +10,6 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
@@ -27,6 +26,8 @@ public class JPanelComparer extends JPanel {
 	private JPanel panelLabelsText;
 	private JLabel originaText;
 	private JLabel newImageText;
+	private LensMEnuButtons maxMinLeft;
+	private LensMEnuButtons maxMinRight;
 
 	public JPanelComparer() {
 
@@ -35,6 +36,8 @@ public class JPanelComparer extends JPanel {
 		originalImaLb = new JLabel();
 		labelImage.setVisible(true);
 		originalImaLb.setVisible(true);
+		maxMinLeft = new LensMEnuButtons();
+		maxMinRight = new LensMEnuButtons();
 
 		// add the buttons to change the image
 		JButton backBu = new JButton("<");
@@ -69,16 +72,22 @@ public class JPanelComparer extends JPanel {
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.BOTH;
 
+		maxMinLeft.setImageMaxMin(originalImaLb);
+		maxMinRight.setImageMaxMin(labelImage);
+
+		JPanel leftP = TabPanel.createJPanelToShowImages(originalImaLb, maxMinLeft);
+		JPanel rightP = TabPanel.createJPanelToShowImages(labelImage, maxMinRight);
+
+		splitPanelLabelsImages.setLeftComponent(leftP);
+		splitPanelLabelsImages.setRightComponent(rightP);
+
+		splitPanelLabelsImages.setVisible(true);
+
 		constraints.weightx = 1;
 		constraints.weighty = 1;
 
 		constraints.gridx = 0;
 		constraints.gridy = 0;
-
-		splitPanelLabelsImages.setLeftComponent(new JScrollPane(originalImaLb));
-		splitPanelLabelsImages.setRightComponent(new JScrollPane(labelImage));
-
-		splitPanelLabelsImages.setVisible(true);
 
 		vi.add(splitPanelLabelsImages, constraints);
 		splitPanelLabelsImages.setDividerLocation(500);
@@ -122,7 +131,6 @@ public class JPanelComparer extends JPanel {
 
 		this.setVisible(true);
 
-
 	}
 
 	// GETTERS Y SETTERS
@@ -146,16 +154,18 @@ public class JPanelComparer extends JPanel {
 		return labelImage.getIcon();
 	}
 
-	public void setLabelImageIcon(Icon image) {
+	public void setLabelImageIcon(Icon image, String imageName) {
 		this.labelImage.setIcon(image);
+		this.labelImage.setName(imageName);
 	}
 
 	public Icon getOriginalImaLbIcon() {
 		return originalImaLb.getIcon();
 	}
 
-	public void setOriginalImaLbIcon(Icon image) {
+	public void setOriginalImaLbIcon(Icon image, String imageName) {
 		this.originalImaLb.setIcon(image);
+		this.originalImaLb.setName(imageName);
 	}
 
 	public JPanel getPanelButtons() {
@@ -274,6 +284,28 @@ public class JPanelComparer extends JPanel {
 
 	public void setPanelLabelsText(JPanel panelLabelsText) {
 		this.panelLabelsText = panelLabelsText;
+	}
+
+	public LensMEnuButtons getMaxMinLeft() {
+		return maxMinLeft;
+	}
+
+	public void setMaxMinLeft(LensMEnuButtons maxMinLeft) {
+		this.maxMinLeft = maxMinLeft;
+	}
+
+	public LensMEnuButtons getMaxMinRight() {
+		return maxMinRight;
+	}
+
+	public void setMaxMinRight(LensMEnuButtons maxMinRight) {
+		this.maxMinRight = maxMinRight;
+	}
+
+	public void restoreSizeIndicators() {
+		maxMinLeft.restroreMinMAxBooleans();
+		maxMinRight.restroreMinMAxBooleans();
+
 	}
 
 }

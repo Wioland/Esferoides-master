@@ -14,6 +14,7 @@ import funtions.PropertiesFileFuntions;
 import funtions.Utils;
 import ij.IJ;
 import ij.ImagePlus;
+import interfaces.OurProgressBar;
 import loci.plugins.in.ImporterOptions;
 
 public class Methods {
@@ -161,6 +162,9 @@ public class Methods {
 				}
 			}
 
+			
+			
+			
 			// We initialize the ResultsTable
 			// ResultsTable rt = new ResultsTable();
 			ImporterOptions options = new ImporterOptions();

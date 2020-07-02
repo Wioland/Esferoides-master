@@ -41,8 +41,9 @@ public class GeneralView extends JFrame {
 	private int timeTaskImages = 60;
 	private List<JButton> disableButonToolBar;
 	private boolean askedCreateImages = false;
+	private OurProgressBar pb ;
 
-	public GeneralView() {
+	public GeneralView(String nameProgram) {
 		this.mb = new JMenuBar();
 		this.toolBar = new JToolBar();
 		this.timers = new ArrayList<Timer>();
@@ -53,7 +54,7 @@ public class GeneralView extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(MAXIMIZED_BOTH);
 		setVisible(true);
-		setTitle("Detect esferoid program");
+		setTitle(nameProgram);
 		setMinimumSize(new Dimension(1000, 700));
 
 		toFront();
@@ -100,6 +101,15 @@ public class GeneralView extends JFrame {
 
 	public void setAskedCreateImages(boolean askedCreateImages) {
 		this.askedCreateImages = askedCreateImages;
+	}
+
+	public OurProgressBar getPb() {
+		return pb;
+	}
+
+	public void setPb(OurProgressBar pb) {
+		
+		this.pb = pb;
 	}
 
 	// METHODS
@@ -164,7 +174,7 @@ public class GeneralView extends JFrame {
 	 * @param selectAlgo if you are detecting esferoid
 	 */
 	private void createContent(String directory, boolean selectAlgo) {
-		OurProgressBar pb = new OurProgressBar(this);
+		pb = new OurProgressBar(this,false);
 		cancelTimersCurrentDir();
 		t = new Thread() {
 			public void run() {
@@ -189,7 +199,7 @@ public class GeneralView extends JFrame {
 //
 //				} 
 
-				t.interrupt();
+//				t.interrupt();
 			}
 		};
 
@@ -249,6 +259,7 @@ public class GeneralView extends JFrame {
 		btnOpenDir.setName("Open Dir");
 		btnOpenDir.addActionListener(actionListe);
 		btnOpenDir.addKeyListener(keyAction);
+		btnOpenDir.setToolTipText(btnOpenDir.getName());
 
 //		ima = new ImageIcon(getClass().getClassLoader().getResource(File.separator+"images" + File.separator + "closeDir.png"));
 		ima = new ImageIcon(getClass().getClassLoader().getResource("images/closeDir.png"));
@@ -258,6 +269,7 @@ public class GeneralView extends JFrame {
 		btnCloseDir.setName("Close Dir");
 		btnCloseDir.addActionListener(actionListe);
 		btnCloseDir.addKeyListener(keyAction);
+		btnCloseDir.setToolTipText(btnCloseDir.getName());
 
 //		ima = new ImageIcon(getClass().getClassLoader().getResource(File.separator+"images" + File.separator + "detectDir.png"));
 		ima = new ImageIcon(getClass().getClassLoader().getResource("images/detectDir.png"));
@@ -267,6 +279,7 @@ public class GeneralView extends JFrame {
 		btnDetectDir.setName("Detect in directory");
 		btnDetectDir.addActionListener(actionListe);
 		btnDetectDir.addKeyListener(keyAction);
+		btnDetectDir.setToolTipText(btnDetectDir.getName());
 
 //		ima = new ImageIcon(getClass().getClassLoader().getResource(File.separator+"images" + File.separator + "detectFile.png"));
 		ima = new ImageIcon(getClass().getClassLoader().getResource("images/detectFile.png"));
@@ -276,6 +289,7 @@ public class GeneralView extends JFrame {
 		btnDetectFile.setName("Detect in image");
 		btnDetectFile.addActionListener(actionListe);
 		btnDetectFile.addKeyListener(keyAction);
+		btnDetectFile.setToolTipText(btnDetectFile.getName());
 
 //		ima = new ImageIcon(getClass().getClassLoader().getResource("images" + File.separator + "changeAlgo.png"));
 		ima = new ImageIcon(getClass().getClassLoader().getResource("images/changeAlgo.png"));
@@ -285,6 +299,7 @@ public class GeneralView extends JFrame {
 		btnChangeAlgo.setName("Change detection algorithm");
 		btnChangeAlgo.addActionListener(actionListe);
 		btnChangeAlgo.addKeyListener(keyAction);
+		btnChangeAlgo.setToolTipText(btnChangeAlgo.getName());
 
 		disableButonToolBar = new ArrayList<JButton>();
 		disableButonToolBar.add(btnDetectFile);

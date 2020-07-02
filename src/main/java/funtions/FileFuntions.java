@@ -402,7 +402,8 @@ public class FileFuntions {
 
 					if (images.getComponents().length != 0) {
 
-						LensMEnuButtons lens = new LensMEnuButtons(images.getListImagesPrev());
+						LensMEnuButtons lens = new LensMEnuButtons();
+						lens.setListImagesPrev(images.getListImagesPrev());
 						JPanel splitPane = tp.createJPanelToShowImages(images, lens);
 
 						tp.setComponentAt(0, splitPane);
@@ -1165,7 +1166,7 @@ public class FileFuntions {
 			Utils.mainFrame.paintMainFRame(path);
 		}
 
-		JOptionPane.showMessageDialog(Utils.mainFrame, "Directory changed to " + path);
+//		JOptionPane.showMessageDialog(Utils.mainFrame, "Directory changed to " + path);
 
 	}
 
@@ -1175,10 +1176,10 @@ public class FileFuntions {
 	public static void changeDirectory() {
 		GeneralView mainFrame = Utils.mainFrame;
 
-		String text = "The current directory is: \n" + mainFrame.getDir() + "\n Do you what to change it?";
-		int op = JOptionPane.showConfirmDialog(mainFrame, text, "Change directory", JOptionPane.YES_NO_OPTION);
-
-		if (op == 0) {
+//		String text = "The current directory is: \n" + mainFrame.getDir() + "\n Do you what to change it?";
+//		int op = JOptionPane.showConfirmDialog(mainFrame, text, "Change directory", JOptionPane.YES_NO_OPTION);
+//
+//		if (op == 0) {
 
 			DirectoryChooser dc = new DirectoryChooser("Select new directory");
 
@@ -1192,11 +1193,11 @@ public class FileFuntions {
 
 			}
 
-		} else {
-
-			JOptionPane.showMessageDialog(mainFrame, "Directory not changed");
-
-		}
+//		} else {
+//
+//			JOptionPane.showMessageDialog(mainFrame, "Directory not changed");
+//
+//		}
 
 	}
 
@@ -1396,7 +1397,7 @@ public class FileFuntions {
 						"The manual file not exist or the current file is not the last version. "
 								+ "\n Downloading the new version please wait.");
 
-				OurProgressBar pb = new OurProgressBar(Utils.mainFrame);
+				OurProgressBar pb = new OurProgressBar(Utils.mainFrame,false);
 				Thread t = new Thread() {
 					public void run() {
 
@@ -1432,8 +1433,10 @@ public class FileFuntions {
 				t.start();
 
 			} else {
-				Process p = Runtime.getRuntime()
-						.exec("rundll32 SHELL32.DLL," + "ShellExec_RunDLL " + filePDF.getAbsolutePath());
+//				Process p = Runtime.getRuntime()
+//						.exec("rundll32 SHELL32.DLL," + "ShellExec_RunDLL " + filePDF.getAbsolutePath());
+				
+				Process p = Runtime.getRuntime().exec (filePDF.getAbsolutePath() ); 
 			}
 
 		} catch (Exception evvv) {

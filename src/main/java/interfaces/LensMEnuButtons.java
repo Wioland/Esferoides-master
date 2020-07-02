@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import funtions.ShowTiff;
@@ -24,17 +25,17 @@ public class LensMEnuButtons extends JPanel {
 	private JButton pluSizeBu;
 	private JButton minSizeBu;
 
+	private JLabel imageMaxMin;
+
 	/**
 	 * Creates a pair of buttons to change the size of the buttons given
 	 * 
-	 * @param listImagesPrev
-	 *            map that contains the pair nameFile - JButton shown
+	 * @param listImagesPrev map that contains the pair nameFile - JButton shown
 	 */
-	public LensMEnuButtons(Map<String, JButton> listImagesPrev) {
+	public LensMEnuButtons() {
 
 		minSizeIma = false;
 		maxSizeIma = false;
-		this.listImagesPrev = listImagesPrev;
 
 		pluSizeBu = new JButton("+");
 		minSizeBu = new JButton("-");
@@ -110,16 +111,91 @@ public class LensMEnuButtons extends JPanel {
 		this.subtractAddSize = subtractAddSize;
 	}
 
+	public Map<String, JButton> getListImagesPrev() {
+		return listImagesPrev;
+	}
+
+	public void setListImagesPrev(Map<String, JButton> listImagesPrev) {
+		this.listImagesPrev = listImagesPrev;
+	}
+
+	public JLabel getImageMaxMin() {
+		return imageMaxMin;
+	}
+
+	public void setImageMaxMin(JLabel imageMaxMin) {
+		this.imageMaxMin = imageMaxMin;
+	}
+
+	public boolean isMinSizeIma() {
+		return minSizeIma;
+	}
+
+	public void setMinSizeIma(boolean minSizeIma) {
+		this.minSizeIma = minSizeIma;
+	}
+
+	public boolean isMaxSizeIma() {
+		return maxSizeIma;
+	}
+
+	public void setMaxSizeIma(boolean maxSizeIma) {
+		this.maxSizeIma = maxSizeIma;
+	}
+
 	// METHODS
 	/**
 	 * Action to perform in the case of clicking one button
 	 * 
-	 * @param e
-	 *            acction event happened
-	 * @param typeAction
-	 *            type of the action plus is '+' button minus if '-' button
+	 * @param e          acction event happened
+	 * @param typeAction type of the action plus is '+' button minus if '-' button
 	 */
 	public void action(ActionEvent e, String typeAction) {
+		if (this.listImagesPrev != null) {
+			actionMap(typeAction);
+		} else {
+			actionImage(typeAction);
+		}
+
+	}
+
+	private void actionImage(String typeAction) {
+		int heightSize = imageMaxMin.getIcon().getIconHeight();
+		int widthSize = imageMaxMin.getIcon().getIconWidth();
+		int subtract = subtractAddSize;
+
+		// Takes the quantity of pixels we wants to add or take from the
+		// image
+		if (typeAction.equals("plus")) {
+			if (!maxSizeIma) {
+				subtract = -subtractAddSize;
+			}
+		}
+		// if we are not in the max or min size of the image we
+		// transform all
+		// the images
+		// to match the new size an the repaint
+		if ((!minSizeIma && typeAction.equals("minus")) || (subtract == -subtractAddSize)) {
+
+			ImageIcon iaux;
+			ImageIcon iconoEscala;
+
+			iaux = ShowTiff.showTiffToImageIcon(imageMaxMin.getName());
+			iconoEscala = new ImageIcon(iaux.getImage().getScaledInstance(widthSize - subtract, heightSize - subtract,
+					java.awt.Image.SCALE_DEFAULT));
+
+			imageMaxMin.setIcon(iconoEscala);
+			imageMaxMin.repaint();
+
+			heightSize = imageMaxMin.getIcon().getIconHeight();
+			widthSize = imageMaxMin.getIcon().getIconWidth();
+			isMAxorMinSizeIma(heightSize);
+
+		}
+
+	}
+
+	public void actionMap(String typeAction) {
 
 		int heightSize = ((JButton) listImagesPrev.values().toArray()[0]).getIcon().getIconHeight();
 		int widthSize = ((JButton) listImagesPrev.values().toArray()[0]).getIcon().getIconWidth();
@@ -159,14 +235,12 @@ public class LensMEnuButtons extends JPanel {
 			numberOfImagesPerRow(heightSize, (ShowImages) ((JButton) listImagesPrev.values().toArray()[0]).getParent());
 
 		}
-
 	}
 
 	/**
 	 * Checks if the image if already in its min or max size
 	 * 
-	 * @param heightSize
-	 *            the current height of the images
+	 * @param heightSize the current height of the images
 	 */
 	public void isMAxorMinSizeIma(int heightSize) {
 		if (heightSize < minimunSize) {
@@ -191,8 +265,8 @@ public class LensMEnuButtons extends JPanel {
 	}
 
 	/**
-	 * GEts the current height of the images taking the height of the first
-	 * image in the array of buttons
+	 * GEts the current height of the images taking the height of the first image in
+	 * the array of buttons
 	 * 
 	 * @return the height of the images
 	 */
@@ -204,10 +278,8 @@ public class LensMEnuButtons extends JPanel {
 	 * Changes the number of images per row shown depending on the height of the
 	 * images
 	 * 
-	 * @param heightSize
-	 *            current image height
-	 * @param buttonParentPane
-	 *            panel that contains the buttons with the images
+	 * @param heightSize       current image height
+	 * @param buttonParentPane panel that contains the buttons with the images
 	 */
 	public void numberOfImagesPerRow(int heightSize, ShowImages buttonParentPane) {
 
@@ -231,6 +303,15 @@ public class LensMEnuButtons extends JPanel {
 
 			}
 		}
+	}
+
+	public void restroreMinMAxBooleans() {
+		this.maxSizeIma = false;
+		this.minSizeIma = false;
+
+		this.minSizeBu.setEnabled(true);
+		this.pluSizeBu.setEnabled(true);
+
 	}
 
 }

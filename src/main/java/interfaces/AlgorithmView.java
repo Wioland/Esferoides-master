@@ -37,7 +37,6 @@ public class AlgorithmView extends JFrame {
 	private ShowImages panelImage;
 	private ViewImagesBigger vi;
 	private JPanel jSp;
-	private OurProgressBar pb;
 	private Thread t;
 
 	public AlgorithmView(File image) {
@@ -84,8 +83,9 @@ public class AlgorithmView extends JFrame {
 		
 		jSp = new JPanel(new GridBagLayout());
 		this.add(jSp);
-
-		pb = new OurProgressBar(this);
+		
+		OurProgressBar pb = new OurProgressBar(this,true);
+		Utils.mainFrame.setPb(pb);
 		t = new Thread() {
 			public void run() {
 				initilice();
@@ -136,6 +136,7 @@ public class AlgorithmView extends JFrame {
 
 		List<String> result = new ArrayList<String>();
 		result.add(path);
+//		Utils.mainFrame.getPb().setTextMAxObject(result.size());
 		new Methods(directory, result);
 
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
@@ -146,7 +147,7 @@ public class AlgorithmView extends JFrame {
 		panelImage.setAutoscrolls(true);
 
 		if (panelImage.getListImages().size() == 0) {
-			pb.dispose();
+			Utils.mainFrame.getPb().dispose();
 			JOptionPane.showMessageDialog(this, "Nothing detected in the image given");
 
 			this.dispose();
@@ -182,8 +183,8 @@ public class AlgorithmView extends JFrame {
 		jSp.add(panelButtons, constraints);
 
 		// add the components to the Jframe
-		pb.setVisible(false);
-		pb.dispose();
+		Utils.mainFrame.getPb().setVisible(false);
+		Utils.mainFrame.getPb().dispose();
 		jSp.setVisible(true);
 //		getContentPane().add(jSp);
 		this.add(jSp);
@@ -195,7 +196,7 @@ public class AlgorithmView extends JFrame {
 		if (!Utils.mainFrame.getMb().isEnabled()) {
 			Utils.mainFrame.getMb().setEnabled(true);
 		}
-		t.interrupt();
+//		t.interrupt();
 	}
 
 	/**
@@ -219,7 +220,7 @@ public class AlgorithmView extends JFrame {
 					vi = new ViewImagesBigger(imageIcon, imageIcoList, this, false);
 					addComparer(vi);
 				} else {
-					vi.getJPComparer().setLabelImageIcon(imageIcon);
+					vi.getJPComparer().setLabelImageIcon(imageIcon,imageIcon.getDescription());
 
 				}
 
@@ -330,7 +331,7 @@ public class AlgorithmView extends JFrame {
 		String saveDir=ima.getAbsolutePath().replace("temporal"+File.separator+ima.getName(), "predictions");
 		FileFuntions.saveSelectedImage(ima, saveDir);
 		if (vi != null) {
-			vi.getJPComparer().setOriginalImaLbIcon(vi.getJPComparer().getLabelImageIcon());
+			vi.getJPComparer().setOriginalImaLbIcon(vi.getJPComparer().getLabelImageIcon(),vi.getJPComparer().getLabelImage().getName());
 		}
 
 	}
@@ -348,6 +349,8 @@ public class AlgorithmView extends JFrame {
 		ij.WindowManager.closeAllWindows();
 
 		RoiFuntions.showOriginalFilePlusRoi(originalPath, fileRoi);
+		
+		
 
 	}
 

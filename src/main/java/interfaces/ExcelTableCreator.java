@@ -9,10 +9,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+
+import funtions.ExcelActions;
 
 public class ExcelTableCreator extends JTable {
 
@@ -50,20 +53,27 @@ public class ExcelTableCreator extends JTable {
 					}
 				}
 			}
+			
 			if (maxCol > 0) {
-				// Adds the headings
-				for (int i = 1; i <= maxCol; i++) {
-					tableModel.addColumn("Col." + i);
-				}
+				
+				
 				//row by row
 				Iterator<Row> rowIterator = sheet.iterator();
+				row=rowIterator.next();
+				// Adds the headings
+				Iterator<Cell> cellIterator = row.cellIterator();
+
+				while (cellIterator.hasNext()) {
+					cell = cellIterator.next();
+					tableModel.addColumn(cell.getStringCellValue());
+				}
 				while (rowIterator.hasNext()) {
 
 					int index = 0;
 					row = rowIterator.next();
 
 					Object[] obj = new Object[row.getLastCellNum()];
-					Iterator<Cell> cellIterator = row.cellIterator();
+					cellIterator = row.cellIterator();
 
 					while (cellIterator.hasNext()) {
 						cell = cellIterator.next();
@@ -110,5 +120,9 @@ public class ExcelTableCreator extends JTable {
 		
 	
 	}
+	
+	
+
+	
 
 }

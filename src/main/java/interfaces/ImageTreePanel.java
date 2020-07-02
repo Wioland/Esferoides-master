@@ -175,9 +175,10 @@ public class ImageTreePanel extends JSplitPane {
 		repainTabNoTimers(selectAlgo);
 		Utils.mainFrame.returnTheTimers(folderView);
 	}
-	
+
 	public void repainTabNoTimers(boolean selectAlgo) {
-		OurProgressBar pb = new OurProgressBar(Utils.mainFrame);
+		OurProgressBar pb = new OurProgressBar(Utils.mainFrame,false);
+		Utils.mainFrame.setPb(pb);
 		this.selectAlgo = selectAlgo;
 
 		t = new Thread() {
@@ -189,10 +190,8 @@ public class ImageTreePanel extends JSplitPane {
 				folderView.repaint();
 				Utils.mainFrame.setDir(dir);
 
-			
-
 				pb.dispose();
-				t.interrupt();
+
 			}
 		};
 		t.start();

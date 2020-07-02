@@ -35,7 +35,7 @@ public class ViewImagesBigger {
 	private AlgorithmView al;
 	private int clickImageIndex;
 	private List<ImageIcon> newDetectedImages;
-	private JPanelComparer JPComparer;
+	private JPanelComparer jpComparer;
 	private String title;
 	private Map<String, Integer> indexImage;
 
@@ -49,12 +49,12 @@ public class ViewImagesBigger {
 		this.dir = this.tp.getDir();
 		indexImage = new HashMap<String, Integer>();
 
-		JPComparer = new JPanelComparer();
-		JPComparer.setLabelImageIcon(image);
+		jpComparer = new JPanelComparer();
+		jpComparer.setLabelImageIcon(image, listImages.get(indexImagenList).getDescription());
 
 		if (listImages.size() == 1) {
-			JPComparer.getBackButton().setEnabled(false);
-			JPComparer.getForwarButtonButton().setEnabled(false);
+			jpComparer.getBackButton().setEnabled(false);
+			jpComparer.getForwarButtonButton().setEnabled(false);
 
 		}
 
@@ -62,20 +62,20 @@ public class ViewImagesBigger {
 
 		if (this.tp != null) {
 
-			JPComparer.remove(JPComparer.getPanelLabelsText());
-			JPComparer.getSplitPanelLabelsImages().remove(JPComparer.getSplitPanelLabelsImages().getLeftComponent());
-			JPComparer.getPanelButtons().remove(JPComparer.getExitButton());
-			JPComparer.getPanelButtons().remove(JPComparer.getSelectButton());
+			jpComparer.remove(jpComparer.getPanelLabelsText());
+			jpComparer.getSplitPanelLabelsImages().remove(jpComparer.getSplitPanelLabelsImages().getLeftComponent());
+			jpComparer.getPanelButtons().remove(jpComparer.getExitButton());
+			jpComparer.getPanelButtons().remove(jpComparer.getSelectButton());
 
-			addlistenerButton(JPComparer.getBackButton(), JPComparer.getForwarButtonButton(),
-					JPComparer.getTryAlgoButton());
-			addListenerMenuScroll(JPComparer.getScrollButton());
+			addlistenerButton(jpComparer.getBackButton(), jpComparer.getForwarButtonButton(),
+					jpComparer.getTryAlgoButton());
+			addListenerMenuScroll(jpComparer.getScrollButton());
 			initialiceMap();
 			addTotab();
 
 		} else {
 			createComparer();
-			addlistenerButton(JPComparer.getBackButton(), JPComparer.getForwarButtonButton(), false);
+			addlistenerButton(jpComparer.getBackButton(), jpComparer.getForwarButtonButton(), false);
 		}
 
 	}
@@ -106,7 +106,7 @@ public class ViewImagesBigger {
 		// Gets the name of the tab and add the title
 		String nombreImagen = (new File(listImages.get(indexImagenList).getDescription())).getName();
 		String title = indexImageView + nombreImagen;
-		this.tp.add(title, JPComparer);
+		this.tp.add(title, jpComparer);
 		this.tp.setSelectedIndex(this.tp.indexOfTab(title));
 
 		// create the "X" buttton
@@ -152,12 +152,12 @@ public class ViewImagesBigger {
 			}
 		}
 
-		JPComparer = new JPanelComparer();
-		JPComparer.setLabelImageIcon(image);
+		jpComparer = new JPanelComparer();
+		jpComparer.setLabelImageIcon(image, listImages.get(indexImagenList).getDescription());
 
 		if (listImages.size() == 1) {
-			JPComparer.getBackButton().setEnabled(false);
-			JPComparer.getForwarButtonButton().setEnabled(false);
+			jpComparer.getBackButton().setEnabled(false);
+			jpComparer.getForwarButtonButton().setEnabled(false);
 
 		}
 
@@ -167,20 +167,20 @@ public class ViewImagesBigger {
 
 			if (selectALgo) {
 				createComparer();
-				addlistenerButton(JPComparer.getBackButton(), JPComparer.getForwarButtonButton(), false);
-				JPComparer.getPanelButtons().remove(JPComparer.getExitButton());
+				addlistenerButton(jpComparer.getBackButton(), jpComparer.getForwarButtonButton(), false);
+				jpComparer.getPanelButtons().remove(jpComparer.getExitButton());
 
 			} else {
-				JPComparer.remove(JPComparer.getPanelLabelsText());
-				JPComparer.getSplitPanelLabelsImages()
-						.remove(JPComparer.getSplitPanelLabelsImages().getLeftComponent());
-				JPComparer.getPanelButtons().remove(JPComparer.getExitButton());
-				JPComparer.getPanelButtons().remove(JPComparer.getSelectButton());
+				jpComparer.remove(jpComparer.getPanelLabelsText());
+				jpComparer.getSplitPanelLabelsImages()
+						.remove(jpComparer.getSplitPanelLabelsImages().getLeftComponent());
+				jpComparer.getPanelButtons().remove(jpComparer.getExitButton());
+				jpComparer.getPanelButtons().remove(jpComparer.getSelectButton());
 
-				addlistenerButton(JPComparer.getBackButton(), JPComparer.getForwarButtonButton(),
-						JPComparer.getTryAlgoButton());
+				addlistenerButton(jpComparer.getBackButton(), jpComparer.getForwarButtonButton(),
+						jpComparer.getTryAlgoButton());
 
-				JPComparer.getPanelButtons().remove(JPComparer.getScrollButton());
+				jpComparer.getPanelButtons().remove(jpComparer.getScrollButton());
 
 			}
 
@@ -188,7 +188,7 @@ public class ViewImagesBigger {
 
 		} else {
 			createComparer();
-			addlistenerButton(JPComparer.getBackButton(), JPComparer.getForwarButtonButton(), false);
+			addlistenerButton(jpComparer.getBackButton(), jpComparer.getForwarButtonButton(), false);
 		}
 
 	}
@@ -230,22 +230,22 @@ public class ViewImagesBigger {
 		this.image = newDetectedImages.get(0);
 
 		// Initialized the JComparer with the elements needed
-		JPComparer = new JPanelComparer();
-		JPComparer.setLabelImageIcon(listImages.get(0));
+		jpComparer = new JPanelComparer();
+		jpComparer.setLabelImageIcon(listImages.get(0), listImages.get(0).getDescription());
 
 		if (listImages.size() == 1) { // if there is only one image ,
 										// setenable=false the back and forward
 										// buttons
 										// showwbigger tab
-			JPComparer.getBackButton().setEnabled(false);
-			JPComparer.getForwarButtonButton().setEnabled(false);
+			jpComparer.getBackButton().setEnabled(false);
+			jpComparer.getForwarButtonButton().setEnabled(false);
 
 		}
 
 		// Create the comparer and adding the listener to the buttons used
 		createComparer();
-		addlistenerButton(JPComparer.getBackButton(), JPComparer.getForwarButtonButton(), true);
-		addListenerCancelBu(JPComparer.getExitButton());
+		addlistenerButton(jpComparer.getBackButton(), jpComparer.getForwarButtonButton(), true);
+		addListenerCancelBu(jpComparer.getExitButton());
 
 	}
 
@@ -291,32 +291,32 @@ public class ViewImagesBigger {
 		this.image = newDetectedImages.get(0);
 
 		// Initialized the JComparer with the elements needed
-		JPComparer = new JPanelComparer();
-		JPComparer.setLabelImageIcon(listImages.get(0));
+		jpComparer = new JPanelComparer();
+		jpComparer.setLabelImageIcon(listImages.get(0), listImages.get(0).getDescription());
 
 		if (listImages.size() == 1) { // if there is only one image ,
 										// setenable=false the back and forward
 										// buttons
 										// showwbigger tab
-			JPComparer.getBackButton().setEnabled(false);
-			JPComparer.getForwarButtonButton().setEnabled(false);
+			jpComparer.getBackButton().setEnabled(false);
+			jpComparer.getForwarButtonButton().setEnabled(false);
 
 		}
 
 		// Create the comparer and adding the listener to the buttons used
 		createComparer();
-		addlistenerButton(JPComparer.getBackButton(), JPComparer.getForwarButtonButton(), true);
-		addListenerCancelBu(JPComparer.getExitButton());
+		addlistenerButton(jpComparer.getBackButton(), jpComparer.getForwarButtonButton(), true);
+		addListenerCancelBu(jpComparer.getExitButton());
 
 	}
 
 	// GETTERS AND SETTERS
 	public JPanelComparer getJPComparer() {
-		return JPComparer;
+		return jpComparer;
 	}
 
 	public void setJPComparer(JPanelComparer jPComparer) {
-		JPComparer = jPComparer;
+		jpComparer = jPComparer;
 	}
 
 	public String getTitle() {
@@ -342,19 +342,19 @@ public class ViewImagesBigger {
 
 		if (al != null) {
 			ImageIcon ico = ShowTiff.showTiffToImageIcon(al.getImage().getAbsolutePath());
-			JPComparer.setOriginalImaLbIcon(ico);
-			JPComparer.getPanelButtons().remove(JPComparer.getTryAlgoButton());
-			JPComparer.getPanelButtons().remove(JPComparer.getExitButton());
-			JPComparer.getPanelButtons().remove(JPComparer.getSelectButton());
+			jpComparer.setOriginalImaLbIcon(ico, al.getImage().getAbsolutePath());
+			jpComparer.getPanelButtons().remove(jpComparer.getTryAlgoButton());
+			jpComparer.getPanelButtons().remove(jpComparer.getExitButton());
+			jpComparer.getPanelButtons().remove(jpComparer.getSelectButton());
 
 		} else {
-			JPComparer.getPanelButtons().remove(JPComparer.getScrollButton());
-			JPComparer.setOriginalImaLbIcon(image);
-			JPComparer.getPanelButtons().remove(JPComparer.getTryAlgoButton());
-			addListenerSelectButton(JPComparer.getSelectButton());
+			jpComparer.getPanelButtons().remove(jpComparer.getScrollButton());
+			jpComparer.setOriginalImaLbIcon(image, listImages.get(indexImagenList).getDescription());
+			jpComparer.getPanelButtons().remove(jpComparer.getTryAlgoButton());
+			addListenerSelectButton(jpComparer.getSelectButton());
 		}
 
-		JPComparer.repaint();
+		jpComparer.repaint();
 
 	}
 
@@ -369,8 +369,8 @@ public class ViewImagesBigger {
 		tp.changeSelectedImage(listImages.get(indexImagenList).getDescription(),
 				listImages.get(clickImageIndex).getDescription());
 
-		originalImaLb.setIcon(JPComparer.getLabelImageIcon());
-		JPComparer.repaint();
+		originalImaLb.setIcon(jpComparer.getLabelImageIcon());
+		jpComparer.repaint();
 
 		JOptionPane.showMessageDialog(Utils.mainFrame, "Image changed");
 
@@ -381,8 +381,8 @@ public class ViewImagesBigger {
 	 * the selected image in the case of the AlgorithmView
 	 */
 	private void moreActionChangeIndexIma() {
-		JPComparer.setLabelImageIcon(listImages.get(indexImagenList));
-		image = JPComparer.getLabelImageIcon();
+		jpComparer.setLabelImageIcon(listImages.get(indexImagenList), listImages.get(indexImagenList).getDescription());
+		image = jpComparer.getLabelImageIcon();
 
 		if (al != null && tp == null) {
 			al.setSelectedBu(al.getButtonFromImage(listImages.get(indexImagenList).getDescription()));
@@ -427,7 +427,7 @@ public class ViewImagesBigger {
 		// Gets the name of the tab and add the title
 		String nombreImagen = (new File(listImages.get(indexImagenList).getDescription())).getName();
 		String title = indexImageView + nombreImagen;
-		this.tp.add(title, JPComparer);
+		this.tp.add(title, jpComparer);
 		this.tp.setSelectedIndex(this.tp.indexOfTab(title));
 
 		// create the "X" buttton
@@ -471,7 +471,8 @@ public class ViewImagesBigger {
 	 */
 	public void changeOriginalImageLabel() {
 
-		JPComparer.setOriginalImaLbIcon(newDetectedImages.get(indexImagenList));
+		jpComparer.setOriginalImaLbIcon(newDetectedImages.get(indexImagenList),
+				newDetectedImages.get(indexImagenList).getDescription());
 	}
 
 	/**
@@ -511,22 +512,24 @@ public class ViewImagesBigger {
 							// if there is only one image left we disable the
 							// buttons
 							if (listImages.size() == 1) {
-								JPComparer.getBackButton().setEnabled(false);
-								JPComparer.getForwarButtonButton().setEnabled(false);
+								jpComparer.getBackButton().setEnabled(false);
+								jpComparer.getForwarButtonButton().setEnabled(false);
 
 							}
 							// changes the images shown to the first in the
 							// array
 							image = newDetectedImages.get(indexImagenList);
-							JPComparer.setOriginalImaLbIcon(image);
-							JPComparer.setLabelImageIcon(listImages.get(indexImagenList));
+							jpComparer.setOriginalImaLbIcon(image,
+									newDetectedImages.get(indexImagenList).getDescription());
+							jpComparer.setLabelImageIcon(listImages.get(indexImagenList),
+									listImages.get(indexImagenList).getDescription());
 						}
 					}
 
 					// Change the label of the original image label to the image
 					// of labelImage
 				} else {
-					mouseSelectAction(JPComparer.getOriginalImaLb());
+					mouseSelectAction(jpComparer.getOriginalImaLb());
 				}
 
 			}
@@ -545,11 +548,19 @@ public class ViewImagesBigger {
 		}
 	}
 
-	public void backActionPerform(boolean newVsOld) {
-		indexImagenList--;
-		if (indexImagenList < 0) {
-			indexImagenList = listImages.size() - 1;
+	public void backForwardActionPerform(boolean newVsOld, boolean forwardAction) {
+		if (forwardAction) {
+			indexImagenList++;
+			if (indexImagenList > listImages.size() - 1) {
+				indexImagenList = 0;
+			}
+		} else {
+			indexImagenList--;
+			if (indexImagenList < 0) {
+				indexImagenList = listImages.size() - 1;
+			}
 		}
+
 		moreActionChangeIndexIma();
 
 		// if newvsOld we change to the original image if not we only
@@ -558,6 +569,8 @@ public class ViewImagesBigger {
 		if (newVsOld) {
 			changeOriginalImageLabel();
 		}
+
+		jpComparer.restoreSizeIndicators();
 	}
 
 	/**
@@ -576,7 +589,7 @@ public class ViewImagesBigger {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				backActionPerform(newVsOld);
+				backForwardActionPerform(newVsOld, false);
 
 			}
 		});
@@ -587,18 +600,8 @@ public class ViewImagesBigger {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				indexImagenList++;
-				if (indexImagenList > listImages.size() - 1) {
-					indexImagenList = 0;
-				}
+				backForwardActionPerform(newVsOld, true);
 
-				moreActionChangeIndexIma();
-				// if newvsOld we change to the original image if not we only
-				// change the
-				// labelImage
-				if (newVsOld) {
-					changeOriginalImageLabel();
-				}
 			}
 		});
 	}

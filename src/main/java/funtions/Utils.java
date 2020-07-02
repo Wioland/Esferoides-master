@@ -299,8 +299,11 @@ public class Utils {
 			IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + File.separator + name + "_pred.tiff");
 
 			ExcelActions.saveExcel(goodRows, folder);
-
+			
 		}
+		
+			Utils.mainFrame.getPb().changeActualElementeText();
+		
 
 	}
 
@@ -835,7 +838,7 @@ public class Utils {
 //			}
 
 		}
-
+		Utils.mainFrame.getPb().changeActualElementeText();
 	}
 
 	public static File download(final URL url, String location) {
