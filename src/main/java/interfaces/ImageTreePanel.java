@@ -125,7 +125,14 @@ public class ImageTreePanel extends JSplitPane {
 						// open the imageJ
 
 						String roiPath = RoiFuntions.getRoiPathPredicctions(path);
-						RoiFuntions.showOriginalFilePlusRoi(path, roiPath);
+						
+						if (this.folderView.getRoiModifyTab() != null) {
+							this.folderView.getRoiModifyTab().getBtnClose().doClick();
+							
+						}
+						
+						this.folderView.setRoiModifyTab( new RoiModifyView(path, roiPath));
+						
 
 					} else {
 						if (!path.equals(dir)) { // if it isn't the current

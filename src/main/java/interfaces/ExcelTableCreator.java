@@ -9,18 +9,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
-import funtions.ExcelActions;
-
 public class ExcelTableCreator extends JTable {
 
 	private static final long serialVersionUID = 1L;
-
 
 	private DefaultTableModel tableModel;
 
@@ -33,18 +29,17 @@ public class ExcelTableCreator extends JTable {
 	/**
 	 * Creates a table mode with the data of an excel file
 	 * 
-	 * @param file	excel file to read
+	 * @param file excel file to read
 	 */
 	private void readXLSX(File file) {
 		tableModel = new DefaultTableModel();
 		try {
 			HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(file));
-			HSSFSheet sheet = wb.getSheetAt(0);//first sheet
+			HSSFSheet sheet = wb.getSheetAt(0);// first sheet
 			Row row;
 			Cell cell;
 
-		
-			//obtains the number of columns with data
+			// obtains the number of columns with data
 			int maxCol = 0;
 			for (int a = 0; a <= sheet.getLastRowNum(); a++) {
 				if (sheet.getRow(a) != null) {
@@ -53,13 +48,12 @@ public class ExcelTableCreator extends JTable {
 					}
 				}
 			}
-			
+
 			if (maxCol > 0) {
-				
-				
-				//row by row
+
+				// row by row
 				Iterator<Row> rowIterator = sheet.iterator();
-				row=rowIterator.next();
+				row = rowIterator.next();
 				// Adds the headings
 				Iterator<Cell> cellIterator = row.cellIterator();
 
@@ -117,12 +111,7 @@ public class ExcelTableCreator extends JTable {
 			JOptionPane.showMessageDialog(null, "Error while reading the excel", "Error saving",
 					JOptionPane.ERROR_MESSAGE);
 		}
-		
-	
-	}
-	
-	
 
-	
+	}
 
 }

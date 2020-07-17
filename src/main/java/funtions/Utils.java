@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import esferoides.Methods;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
@@ -132,8 +133,7 @@ public class Utils {
 
 	}
 
-	public static void searchFoldersName(File parentDir, String folderName, List<String> listResult,
-			int deep) {
+	public static void searchFoldersName(File parentDir, String folderName, List<String> listResult, int deep) {
 		if (deep != -1) {
 			for (final File f : parentDir.listFiles()) {
 
@@ -142,7 +142,7 @@ public class Utils {
 
 						listResult.add(f.getAbsolutePath());
 					} else {
-						searchFoldersName(f,folderName, listResult, deep - 1);
+						searchFoldersName(f, folderName, listResult, deep - 1);
 					}
 
 				}
@@ -299,11 +299,10 @@ public class Utils {
 			IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + File.separator + name + "_pred.tiff");
 
 			ExcelActions.saveExcel(goodRows, folder);
-			
+
 		}
-		
-			Utils.mainFrame.getPb().changeActualElementeText();
-		
+
+		Utils.mainFrame.getPb().changeActualElementeText();
 
 	}
 
@@ -400,7 +399,12 @@ public class Utils {
 
 		int countpixels = 0;
 		for (int i = 0; i < threshold; i++) {
-			countpixels = countpixels + histogram[i];
+			if (i < histogram.length) {
+				countpixels = countpixels + histogram[i];
+			} else {
+				break;
+			}
+
 		}
 
 		return countpixels;
@@ -563,18 +567,17 @@ public class Utils {
 	}
 
 	public static void changeUsedAlgoritms() {
-	
 
 		JDialog jDia = new JDialog(mainFrame);
 
-		String sus = "suspension";
-		String col = "colageno";
-		String hv1 = "Hector no fluo v1";
-		String hv2 = "Hector no fluo v2";
-		String tv1 = "Teodora v1";
-		String tbg = "Teodora Big";
-		String hfs = "Hector fluo stack";
-		String tp = "Teniposide";
+		String sus = Methods.getAlgorithms()[0];
+		String col = Methods.getAlgorithms()[1];
+		String hv1 = Methods.getAlgorithms()[2];
+		String hv2 = Methods.getAlgorithms()[3];
+		String tv1 = Methods.getAlgorithms()[4];
+		String tbg = Methods.getAlgorithms()[5];
+		String hfs = Methods.getAlgorithms()[6];
+		String tp = Methods.getAlgorithms()[7];
 
 		String fluoSave = hv2;
 		String tifSave = hv2;
@@ -589,27 +592,14 @@ public class Utils {
 			tifSave = propUpdater.getProp().getProperty("SelectTifAlgo");
 			nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
 			jpgSave = propUpdater.getProp().getProperty("SelectJpgAlgo");
-			boolean noPropertiesValue = false;
 
-			if (fluoSave == null) {
-				fluoSave = hv2;
-				noPropertiesValue = true;
-			}
-			if (tifSave == null) {
-				tifSave = hv2;
-				noPropertiesValue = true;
-			}
-			if (nd2Save == null) {
-				nd2Save = tbg;
-				noPropertiesValue = true;
-			}
-			if (jpgSave == null) {
-				jpgSave = tp;
-				noPropertiesValue = true;
-			}
-
-			if (noPropertiesValue) {
-				FileFuntions.saveAlgorithmConfi(fluoSave, tifSave, nd2Save, jpgSave);
+			boolean changed = FileFuntions.checkSavedAlgoPropertiesFile(fluoSave, tifSave, nd2Save, jpgSave);
+			if (changed) {
+				propUpdater = new PropertiesFileFuntions(urlUpdater);
+				fluoSave = propUpdater.getProp().getProperty("SelectFluoAlgo");
+				tifSave = propUpdater.getProp().getProperty("SelectTifAlgo");
+				nd2Save = propUpdater.getProp().getProperty("SelectNd2Algo");
+				jpgSave = propUpdater.getProp().getProperty("SelectJpgAlgo");
 			}
 		}
 
@@ -838,7 +828,10 @@ public class Utils {
 //			}
 
 		}
-		Utils.mainFrame.getPb().changeActualElementeText();
+		if (!Utils.mainFrame.getPb().getTextMaxElements().equals("?")) {
+			Utils.mainFrame.getPb().changeActualElementeText();
+		}
+
 	}
 
 	public static File download(final URL url, String location) {

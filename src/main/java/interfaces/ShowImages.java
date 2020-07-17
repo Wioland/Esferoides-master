@@ -372,4 +372,38 @@ this.imageIcon=images;
 		tp.getOriginalNewSelected().put(origianlName, buttonSelected);
 
 	}
+	public void removeModifyButton() {
+		File aux=null;
+		int i=0;
+		List<Integer> deletedIndex= new ArrayList<Integer>();
+		for (String path : listImages) {
+			aux= new File(path);
+			if(!aux.exists()) {
+				JButton bu = this.listImagesPrev.get(path);
+				this.remove(bu);
+				
+				this.listImagesPrev.remove(path);
+				this.lastModifyImage.remove(path);
+				this.imageIcon.remove(i);
+				
+				deletedIndex.add(i);
+				this.repaint();
+				
+			}else {
+				if(aux.lastModified()!=lastModifyImage.get(path)) { 
+					ImageIcon image = ShowTiff.showTiffToImageIcon(path);
+					image.setDescription(path);
+					JButton bu = this.listImagesPrev.get(path);
+					bu.setIcon(image);
+					bu.repaint();
+				}
+			}
+			i++;
+		}
+		
+		for (int indexREmove : deletedIndex) {
+			this.listImages.remove(indexREmove);
+		}
+		
+	}
 }

@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
 import esferoides.Methods;
 import funtions.FileFuntions;
@@ -38,6 +39,8 @@ public class AlgorithmView extends JFrame {
 	private ViewImagesBigger vi;
 	private JPanel jSp;
 	private Thread t;
+	private RoiModifyView roiModifyView = null;
+	private JTabbedPane tabbedPanel = null;
 
 	public AlgorithmView(File image) {
 		// Window parameters
@@ -50,41 +53,25 @@ public class AlgorithmView extends JFrame {
 
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				// TODO Auto-generated method stub
-
-				File folder = Methods.getTemporalFolder();
-				if (folder != null) {
-					FileFuntions.deleteFolder(folder);
-				}
-				if (!Utils.mainFrame.getMb().isEnabled()) {
-					Utils.mainFrame.getMb().setEnabled(true);
-				}
+				closeActions();
 			}
 
 			public void windowClosed(WindowEvent e) {
-				// TODO Auto-generated method stub
-
-				File folder = Methods.getTemporalFolder();
-				if (folder != null) {
-					FileFuntions.deleteFolder(folder);
-				}
-				if (!Utils.mainFrame.getMb().isEnabled()) {
-					Utils.mainFrame.getMb().setEnabled(true);
-				}
+				closeActions();
 			}
 		});
 
 		this.image = image;
-		if(image.getAbsolutePath().contains("predictions" )) {
+		if (image.getAbsolutePath().contains("predictions")) {
 			this.directory = image.getAbsolutePath().replace("predictions" + File.separator + image.getName(), "");
-		}else {
-			this.directory = image.getAbsolutePath().replace( image.getName(), "");
+		} else {
+			this.directory = image.getAbsolutePath().replace(image.getName(), "");
 		}
-		
+
 		jSp = new JPanel(new GridBagLayout());
 		this.add(jSp);
-		
-		OurProgressBar pb = new OurProgressBar(this,true);
+
+		OurProgressBar pb = new OurProgressBar(this, true);
 		Utils.mainFrame.setPb(pb);
 		t = new Thread() {
 			public void run() {
@@ -121,7 +108,13 @@ public class AlgorithmView extends JFrame {
 		this.selectedBu = selectedBu;
 	}
 
-	// METHODS
+	public RoiModifyView getRoiModifyView() {
+		return roiModifyView;
+	}
+
+	public void setRoiModifyView(RoiModifyView roiModifyView) {
+		this.roiModifyView = roiModifyView;
+	}
 
 	public Thread getT() {
 		return t;
@@ -131,12 +124,22 @@ public class AlgorithmView extends JFrame {
 		this.t = t;
 	}
 
+	public JTabbedPane getTabbedPanel() {
+		return tabbedPanel;
+	}
+
+	public void setTabbedPanel(JTabbedPane tabbedPanel) {
+		this.tabbedPanel = tabbedPanel;
+	}
+
+	// METHODS
+
 	public void initilice() {
 		String path = RoiFuntions.getOriginalFilePathFromPredictions(this.image.getAbsolutePath());
 
 		List<String> result = new ArrayList<String>();
 		result.add(path);
-//		Utils.mainFrame.getPb().setTextMAxObject(result.size());
+
 		new Methods(directory, result);
 
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
@@ -187,7 +190,7 @@ public class AlgorithmView extends JFrame {
 		Utils.mainFrame.getPb().dispose();
 		jSp.setVisible(true);
 //		getContentPane().add(jSp);
-		this.add(jSp);
+		this.getContentPane().add(jSp);
 		jSp.repaint();
 
 		IJ.run("Close All");
@@ -220,7 +223,7 @@ public class AlgorithmView extends JFrame {
 					vi = new ViewImagesBigger(imageIcon, imageIcoList, this, false);
 					addComparer(vi);
 				} else {
-					vi.getJPComparer().setLabelImageIcon(imageIcon,imageIcon.getDescription());
+					vi.getJPComparer().setLabelImageIcon(imageIcon, imageIcon.getDescription());
 
 				}
 
@@ -244,12 +247,9 @@ public class AlgorithmView extends JFrame {
 
 		this.vi = vi;
 
-		JPanel JPaneDad = (JPanel) selectedBu.getParent().getParent().getParent().getParent();
 		GridBagConstraints constraints = new GridBagConstraints();
 
-		JScrollPane scrollIma = (JScrollPane) JPaneDad.getComponentAt(1, 0);
-		scrollIma.setVisible(false);
-		JPaneDad.remove(scrollIma);
+		this.jSp.remove(this.jSp.getComponentAt(1, 0));
 
 		constraints.fill = GridBagConstraints.BOTH;
 		constraints.weightx = 1;
@@ -258,8 +258,8 @@ public class AlgorithmView extends JFrame {
 		constraints.gridx = 0;
 		constraints.gridy = 0;
 
-		JPaneDad.add(vi.getJPComparer(), constraints);
-		JPaneDad.updateUI();
+		this.jSp.add(vi.getJPComparer(), constraints);
+		this.pack();
 
 	}
 
@@ -328,10 +328,11 @@ public class AlgorithmView extends JFrame {
 	 */
 	private void SaveImageAndDelete(String filePath) {
 		File ima = new File(filePath);
-		String saveDir=ima.getAbsolutePath().replace("temporal"+File.separator+ima.getName(), "predictions");
+		String saveDir = ima.getAbsolutePath().replace("temporal" + File.separator + ima.getName(), "predictions");
 		FileFuntions.saveSelectedImage(ima, saveDir);
 		if (vi != null) {
-			vi.getJPComparer().setOriginalImaLbIcon(vi.getJPComparer().getLabelImageIcon(),vi.getJPComparer().getLabelImage().getName());
+			vi.getJPComparer().setOriginalImaLbIcon(vi.getJPComparer().getLabelImageIcon(),
+					vi.getJPComparer().getLabelImage().getName());
 		}
 
 	}
@@ -348,10 +349,72 @@ public class AlgorithmView extends JFrame {
 
 		ij.WindowManager.closeAllWindows();
 
-		RoiFuntions.showOriginalFilePlusRoi(originalPath, fileRoi);
-		
-		
+		if (this.roiModifyView != null) {
+			this.roiModifyView.getBtnClose().doClick();
+		}
+		this.roiModifyView = new RoiModifyView(originalPath, fileRoi, this);
 
+	}
+
+	private void closeActions() {
+		File folder = Methods.getTemporalFolder();
+		if (folder != null) {
+			FileFuntions.deleteFolder(folder);
+		}
+		if (!Utils.mainFrame.getMb().isEnabled()) {
+			Utils.mainFrame.getMb().setEnabled(true);
+		}
+
+		t.interrupt();
+
+	}
+
+	public void repaintContent() {
+
+		if (this.tabbedPanel == null) {
+			GridBagConstraints constraints = new GridBagConstraints();
+			constraints.fill = GridBagConstraints.BOTH;
+			constraints.weightx = 1;
+			constraints.weighty = 1;
+
+			constraints.gridx = 0;
+			constraints.gridy = 0;
+
+			this.tabbedPanel = new JTabbedPane();
+			this.tabbedPanel.add("Images", this.jSp.getComponentAt(1, 0));
+			this.jSp.remove(this.jSp.getComponentAt(1, 0));
+			this.jSp.add(tabbedPanel, constraints);
+		}
+
+		this.repaint();
+
+	}
+
+	public void deleteImageList() {
+		if (vi != null) {
+
+			vi.deleteImageFromListNoComparerOldVsNew();
+			if (vi.getListImages().size() == 0) {
+				JOptionPane.showMessageDialog(this, "There are not more images, closing this window");
+				this.dispose();
+			}
+
+		} else {
+			panelImage.removeModifyButton();
+			if (panelImage.getListImages().size() == 0) {
+				JOptionPane.showMessageDialog(this, "There are not more images, closing this window");
+				this.dispose();
+			}
+		}
+
+	}
+
+	public void modifyImageList() {
+		if (vi != null) {
+			vi.modifyImageFromListNoComparerOldVsNew();
+		} else {
+			panelImage.removeModifyButton();
+		}
 	}
 
 }

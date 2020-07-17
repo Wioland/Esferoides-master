@@ -28,7 +28,6 @@ import javax.swing.event.ChangeListener;
 import esferoides.Methods;
 import funtions.ExcelActions;
 import funtions.FileFuntions;
-import funtions.ShowTiff;
 import funtions.Utils;
 
 public class TabPanel extends JTabbedPane {
@@ -43,7 +42,7 @@ public class TabPanel extends JTabbedPane {
 	private ViewImagesBigger viewImagen;
 	private LensMEnuButtons lens;
 	private Thread t;
-
+	private RoiModifyView roiModifyTab = null;
 
 	public TabPanel(String directory, boolean selectAlgo) {
 
@@ -106,8 +105,16 @@ public class TabPanel extends JTabbedPane {
 	public void setViewImagen(ViewImagesBigger viewImagen) {
 		this.viewImagen = viewImagen;
 	}
-	// METHODS
 
+	public RoiModifyView getRoiModifyTab() {
+		return roiModifyTab;
+	}
+
+	public void setRoiModifyTab(RoiModifyView roiModifyTab) {
+		this.roiModifyTab = roiModifyTab;
+	}
+
+	// METHODS
 	/**
 	 * Function use to paint the tabpanel when there is tiff file in the directory
 	 * 
@@ -126,15 +133,8 @@ public class TabPanel extends JTabbedPane {
 		Collections.sort(result);
 
 		List<String> imageIconString = new ArrayList<String>();
-
-		List<ImageIcon> imageIcon = new ArrayList<ImageIcon>();
 		Utils.search(".*\\.tiff", folder, imageIconString, 2);
-		ImageIcon image;
-		for (String ima : imageIconString) {
-			image = ShowTiff.showTiffToImageIcon(ima);
-			image.setDescription(ima);
-			imageIcon.add(image);
-		}
+		List<ImageIcon> imageIcon = FileFuntions.transformListToImageicon(imageIconString);
 
 		// create the jpanel, it content and we add the name to the tab
 
@@ -185,8 +185,11 @@ public class TabPanel extends JTabbedPane {
 				if (tab.getTitleAt(tab.getSelectedIndex()).contains("Excel")) {
 					ExcelActions.checkExcelTab(tab, dir, tab.getSelectedIndex());
 				} else {
-					if (tab.getTitleAt(tab.getSelectedIndex()).contains("Images")) {
-						FileFuntions.isDirectoryContentModify(dir + "predictions", tab);
+					if (tab.getSelectedIndex()== tab.indexOfTab("Images Scroll") || 
+							tab.getSelectedIndex()== tab.indexOfTab("Images") ||
+									tab.getTitleAt(tab.getSelectedIndex()).contains("ImageViewer ")) {
+						 Utils.mainFrame.requestFocusInWindow();
+						FileFuntions.isDirectoryContentModify(dir, tab);
 
 					}
 				}
@@ -195,7 +198,7 @@ public class TabPanel extends JTabbedPane {
 		});
 
 		// We save the last time the directory was changed
-		FileFuntions.addModificationDirectory(dir + "predictions");
+		FileFuntions.addModificationDirectory(dir);
 
 	}
 
@@ -279,9 +282,7 @@ public class TabPanel extends JTabbedPane {
 			List<String> folderList = new ArrayList<String>();
 			Utils.searchFolders(new File(dir), folderList, 1);
 			boolean compare = false;
-			
-				
-			
+
 			Utils.mainFrame.getPb().setTextMAxObject(result.size());
 			List<String> predictionsFolderPAth = new ArrayList<String>();
 			Utils.searchFoldersName(new File(this.dir), "predictions", predictionsFolderPAth, 1);
@@ -359,10 +360,8 @@ public class TabPanel extends JTabbedPane {
 		if (predictionsDir.exists()) {
 			showtiff = true;
 		}
-		
-		
+
 		new Methods(dire, result, showtiff);
-		
 
 		return showtiff;
 

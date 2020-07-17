@@ -23,21 +23,22 @@ public class ImagesTask extends TimerTask {
 
 	@Override
 	public void run() {
-		
+
 		currentDir = Utils.getCurrentDirectory();
 		// If the tabPanel was delete or change to another one we kill the task
 		if (tp.getDir() != currentDir) {
 			this.cancel();
 
-		}else {
-		// For showing in the console how many times the task has been performed
-		LOGGER.log(Level.INFO, "ImageTask    Numero de ejecución " + counter);
-		counter++;
+		} else {
+			// For showing in the console how many times the task has been performed
+			LOGGER.log(Level.INFO, "ImageTask    Numero de ejecución " + counter);
+			counter++;
 
-		// Checks if the images of the prediction folder has changed
-		FileFuntions.isDirectoryContentModify(dir + "predictions", tp);
+			// Checks if the images of the prediction folder has changed
+
+			FileFuntions.isDirectoryContentModify(dir, tp);
+
 		}
-	
 	}
 
 }

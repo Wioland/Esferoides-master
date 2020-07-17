@@ -17,7 +17,6 @@ public class ActionMenuBar implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		String name ="";
 		
 		if(e.getSource().getClass().equals(JMenuItem.class)) {

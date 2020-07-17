@@ -2,6 +2,7 @@ package funtions;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class ExcelActions {
 				filename = this.dir + name + "_results.xls";
 
 			}
-			
+
 			fileOut = new FileOutputStream(filename);
 			workbook.write(fileOut);
 			fileOut.close();
@@ -198,7 +199,7 @@ public class ExcelActions {
 						JOptionPane.showMessageDialog(Utils.mainFrame,
 								"The excel " + excel.getName() + " was modified. Updating it´s tab");
 
-						JScrollPane sp = (JScrollPane) tp.getComponent(index);
+						JScrollPane sp = (JScrollPane) tp.getComponentAt(index);
 						JViewport jP = (JViewport) sp.getComponent(0);
 						ExcelTableCreator eTC = (ExcelTableCreator) jP.getComponent(0);
 						jP.remove(eTC);
@@ -352,14 +353,10 @@ public class ExcelActions {
 
 		// we add to the maps the index and the last modification of the file
 		tp.getExcelModificationIndexTab().put(tp.indexOfTab("Excel " + name), excel.lastModified());
-		tp.getIndexTabExcel().put(tp.indexOfTab("Excel " + name), excel); // the
-																			// index
-																			// and
-																			// the
-																			// excel
-																			// File
-		tp.setSelectedIndex(tp.indexOfTab("Excel " + name)); // we make it the
-																// selected tab
+		// the index and the excel File
+		tp.getIndexTabExcel().put(tp.indexOfTab("Excel " + name), excel);
+		// we make it the selected tab
+		tp.setSelectedIndex(tp.indexOfTab("Excel " + name));
 
 	}
 
@@ -735,6 +732,89 @@ public class ExcelActions {
 		ete.convertToExcel();
 
 		rt.reset();
+	}
+
+	public static void deleteRow(File excelFile, String originalName) {
+		HSSFWorkbook workbook;
+		try {
+			workbook = new HSSFWorkbook(new FileInputStream(excelFile));
+			HSSFSheet sheet = workbook.getSheet("Results");
+			int rowIndex = findRow(sheet, originalName);
+			removeRow(sheet, rowIndex);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void removeRow(HSSFSheet sheet, int rowIndex) {
+		int lastRowNum = sheet.getLastRowNum();
+		if (rowIndex >= 0 && rowIndex < lastRowNum) {
+			sheet.shiftRows(rowIndex + 1, lastRowNum, -1);
+		}
+		if (rowIndex == lastRowNum) {
+			HSSFRow removingRow = sheet.getRow(rowIndex);
+			if (removingRow != null) {
+				sheet.removeRow(removingRow);
+			}
+		}
+	}
+
+	public static void getchangeExcelRowFromResultTable(ArrayList<Integer> goodRows, HSSFSheet sheet,
+			String originalName, File excelFile, HSSFWorkbook workbook) {
+
+		String[] s = null;
+		ResultsTable rt = ResultsTable.getResultsTable();
+		int rows = rt.getCounter();
+		for (int i = rows; i > 0; i--) {
+			if (!(goodRows.contains(i - 1))) {
+				rt.deleteRow(i - 1);
+			} else {
+				s = rt.getRowAsString(i - 1).split(",");
+				if (s.length == 1) {
+					s = rt.getRowAsString(i - 1).split("\t");
+				}
+
+				if (s[1].equals("")) {
+					rt.deleteRow(i - 1);
+				}
+
+			}
+
+		}
+		int intRow = ExcelActions.findRow(sheet, originalName);
+		if (intRow == -1) { // If the row does not exist we create it
+			HSSFRow newRow = sheet.createRow((short) sheet.getLastRowNum() + 1);
+			for (int i = 1; i < s.length; i++) {
+				newRow.createCell((short) i).setCellValue(s[i]);
+			}
+		} else { // if it exist we modify it
+			for (int i = 1; i < sheet.getRow(intRow).getLastCellNum(); i++) {
+				Cell cell2Update = sheet.getRow(intRow).getCell(i);
+				cell2Update.setCellValue(s[i + 1]);
+			}
+
+		}
+
+		FileOutputStream out;
+		try {
+			out = new FileOutputStream(excelFile);
+			workbook.write(out);
+
+			out.close();
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 }

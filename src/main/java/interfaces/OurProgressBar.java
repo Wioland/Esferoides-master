@@ -31,32 +31,6 @@ public class OurProgressBar extends JDialog {
 	private int actualElement=0;
 	private boolean showProgress;
 
-//	/**
-//	 * Creates a progress bar
-//	 * 
-//	 * @param frameDad jframe parent to show under
-//	 */
-//	public OurProgressBar(JFrame frameDad) {
-//		super(frameDad);
-//
-//		setTitle("Work in progress");
-//		JProgressBar progressBar = new JProgressBar();
-//		progressBar.setValue(0);
-//		progressBar.setString("");
-//		progressBar.setStringPainted(true);
-//		progressBar.setIndeterminate(true);
-//		Border border = BorderFactory.createTitledBorder("Processing...");
-//		progressBar.setBorder(border);
-//		Container content = getContentPane();
-//		content.add(progressBar, BorderLayout.NORTH);
-//		setSize(300, 100);
-//		setMinimumSize(new Dimension(300, 100));
-//		setLocationRelativeTo(frameDad);
-//
-//		setUndecorated(true);
-//		setVisible(true);
-//
-//	}
 
 	public OurProgressBar(JFrame frameDad, boolean showProgress) {
 		super(frameDad);

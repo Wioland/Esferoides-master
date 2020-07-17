@@ -36,9 +36,10 @@ public class ExcelTask extends TimerTask {
 			LOGGER.log(Level.INFO,
 					"Numero de ejecución " + counter + " el directorio es " + dir);
 			counter++;
-
+			
 			// Checks if the content of the excels in the tabs has change
 			ExcelActions.checkAllExcelTab(tp, dir);
+	
 		}
 
 	}

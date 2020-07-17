@@ -1,29 +1,8 @@
 package funtions;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
-import java.io.IOException;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.ss.usermodel.Row;
-
-import ij.IJ;
-import ij.ImagePlus;
-import ij.gui.Roi;
-import ij.measure.ResultsTable;
-import ij.plugin.frame.RoiManager;
-import loci.formats.FormatException;
-import loci.plugins.BF;
-import loci.plugins.in.ImporterOptions;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RoiFuntions {
 
@@ -46,49 +25,6 @@ public class RoiFuntions {
 		roiPath = dir + "predictions" + File.separator + f.getName();
 		return roiPath;
 	}
-
-	/**
-	 * Gets the original image associated with the roi given and shoes the image
-	 * with the roi and its measures
-	 * 
-	 * @param path    Path of the directory
-	 * @param roiPath path of the zip roi
-	 */
-	public static void showOriginalFilePlusRoi(String path, String roiPath) {
-		ImagePlus[] imps;
-		try {
-			ImporterOptions options = new ImporterOptions();
-			options.setWindowless(true);
-			options.setId(path);
-			options.setOpenAllSeries(true);
-			imps = BF.openImagePlus(options);
-
-			ImagePlus imp = imps[0];
-			imp.show();
-
-			IJ.setTool("freehand");
-			RoiManager roi = new RoiManager();
-
-			if ((new File(roiPath)).exists()) {
-				roi.runCommand("Open", roiPath);
-			} else {
-				JOptionPane.showMessageDialog(null, "No Roi file associated with this image");
-			}
-
-			roi.runCommand(imp, "Measure");
-			ResultsTable r = ResultsTable.getResultsTable();
-
-			r.show("Results");
-
-		} catch (FormatException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error while trying to show the imagen + roi", "Error saving",
-					JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-
 
 	/**
 	 * Gets the path of the original file (nd2 or tiff) associated with the tiff
@@ -129,18 +65,15 @@ public class RoiFuntions {
 	 *         prediction folder
 	 */
 	public static String getOriginalFilePathFromPredictions(String tiffPredictionsPath) {
-		String path = tiffPredictionsPath.replace("_pred.tiff", ".nd2");
-		path = path.replace(File.separator + "predictions", "");
+		String path = tiffPredictionsPath.replace(File.separator + "predictions", "");
 		File faux = new File(path);
+		String pattern = faux.getName().replace("_pred.tiff", "") + ".*";
+		List<String> result = new ArrayList<String>();
 
-		if (!faux.exists()) {
-			path = path.replace(".nd2", "fluo.tif");
-			faux = new File(path);
-			if (!faux.exists()) {
-				path = path.replace("fluo.tif", ".tif");
-			}
+		Utils.search(pattern, new File(faux.getAbsolutePath().replace(faux.getName(), "")), result, 0);
+		if (!result.isEmpty()) {
+			path = result.get(0);
 		}
-
 		return path;
 	}
 

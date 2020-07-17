@@ -327,6 +327,14 @@ public class ViewImagesBigger {
 		this.title = title;
 	}
 
+	public List<ImageIcon> getListImages() {
+		return listImages;
+	}
+
+	public void setListImages(List<ImageIcon> listImages) {
+		this.listImages = listImages;
+	}
+
 	// METHODS
 
 	public void setImage(String image) {
@@ -380,7 +388,7 @@ public class ViewImagesBigger {
 	 * Changes the name shown in the tab of the comparer/viewImagenBigger or changes
 	 * the selected image in the case of the AlgorithmView
 	 */
-	private void moreActionChangeIndexIma() {
+	public void moreActionChangeIndexIma() {
 		jpComparer.setLabelImageIcon(listImages.get(indexImagenList), listImages.get(indexImagenList).getDescription());
 		image = jpComparer.getLabelImageIcon();
 
@@ -660,6 +668,12 @@ public class ViewImagesBigger {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+				if (tp.getRoiModifyTab() != null) {
+					tp.getRoiModifyTab().getBtnClose().doClick();
+					tp.setRoiModifyTab(null);
+				}
+
 				// To the shown image we use all the algorithms
 				ImageIcon i = listImages.get(listImages.indexOf(image));
 				File f = new File(i.getDescription());
@@ -673,6 +687,39 @@ public class ViewImagesBigger {
 			}
 		});
 
+	}
+
+	public void deleteImageFromListNoComparerOldVsNew() {
+		listImages.remove(indexImagenList);
+		indexImagenList = 0;
+
+		// if there is only one image left we disable the
+		// buttons
+		if (listImages.size() == 1) {
+			jpComparer.getBackButton().setEnabled(false);
+			jpComparer.getForwarButtonButton().setEnabled(false);
+
+		}
+		// changes the images shown to the first in the
+		// array
+		if(listImages.size() != 0) {
+			moreActionChangeIndexIma();
+		}
+		
+		
+	}
+
+	public void modifyImageFromListNoComparerOldVsNew() {
+
+		ImageIcon i = ShowTiff.showTiffToImageIcon(listImages.get(indexImagenList).getDescription());
+		i.setDescription(listImages.get(indexImagenList).getDescription());
+
+		listImages.remove(indexImagenList);
+		listImages.add(indexImagenList, i);
+		// changes the images shown to the first in the
+		// array
+
+		moreActionChangeIndexIma();
 	}
 
 }

@@ -8,7 +8,7 @@ import ij.process.ImageStatistics;
 
 public class DetectEsferoidImageMethods {
 
-	public static void processEsferoidNoFluo(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee, int noNE) {
+	public static void processEsferoidNoFluo(ImagePlus imp2) {
 
 		IJ.run(imp2, "8-bit", "");
 		IJ.run(imp2, "Find Edges", "");
@@ -17,20 +17,23 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Convert to Mask", "");
 
 	}
-	public static void processEsferoidNoFluoBis(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee, int noNE) {
 
+	public static void processEsferoidNoFluoBis(ImagePlus imp2) {
+		IJ.run(imp2, "8-bit", "");
 		IJ.run(imp2, "Find Edges", "");
 		IJ.setAutoThreshold(imp2, "Default dark");
 		IJ.setRawThreshold(imp2, 3000, 65550, null);
 		IJ.run(imp2, "Convert to Mask", "");
 	}
-	public static void processEsferoidNoFluoThreshold(ImagePlus imp2) {
 
+	public static void processEsferoidNoFluoThreshold(ImagePlus imp2) {
+		IJ.run(imp2, "8-bit", "");
 		IJ.setAutoThreshold(imp2, "Default");
 		IJ.setRawThreshold(imp2, 0, 5000, null);
 		IJ.run(imp2, "Convert to Mask", "");
 	}
-	public static void processEsferoidFluo(ImagePlus imp2, boolean threshold, int noNeedde, double Nonee, int noNE) {
+
+	public static void processEsferoidFluo(ImagePlus imp2, boolean threshold) {
 
 //		IJ.run(imp2, "8-bit", "");
 //		IJ.setAutoThreshold(imp2, "Otsu dark");
@@ -38,13 +41,14 @@ public class DetectEsferoidImageMethods {
 //			IJ.setRawThreshold(imp2, 40, 255, null);// 40
 //		}
 //		IJ.run(imp2, "Convert to Mask", "");
+		
+		
 		IJ.run(imp2, "8-bit", "");
 		IJ.setAutoThreshold(imp2, "Li dark");
 		IJ.run(imp2, "Convert to Mask", "");
 	}
 
-	public static void processEsferoidUsingThreshold(ImagePlus imp2, boolean dilate, int noNeedde, double Nonee,
-			int noNE) {
+	public static void processEsferoidUsingThreshold(ImagePlus imp2, boolean dilate) {
 
 		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
 			IJ.run(imp2, "Color Threshold...", "");
@@ -74,8 +78,7 @@ public class DetectEsferoidImageMethods {
 
 	}
 
-	public static void processEsferoidUsingThresholdOld(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee,
-			int noNE) {
+	public static void processEsferoidUsingThresholdOld(ImagePlus imp2) {
 
 		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
 			IJ.run(imp2, "Color Threshold...", "");
@@ -99,8 +102,7 @@ public class DetectEsferoidImageMethods {
 
 	}
 
-	public static void processEsferoidUsingVariance(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee,
-			int noNE) {
+	public static void processEsferoidUsingVariance(ImagePlus imp2) {
 
 		IJ.run(imp2, "Find Edges", "");
 		IJ.run(imp2, "Variance...", "radius=7");
@@ -125,8 +127,7 @@ public class DetectEsferoidImageMethods {
 
 	}
 
-	public static void processEsferoidesGeneralCaseHector(ImagePlus imp2, boolean noNeed, int maxFilter, double stdI,
-			int noNE) {
+	public static void processEsferoidesGeneralCaseHector(ImagePlus imp2, int maxFilter, double stdI) {
 
 //		if (maxFilter != -1 && stdI != -1) {
 
@@ -169,7 +170,7 @@ public class DetectEsferoidImageMethods {
 
 	}
 
-	public static void processEsferoidEdges(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee, int iters) {
+	public static void processEsferoidEdges(ImagePlus imp2, int iters) {
 
 		IJ.run(imp2, "Find Edges", "");
 		IJ.run(imp2, "Convert to Mask", "");
@@ -195,8 +196,7 @@ public class DetectEsferoidImageMethods {
 
 	}
 
-	public static void processEsferoidesGeneralCase(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee,
-			int noNE) {
+	public static void processEsferoidesGeneralCase(ImagePlus imp2) {
 		IJ.run(imp2, "Convolve...",
 				"text1=[-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 50 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n-1 -1 -1 -1 -1 -1 -1\n] normalize");
 
@@ -214,8 +214,7 @@ public class DetectEsferoidImageMethods {
 
 	}
 
-	public static void processEsferoidUsingThreshold2(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee,
-			int noNE) {
+	public static void processEsferoidUsingThreshold2(ImagePlus imp2) {
 
 		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
 			IJ.run(imp2, "Color Threshold...", "");
@@ -275,8 +274,7 @@ public class DetectEsferoidImageMethods {
 //
 //	}
 
-	public static void processEsferoidUsingThresholdWithWatershed(ImagePlus imp2, boolean noNeed, int noNeedde,
-			double Nonee, int noNE) {
+	public static void processEsferoidUsingThresholdWithWatershed(ImagePlus imp2) {
 
 		if (imp2.getBitDepth() == 24 || imp2.getBitDepth() == 32) {
 			IJ.run(imp2, "Color Threshold...", "");
@@ -313,7 +311,7 @@ public class DetectEsferoidImageMethods {
 //
 //	}
 
-	public static void processEsferoidVariance(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee, int noNE) {
+	public static void processEsferoidVariance(ImagePlus imp2) {
 
 		IJ.run(imp2, "Variance...", "radius=1");
 
@@ -329,7 +327,7 @@ public class DetectEsferoidImageMethods {
 
 	}
 
-	public static void processEsferoidVariance2(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee, int noNE) {
+	public static void processEsferoidVariance2(ImagePlus imp2) {
 
 		IJ.run(imp2, "Variance...", "radius=1");
 
@@ -346,7 +344,7 @@ public class DetectEsferoidImageMethods {
 
 	}
 
-	public static void processEsferoidBig(ImagePlus imp2, boolean noNeed, int noNeedde, double Nonee, int noNE) {
+	public static void processEsferoidBig(ImagePlus imp2) {
 
 		ImagePlus imp1 = imp2.duplicate();
 //		imp1.show();
@@ -379,7 +377,6 @@ public class DetectEsferoidImageMethods {
 		imp1.close();
 
 	}
-	
 
 	public static void processEsferoidEdgesThreshold(ImagePlus imp2, int min, int max) {
 
