@@ -88,27 +88,6 @@ public class Methods {
 
 		}
 
-//		for (String type : algorithms) {
-//			if (type.equals("suspension") || type.equals("colageno")) {
-//				if (checkIfFluoImages(result)) {
-//
-//					createImagesMetods(result, directory, type, true);
-//				}
-//
-//			} else {
-//				if ((type.contains("Hector") && FileFuntions.isExtension(result, "tif"))
-//						|| (type.equals("Teodora v1") && FileFuntions.isExtension(result, "nd2"))
-//						|| (type.equals("Teodora Big") && FileFuntions.isExtension(result, "nd2"))
-//						|| (type.equals("Teniposide") && (FileFuntions.isExtension(result, "jpg")
-//								|| FileFuntions.isExtension(result, "JPEG")))) {
-//
-//					createImagesMetods(result, directory, type, true);
-//				}
-//
-//			}
-//
-//		}
-
 	}
 
 	// Getters and setters
@@ -153,7 +132,7 @@ public class Methods {
 			}
 
 			// We initialize the ResultsTable
-			// ResultsTable rt = new ResultsTable();
+
 			ImporterOptions options = new ImporterOptions();
 
 			// We construct the EsferoidProcessorObject
@@ -197,12 +176,6 @@ public class Methods {
 			}
 
 			if (!faux.exists()) {
-				// JOptionPane.showMessageDialog(null,
-				// "One or more images doesn´t have their fluo image or it isn´t
-				// in the same folder. This method needs a fluo image. Try it
-				// later when a fluo image is in the folder",
-				// "No fluo image. Can´t do the method",
-				// JOptionPane.WARNING_MESSAGE);
 				haveFluo = false;
 				break;
 			}

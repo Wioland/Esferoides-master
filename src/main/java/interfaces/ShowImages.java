@@ -44,14 +44,14 @@ public class ShowImages extends JPanel {
 		createImageButton(folder, tp, "");
 
 	}
+
 	public ShowImages(List<ImageIcon> images, Component tp) {
 		// we put them in one column
 		initializeComponents(1);
-this.imageIcon=images;
+		this.imageIcon = images;
 		createImageButton(tp);
 
 	}
-
 
 	/**
 	 * For showing the tiff images like buttons
@@ -190,7 +190,6 @@ this.imageIcon=images;
 
 								tap.getViewImagen().setImage(image.getDescription());
 							}
-//							new ViewImagesBigger(imageIcon.get(listImages.indexOf(name)), imageIcon, tap, false);
 
 						}
 					} else {
@@ -213,6 +212,7 @@ this.imageIcon=images;
 			this.add(imageView);
 		}
 	}
+
 	private void createImageButton(Component tp) {
 		ImageIcon iconoEscala;
 		JButton imageView;
@@ -221,7 +221,6 @@ this.imageIcon=images;
 		for (ImageIcon image : imageIcon) {
 			// we transform the images to imageIcon for showing them in the
 			// interface
-		
 
 			// add the button
 			// Get a icon with the specific dimension
@@ -229,7 +228,6 @@ this.imageIcon=images;
 			imageView = new JButton(iconoEscala);
 			imageView.setIcon(iconoEscala);
 			imageView.setName(image.getDescription());
-
 
 			// Adds the mouse click actions of the button
 			imageView.addMouseListener(new MouseAdapter() {
@@ -249,7 +247,6 @@ this.imageIcon=images;
 
 								tap.getViewImagen().setImage(image.getDescription());
 							}
-//							new ViewImagesBigger(imageIcon.get(listImages.indexOf(name)), imageIcon, tap, false);
 
 						}
 					} else {
@@ -271,8 +268,9 @@ this.imageIcon=images;
 
 			this.add(imageView);
 		}
-		
+
 	}
+
 	/**
 	 * Creates the buttons of the list of images given
 	 * 
@@ -372,25 +370,26 @@ this.imageIcon=images;
 		tp.getOriginalNewSelected().put(origianlName, buttonSelected);
 
 	}
+
 	public void removeModifyButton() {
-		File aux=null;
-		int i=0;
-		List<Integer> deletedIndex= new ArrayList<Integer>();
+		File aux = null;
+		int i = 0;
+		List<Integer> deletedIndex = new ArrayList<Integer>();
 		for (String path : listImages) {
-			aux= new File(path);
-			if(!aux.exists()) {
+			aux = new File(path);
+			if (!aux.exists()) {
 				JButton bu = this.listImagesPrev.get(path);
 				this.remove(bu);
-				
+
 				this.listImagesPrev.remove(path);
 				this.lastModifyImage.remove(path);
 				this.imageIcon.remove(i);
-				
+
 				deletedIndex.add(i);
 				this.repaint();
-				
-			}else {
-				if(aux.lastModified()!=lastModifyImage.get(path)) { 
+
+			} else {
+				if (aux.lastModified() != lastModifyImage.get(path)) {
 					ImageIcon image = ShowTiff.showTiffToImageIcon(path);
 					image.setDescription(path);
 					JButton bu = this.listImagesPrev.get(path);
@@ -400,10 +399,10 @@ this.imageIcon=images;
 			}
 			i++;
 		}
-		
+
 		for (int indexREmove : deletedIndex) {
 			this.listImages.remove(indexREmove);
 		}
-		
+
 	}
 }

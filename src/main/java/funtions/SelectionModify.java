@@ -14,12 +14,12 @@ import ij.process.FloatPolygon;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 
-public class SelectionModify  {
+public class SelectionModify {
 	private ImagePlus imp;
 	private float[] kernel = { 1f, 1f, 1f, 1f, 1f };
 
 	public SelectionModify(ImagePlus imp) {
-		this.imp=imp;
+		this.imp = imp;
 	}
 
 	public Roi fitSpline() {
@@ -44,14 +44,6 @@ public class SelectionModify  {
 			else
 				p = trimPolygon(p, p.getUncalibratedLength());
 		}
-//		String options = Macro.getOptions();
-//		if (options != null && options.indexOf("straighten") != -1)
-//			p.fitSplineForStraightening();
-//		else if (options != null && options.indexOf("remove") != -1)
-//			p.removeSplineFit();
-//		else
-//			p.fitSpline();
-//		imp.draw();
 		LineWidthAdjuster.update();
 		return p;
 	}
@@ -65,7 +57,6 @@ public class SelectionModify  {
 		float[] curvature = getCurvature(x, y, n);
 		Rectangle r = roi.getBounds();
 		double threshold = rodbard(length);
-		// IJ.log("trim: "+length+" "+threshold);
 		double distance = Math.sqrt((x[1] - x[0]) * (x[1] - x[0]) + (y[1] - y[0]) * (y[1] - y[0]));
 		x[0] += r.x;
 		y[0] += r.y;
@@ -101,8 +92,6 @@ public class SelectionModify  {
 	}
 
 	double rodbard(double x) {
-		// y = c*((a-x/(x-d))^(1/b)
-		// a=3.9, b=.88, c=712, d=44
 		double ex;
 		if (x == 0.0)
 			ex = 5.0;
@@ -153,7 +142,6 @@ public class SelectionModify  {
 		y = smooth(y, n);
 		float[] curvature = getCurvature(x, y, n);
 		double threshold = rodbard(length);
-		// IJ.log("trim: "+length+" "+threshold);
 		double distance = Math.sqrt((x[1] - x[0]) * (x[1] - x[0]) + (y[1] - y[0]) * (y[1] - y[0]));
 		int i2 = 1;
 		double x1, y1, x2 = 0, y2 = 0;

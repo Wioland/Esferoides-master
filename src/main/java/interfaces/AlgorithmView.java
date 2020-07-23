@@ -1,11 +1,14 @@
 package interfaces;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -20,6 +23,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import esferoides.Methods;
 import funtions.FileFuntions;
@@ -50,6 +55,8 @@ public class AlgorithmView extends JFrame {
 		setTitle("Algorithm view selecter");
 		this.setVisible(true);
 		setMinimumSize(new Dimension(1000, 300));
+
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -189,17 +196,17 @@ public class AlgorithmView extends JFrame {
 		Utils.mainFrame.getPb().setVisible(false);
 		Utils.mainFrame.getPb().dispose();
 		jSp.setVisible(true);
-//		getContentPane().add(jSp);
 		this.getContentPane().add(jSp);
 		jSp.repaint();
 
 		IJ.run("Close All");
 		this.pack();
-//		pack();
+
 		if (!Utils.mainFrame.getMb().isEnabled()) {
 			Utils.mainFrame.getMb().setEnabled(true);
 		}
-//		t.interrupt();
+
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
 	/**
@@ -214,8 +221,16 @@ public class AlgorithmView extends JFrame {
 		if (!me.isConsumed()) {
 			switch (me.getClickCount()) {
 			case 1:
+				if (selectedBu != null) {
+					selectedBu.setBackground(null);
+					selectedBu.setContentAreaFilled(true);
+					selectedBu.setOpaque(false);
+				}
 				selectedBu = (JButton) me.getSource();
 				selectedBu.setName(((JButton) me.getSource()).getName());
+				selectedBu.setBackground(Color.yellow);
+				selectedBu.setContentAreaFilled(false);
+				selectedBu.setOpaque(true);
 				break;
 			case 2:
 				me.consume();
@@ -260,6 +275,41 @@ public class AlgorithmView extends JFrame {
 
 		this.jSp.add(vi.getJPComparer(), constraints);
 		this.pack();
+
+		jSp.requestFocusInWindow();
+
+		jSp.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_LEFT:
+					vi.getJPComparer().getBackButton().doClick();
+
+					break;
+
+				case KeyEvent.VK_RIGHT:
+					vi.getJPComparer().getForwarButtonButton().doClick();
+					break;
+
+				default:
+					break;
+				}
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 
 	}
 
@@ -327,10 +377,17 @@ public class AlgorithmView extends JFrame {
 	 * @param filePath
 	 */
 	private void SaveImageAndDelete(String filePath) {
+		if (this.roiModifyView != null) {
+			String nameSelectedIma=FileFuntions.namewithoutExtension(filePath).replace("_pred", "");
+			String nameModifyIma=FileFuntions.namewithoutExtension(roiModifyView.getRoiPath());
+			if (nameSelectedIma.equals(nameModifyIma)) {
+				roiModifyView.closeRoiModifyAction();
+			}
+		}
 		File ima = new File(filePath);
 		String saveDir = ima.getAbsolutePath().replace("temporal" + File.separator + ima.getName(), "predictions");
-		FileFuntions.saveSelectedImage(ima, saveDir);
-		if (vi != null) {
+		boolean save=FileFuntions.saveSelectedImage(ima, saveDir);
+		if (vi != null && save) {
 			vi.getJPComparer().setOriginalImaLbIcon(vi.getJPComparer().getLabelImageIcon(),
 					vi.getJPComparer().getLabelImage().getName());
 		}
@@ -361,11 +418,10 @@ public class AlgorithmView extends JFrame {
 		if (folder != null) {
 			FileFuntions.deleteFolder(folder);
 		}
+
 		if (!Utils.mainFrame.getMb().isEnabled()) {
 			Utils.mainFrame.getMb().setEnabled(true);
 		}
-
-		t.interrupt();
 
 	}
 
@@ -384,6 +440,17 @@ public class AlgorithmView extends JFrame {
 			this.tabbedPanel.add("Images", this.jSp.getComponentAt(1, 0));
 			this.jSp.remove(this.jSp.getComponentAt(1, 0));
 			this.jSp.add(tabbedPanel, constraints);
+
+			tabbedPanel.addChangeListener(new ChangeListener() {
+				@Override
+				public void stateChanged(ChangeEvent e) {
+
+					if (tabbedPanel.getTitleAt(tabbedPanel.getSelectedIndex()).equals("Images")) {
+						jSp.requestFocusInWindow();
+					}
+
+				}
+			});
 		}
 
 		this.repaint();

@@ -48,7 +48,6 @@ public class ImageTreePanel extends JSplitPane {
 
 		JScrollPane s2 = new JScrollPane(p); // Add the tree
 
-		// Properties of the jsplitpane
 		this.setRightComponent(folderView);
 		this.setLeftComponent(s2);
 		this.setOrientation(SwingConstants.VERTICAL);
@@ -125,14 +124,13 @@ public class ImageTreePanel extends JSplitPane {
 						// open the imageJ
 
 						String roiPath = RoiFuntions.getRoiPathPredicctions(path);
-						
+
 						if (this.folderView.getRoiModifyTab() != null) {
 							this.folderView.getRoiModifyTab().getBtnClose().doClick();
-							
+
 						}
-						
-						this.folderView.setRoiModifyTab( new RoiModifyView(path, roiPath));
-						
+
+						this.folderView.setRoiModifyTab(new RoiModifyView(path, roiPath));
 
 					} else {
 						if (!path.equals(dir)) { // if it isn't the current
@@ -184,7 +182,7 @@ public class ImageTreePanel extends JSplitPane {
 	}
 
 	public void repainTabNoTimers(boolean selectAlgo) {
-		OurProgressBar pb = new OurProgressBar(Utils.mainFrame,false);
+		OurProgressBar pb = new OurProgressBar(Utils.mainFrame, false);
 		Utils.mainFrame.setPb(pb);
 		this.selectAlgo = selectAlgo;
 

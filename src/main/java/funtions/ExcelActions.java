@@ -1,5 +1,10 @@
 package funtions;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +18,7 @@ import java.util.Timer;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 
@@ -23,6 +29,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
+import ij.io.DirectoryChooser;
 import ij.measure.ResultsTable;
 import interfaces.ExcelTableCreator;
 import interfaces.TabPanel;
@@ -199,7 +206,8 @@ public class ExcelActions {
 						JOptionPane.showMessageDialog(Utils.mainFrame,
 								"The excel " + excel.getName() + " was modified. Updating it´s tab");
 
-						JScrollPane sp = (JScrollPane) tp.getComponentAt(index);
+						JPanel jpa=(JPanel) tp.getComponentAt(index);
+						JScrollPane sp = (JScrollPane) jpa.getComponent(1) ;
 						JViewport jP = (JViewport) sp.getComponent(0);
 						ExcelTableCreator eTC = (ExcelTableCreator) jP.getComponent(0);
 						jP.remove(eTC);
@@ -243,9 +251,8 @@ public class ExcelActions {
 			JScrollPane sp = (JScrollPane) tp.getComponentAt(index);
 			JViewport jP = (JViewport) sp.getComponent(0);
 
-			if (tp.getIndexTabExcel().size() == 1) { // if it is the last excel
-														// tab we transform it
-														// to a noFileTab
+			// if it is the last excel tab we transform it to a noFileTab
+			if (tp.getIndexTabExcel().size() == 1) {
 
 				tp.noFileText("Excel", jP);
 				tp.setTitleAt(1, "Excel ");
@@ -280,8 +287,6 @@ public class ExcelActions {
 	 */
 	public static void addedExcelToTheTab(List<String> result, TabPanel tp) {
 
-		// int resultSiz = result.size();
-		// int tpSize = tp.getIndexTabExcel().size();
 		if (result.size() > tp.getIndexTabExcel().size()) { // if the folder
 
 			JOptionPane.showMessageDialog(Utils.mainFrame, "Detected an excel file");
@@ -317,9 +322,8 @@ public class ExcelActions {
 						firstCheck = true;
 
 					} else {
-						addExcelPanel(new File(path), tp); // For the rest of
-															// excels we create
-															// a new tab
+						// For the rest of excels we create a new tab
+						addExcelPanel(new File(path), tp);
 					}
 				}
 
@@ -339,8 +343,50 @@ public class ExcelActions {
 		String name = excel.getName();
 		ExcelTableCreator excelPanel = new ExcelTableCreator(excel);
 		JScrollPane s = new JScrollPane(excelPanel);
-		// if the excel is in a subfolder the name contains the different path +
-		// excel
+		JPanel panel = new JPanel(new GridBagLayout());
+		JButton buSaveExcel = new JButton("EXPORT EXCEL FILE");
+		buSaveExcel.setMaximumSize(new Dimension(200, 200));
+		buSaveExcel.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				DirectoryChooser dc = new DirectoryChooser("Select the folder to save the excel");
+				String dir = dc.getDirectory();
+
+				if (dir != null) {
+
+					if (!dir.endsWith(File.separator)) {
+						dir += File.separator;
+					}
+					dir += excel.getName();
+
+					FileFuntions.copiFile(excel.getAbsolutePath(), dir);
+
+					JOptionPane.showMessageDialog(Utils.mainFrame, "File excel saved in the selected File. "
+							+ "\n Warning: the current File is only a copy of the original. The original file is the one that will ve updated with the changes.");
+				}
+
+			}
+		});
+
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.weightx = 0;
+		constraints.weighty = 0;
+
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+
+		panel.add(buSaveExcel, constraints);
+
+		constraints.weightx = 1;
+		constraints.weighty = 1;
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+
+		panel.add(s, constraints);
+
+		// if the excel is in a subfolder the name contains the different path + excel
 		// name
 		if (!excel.getAbsolutePath().equals(tp.getDir())) {
 
@@ -349,7 +395,7 @@ public class ExcelActions {
 		}
 
 		s.setName("Excel " + name);
-		tp.add("Excel " + name, s);
+		tp.add("Excel " + name, panel);
 
 		// we add to the maps the index and the last modification of the file
 		tp.getExcelModificationIndexTab().put(tp.indexOfTab("Excel " + name), excel.lastModified());
@@ -405,7 +451,7 @@ public class ExcelActions {
 			HSSFWorkbook wb;
 			try {
 
-//The first one is the new excel 
+				// The first one is the new excel
 				File excel = new File(result.get(0));
 				String path = directory.getAbsolutePath();
 				if (path.endsWith(File.separator)) {

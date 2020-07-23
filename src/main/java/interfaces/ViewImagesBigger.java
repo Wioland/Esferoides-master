@@ -80,50 +80,7 @@ public class ViewImagesBigger {
 
 	}
 
-	private void initialiceMap() {
-		int i = 0;
-		for (ImageIcon imageIcon : listImages) {
-			this.indexImage.put(imageIcon.getDescription(), i);
-			i++;
-		}
 
-	}
-
-	private void addListenerMenuScroll(JButton scrollButton) {
-
-		scrollButton.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				ShowImages ima = new ShowImages(listImages, tp);
-				tp.scrollView(ima);
-				scrollButton.setEnabled(false);
-			}
-		});
-
-	}
-
-	private void addTotab() {
-
-		// Gets the name of the tab and add the title
-		String nombreImagen = (new File(listImages.get(indexImagenList).getDescription())).getName();
-		String title = indexImageView + nombreImagen;
-		this.tp.add(title, jpComparer);
-		this.tp.setSelectedIndex(this.tp.indexOfTab(title));
-
-		// create the "X" buttton
-		int index = this.tp.indexOfTab(title);
-		JPanel pnlTab = new JPanel(new GridBagLayout());
-		pnlTab.setOpaque(false);
-		JLabel lblTitle = new JLabel(title);
-
-		// Add the title and the button side by side in a panel
-		this.title = title;
-
-		pnlTab.add(lblTitle);
-
-		// add the panel with button "X" and name to the tabpanel to create the
-		// tab
-		this.tp.setTabComponentAt(index, pnlTab);
-	}
 
 	/**
 	 * Creates the tab that shows the image selected in its full size
@@ -169,6 +126,7 @@ public class ViewImagesBigger {
 				createComparer();
 				addlistenerButton(jpComparer.getBackButton(), jpComparer.getForwarButtonButton(), false);
 				jpComparer.getPanelButtons().remove(jpComparer.getExitButton());
+				
 
 			} else {
 				jpComparer.remove(jpComparer.getPanelLabelsText());
@@ -176,11 +134,10 @@ public class ViewImagesBigger {
 						.remove(jpComparer.getSplitPanelLabelsImages().getLeftComponent());
 				jpComparer.getPanelButtons().remove(jpComparer.getExitButton());
 				jpComparer.getPanelButtons().remove(jpComparer.getSelectButton());
-
+				jpComparer.getPanelButtons().remove(jpComparer.getScrollButton());
+				
 				addlistenerButton(jpComparer.getBackButton(), jpComparer.getForwarButtonButton(),
 						jpComparer.getTryAlgoButton());
-
-				jpComparer.getPanelButtons().remove(jpComparer.getScrollButton());
 
 			}
 
@@ -189,6 +146,7 @@ public class ViewImagesBigger {
 		} else {
 			createComparer();
 			addlistenerButton(jpComparer.getBackButton(), jpComparer.getForwarButtonButton(), false);
+			jpComparer.getPanelButtons().remove(jpComparer.getScrollButton());
 		}
 
 	}
@@ -702,11 +660,10 @@ public class ViewImagesBigger {
 		}
 		// changes the images shown to the first in the
 		// array
-		if(listImages.size() != 0) {
+		if (listImages.size() != 0) {
 			moreActionChangeIndexIma();
 		}
-		
-		
+
 	}
 
 	public void modifyImageFromListNoComparerOldVsNew() {
@@ -721,5 +678,48 @@ public class ViewImagesBigger {
 
 		moreActionChangeIndexIma();
 	}
+	private void initialiceMap() {
+		int i = 0;
+		for (ImageIcon imageIcon : listImages) {
+			this.indexImage.put(imageIcon.getDescription(), i);
+			i++;
+		}
 
+	}
+
+	private void addListenerMenuScroll(JButton scrollButton) {
+
+		scrollButton.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				ShowImages ima = new ShowImages(listImages, tp);
+				tp.scrollView(ima);
+				scrollButton.setEnabled(false);
+			}
+		});
+
+	}
+
+	private void addTotab() {
+
+		// Gets the name of the tab and add the title
+		String nombreImagen = (new File(listImages.get(indexImagenList).getDescription())).getName();
+		String title = indexImageView + nombreImagen;
+		this.tp.add(title, jpComparer);
+		this.tp.setSelectedIndex(this.tp.indexOfTab(title));
+
+		// create the "X" buttton
+		int index = this.tp.indexOfTab(title);
+		JPanel pnlTab = new JPanel(new GridBagLayout());
+		pnlTab.setOpaque(false);
+		JLabel lblTitle = new JLabel(title);
+
+		// Add the title and the button side by side in a panel
+		this.title = title;
+
+		pnlTab.add(lblTitle);
+
+		// add the panel with button "X" and name to the tabpanel to create the
+		// tab
+		this.tp.setTabComponentAt(index, pnlTab);
+	}
 }

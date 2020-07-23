@@ -31,8 +31,6 @@ import ij.gui.ImageWindow;
 import ij.gui.Roi;
 import ij.measure.ResultsTable;
 import ij.plugin.frame.RoiManager;
-import loci.formats.FormatException;
-import loci.plugins.BF;
 import loci.plugins.in.ImporterOptions;
 
 public class RoiModifyView extends JPanel {
@@ -61,9 +59,6 @@ public class RoiModifyView extends JPanel {
 	public RoiModifyView(String pathImage, String roiPath) {
 
 		this.tp = Utils.mainFrame.getImageTree().getFolderView();
-
-//		tp.setRoiModifyTab(this);
-
 		this.pathImage = pathImage;
 		this.roiPath = roiPath;
 		this.mainFrame = true;
@@ -74,13 +69,31 @@ public class RoiModifyView extends JPanel {
 	public RoiModifyView(String pathImage, String roiPath, AlgorithmView al) {
 
 		this.al = al;
-
 		this.pathImage = pathImage;
 		this.roiPath = roiPath;
 		this.mainFrame = false;
 
 		paintContent();
 	}
+
+	// GETTERS Y SETTERS
+	public JButton getBtnClose() {
+		return btnClose;
+	}
+
+	public void setBtnClose(JButton btnClose) {
+		this.btnClose = btnClose;
+	}
+
+	public String getRoiPath() {
+		return roiPath;
+	}
+
+	public void setRoiPath(String roiPath) {
+		this.roiPath = roiPath;
+	}
+
+	// METHODS
 
 	private void paintContent() {
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
@@ -137,6 +150,15 @@ public class RoiModifyView extends JPanel {
 
 					}
 				});
+				JButton closeBu = new JButton("CLOSE");
+				closeBu.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						btnClose.doClick();
+
+					}
+				});
 
 				paintImageModify();
 				IJ.setTool("freehand");
@@ -145,6 +167,7 @@ public class RoiModifyView extends JPanel {
 				panelButtons.add(resetBu);
 				panelButtons.add(modifyBu);
 				panelButtons.add(deleteBu);
+				panelButtons.add(closeBu);
 
 				GridBagConstraints constraints = new GridBagConstraints();
 				constraints.fill = GridBagConstraints.BOTH;
@@ -175,14 +198,6 @@ public class RoiModifyView extends JPanel {
 
 		t.start();
 
-	}
-
-	public JButton getBtnClose() {
-		return btnClose;
-	}
-
-	public void setBtnClose(JButton btnClose) {
-		this.btnClose = btnClose;
 	}
 
 	protected void resstoreRoi() {
@@ -252,7 +267,6 @@ public class RoiModifyView extends JPanel {
 						JOptionPane.showMessageDialog(al,
 								"The new Roi was save, but this change is only temporal.For making this change permanent, please use the 'SAVE BUTTON' of the main window");
 						al.modifyImageList();
-//			cambiar la vista de la imagen tiff por la nueva creada
 					}
 					deleteBu.setEnabled(true);
 					resetBu.setEnabled(true);
@@ -260,8 +274,6 @@ public class RoiModifyView extends JPanel {
 					rt.getResultsWindow().close();
 
 					repaintImageModify();
-
-					// repintar la imagen
 
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
@@ -285,79 +297,45 @@ public class RoiModifyView extends JPanel {
 	}
 
 	private void paintImageModify() {
-		ImagePlus[] imps;
 
-		ImporterOptions options;
+		openImage();
+		imageCanvas = new JPanel();
+		imageCanvas.add(panelIma.getCanvas());
+		scrollPanel = new JScrollPane(imageCanvas);
 
-		try {
-			options = new ImporterOptions();
-			options.setWindowless(true);
-			options.setId(this.pathImage);
-			options.setOpenAllSeries(true);
-			imps = BF.openImagePlus(options);
-			imp = imps[0];
-			imp.show();
-			panelIma = imp.getWindow();
-			panelIma.setVisible(false);
+		roi = new RoiManager(false);
 
-			imageCanvas = new JPanel();
-			imageCanvas.add(panelIma.getCanvas());
-			scrollPanel = new JScrollPane(imageCanvas);
-
-//			scrollPanel = new JScrollPane(panelIma.getComponent(0));
-			roi = new RoiManager(false);
-
-			if ((new File(roiPath)).exists()) {
-				roi.runCommand("Open", roiPath);
-				roi.select(0);
-				hasRoi = true;
-			} else {
-				hasRoi = false;
-				JOptionPane.showMessageDialog(null, "No Roi file associated with this image");
-			}
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if ((new File(roiPath)).exists()) {
+			roi.runCommand("Open", roiPath);
+			roi.select(0);
+			hasRoi = true;
+		} else {
+			hasRoi = false;
+			JOptionPane.showMessageDialog(null, "No Roi file associated with this image");
 		}
 
 	}
 
+	private void openImage() {
+		ImporterOptions options = null;
+		imp = FileFuntions.openImageIJ(this.pathImage, options);
+		imp.show();
+		panelIma = imp.getWindow();
+		panelIma.setVisible(false);
+	}
+
 	private void repaintImageModify() {
-		ImagePlus[] imps;
 
-		ImporterOptions options;
+		ij.WindowManager.closeAllWindows();
 
-		try {
-			options = new ImporterOptions();
-			options.setWindowless(true);
-			options.setId(this.pathImage);
-			options.setOpenAllSeries(true);
-			imps = BF.openImagePlus(options);
-			imp = imps[0];
-			imp.show();
-			panelIma = imp.getWindow();
-			panelIma.setVisible(false);
+		openImage();
 
-			imageCanvas.remove(0);
-			imageCanvas.add(panelIma.getCanvas());
-
-//			scrollPanel.add(panelIma.getComponent(0));
-			imageCanvas.repaint();
-			this.scrollPanel.repaint();
-			this.repaint();
-			resstoreRoi();
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		imageCanvas.remove(0);
+		imageCanvas.add(panelIma.getCanvas());
+		imageCanvas.repaint();
+		this.scrollPanel.repaint();
+		this.repaint();
+		resstoreRoi();
 
 	}
 
@@ -391,7 +369,6 @@ public class RoiModifyView extends JPanel {
 				aux = new File(imagePath);
 				aux.delete();
 				al.deleteImageList();
-//				se borra la imagen de donde se este mostrando y se recarga la vista
 			}
 			roi.runCommand(imp, "Delete");
 			JOptionPane.showMessageDialog(null, "Roi delete");
@@ -533,7 +510,7 @@ public class RoiModifyView extends JPanel {
 				if (al != null) {
 					al.setRoiModifyView(null);
 					al.getTabbedPanel().remove(al.getTabbedPanel().indexOfTabComponent(bu.getParent()));
-				
+
 				}
 			}
 

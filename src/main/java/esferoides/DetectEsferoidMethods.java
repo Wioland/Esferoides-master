@@ -1,8 +1,8 @@
 package esferoides;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
+import funtions.FileFuntions;
 import funtions.Utils;
 import ij.IJ;
 import ij.ImagePlus;
@@ -12,8 +12,6 @@ import ij.measure.Calibration;
 import ij.plugin.ImageCalculator;
 import ij.plugin.frame.RoiManager;
 import ij.process.ImageStatistics;
-import loci.formats.FormatException;
-import loci.plugins.BF;
 import loci.plugins.in.ImporterOptions;
 
 public class DetectEsferoidMethods {
@@ -25,45 +23,9 @@ public class DetectEsferoidMethods {
 		String nameClass = "FluoColageno";
 		name = name.replace("fluo", "");
 		options.setId(name);
-		ImagePlus impFluo = IJ.openImage(name);
-		
-		
-		if(impFluo==null) {
-			ImagePlus[] imps;
-		
-				try {
-					imps = BF.openImagePlus(options);
-					impFluo = imps[0];
-				} catch (FormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		ImagePlus impFluo = FileFuntions.openImageIJ(name, options);
 
-				
-		}
-	
-		ImagePlus impNoFluo = IJ.openImage(name);
-		
-		if(impNoFluo==null) {
-			ImagePlus[] imps;
-		
-				try {
-					imps = BF.openImagePlus(options);
-					impNoFluo = imps[0];
-				} catch (FormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				
-		}
-		
+		ImagePlus impNoFluo = FileFuntions.openImageIJ(name, options);
 
 		String title = impNoFluo.getTitle();
 
@@ -95,46 +57,12 @@ public class DetectEsferoidMethods {
 	public static void detectEsferoideFluoSuspension(ImporterOptions options, String dir, String name,
 			ArrayList<Integer> goodRows, boolean temp) {
 
-		ImagePlus impFluo = IJ.openImage(name);
+		options.setId(name);
+		ImagePlus impFluo = FileFuntions.openImageIJ(name, options);
 		String nameClass = "FluoSuspension";
 		name = name.replace("fluo", "");
-		
-		options.setId(name);
-		if(impFluo==null) {
-			ImagePlus[] imps;
-		
-				try {
-					imps = BF.openImagePlus(options);
-					impFluo = imps[0];
-				} catch (FormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 
-				
-		}
-	
-		ImagePlus impNoFluo = IJ.openImage(name);
-		
-		if(impNoFluo==null) {
-			ImagePlus[] imps;
-		
-				try {
-					imps = BF.openImagePlus(options);
-					impNoFluo = imps[0];
-				} catch (FormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				
-		}
+		ImagePlus impNoFluo = FileFuntions.openImageIJ(name, options);
 
 		DetectEsferoidImageMethods.processEsferoidFluo(impFluo, false);
 		RoiManager rm = AnalyseParticleMethods.analyzeParticlesFluo(impFluo);
@@ -156,25 +84,10 @@ public class DetectEsferoidMethods {
 	// Method to detect esferoides.
 	public static void detectEsferoideHectorv2(ImporterOptions options, String dir, String name,
 			ArrayList<Integer> goodRows, boolean temp) {
-		ImagePlus impb = IJ.openImage(name);
-		if(impb==null) {
-			ImagePlus[] imps;
-			options.setId(name);
-				try {
-					imps = BF.openImagePlus(options);
-					impb = imps[0];
-				} catch (FormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 
-				
-		}
-	
-		
+		options.setId(name);
+		ImagePlus impb = FileFuntions.openImageIJ(name, options);
+
 		String title = impb.getTitle();
 		String nameClass = "Hectorv2";
 
@@ -205,23 +118,11 @@ public class DetectEsferoidMethods {
 	// Method to detect esferoides.
 	public static void detectEsferoideHectorv1(ImporterOptions options, String dir, String name,
 			ArrayList<Integer> goodRows, boolean temp) {
-		ImagePlus impb = IJ.openImage(name);
-		if(impb==null) {
-			ImagePlus[] imps;
-			options.setId(name);
-				try {
-					imps = BF.openImagePlus(options);
-					impb = imps[0];
-				} catch (FormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 
-				
-		}
+		options.setId(name);
+
+		ImagePlus impb = FileFuntions.openImageIJ(name, options);
+
 		String title = impb.getTitle();
 		String nameClass = "Hectorv1";
 
@@ -291,211 +192,172 @@ public class DetectEsferoidMethods {
 	// Method to detect esferoides.
 	public static void detectEsferoideTeodora(ImporterOptions options, String dir, String name,
 			ArrayList<Integer> goodRows, boolean temp) {
+
 		options.setId(name);
 		String nameClass = "Teodora";
 
-		ImagePlus[] imps;
-		try {
-			imps = BF.openImagePlus(options);
+		ImagePlus imp = FileFuntions.openImageIJ(name, options);
+		ImagePlus imp2 = imp.duplicate();
 
-			ImagePlus imp = imps[0];
-			ImagePlus imp2 = imp.duplicate();
+		RoiManager rm;
 
-			RoiManager rm;
-
-			DetectEsferoidImageMethods.processEsferoidEdges(imp2, 0);
+		DetectEsferoidImageMethods.processEsferoidEdges(imp2, 0);
+		rm = AnalyseParticleMethods.analyseParticlesTeodora(imp2, false, true);
+		int iters = 1;
+		while ((rm == null || rm.getRoisAsArray().length == 0) && iters < 7) {
+			DetectEsferoidImageMethods.processEsferoidEdges(imp2, iters);
 			rm = AnalyseParticleMethods.analyseParticlesTeodora(imp2, false, true);
-			int iters = 1;
-			while ((rm == null || rm.getRoisAsArray().length == 0) && iters < 7) {
-				DetectEsferoidImageMethods.processEsferoidEdges(imp2, iters);
-				rm = AnalyseParticleMethods.analyseParticlesTeodora(imp2, false, true);
-				iters++;
-			}
-			if (temp) {
-				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
-//				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, "", temp);
-			} else {
-				Utils.showResultsAndSaveNormal(dir, name, imp, rm, goodRows);
-			}
-//				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
-			imp.close();
-		} catch (FormatException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			iters++;
 		}
+		if (temp) {
+			Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
+//				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, "", temp);
+		} else {
+			Utils.showResultsAndSaveNormal(dir, name, imp, rm, goodRows);
+		}
+//				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
+		imp.close();
 
 	}
 
 	// Method to detect esferoides.
 	public static void detectEsferoideTeodoraBig(ImporterOptions options, String dir, String name,
 			ArrayList<Integer> goodRows, boolean temp) {
+
 		options.setId(name);
 		String nameClass = "TeodoraBig";
 
-		ImagePlus[] imps;
-		try {
-			imps = BF.openImagePlus(options);
+		ImagePlus imp = FileFuntions.openImageIJ(name, options);
+		ImagePlus imp2 = imp.duplicate();
 
-			ImagePlus imp = imps[0];
-			ImagePlus imp2 = imp.duplicate();
+		RoiManager rm;
 
-			RoiManager rm;
+		int count = Utils.countBelowThreshold(imp2, 1100);
+		boolean realBlackHole1 = Utils.countBetweenThresholdOver(imp2, 1100, 2000, 1500);
+		boolean realBlackHole2 = Utils.countBelowThreshold(imp2, 3000) < 200000;
 
-			int count = Utils.countBelowThreshold(imp2, 1100);
-			boolean realBlackHole1 = Utils.countBetweenThresholdOver(imp2, 1100, 2000, 1500);
-			boolean realBlackHole2 = Utils.countBelowThreshold(imp2, 3000) < 200000;
+		if (count > 100 && realBlackHole2 && realBlackHole1) {
 
-			if (count > 100 && realBlackHole2 && realBlackHole1) {
-
-				if (count > 10000) {
-					DetectEsferoidImageMethods.processBlackHoles(imp2, false, 0, 0, 0);
-				} else {
-					DetectEsferoidImageMethods.processBlackHoles(imp2, true, 0, 0, 0);
-				}
-				rm = AnalyseParticleMethods.analyseParticlesTeodora(imp2, true, true);
+			if (count > 10000) {
+				DetectEsferoidImageMethods.processBlackHoles(imp2, false, 0, 0, 0);
 			} else {
-				DetectEsferoidImageMethods.processEsferoidBig(imp2);
-				rm = AnalyseParticleMethods.analyseParticlesTeodora(imp2, false, false);
+				DetectEsferoidImageMethods.processBlackHoles(imp2, true, 0, 0, 0);
 			}
-
-			imp2 = imp.duplicate();
-			int iters = 0;
-			while ((rm == null || rm.getRoisAsArray().length == 0) && iters < 7) {
-				DetectEsferoidImageMethods.processEsferoidEdges(imp2, iters);
-				rm = AnalyseParticleMethods.analyseParticlesTeodora(imp2, false, false);
-				iters++;
-			}
-
-			if (temp) {
-				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
-//				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, "", temp);
-			} else {
-				Utils.showResultsAndSaveNormal(dir, name, imp, rm, goodRows);
-			}
-//				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
-			imp.close();
-		} catch (FormatException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			rm = AnalyseParticleMethods.analyseParticlesTeodora(imp2, true, true);
+		} else {
+			DetectEsferoidImageMethods.processEsferoidBig(imp2);
+			rm = AnalyseParticleMethods.analyseParticlesTeodora(imp2, false, false);
 		}
+
+		imp2 = imp.duplicate();
+		int iters = 0;
+		while ((rm == null || rm.getRoisAsArray().length == 0) && iters < 7) {
+			DetectEsferoidImageMethods.processEsferoidEdges(imp2, iters);
+			rm = AnalyseParticleMethods.analyseParticlesTeodora(imp2, false, false);
+			iters++;
+		}
+
+		if (temp) {
+			Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
+//				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, "", temp);
+		} else {
+			Utils.showResultsAndSaveNormal(dir, name, imp, rm, goodRows);
+		}
+//				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
+		imp.close();
 
 	}
 
 	// Method to detect esferoides.
 	public static void detectEsferoideFluoStack(ImporterOptions options, String dir, String name,
 			ArrayList<Integer> goodRows, boolean temp) {
+
 		options.setId(name);
 		String nameClass = "FluoStack";
-		ImagePlus[] imps;
-		try {
-			imps = BF.openImagePlus(options);
 
-			ImagePlus imp = imps[0];
+		ImagePlus imp = FileFuntions.openImageIJ(name, options);
 
-			ImageStack stack = imp.getStack();
-			ImagePlus impFluo =null;
-			Calibration cal = imp.getCalibration();
-			
-		
-			if(stack.getSize()>1) {
-				impFluo = new ImagePlus(stack.getSliceLabel(2), stack.getProcessor(2));
+		ImageStack stack = imp.getStack();
+		ImagePlus impFluo = null;
+		Calibration cal = imp.getCalibration();
+
+		if (stack.getSize() > 1) {
+			impFluo = new ImagePlus(stack.getSliceLabel(2), stack.getProcessor(2));
 			impFluo.setCalibration(cal);
-			}else {
-				impFluo = new ImagePlus(stack.getSliceLabel(1), stack.getProcessor(1));
-				impFluo.setCalibration(cal);
-			}
-			
+		} else {
+			impFluo = new ImagePlus(stack.getSliceLabel(1), stack.getProcessor(1));
+			impFluo.setCalibration(cal);
+		}
 
-			ImagePlus impNoFluo = new ImagePlus(stack.getSliceLabel(1), stack.getProcessor(1));
-			impNoFluo.setCalibration(cal);
+		ImagePlus impNoFluo = new ImagePlus(stack.getSliceLabel(1), stack.getProcessor(1));
+		impNoFluo.setCalibration(cal);
 
-			imp = impNoFluo.duplicate();
+		imp = impNoFluo.duplicate();
 
-			ImagePlus impFluoD = impFluo.duplicate();
-			DetectEsferoidImageMethods.processEsferoidFluo(impFluoD, true);
-			RoiManager rm = AnalyseParticleMethods.analyzeParticlesHector(impFluoD);
+		ImagePlus impFluoD = impFluo.duplicate();
+		DetectEsferoidImageMethods.processEsferoidFluo(impFluoD, true);
+		RoiManager rm = AnalyseParticleMethods.analyzeParticlesHector(impFluoD);
+		Utils.keepBiggestROI(rm);
+		Roi r = rm.getRoi(0);
+		ImageStatistics stats = r.getStatistics();
+		impFluoD.close();
+
+		if (stats.area > 10000) {
+			rm.runCommand("Select All");
+			rm.runCommand("Delete");
+
+			ImagePlus impNoFluoD = impNoFluo.duplicate();
+			DetectEsferoidImageMethods.processEsferoidNoFluoThreshold(impNoFluoD);
+			rm = AnalyseParticleMethods.analyzeParticlesHector(impNoFluoD);
 			Utils.keepBiggestROI(rm);
-			Roi r = rm.getRoi(0);
-			ImageStatistics stats = r.getStatistics();
-			impFluoD.close();
 
-			if (stats.area > 10000) {
+			double round = 0;
+
+			if (rm.getRoisAsArray().length > 0) {
+				r = rm.getRoi(0);
+				stats = r.getStatistics();
+				impNoFluoD.close();
+				round = 4.0 * (stats.area / (Math.PI * stats.major * stats.major));
+			}
+			if (round < 0.9) {
 				rm.runCommand("Select All");
 				rm.runCommand("Delete");
+				System.out.println("Round less than 0.9");
+				impFluoD = impFluo.duplicate();
+				DetectEsferoidImageMethods.processEsferoidFluo(impFluoD, true);
+				DetectEsferoidImageMethods.processEsferoidNoFluoBis(impNoFluo);
+				ImageCalculator ic = new ImageCalculator();
+				ImagePlus imp3 = ic.run("And create", impFluoD, impNoFluo);
+				IJ.run(imp3, "Fill Holes", "");
 
-				ImagePlus impNoFluoD = impNoFluo.duplicate();
-				DetectEsferoidImageMethods.processEsferoidNoFluoThreshold(impNoFluoD);
-				rm = AnalyseParticleMethods.analyzeParticlesHector(impNoFluoD);
-				Utils.keepBiggestROI(rm);
-
-				double round = 0;
-
-				if (rm.getRoisAsArray().length > 0) {
-					r = rm.getRoi(0);
-					stats = r.getStatistics();
-					impNoFluoD.close();
-					round = 4.0 * (stats.area / (Math.PI * stats.major * stats.major));
-				}
-				if (round < 0.9) {
-					rm.runCommand("Select All");
-					rm.runCommand("Delete");
-					System.out.println("Round less than 0.9");
-					impFluoD = impFluo.duplicate();
-					DetectEsferoidImageMethods.processEsferoidFluo(impFluoD, true);
-					DetectEsferoidImageMethods.processEsferoidNoFluoBis(impNoFluo);
-					ImageCalculator ic = new ImageCalculator();
-					ImagePlus imp3 = ic.run("And create", impFluoD, impNoFluo);
-					IJ.run(imp3, "Fill Holes", "");
-
-					imp3 = ic.run("ADD create", imp3, impFluoD);
-					rm = AnalyseParticleMethods.analyzeParticlesFluo(imp3);
-					imp3.close();
-					impFluoD.close();
-					impNoFluo.close();
-
-				}
+				imp3 = ic.run("ADD create", imp3, impFluoD);
+				rm = AnalyseParticleMethods.analyzeParticlesFluo(imp3);
+				imp3.close();
+				impFluoD.close();
+				impNoFluo.close();
 
 			}
 
-			if (temp) {
-				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
-//				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, "", temp);
-			} else {
-				Utils.showResultsAndSaveNormal(dir, name, imp, rm, goodRows);
-			}
-			imp.close();
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+
+		if (temp) {
+			Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
+//				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, "", temp);
+		} else {
+			Utils.showResultsAndSaveNormal(dir, name, imp, rm, goodRows);
+		}
+		imp.close();
+
 	}
 
 	// Method to detect esferoides.
 	public static void detectEsferoideTeniposide(ImporterOptions options, String dir, String name,
 			ArrayList<Integer> goodRows, boolean temp) {
+
 		String nameClass = "Teniposide";
-		ImagePlus imp = IJ.openImage(name);
-		if (imp == null) {
-			options.setId(name);
+		options.setId(name);
 
-			ImagePlus[] imps;
-
-			try {
-				imps = BF.openImagePlus(options);
-				imp = imps[0];
-			} catch (FormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
+		ImagePlus imp = FileFuntions.openImageIJ(name, options);
 		ImagePlus impD = imp.duplicate();
 
 		DetectEsferoidImageMethods.processEsferoidEdgesThreshold(impD, 22, 255);

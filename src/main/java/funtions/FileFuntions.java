@@ -51,6 +51,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import esferoides.Methods;
 import ij.IJ;
 import ij.ImageJ;
+import ij.ImagePlus;
 import ij.io.DirectoryChooser;
 import interfaces.AlgorithmView;
 import interfaces.GeneralView;
@@ -59,6 +60,9 @@ import interfaces.OurProgressBar;
 import interfaces.ShowImages;
 import interfaces.TabPanel;
 import interfaces.ViewImagesBigger;
+import loci.formats.FormatException;
+import loci.plugins.BF;
+import loci.plugins.in.ImporterOptions;
 import task.ImagesTask;
 
 public class FileFuntions {
@@ -91,10 +95,8 @@ public class FileFuntions {
 	 */
 	public static String getPathSelectedTreeFile(TreePath tp) {
 		String path = "";
-
-		for (int i = 0; i < tp.getPathCount(); i++) { // we generate the path
-														// form the String{}
-														// given
+		// we generate the path form the String{} given
+		for (int i = 0; i < tp.getPathCount(); i++) {
 			path += tp.getPath()[i].toString();
 			if (i > 0 && i != (tp.getPathCount() - 1)) {
 
@@ -276,8 +278,6 @@ public class FileFuntions {
 					int rowIndex = ExcelActions.findRow(sheetResult, auxOriginal);
 					if (rowIndex != -1) {
 						ExcelActions.changeRow(rowIndex, sheetResult, newRow);
-//							FileOutputStream out = new FileOutputStream(
-//									new File(originalPath.replace(originalName, "") + "results.xls"));
 						FileOutputStream out = new FileOutputStream(excelResults);
 						modifyExcel.write(out);
 
@@ -429,10 +429,9 @@ public class FileFuntions {
 				Utils.search(".*\\.tiff", new File(directory), actualImages, 2);
 				Collections.sort(actualImages);
 
-				if(tp.indexOfTab("Images") != -1) {
+				if (tp.indexOfTab("Images") != -1) {
 					Utils.mainFrame.getImageTree().repainTabNoTimers(false);
-				}
-				else {
+				} else {
 					// Repaint the images in the viewer
 					List<ImageIcon> listImages = transformListToImageicon(actualImages);
 					tp.getViewImagen().setListImages(listImages);
@@ -443,29 +442,6 @@ public class FileFuntions {
 						repaintImagesScrollView(actualImages, tp);
 					}
 				}
-				
-					
-				
-//				if (tp.getComponent(0).getClass() != JPanel.class) {
-//
-//					if (actualImages.size() != 0) {
-//
-//						// Creates de viewer
-//						Utils.mainFrame.getImageTree().repaintTabPanel(false);
-//					}
-//
-//				} else {
-//
-//					// Repaint the images in the viewer
-//					List<ImageIcon> listImages = transformListToImageicon(actualImages);
-//					tp.getViewImagen().setListImages(listImages);
-//
-//					// repaint the images in the scroll view
-//					if (tp.indexOfTab("Images Scroll") != -1) {
-//						repaintImagesScrollView(actualImages, tp);
-//					}
-//
-//				}
 
 			}
 
@@ -873,15 +849,6 @@ public class FileFuntions {
 			}
 		}
 
-//		Utils.searchDirectory(".*\\."+ext, folder, listImages);
-//		if (listImages.size() != 0) {
-//			originalIma = true;
-//		} else {
-//			Utils.searchDirectory(".*\\.tif", folder, listImages);
-//			if (listImages.size() != 0) {
-//				originalIma = true;
-//			}
-//		}
 		return originalIma;
 	}
 
@@ -896,11 +863,11 @@ public class FileFuntions {
 		boolean newVersion = false;
 		PropertiesFileFuntions prop = new PropertiesFileFuntions();
 
-		String pathJArUpdater = getCurrentPAth() + File.separator + "updater" + File.separator
-				+ "jarUpdater-1.0-SNAPSHOT-jar-with-dependencies.jar";
-
+		String jarUpdateName = prop.getProp().getProperty("jarUpdate");
 		String urlVersion = prop.getProp().getProperty("urlVersionFile");
 		String currentVersion = prop.getProp().getProperty("version");
+
+		String pathJArUpdater = getCurrentPAth() + File.separator + "updater" + File.separator + jarUpdateName;
 
 		// We check if there is a new version of the app
 		newVersion = checkNewVersionJAr(urlVersion, currentVersion);
@@ -909,21 +876,9 @@ public class FileFuntions {
 							// not
 
 			JCheckBox rememberChk = new JCheckBox("Don't show this message again.");
-//			 Button b=new Button("Details >>>");
+
 			String msg = "A new update has been detected. \n Do you want to dowload it?";
 			Object[] msgContent = { msg, rememberChk };
-
-//
-//			 Object[] msgContent = { msg, rememberChk ,b};
-//			 b.addActionListener(new ActionListener() {
-//			
-//			 @Override
-//			 public void actionPerformed(ActionEvent e) {
-//			
-//			VersionInfo veinf= new VersionInfo(null);
-//			veinf.inicialice(currentVersion, readversion(urlVersion));
-//			 }
-//			 });
 
 			int op = 0;
 
@@ -963,10 +918,9 @@ public class FileFuntions {
 			if (op == 0) {
 				// if yes we call the updater jar
 				try {
-					Runtime.getRuntime().exec("java -jar " + "\"" + pathJArUpdater + "\"");
-//					Process process = Runtime.getRuntime().exec("java -jar " + "\"" + pathJArUpdater + "\"");
-//					InputStream inputstream = process.getInputStream();
-//					BufferedInputStream bufferedinputstream = new BufferedInputStream(inputstream);
+//					Runtime.getRuntime().exec("java -jar " + "\"" + pathJArUpdater + "\"");
+
+					Runtime.getRuntime().exec(new String[] { "java", "-jar", pathJArUpdater });
 
 					System.exit(0);// stop the execution of this jar
 				} catch (IOException e) {
@@ -1217,8 +1171,6 @@ public class FileFuntions {
 			Utils.mainFrame.paintMainFRame(path);
 		}
 
-//		JOptionPane.showMessageDialog(Utils.mainFrame, "Directory changed to " + path);
-
 	}
 
 	/**
@@ -1226,12 +1178,6 @@ public class FileFuntions {
 	 */
 	public static void changeDirectory() {
 		GeneralView mainFrame = Utils.mainFrame;
-
-//		String text = "The current directory is: \n" + mainFrame.getDir() + "\n Do you what to change it?";
-//		int op = JOptionPane.showConfirmDialog(mainFrame, text, "Change directory", JOptionPane.YES_NO_OPTION);
-//
-//		if (op == 0) {
-
 		DirectoryChooser dc = new DirectoryChooser("Select new directory");
 
 		if (dc.getDirectory() != null) {
@@ -1243,12 +1189,6 @@ public class FileFuntions {
 			JOptionPane.showMessageDialog(mainFrame, "Directory not changed");
 
 		}
-
-//		} else {
-//
-//			JOptionPane.showMessageDialog(mainFrame, "Directory not changed");
-//
-//		}
 
 	}
 
@@ -1463,8 +1403,6 @@ public class FileFuntions {
 							if (aux != null) {
 								if (aux.exists()) {
 									openPDF(aux);
-//									Process p = Runtime.getRuntime().exec(
-//											"rundll32 SHELL32.DLL," + "ShellExec_RunDLL " + aux.getAbsolutePath());
 								} else {
 									JOptionPane.showMessageDialog(Utils.mainFrame, "Error downloading the file");
 								}
@@ -1482,8 +1420,6 @@ public class FileFuntions {
 				t.start();
 
 			} else {
-//				Process p = Runtime.getRuntime()
-//						.exec("rundll32 SHELL32.DLL," + "ShellExec_RunDLL " + filePDF.getAbsolutePath());
 
 				openPDF(filePDF);
 			}
@@ -1521,7 +1457,6 @@ public class FileFuntions {
 		JLabel versionTextLabel = new JLabel("Version: ");
 		JLabel versionLabel = new JLabel(version);
 		JLabel aboutTextLabel = new JLabel("About: ");
-//		JLabel aboutLabel = new JLabel(about);
 		JTextPane aboutLabel = new JTextPane();
 		aboutLabel.setEditable(false);
 		aboutLabel.setText(about);
@@ -1580,5 +1515,47 @@ public class FileFuntions {
 			imageIcon.add(image);
 		}
 		return imageIcon;
+	}
+
+	public static ImagePlus openImageIJ(String path, ImporterOptions options) {
+		ImagePlus imp = IJ.openImage(path);
+
+		ImagePlus[] imps;
+
+		try {
+
+			if (imp == null) {
+				if (options == null) {
+					options = new ImporterOptions();
+					options.setWindowless(true);
+					options.setId(path);
+					options.setOpenAllSeries(true);
+				}
+				imps = BF.openImagePlus(options);
+				imp = imps[0];
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return imp;
+	}
+
+	public static void copiFile(String origenFile, String destiFile) {
+
+		Path origenPath = Paths.get(origenFile);
+		Path destiPath = Paths.get(destiFile);
+		// sobreescribir el fichero de destino si existe y lo copia
+		try {
+			Files.copy(origenPath, destiPath, StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }

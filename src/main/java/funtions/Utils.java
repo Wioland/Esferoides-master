@@ -217,8 +217,6 @@ public class Utils {
 		if (rm != null) {
 			rm.setVisible(false);
 
-			// List<Roi> roi=saveAllRoi(rm);
-
 			keepBiggestROI(rm);
 			rm.runCommand("Show None");
 			rm.runCommand("Show All");
@@ -233,15 +231,6 @@ public class Utils {
 				rm.runCommand(imp1, "Delete");
 				rm.addRoi(sM.fitSpline());
 				roi = rm.getRoisAsArray();
-
-				// imp1.show();
-				// rm.select(0);
-				// IJ.run(imp1, "Fit Spline", "");
-				// rm.addRoi(imp1.getRoi());
-				// rm.select(0);
-				// rm.runCommand(imp1, "Delete");
-				//
-				// roi = rm.getRoisAsArray();
 
 				rm.runCommand(imp1, "Draw");
 				rm.runCommand("Save", folder.getAbsolutePath() + File.separator + name + ".zip");
@@ -270,15 +259,9 @@ public class Utils {
 
 				ResultsTable rt = ResultsTable.getResultsTable();
 				int nrows = Analyzer.getResultsTable().getCounter();
-				// if(nrows==0){
-				// rm.runCommand(imp1, "Measure");
-				// rt = ResultsTable.getResultsTable();
-				// nrows = Analyzer.getResultsTable().getCounter();
-				// }
 				goodRows.add(nrows - 1);
 
 				rt.setPrecision(2);
-				// System.out.println((nrows - 1)+ " "+name);
 				rt.setLabel(name, nrows - 1);
 				rt.addValue("Area", area);
 				rt.addValue("Area Fraction", aFraction);
@@ -480,35 +463,6 @@ public class Utils {
 		}
 	}
 
-//	/**
-//	 * JoptionPanel that ask you which action do you what to perform (DEtect
-//	 * esferoid or view results)
-//	 * 
-//	 * @return true if detected esferoid false if view result
-//	 */
-//	public static boolean optionAction() {
-//
-//		boolean b = false;
-//
-//		int selection = JOptionPane.showOptionDialog( Utils.mainFrame, "Select an option", "Option selecter",
-//				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-//				new Object[] { "Detect esferoid", "View results" }, "Use algoritm");
-//
-//		switch (selection) {
-//		case 0:
-//			b = true;
-//			break;
-//		case 1:
-//			b = false;
-//
-//			break;
-//		default:
-//			break;
-//		}
-//
-//		return b;
-//	}
-
 	public static boolean optionAction() {
 		boolean detect = true;
 
@@ -536,7 +490,7 @@ public class Utils {
 		if (folderView == null) { // if there isn't a main/GenearalWiew Jframe
 									// open we create a new one
 			mainFrame.createRestOfConttext(dc, selectAlgo);
-			// new GeneralView(dc, selectAlgo);
+
 		} else {
 			// We repaint the tab panel with the new content
 			if (folderView.getDir() != dc) {
@@ -711,14 +665,8 @@ public class Utils {
 		File folder;
 		name = name.substring(0, name.lastIndexOf("."));
 		name = name.replace(dir, "");
-//		boolean moreThanOneFolder=false;
-//		String name2="";
-//		File folder2=null;
+
 		if (name.contains(File.separator)) {
-//			moreThanOneFolder=true;
-//			name2=name.replace(File.separator, File.separator+"predictions"+File.separator);
-//			name=name.replace(File.separator, "_");
-//			folder2=new File(dir);
 			String subFolder = name.substring(0, name.lastIndexOf(File.separator) + 1);
 			name = name.substring(name.lastIndexOf(File.separator) + 1, name.length());
 			dir += subFolder;
@@ -728,19 +676,12 @@ public class Utils {
 		if (!folder.exists()) {
 			folder.mkdir();
 		}
-//		if(folder2!=null) {
-//			if (!folder2.exists()) {
-//				folder2.mkdir();
-//			}
-//		}
 
 		ImageStatistics stats = null;
 		double[] vFeret;
 		double perimeter = 0;
 		if (rm != null) {
 			rm.setVisible(false);
-
-			// List<Roi> roi=saveAllRoi(rm);
 
 			keepBiggestROI(rm);
 			rm.runCommand("Show None");
@@ -757,21 +698,10 @@ public class Utils {
 				rm.addRoi(sM.fitSpline());
 				roi = rm.getRoisAsArray();
 
-				// imp1.show();
-				// rm.select(0);
-				// IJ.run(imp1, "Fit Spline", "");
-				// rm.addRoi(imp1.getRoi());
-				// rm.select(0);
-				// rm.runCommand(imp1, "Delete");
-				//
-				// roi = rm.getRoisAsArray();
-
 				rm.runCommand(imp1, "Draw");
 				rm.runCommand("Save", folder.getAbsolutePath() + File.separator + name + ".zip");
-//				if(moreThanOneFolder) {
-//					rm.runCommand("Save", folder2.getAbsolutePath()+ File.separator  + name2 + ".zip");
-//				}
 				rm.close();
+
 				// saving the roi
 				// compute the statistics (without calibrate)
 				stats = roi[0].getStatistics();
@@ -796,15 +726,9 @@ public class Utils {
 
 				ResultsTable rt = ResultsTable.getResultsTable();
 				int nrows = Analyzer.getResultsTable().getCounter();
-				// if(nrows==0){
-				// rm.runCommand(imp1, "Measure");
-				// rt = ResultsTable.getResultsTable();
-				// nrows = Analyzer.getResultsTable().getCounter();
-				// }
 				goodRows.add(nrows - 1);
 
 				rt.setPrecision(2);
-				// System.out.println((nrows - 1)+ " "+name);
 				rt.setLabel(name, nrows - 1);
 				rt.addValue("Area", area);
 				rt.addValue("Area Fraction", aFraction);
@@ -823,10 +747,6 @@ public class Utils {
 			}
 
 			IJ.saveAs(imp1, "Tiff", folder.getAbsolutePath() + File.separator + name + "_pred.tiff");
-//			if(moreThanOneFolder) {
-//				IJ.saveAs(imp1, "Tiff",  folder2.getAbsolutePath() + File.separator + name2 + "_pred.tiff");
-//			}
-
 		}
 		if (!Utils.mainFrame.getPb().getTextMaxElements().equals("?")) {
 			Utils.mainFrame.getPb().changeActualElementeText();
