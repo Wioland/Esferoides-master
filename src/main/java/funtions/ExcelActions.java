@@ -83,8 +83,7 @@ public class ExcelActions {
 			String filename = this.dir + "results.xls";
 
 			// in case the excel is from the temporal images we change the name
-			// in order to
-			// identify the excel with the image
+			// in order to identify the excel with the image
 			if (dir.endsWith("temporal" + File.separator)) {
 				String name = sheet.getRow(1).getCell(0).getStringCellValue();
 
@@ -155,7 +154,7 @@ public class ExcelActions {
 	 * @param dir the directory where the excel is
 	 */
 	public static void checkAllExcelTab(TabPanel tp, String dir) {
-//		tp.setSelectedIndex(0);
+
 		List<Integer> lAux = new ArrayList<Integer>();
 		if (tp.getIndexTabExcel() != null) {
 			for (Integer tbIndex : tp.getIndexTabExcel().keySet()) {

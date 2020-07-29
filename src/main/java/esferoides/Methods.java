@@ -145,15 +145,15 @@ public class Methods {
 				}
 			}
 
-			// We initialize the ResultsTable
+			//  initialize the ResultsTable
 
 			ImporterOptions options = new ImporterOptions();
 
-			// We construct the EsferoidProcessorObject
+			//  construct the EsferoidProcessorObject
 
 			EsferoidProcessor esferoidProcessor = EsferoidProcessorFactory.createEsferoidProcessor(type);
 			goodRows = new ArrayList<>();
-			// For each file in the folder we detect the esferoid on it.
+			// For each file in the folder  detect the spheroid on it.
 			for (String name : result) {
 				esferoidProcessor.getDetectEsferoid().apply(options, directory, name, goodRows, temp);
 			}

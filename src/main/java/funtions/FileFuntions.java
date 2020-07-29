@@ -594,8 +594,7 @@ public class FileFuntions {
 					images.getLastModifyImage().put(imaPath, faux.lastModified());
 
 					// if there is tabs with viewImagesBigger we close them and
-					// get the new list of
-					// tiff images
+					// get the new list of tiff images
 					Component[] com = tp.getComponents();
 					for (Component component : com) {
 						if (component.getClass().equals(JPanelComparer.class)) {

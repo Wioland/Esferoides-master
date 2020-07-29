@@ -100,9 +100,9 @@ public class RoiModifyView extends JPanel {
 	}
 
 	// METHODS
-/**
- * PAints the content of this JPanel
- */
+	/**
+	 * PAints the content of this JPanel
+	 */
 	private void paintContent() {
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 
@@ -121,7 +121,7 @@ public class RoiModifyView extends JPanel {
 				combo.addItem(toolsOptions[3]);
 				combo.setSelectedItem(toolsOptions[3]);
 
-				// Accion a realizar cuando el JComboBox cambia de item seleccionado.
+				// Acction when JComboBox changes the selected item .
 				combo.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -207,15 +207,16 @@ public class RoiModifyView extends JPanel {
 		t.start();
 
 	}
-/**
- * Set the selected roi to the first element of the Roi manager
- */
+
+	/**
+	 * Set the selected roi to the first element of the Roi manager
+	 */
 	protected void resstoreRoi() {
 		roi.select(0);
 	}
 
 	/**
-	 * Modify the current roi of the image and saves it 
+	 * Modify the current roi of the image and saves it
 	 */
 	protected void modifyCurrentRoiAndSAve() {
 
@@ -308,9 +309,10 @@ public class RoiModifyView extends JPanel {
 		}
 
 	}
-/**
- * Opens the image that the roi is going to be modidy and its roi
- */
+
+	/**
+	 * Opens the image that the roi is going to be modidy and its roi
+	 */
 	private void paintImageModify() {
 
 		openImage();
@@ -331,9 +333,9 @@ public class RoiModifyView extends JPanel {
 
 	}
 
-/**
- * Opens the imagen that is in the parameter pathImage
- */
+	/**
+	 * Opens the imagen that is in the parameter pathImage
+	 */
 	private void openImage() {
 		ImporterOptions options = null;
 		imp = FileFuntions.openImageIJ(this.pathImage, options);
@@ -341,9 +343,10 @@ public class RoiModifyView extends JPanel {
 		panelIma = imp.getWindow();
 		panelIma.setVisible(false);
 	}
-/**
- * Repaint the imagen and the roi open
- */
+
+	/**
+	 * Repaint the imagen and the roi open
+	 */
 	private void repaintImageModify() {
 
 		ij.WindowManager.closeAllWindows();
@@ -359,9 +362,9 @@ public class RoiModifyView extends JPanel {
 
 	}
 
-/**
- * Deletes the current Roi
- */
+	/**
+	 * Deletes the current Roi
+	 */
 	protected void deleteRoi() {
 		int op = JOptionPane.showConfirmDialog(null,
 				"This action will erase the current Roi of the image. Are you sure you want to proceed?",
@@ -425,6 +428,7 @@ public class RoiModifyView extends JPanel {
 
 	/**
 	 * Compare if the save and the current roi in the image are the same
+	 * 
 	 * @return true in case it is the same
 	 */
 	private boolean compareSameRoi() {
@@ -438,8 +442,9 @@ public class RoiModifyView extends JPanel {
 
 		roi.select(1);
 		roi.runCommand(imp, "Measure");
-		
-		//Gets the measures of the current roi on the image and the save one and compare them
+
+		// Gets the measures of the current roi on the image and the save one and
+		// compare them
 		int rows = rt.getCounter();
 		List<String[]> listRows = new ArrayList<String[]>();
 
@@ -529,6 +534,7 @@ public class RoiModifyView extends JPanel {
 
 	/**
 	 * Action to do when closing the tab
+	 * 
 	 * @param evt event
 	 */
 	public void closeTab(ActionEvent evt) {
