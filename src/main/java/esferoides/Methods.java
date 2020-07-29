@@ -16,6 +16,12 @@ import ij.IJ;
 import ij.ImagePlus;
 import loci.plugins.in.ImporterOptions;
 
+/**
+ * Methods to process the images
+ * 
+ * @author Yolanda
+ *
+ */
 public class Methods {
 
 	private static String[] algorithms = { "Fluorescence", "colageno", "Edges", "Hector no fluo v2",
@@ -24,6 +30,14 @@ public class Methods {
 	private ArrayList<Integer> goodRows;
 	private boolean setScale = false;
 
+	/**
+	 * Process the images with the algorithm save in the properties file.
+	 * 
+	 * @param directory current directory
+	 * @param result    path of the images of the directory
+	 * @param temp      true for save in temporary folder, false for predictions
+	 *                  folder
+	 */
 	public Methods(String directory, List<String> result, boolean temp) {
 
 		setEscale();
@@ -65,11 +79,11 @@ public class Methods {
 	}
 
 	/**
-	 * Constructor. Creates the images with the methods given in the temporal folder
-	 * if it's possible
+	 * Process the images with the algorithms given in the temporary folder if it's
+	 * possible
 	 * 
 	 * @param directory current directory
-	 * @param result    List of the file paths of the current directory
+	 * @param result    path of the images of the directory
 	 */
 	public Methods(String directory, List<String> result) {
 		setEscale();
@@ -184,6 +198,9 @@ public class Methods {
 		return haveFluo;
 	}
 
+	/**
+	 * Set the escale for the images that are going to be processed
+	 */
 	private void setEscale() {
 
 		int op = JOptionPane.showConfirmDialog(Utils.mainFrame, "Do you want to set the scale?", "Set scale",

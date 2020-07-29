@@ -8,6 +8,12 @@ import funtions.Utils;
 import interfaces.JPanelComparer;
 import interfaces.TabPanel;
 
+/**
+ * Keyactions to be perform in the main JFrame
+ * 
+ * @author Yolanda
+ *
+ */
 public class KeyActionsProgram implements KeyListener {
 
 	@Override
@@ -18,7 +24,7 @@ public class KeyActionsProgram implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent evt) {
-		System.out.println("Tecla presionada "+evt.getSource());
+		System.out.println("Tecla presionada " + evt.getSource());
 		if (Utils.mainFrame.getMb().isEnabled()) {
 			if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_O) {
 				System.out.println("Control + O   abrir un directorio o cambiar de directorio");

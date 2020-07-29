@@ -13,6 +13,12 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.Border;
 
+/**
+ * JDialog which represent a progressbar
+ * 
+ * @author Yolanda
+ *
+ */
 public class OurProgressBar extends JDialog {
 
 	/**
@@ -22,20 +28,19 @@ public class OurProgressBar extends JDialog {
 
 	private String text = "Processing ";
 	private String separatorText = " \\ ";
-	private String textMaxElements="?";
+	private String textMaxElements = "?";
 
 	private JLabel textShow;
 	private JLabel maxObject;
 	private JLabel actualObject;
 	private JLabel separator;
-	private int actualElement=0;
+	private int actualElement = 0;
 	private boolean showProgress;
-
 
 	public OurProgressBar(JFrame frameDad, boolean showProgress) {
 		super(frameDad);
-		this.showProgress=showProgress;
-		
+		this.showProgress = showProgress;
+
 		setTitle("Work in progress");
 		JProgressBar progressBar = new JProgressBar();
 		progressBar.setValue(0);
@@ -49,18 +54,17 @@ public class OurProgressBar extends JDialog {
 		setSize(300, 100);
 		setMinimumSize(new Dimension(300, 100));
 		setLocationRelativeTo(frameDad);
-		
-		if(showProgress) {
+
+		if (showProgress) {
 			addTextProgress();
 		}
-		
 
 		setUndecorated(true);
 		setVisible(true);
 
 	}
-	
-	//GETTER AND SETTER
+
+	// GETTER AND SETTER
 
 	public JLabel getMaxObject() {
 		return maxObject;
@@ -76,8 +80,8 @@ public class OurProgressBar extends JDialog {
 
 	public void setActualObject(JLabel actualObject) {
 		this.actualObject = actualObject;
-	}	
-	
+	}
+
 	public String getTextMaxElements() {
 		return textMaxElements;
 	}
@@ -85,37 +89,42 @@ public class OurProgressBar extends JDialog {
 	public void setTextMaxElements(String textMaxElements) {
 		this.textMaxElements = textMaxElements;
 	}
-	
-	//METHODS
-	
+
+	public void setTextMAxObject(int elements) {
+		if (!this.showProgress) {
+			addTextProgress();
+			this.showProgress = true;
+		}
+		this.textMaxElements = Integer.toString(elements);
+		this.maxObject.setText(textMaxElements);
+		this.repaint();
+	}
+
+	// METHODS
+
+	/**
+	 * Adds one to the actual element and changes the text of the actual object
+	 */
 	public void changeActualElementeText() {
 		actualElement++;
 		this.actualObject.setText(Integer.toString(actualElement));
 		this.repaint();
 	}
 
-	public void setTextMAxObject(int elements) {
-		if(!this.showProgress) {
-			addTextProgress();
-			this.showProgress=true;
-		}
-		this.textMaxElements=Integer.toString(elements);
-		this.maxObject.setText(textMaxElements);
-		this.repaint();
-	}
-
+	/**
+	 * Adds the text of the progression to the progress bar
+	 */
 	public void addTextProgress() {
 		textShow = new JLabel(text);
 		this.maxObject = new JLabel(textMaxElements);
 		actualObject = new JLabel(Integer.toString(actualElement));
 		separator = new JLabel(separatorText);
-		JPanel textPanel= new JPanel(new GridLayout(0,4));
+		JPanel textPanel = new JPanel(new GridLayout(0, 4));
 		textPanel.add(textShow);
 		textPanel.add(actualObject);
 		textPanel.add(separator);
 		textPanel.add(this.maxObject);
 		this.add(textPanel);
 	}
-	
 
 }

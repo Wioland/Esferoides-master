@@ -1,5 +1,13 @@
 package esferoides;
-
+/**
+ * 
+ * @author Jonathan
+ * @see <a href =
+ *      "https://github.com/joheras/SpheroidJ"
+ *      > Github repository </a>
+ *
+ *
+ */
 public class EsferoidProcessorFactory {
 
 	public static EsferoidProcessor createEsferoidProcessor(String name) {

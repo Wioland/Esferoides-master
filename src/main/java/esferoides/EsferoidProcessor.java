@@ -4,7 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import loci.plugins.in.ImporterOptions;
-
+/**
+ * 
+ * @author Jonathan
+ * @see <a href =
+ *      "https://github.com/joheras/SpheroidJ"
+ *      > Github repository </a>
+ *
+ *
+ */
 public class EsferoidProcessor {
 
 	private searchFilesFunction searchFiles;

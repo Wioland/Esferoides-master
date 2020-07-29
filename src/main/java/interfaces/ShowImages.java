@@ -19,6 +19,12 @@ import javax.swing.JPanel;
 import funtions.FileFuntions;
 import funtions.ShowTiff;
 
+/**
+ * JPanel for showing the tiff images like buttons
+ * 
+ * @author Yolanda
+ *
+ */
 public class ShowImages extends JPanel {
 
 	/**
@@ -45,6 +51,12 @@ public class ShowImages extends JPanel {
 
 	}
 
+	/**
+	 * For showing the tiff images like buttons
+	 * 
+	 * @param images list of imageIcons to show
+	 * @param tp     the container where the buttons are going to be shown
+	 */
 	public ShowImages(List<ImageIcon> images, Component tp) {
 		// we put them in one column
 		initializeComponents(1);
@@ -139,16 +151,14 @@ public class ShowImages extends JPanel {
 	 * Creates the buttons to show the images of the folder given
 	 * 
 	 * @param folder        The location of the images
-	 * @param nameFileNoExt name of the file without extension of the file we wants
-	 *                      to find it's tiff in the predictions folder if "" all
-	 *                      the files
-	 * @param tp            the place we are going to show the images
+	 * @param nameFileNoExt name of the file without extension of the file to find
+	 *                      it's tiff in the predictions folder, if "" all the files
+	 * @param tp            the component to show the images
 	 */
 	public void createImageButton(File folder, Component tp, String nameFileNoExt) {
 
 		// We checks if the tiff files are in the predictions folder, if not we
-		// ask to
-		// move it there
+		// ask to move it there
 		listImages = FileFuntions.checkTiffNotPredictionsFolder(folder, nameFileNoExt);
 
 		Collections.sort(listImages);
@@ -213,6 +223,11 @@ public class ShowImages extends JPanel {
 		}
 	}
 
+	/**
+	 * Creates the image button to be display for the list of imageIcon
+	 * 
+	 * @param tp could be a tabpanel or an algorithmview
+	 */
 	private void createImageButton(Component tp) {
 		ImageIcon iconoEscala;
 		JButton imageView;
@@ -276,7 +291,7 @@ public class ShowImages extends JPanel {
 	 * 
 	 * @param tp           the tap panel to show the buttons
 	 * @param images       the list of images to show
-	 * @param origianlName the name of the nd2 or tif file without extension
+	 * @param origianlName the name of the nd2, jpg or tif file without extension
 	 */
 	public void createImageButton(TabPanel tp, List<String> images, String origianlName) {
 
@@ -323,7 +338,7 @@ public class ShowImages extends JPanel {
 	 * @param e            mouse even
 	 * @param tp           the tab panel where the images are
 	 * @param image        the image of the button clicked
-	 * @param origianlName the name of the nd2 or tif image without extension
+	 * @param origianlName the name of the nd2, jpg or tif image without extension
 	 */
 	private void clickImageButtonAlgoritm(MouseEvent e, TabPanel tp, ImageIcon image, String origianlName) {
 		if (e.getClickCount() == 2 && !e.isConsumed()) {
@@ -371,6 +386,10 @@ public class ShowImages extends JPanel {
 
 	}
 
+	/**
+	 * Removes or modify a button that is been shown if its image has been modify or
+	 * deleted in the directory
+	 */
 	public void removeModifyButton() {
 		File aux = null;
 		int i = 0;

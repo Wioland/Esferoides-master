@@ -13,6 +13,12 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
+/**
+ * JPanel that represent a pictures viewer comparer
+ * 
+ * @author Yolanda
+ *
+ */
 public class JPanelComparer extends JPanel {
 
 	/**
@@ -302,6 +308,11 @@ public class JPanelComparer extends JPanel {
 		this.maxMinRight = maxMinRight;
 	}
 
+	// METHODS
+
+	/**
+	 * Restores the indicators of max and min size
+	 */
 	public void restoreSizeIndicators() {
 		maxMinLeft.restroreMinMAxBooleans();
 		maxMinRight.restroreMinMAxBooleans();

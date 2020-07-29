@@ -5,7 +5,15 @@ import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.ImageCalculator;
 import ij.process.ImageStatistics;
-
+/**
+ * 
+ * @author Jonathan
+ * @see <a href =
+ *      "https://github.com/joheras/SpheroidJ"
+ *      > Github repository </a>
+ *
+ *
+ */
 public class DetectEsferoidImageMethods {
 
 	public static void processEsferoidNoFluo(ImagePlus imp2) {

@@ -32,6 +32,13 @@ import funtions.RoiFuntions;
 import funtions.Utils;
 import ij.IJ;
 
+/**
+ * JFrame for showing the new images created with all the algorithms and
+ * interact with them
+ * 
+ * @author Yolanda
+ *
+ */
 public class AlgorithmView extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -140,7 +147,9 @@ public class AlgorithmView extends JFrame {
 	}
 
 	// METHODS
-
+	/**
+	 * Initializes the Algorithm view JFrame with the content created
+	 */
 	public void initilice() {
 		String path = RoiFuntions.getOriginalFilePathFromPredictions(this.image.getAbsolutePath());
 
@@ -210,9 +219,9 @@ public class AlgorithmView extends JFrame {
 	}
 
 	/**
-	 * Action to perform when a button with an image is clicked. -One click select
-	 * the button and makes it the selected -Two opens a comparer in the JFRame to
-	 * compare with the image in predictions
+	 * Action to perform when a button with an image is clicked.
+	 *  - One click select the button and makes it the selected 
+	 *  - Two clicks opens a comparer in the JFRame to compare with the image in predictions
 	 * 
 	 * @param me        Mouse event
 	 * @param imageIcon ImageIco in the button clicked
@@ -378,15 +387,15 @@ public class AlgorithmView extends JFrame {
 	 */
 	private void SaveImageAndDelete(String filePath) {
 		if (this.roiModifyView != null) {
-			String nameSelectedIma=FileFuntions.namewithoutExtension(filePath).replace("_pred", "");
-			String nameModifyIma=FileFuntions.namewithoutExtension(roiModifyView.getRoiPath());
+			String nameSelectedIma = FileFuntions.namewithoutExtension(filePath).replace("_pred", "");
+			String nameModifyIma = FileFuntions.namewithoutExtension(roiModifyView.getRoiPath());
 			if (nameSelectedIma.equals(nameModifyIma)) {
 				roiModifyView.closeRoiModifyAction();
 			}
 		}
 		File ima = new File(filePath);
 		String saveDir = ima.getAbsolutePath().replace("temporal" + File.separator + ima.getName(), "predictions");
-		boolean save=FileFuntions.saveSelectedImage(ima, saveDir);
+		boolean save = FileFuntions.saveSelectedImage(ima, saveDir);
 		if (vi != null && save) {
 			vi.getJPComparer().setOriginalImaLbIcon(vi.getJPComparer().getLabelImageIcon(),
 					vi.getJPComparer().getLabelImage().getName());
@@ -413,6 +422,9 @@ public class AlgorithmView extends JFrame {
 
 	}
 
+	/**
+	 * Actions to do when this JFram is closed
+	 */
 	private void closeActions() {
 		File folder = Methods.getTemporalFolder();
 		if (folder != null) {
@@ -425,6 +437,10 @@ public class AlgorithmView extends JFrame {
 
 	}
 
+	/**
+	 * Repaints the content of the JFrame. It creates a tabbed panel to the JFrame
+	 * and adds to it the current content if the tabbed were null
+	 */
 	public void repaintContent() {
 
 		if (this.tabbedPanel == null) {
@@ -457,6 +473,10 @@ public class AlgorithmView extends JFrame {
 
 	}
 
+	/**
+	 * Deletes an image from the current view and repaints it. The current view
+	 * could be a viewImagesBigger or a scrollview.
+	 */
 	public void deleteImageList() {
 		if (vi != null) {
 
@@ -476,6 +496,11 @@ public class AlgorithmView extends JFrame {
 
 	}
 
+	/**
+	 * Modifies an image of the current view if it has changes. Repaint the modify
+	 * image of the current view. The current view could be a viewImageBigger or a
+	 * Scrollview
+	 */
 	public void modifyImageList() {
 		if (vi != null) {
 			vi.modifyImageFromListNoComparerOldVsNew();

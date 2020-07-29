@@ -5,6 +5,15 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.frame.RoiManager;
 
+/**
+ * 
+ * @author Jonathan
+ * @see <a href =
+ *      "https://github.com/joheras/SpheroidJ"
+ *      > Github repository </a>
+ *
+ *
+ */
 public class AnalyseParticleMethods {
 
 	public static RoiManager analyzeParticlesFluo(ImagePlus imp2) {

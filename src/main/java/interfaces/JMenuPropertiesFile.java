@@ -6,7 +6,13 @@ import java.util.HashMap;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-public class JMenuPropertiesFile extends JMenu /* implements ActionListener */ {
+/**
+ * JMenu for the options of the program
+ * 
+ * @author Yolanda
+ *
+ */
+public class JMenuPropertiesFile extends JMenu  {
 	/**
 	 * 
 	 */
@@ -42,6 +48,8 @@ public class JMenuPropertiesFile extends JMenu /* implements ActionListener */ {
 		this.listMenus = new HashMap<String, JMenuItem>();
 	}
 
+	// GETTERS & SETTERS
+
 	public HashMap<String, JMenuItem> getListMenus() {
 		return listMenus;
 	}
@@ -58,6 +66,8 @@ public class JMenuPropertiesFile extends JMenu /* implements ActionListener */ {
 		this.listMenusNotEnable = listMenusNotEnable;
 	}
 
+	// METHODS
+
 	/**
 	 * Adds a new menu item into the JMenu
 	 * 
@@ -73,6 +83,14 @@ public class JMenuPropertiesFile extends JMenu /* implements ActionListener */ {
 
 	}
 
+	/**
+	 * Adds a new menu item to the menu
+	 * 
+	 * @param name        name of the item
+	 * @param textShow    text to be shown
+	 * @param actionListe action to realize on click
+	 * @param enable      true enable or false disable
+	 */
 	public void addMEnuItem(String name, String textShow, ActionListener actionListe, boolean enable) {
 		JMenuItem mi = new JMenuItem(textShow);
 		mi.setName(name);
@@ -86,6 +104,12 @@ public class JMenuPropertiesFile extends JMenu /* implements ActionListener */ {
 
 	}
 
+	/**
+	 * Changes the status of the menu with the name given set in the
+	 * listMenusNotEnable map If they were enable it disable them and the opposite
+	 * 
+	 * @param nameMEnuItem name of the menu item to disable or enable
+	 */
 	public void changeEnableNoEnableMEnus(String nameMEnuItem) {
 		boolean status = this.listMenusNotEnable.get(nameMEnuItem).isEnabled();
 		this.listMenusNotEnable.get(nameMEnuItem).setEnabled(!status);

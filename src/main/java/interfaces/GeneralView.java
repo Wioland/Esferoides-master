@@ -26,6 +26,12 @@ import funtions.FileFuntions;
 import funtions.Utils;
 import ij.IJ;
 
+/**
+ * Main JFrame of the program
+ * 
+ * @author Yolanda
+ *
+ */
 public class GeneralView extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -113,12 +119,16 @@ public class GeneralView extends JFrame {
 			boolean selectAlgo = checkOriginalAndAskProcess(dc);
 			this.dir = dc;
 			createContent(dc, selectAlgo);
-
 			this.repaint();
 		}
 
 	}
 
+	/**
+	 * Process the images of the current directory with the algorithm save for that
+	 * type of image and repaints the view. If there are not original images then
+	 * the view is only going to be repaint.
+	 */
 	public void DetectAlgoDirectory() {
 		boolean selectAlgo = true;
 
@@ -133,6 +143,9 @@ public class GeneralView extends JFrame {
 
 	}
 
+	/**
+	 * Enable or disable the menu options and the buttons of the tool panel
+	 */
 	public void activeRestOfMenuOPtionsOrDesactivate() {
 		System.out.println("Reactivo desactivo las opciones");
 		Component[] menulist = mb.getComponents();
@@ -215,11 +228,17 @@ public class GeneralView extends JFrame {
 
 	}
 
+	/**
+	 * Initialize the menu and the toolbar components
+	 */
 	public void inicialiceMenus() {
 		initialiceMenuOptions();
 		initialiceToolBAr();
 	}
 
+	/**
+	 * Initialices and creates the toolbar component
+	 */
 	public void initialiceToolBAr() {
 		ActionMenuBar actionListe = new ActionMenuBar();
 		KeyActionsProgram keyAction = new KeyActionsProgram();
@@ -287,6 +306,9 @@ public class GeneralView extends JFrame {
 
 	}
 
+	/**
+	 * Create the main menu of the program
+	 */
 	public void initialiceMenuOptions() {
 		setJMenuBar(mb);
 		ActionMenuBar actionListe = new ActionMenuBar();
@@ -314,14 +336,12 @@ public class GeneralView extends JFrame {
 		this.addKeyListener(new KeyActionsProgram());
 	}
 
-	/*
-	 * A tener en cuenta cuando se tiene ya jFrame general y se cambia de directorio
-	 * y se generan los los nuevos archivos en la opción detectEsferoid
+	/**
+	 * Stops the tasks from the image tab and the excel tabs
 	 */
 	public void cancelTimersCurrentDir() {
-
-		// si ya teniamos timers creados para otro directorio, los paramos y
-		// eliminamos y pasamos a crear los del actual
+		// If we have already tasks created for one directory, stops and eliminate them
+		// and create the ones for the current directory
 		if (!this.getTimers().isEmpty()) {
 			for (Timer t : this.getTimers()) {
 				t.cancel();
@@ -333,6 +353,11 @@ public class GeneralView extends JFrame {
 		}
 	}
 
+	/**
+	 * Creates the timers/tasks for the current tabs on the Tabpanel
+	 * 
+	 * @param tab current tabPanel
+	 */
 	public void returnTheTimers(TabPanel tab) {
 		System.out.println("Se han reanudado los timers");
 
@@ -344,6 +369,10 @@ public class GeneralView extends JFrame {
 		this.getTimers().add(tIma);
 	}
 
+	/**
+	 * Restore the original state of it JFrame. Closes all windows, kills all
+	 * threads and cleans all the content of it JFRame
+	 */
 	public void backinitialEstate() {
 
 		this.dir = null;
@@ -369,6 +398,14 @@ public class GeneralView extends JFrame {
 
 	}
 
+	/**
+	 * Checks if there are tiff files in the directory given if true then checks if
+	 * there are origial files
+	 * 
+	 * @param dc path of the directory to work with
+	 * @return true if tiff files found and original files found false if no tiff
+	 *         files found
+	 */
 	public boolean checkOriginalAndAskProcess(String dc) {
 		boolean selectAlgo = false;
 		selectAlgo = Utils.optionAction();

@@ -14,6 +14,12 @@ import ij.process.FloatPolygon;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 
+/**
+ * Modification of the Selection.java class on IJ
+ * 
+ * @see <a href="https://imagej.nih.gov/ij/developer/source/ij/plugin/Selection.java.html"> ImageJ documentation </a>
+ *
+ */
 public class SelectionModify {
 	private ImagePlus imp;
 	private float[] kernel = { 1f, 1f, 1f, 1f, 1f };

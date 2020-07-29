@@ -65,6 +65,12 @@ import loci.plugins.BF;
 import loci.plugins.in.ImporterOptions;
 import task.ImagesTask;
 
+/**
+ * Functions for working with files
+ * 
+ * @author Yolanda
+ *
+ */
 public class FileFuntions {
 
 	private static Map<String, Long> directoryLastChange;
@@ -121,10 +127,17 @@ public class FileFuntions {
 		return folder;
 	}
 
-	public static void saveImageNoBeforeProcess(File f, String originalDir, String originalName) {
+	/**
+	 * Saves a file from the temporal folder to the predictions one.
+	 * 
+	 * @param file         file to save
+	 * @param originalDir  the main directory
+	 * @param originalName the id of the image in the excel file
+	 */
+	public static void saveImageNoBeforeProcess(File file, String originalDir, String originalName) {
 		List<String> temporalFiles = new ArrayList<String>();
-		File oldFolder = new File(f.getAbsolutePath().replace(f.getName(), ""));
-		String newDir = f.getAbsolutePath().replace("temporal" + File.separator + f.getName(),
+		File oldFolder = new File(file.getAbsolutePath().replace(file.getName(), ""));
+		String newDir = file.getAbsolutePath().replace("temporal" + File.separator + file.getName(),
 				"predictions" + File.separator);
 
 		originalName += ".*\\.*";
@@ -135,8 +148,8 @@ public class FileFuntions {
 		String extension = null;
 
 		for (String s : temporalFiles) {
-			f = new File(s);
-			if (!f.getName().endsWith("xls")) {
+			file = new File(s);
+			if (!file.getName().endsWith("xls")) {
 
 				/*
 				 * If the new file was successfully move to the predictions folder if the
@@ -150,11 +163,11 @@ public class FileFuntions {
 					to += "_pred";
 				}
 				to += "." + extension;
-				f.renameTo(new File(to));
+				file.renameTo(new File(to));
 
 			} else {
 
-				ExcelActions.mergeExcels(f, originalName, new File(originalDir));
+				ExcelActions.mergeExcels(file, originalName, new File(originalDir));
 
 			}
 		}
@@ -162,9 +175,9 @@ public class FileFuntions {
 	}
 
 	/**
-	 * * Save the files from the temporal folder to the prediction folder exchanging
-	 * the original files in the prediction folder with the temporal ones We save
-	 * the tiff and roi/zip and change the corresponding row on the result excel
+	 * Save the files from the temporal folder to the prediction folder exchanging
+	 * the original files in the prediction folder with the temporal ones. Save the
+	 * tiff and roi/zip and change the corresponding row on the result excel
 	 * 
 	 * @param selectedFile The temporal file to save
 	 * @param saveDirPath  path of the save directory
@@ -191,6 +204,12 @@ public class FileFuntions {
 
 	}
 
+	/**
+	 * Saves a file in the path given
+	 * 
+	 * @param selectedFile file to save
+	 * @param saveDirPath  path to save the file
+	 */
 	public static void saveSelectedImageNoQuestion(File selectedFile, String saveDirPath) {
 
 		// We look for the tiff and zip files with the same as the selected file
@@ -295,8 +314,8 @@ public class FileFuntions {
 	}
 
 	/**
-	 * For delete a folder If we close the app or the algorithm view window we
-	 * delete the temporal folder
+	 * For delete a folder. If close the app or the algorithm view window delete the
+	 * temporal folder
 	 * 
 	 * @param folder The folder to delete
 	 */
@@ -320,7 +339,7 @@ public class FileFuntions {
 
 	/**
 	 * 
-	 * check if all the files have the same extension
+	 * Check if all the files have the same extension
 	 * 
 	 * @param result    list of path
 	 * @param extension extension to check
@@ -338,7 +357,7 @@ public class FileFuntions {
 	}
 
 	/**
-	 * From a file path we get the name of the file without the file extension
+	 * From a file path get the name of the file without the file extension
 	 * 
 	 * @param filePath the path of the file
 	 * @return the name of the file with out the extension
@@ -351,9 +370,9 @@ public class FileFuntions {
 	}
 
 	/**
-	 * We get the extension of a file
+	 * Get the extension of a file
 	 * 
-	 * @param filePath the path of the file we want to know the extension
+	 * @param filePath the path of the file want to know the extension
 	 * @return the extension of the file
 	 */
 	public static String extensionwithoutName(String filePath) {
@@ -367,8 +386,8 @@ public class FileFuntions {
 	}
 
 	/**
-	 * Creates the directoryLastChange if it wasn't all ready created and add the
-	 * last modification of the directory
+	 * Creates the directoryLastChange map if it wasn't all ready created and adds
+	 * the last modification of the directory
 	 * 
 	 * @param directory The path of the directory
 	 */
@@ -388,6 +407,11 @@ public class FileFuntions {
 
 	}
 
+	/**
+	 * Checks if any of the directories that we are working with has been modified
+	 * 
+	 * @return true if any of the directories has been modified
+	 */
 	private static boolean checkAllDirectChangeMapDire() {
 		boolean b = false;
 		for (String dire : directoryLastChange.keySet()) {
@@ -411,7 +435,7 @@ public class FileFuntions {
 	}
 
 	/**
-	 * check if the directory has change If true, we change the content of the
+	 * check if the directory has change. If true, we change the content of the
 	 * tabpanel adding or deleting images
 	 * 
 	 * @param directory the path of the directory
@@ -449,6 +473,15 @@ public class FileFuntions {
 
 	}
 
+	/**
+	 * Repaints the content of the Scroll view. If there is a new file we added it,
+	 * if a file was deleted we deleted it from the view and if a file has been
+	 * modify we repaint it
+	 * 
+	 * @param imagesTiff list with the path of the files that the view has to
+	 *                   contain
+	 * @param tp         tabpanel where the scroll view is been displayed
+	 */
 	private static void repaintImagesScrollView(List<String> imagesTiff, TabPanel tp) {
 
 		// we paint again the images
@@ -522,7 +555,7 @@ public class FileFuntions {
 	}
 
 	/**
-	 * Check if the images shown still exist, the had been modify And change the
+	 * Check if the images shown still exist, the had been modify and change the
 	 * images that the showImages is showing. Close the ViewImagesBigger.
 	 * 
 	 * @param images       ShowImages with the images shown
@@ -595,6 +628,7 @@ public class FileFuntions {
 	 * 
 	 * @param tp     The tabpanel that contains the tab with the images
 	 * @param secons the seconds between calls
+	 * @return Timer
 	 */
 	public static Timer imagescheckWithTime(TabPanel tp, int secons) {
 		ImagesTask imatask = new ImagesTask(tp);
@@ -611,9 +645,8 @@ public class FileFuntions {
 	 * ask you if you want to move the files to a prediction folder
 	 * 
 	 * @param folder        the folder to check if have tiff and roi files
-	 * @param nameFileNoExt name of the file without extension of the file we wants
-	 *                      to find it's tiff in the predictions folder if "" all
-	 *                      the files
+	 * @param nameFileNoExt name of the file without extension want to find it's
+	 *                      tiff in the predictions folder, if "" all the files
 	 * @return List of strings with the paths of tiff files in the folder given
 	 */
 	public static List<String> checkTiffNotPredictionsFolder(File folder, String nameFileNoExt) {
@@ -753,7 +786,7 @@ public class FileFuntions {
 	}
 
 	/**
-	 * Moves all the files from the dirpredictions to the temporal folder
+	 * Moves all the files from the folder predictions to the temporal folder
 	 * 
 	 * @param dirPredictions current folder
 	 * @param tempoFolder    new folder
@@ -821,7 +854,7 @@ public class FileFuntions {
 
 	/**
 	 * 
-	 * Searchs if in a folder there is original files (nd2 or tif)
+	 * Searchs if in a folder there is original files (nd2,tif or jpg)
 	 * 
 	 * @param folder folder to search original files
 	 * @return true if there is original images (nd2 or tif) in the folder
@@ -1027,6 +1060,12 @@ public class FileFuntions {
 
 	}
 
+	/**
+	 * Read the content of a file from an URL
+	 * 
+	 * @param urlFile url of the file to read
+	 * @return the content of a file
+	 */
 	public static List<String> readFile(String urlFile) {
 		List<String> line = new ArrayList<String>();
 		// create the url
@@ -1110,6 +1149,9 @@ public class FileFuntions {
 
 	}
 
+	/**
+	 * Closes all the algorithm view JFrames
+	 */
 	public static void closeAlgorithmViewWindows() {
 		// Closed all the windows that aren't the main frame
 		Window[] s = Window.getWindows();
@@ -1127,7 +1169,13 @@ public class FileFuntions {
 
 	}
 
-	public static boolean windowAlgoWiewOfFile(File f) {
+	/**
+	 * Gets if there is an algoritm view JFrame that is working with the given file
+	 * 
+	 * @param file file the algorithm view is working with
+	 * @return true if there is a algorithm view JFrame working with the given file
+	 */
+	public static boolean windowAlgoWiewOfFile(File file) {
 		boolean alreadyAlView = false;
 		System.gc();
 		Window[] s = Window.getWindows();
@@ -1138,7 +1186,7 @@ public class FileFuntions {
 				if (window.getClass().equals(AlgorithmView.class)) {
 					AlgorithmView al = (AlgorithmView) window;
 
-					if (al.getImage().equals(f)) {
+					if (al.getImage().equals(file)) {
 						alreadyAlView = true;
 						al.toFront();
 						break;
@@ -1150,6 +1198,12 @@ public class FileFuntions {
 		return alreadyAlView;
 	}
 
+	/**
+	 * Changes the working directory
+	 * 
+	 * @param path path of the new directory
+	 * @param tree true if changing the directory from the tree view
+	 */
 	public static void changeDirectory(String path, boolean tree) {
 
 		closeAlgorithmViewWindows();
@@ -1166,8 +1220,10 @@ public class FileFuntions {
 
 		}
 		if (tree) {
+			// If we click a folder in the tree section
 			Utils.callProgram(path);
 		} else {
+			// From the menu section
 			Utils.mainFrame.paintMainFRame(path);
 		}
 
@@ -1192,6 +1248,9 @@ public class FileFuntions {
 
 	}
 
+	/**
+	 * Select the directory of the main Frame and creates the content for it
+	 */
 	public static void inicializeGeneralViewDirectory() {
 //		 Choose the directory to work with
 		DirectoryChooser dc = new DirectoryChooser("Select the folder containing the images");
@@ -1269,6 +1328,10 @@ public class FileFuntions {
 		return list;
 	}
 
+	/**
+	 * If there is already a directory on the main Frame change the directory if not
+	 * initialize the content
+	 */
 	public static void changeDirOrNot() {
 		if (Utils.getCurrentDirectory() != null) {
 			changeDirectory();
@@ -1277,6 +1340,10 @@ public class FileFuntions {
 		}
 	}
 
+	/**
+	 * Select an image and process it with the current algorithm to that type of
+	 * image
+	 */
 	public static void detectAlgoImageMEnu() {
 
 		JFileChooser chooser = new JFileChooser(Utils.getCurrentDirectory());
@@ -1305,6 +1372,14 @@ public class FileFuntions {
 
 	}
 
+	/**
+	 * Save the current algorithm to each type of image
+	 * 
+	 * @param selectedItemFluo name of the algorithm of the fluo images
+	 * @param selectedItemTif  name of the algorithm of the Tif images
+	 * @param selectedItemNd2  name of the algorithm of the ND2 images
+	 * @param selectedItemJPG  name of the algorithm of the JPG images
+	 */
 	public static void saveAlgorithmConfi(String selectedItemFluo, String selectedItemTif, String selectedItemNd2,
 			String selectedItemJPG) {
 
@@ -1342,6 +1417,15 @@ public class FileFuntions {
 
 	}
 
+	/**
+	 * Checks if the selected item of the combobox
+	 * 
+	 * @param selectedItemFluo name of the algorithm saved for the fluo images
+	 * @param selectedItemTif  name of the algorithm saved for the Tif images
+	 * @param selectedItemNd2  name of the algorithm saved for the ND2 images
+	 * @param selectedItemJPG  name of the algorithm saved for the JPG images
+	 * @return true if any of the items of the combobox has changed
+	 */
 	public static boolean changedCombox(String selectedItemFluo, String selectedItemTif, String selectedItemNd2,
 			String selectedItemJPG) {
 		URL urlUpdater = getProgramProps();
@@ -1374,6 +1458,9 @@ public class FileFuntions {
 		return false;
 	}
 
+	/**
+	 * Opens the User manual PDF
+	 */
 	public static void openUserManual() {
 
 		try {
@@ -1430,6 +1517,11 @@ public class FileFuntions {
 		}
 	}
 
+	/**
+	 * Opens a PDF
+	 * 
+	 * @param filePDF PDF file
+	 */
 	private static void openPDF(File filePDF) {
 		if (Desktop.isDesktopSupported()) {
 			try {
@@ -1444,6 +1536,9 @@ public class FileFuntions {
 
 	}
 
+	/**
+	 * Opens the about section
+	 */
 	public static void openAboutSection() {
 
 		PropertiesFileFuntions prop = new PropertiesFileFuntions();
@@ -1480,6 +1575,16 @@ public class FileFuntions {
 		jDia.pack();
 	}
 
+	/**
+	 * Checks if the algorithms for each type of image are save in the properties
+	 * file. If not save it.
+	 * 
+	 * @param fluoSave name of the algorithm for the fluo images
+	 * @param tifSave  name of the algorithm for the tif images
+	 * @param nd2Save  name of the algorithm for the nd2 images
+	 * @param jpgSave  name of the algorithm for the jpg images
+	 * @return true the algorithms has been changed
+	 */
 	public static boolean checkSavedAlgoPropertiesFile(String fluoSave, String tifSave, String nd2Save,
 			String jpgSave) {
 		boolean change = false;
@@ -1506,6 +1611,12 @@ public class FileFuntions {
 		return change;
 	}
 
+	/**
+	 * Transform a list of image paths to ImageIcons
+	 * 
+	 * @param pathImages list of path images
+	 * @return list of ImageIcon
+	 */
 	public static List<ImageIcon> transformListToImageicon(List<String> pathImages) {
 		List<ImageIcon> imageIcon = new ArrayList<ImageIcon>();
 		ImageIcon image;
@@ -1517,6 +1628,13 @@ public class FileFuntions {
 		return imageIcon;
 	}
 
+	/**
+	 * Opens an image in ImageJ
+	 * 
+	 * @param path    path of the image
+	 * @param options options for open the image
+	 * @return the imagePlus
+	 */
 	public static ImagePlus openImageIJ(String path, ImporterOptions options) {
 		ImagePlus imp = IJ.openImage(path);
 
@@ -1545,6 +1663,12 @@ public class FileFuntions {
 		return imp;
 	}
 
+	/**
+	 * Copy a File
+	 * 
+	 * @param origenFile path of the file to copy
+	 * @param destiFile  path where copy the file
+	 */
 	public static void copiFile(String origenFile, String destiFile) {
 
 		Path origenPath = Paths.get(origenFile);

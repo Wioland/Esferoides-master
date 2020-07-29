@@ -13,6 +13,12 @@ import javax.swing.JPanel;
 
 import funtions.ShowTiff;
 
+/**
+ * JPanel which has the options of a magnifying glass
+ * 
+ * @author Yolanda
+ *
+ */
 public class LensMEnuButtons extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -24,14 +30,8 @@ public class LensMEnuButtons extends JPanel {
 	private Map<String, JButton> listImagesPrev;
 	private JButton pluSizeBu;
 	private JButton minSizeBu;
-
 	private JLabel imageMaxMin;
 
-	/**
-	 * Creates a pair of buttons to change the size of the buttons given
-	 * 
-	 * @param listImagesPrev map that contains the pair nameFile - JButton shown
-	 */
 	public LensMEnuButtons() {
 
 		minSizeIma = false;
@@ -159,6 +159,12 @@ public class LensMEnuButtons extends JPanel {
 
 	}
 
+	/**
+	 * Action for minimize or maximize the size of an image depending on the param
+	 * given
+	 * 
+	 * @param typeAction plus for bigger minus for smaller
+	 */
 	private void actionImage(String typeAction) {
 		int heightSize = imageMaxMin.getIcon().getIconHeight();
 		int widthSize = imageMaxMin.getIcon().getIconWidth();
@@ -195,6 +201,12 @@ public class LensMEnuButtons extends JPanel {
 
 	}
 
+	/**
+	 * Action for minimize or maximize the size of a list of images depending on the
+	 * param given
+	 * 
+	 * @param typeAction plus for bigger minus for smaller
+	 */
 	public void actionMap(String typeAction) {
 
 		int heightSize = ((JButton) listImagesPrev.values().toArray()[0]).getIcon().getIconHeight();
@@ -305,6 +317,9 @@ public class LensMEnuButtons extends JPanel {
 		}
 	}
 
+	/**
+	 * Restores the indicators of max and min size
+	 */
 	public void restroreMinMAxBooleans() {
 		this.maxSizeIma = false;
 		this.minSizeIma = false;

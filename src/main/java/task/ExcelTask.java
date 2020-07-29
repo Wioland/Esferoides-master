@@ -8,6 +8,12 @@ import funtions.ExcelActions;
 import funtions.Utils;
 import interfaces.TabPanel;
 
+/**
+ * Thread for checking the condition of an excel file
+ * 
+ * @author Yolanda
+ *
+ */
 public class ExcelTask extends TimerTask {
 
 	static private final Logger LOGGER = Logger.getLogger("task.ExcelTask");

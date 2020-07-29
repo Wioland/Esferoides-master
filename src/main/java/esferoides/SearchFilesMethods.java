@@ -12,6 +12,14 @@ import funtions.Utils;
 import ij.io.DirectoryChooser;
 import loci.plugins.in.ImporterOptions;
 
+/**
+ * 
+ * @author Jonathan
+ * @see <a href = "https://github.com/joheras/SpheroidJ" > Github repository
+ *      </a>
+ *
+ *
+ */
 public class SearchFilesMethods {
 
 	public static List<String> searchFilesFluo() {
@@ -28,7 +36,7 @@ public class SearchFilesMethods {
 			// We store the list of tiff files in the result list.
 			File folder = new File(dir);
 
-			Utils.search(".*fluo.tif", folder, result,1);
+			Utils.search(".*fluo.tif", folder, result, 1);
 			Collections.sort(result);
 			result.add(0, dir);
 
@@ -109,7 +117,7 @@ public class SearchFilesMethods {
 			// We store the list of tiff files in the result list.
 			File folder = new File(dir);
 
-			Utils.search(".*\\.tif", folder, result,1);
+			Utils.search(".*\\.tif", folder, result, 1);
 			Collections.sort(result);
 			result.add(0, dir);
 			for (String f : result) {
@@ -141,8 +149,8 @@ public class SearchFilesMethods {
 			// We store the list of tiff files in the result list.
 			File folder = new File(dir);
 
-			Utils.search(".*\\.JPG", folder, result,1);
-			Utils.search(".*\\.jpg", folder, result,1);
+			Utils.search(".*\\.JPG", folder, result, 1);
+			Utils.search(".*\\.jpg", folder, result, 1);
 
 			Collections.sort(result);
 			result.add(0, dir);

@@ -13,7 +13,15 @@ import ij.plugin.ImageCalculator;
 import ij.plugin.frame.RoiManager;
 import ij.process.ImageStatistics;
 import loci.plugins.in.ImporterOptions;
-
+/**
+ * 
+ * @author Jonathan
+ * @see <a href =
+ *      "https://github.com/joheras/SpheroidJ"
+ *      > Github repository </a>
+ *
+ *
+ */
 public class DetectEsferoidMethods {
 
 	// Method to detect esferoides.

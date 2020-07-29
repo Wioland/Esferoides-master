@@ -27,6 +27,12 @@ import funtions.ExcelActions;
 import funtions.FileFuntions;
 import funtions.Utils;
 
+/**
+ * JTabbedPane for showing the different elements that a directory contains
+ * 
+ * @author Yolanda
+ *
+ */
 public class TabPanel extends JTabbedPane {
 
 	private static final long serialVersionUID = 1L;
@@ -120,7 +126,7 @@ public class TabPanel extends JTabbedPane {
 		// We search for the excel files
 		List<String> result = new ArrayList<String>();
 		File folder = new File(directory);
-		File excel = null;
+
 		excelModificationIndexTab = new HashMap<Integer, Long>();
 		indexTabExcel = new HashMap<Integer, File>();
 		this.dir = directory;
@@ -145,21 +151,27 @@ public class TabPanel extends JTabbedPane {
 
 			} else {
 				noFileText("Images", null);
-				tabsActions(result, excel);
+				tabsActions(result);
 			}
 
 		} else {
 
 			viewImagen = new ViewImagesBigger(imageIcon, this);
-			tabsActions(result, excel);
+			tabsActions(result);
 		}
 
 	}
 
-	private void tabsActions(List<String> result, File excel) {
+	/**
+	 * Adds the actions to be performed in the tabs when they have the focus
+	 * 
+	 * @param result list with the path of the excels in the directory
+	 */
+	private void tabsActions(List<String> result) {
+
+		File excel = null;
 
 		// the excels tab
-
 		if (result.size() == 0) {
 			noFileText("Excel", null);
 		} else {
@@ -207,6 +219,12 @@ public class TabPanel extends JTabbedPane {
 
 	}
 
+	/**
+	 * Creates, adds the scrollview to a tab and makes it the current tab selected
+	 * and focused
+	 * 
+	 * @param imagesShow showImages view
+	 */
 	public void scrollView(ShowImages imagesShow) {
 		if (imagesShow == null) {
 			images = new ShowImages(this.dir, this);
@@ -225,6 +243,13 @@ public class TabPanel extends JTabbedPane {
 
 	}
 
+	/**
+	 * Creates the JPanel that the tab is going to display
+	 * 
+	 * @param images image or images to be display on the view
+	 * @param lens   LensMEnuButtons
+	 * @return the JPanel creaated with the params
+	 */
 	public static JPanel createJPanelToShowImages(Component images, LensMEnuButtons lens) {
 		JPanel splitPane = new JPanel(new GridBagLayout());
 
@@ -246,8 +271,7 @@ public class TabPanel extends JTabbedPane {
 	}
 
 	/**
-	 * Function to use when you wants to paint the tabpanel when you have just
-	 * detected new esferoides with all the algorithms
+	 * Paint the tabpanel when detected new esferoides with all the algorithms
 	 * 
 	 * @param directory the current directory
 	 */
@@ -317,6 +341,19 @@ public class TabPanel extends JTabbedPane {
 
 	}
 
+	/**
+	 * Process the images and saves the images generates in a prediction folder if
+	 * there were not previous images saved or in temporal if there were previous
+	 * images saved
+	 * 
+	 * @param i              the position in the listExtension of the extension
+	 *                       found
+	 * @param listExtensions list of image extensions the program works with
+	 * @param dire           path of the directory to work with
+	 * @param result         list of images path to process
+	 * @return true if there where already images processed in the directory an the
+	 *         ones created now are temporal
+	 */
 	private boolean processImage(int i, List<String> listExtensions, String dire, List<String> result) {
 
 		// check if in that folder there is more types of images and tell
@@ -372,6 +409,15 @@ public class TabPanel extends JTabbedPane {
 
 	}
 
+	/**
+	 * Shows the images if compare the saved images and the new images created will
+	 * be shown in a viewImageBigger comparer
+	 * 
+	 * @param dire               path of the directory to work with
+	 * @param compare            true if images are been compared
+	 * @param imagesOriginalPath path of the original images
+	 * @param noChildFolder      true if only 0 level of deep, no subdirectories
+	 */
 	private void showImages(String dire, boolean compare, List<String> imagesOriginalPath, boolean noChildFolder) {
 		String preDir = dire;
 
@@ -424,6 +470,11 @@ public class TabPanel extends JTabbedPane {
 
 	}
 
+	/**
+	 * Ask for the action to do with the new images
+	 * 
+	 * @return 0 Replace all, 1 choose images and null if X
+	 */
 	public int askReplaceOrchoose() {
 		String message = "There is already images that detected the esferoides in this folder. Do you want to replace the all the current images with the new ones or do you prefere with ones you change?";
 		Object[] opciones = { "Replace all", "Choose images" };
@@ -433,6 +484,12 @@ public class TabPanel extends JTabbedPane {
 		return op;
 	}
 
+	/**
+	 * Deletes the current saved images and excels and replace them with the
+	 * temporal ones
+	 * 
+	 * @param pathFoldersPrediction list of paths of the prediction folders
+	 */
 	public void deletePredicctionsAndSetTemporalPredictions(List<String> pathFoldersPrediction) {
 
 		String excelPath = getDir();
@@ -521,10 +578,15 @@ public class TabPanel extends JTabbedPane {
 		}
 	}
 
+	/**
+	 * Saves the images when only the saved algorithm for that image is been used
+	 * 
+	 * @param predictionFolders paths for the prediction folders
+	 * @param originalNAmes     names of the original files
+	 */
 	public void saveImagesOneAlgo(List<String> predictionFolders, List<String> originalNAmes) {
 		// if there is a predictions folder we ask to replace all files or
-		// to choose the
-		// ones to replace
+		// to choose the ones to replace
 
 		List<String> resultPredictions = new ArrayList<String>();
 		Utils.search("predictions", ".*\\.tiff", new File(this.dir), resultPredictions, 2);
@@ -613,6 +675,13 @@ public class TabPanel extends JTabbedPane {
 
 	}
 
+	/**
+	 * Opens a comparer between the new images and the saved ones
+	 * 
+	 * @param originalNAmes     original names of the images
+	 * @param resultpredictions saved images
+	 * @param newresult         new images
+	 */
 	public void openComparerNewVsOld(List<String> originalNAmes, List<String> resultpredictions,
 			List<String> newresult) {
 		// we open a comparer to

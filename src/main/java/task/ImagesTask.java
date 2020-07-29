@@ -8,6 +8,12 @@ import funtions.FileFuntions;
 import funtions.Utils;
 import interfaces.TabPanel;
 
+/**
+ * Thread for checking the condition of the images of the directory
+ * 
+ * @author Yolanda
+ *
+ */
 public class ImagesTask extends TimerTask {
 
 	static private final Logger LOGGER = Logger.getLogger("task.ImagesTask");

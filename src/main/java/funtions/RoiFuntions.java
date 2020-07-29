@@ -4,6 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Funtions for working with Roi objects
+ * 
+ * @author Yolanda
+ *
+ */
 public class RoiFuntions {
 
 	/**
@@ -27,7 +33,7 @@ public class RoiFuntions {
 	}
 
 	/**
-	 * Gets the path of the original file (nd2 or tiff) associated with the tiff
+	 * Gets the path of the original file (nd2,jpg or tiff) associated with the tiff
 	 * file in the predictions folder
 	 * 
 	 * @param pathTemporalTiff path of a tiff image in the temporal folder
@@ -57,7 +63,7 @@ public class RoiFuntions {
 	}
 
 	/**
-	 * gets the path of the original file (nd2 or tif) associated with the tiff file
+	 * gets the path of the original file (nd2,jpg or tif) associated with the tiff file
 	 * in predictions folder
 	 * 
 	 * @param tiffPredictionsPath path of a tiff file in the predictions folder

@@ -19,11 +19,14 @@ import funtions.FileFuntions;
 import funtions.RoiFuntions;
 import funtions.Utils;
 
+/**
+ * JSplitPanel with the tree directory 
+ * 
+ * @author Yolanda
+ *
+ */
 public class ImageTreePanel extends JSplitPane {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JTree tree;
 	private String dir;
@@ -181,6 +184,14 @@ public class ImageTreePanel extends JSplitPane {
 		Utils.mainFrame.returnTheTimers(folderView);
 	}
 
+	/**
+	 * Repaints the tabPanel view. Depending on the value of the param the view is
+	 * going to be shown different
+	 * 
+	 * @param selectAlgo true if the content of the directory if going to be
+	 *                   processed false if the content of the directory is only to
+	 *                   be shown
+	 */
 	public void repainTabNoTimers(boolean selectAlgo) {
 		OurProgressBar pb = new OurProgressBar(Utils.mainFrame, false);
 		Utils.mainFrame.setPb(pb);

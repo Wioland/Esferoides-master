@@ -14,6 +14,12 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
+/**
+ * JTable for showing excel files
+ * 
+ * @author Yolanda
+ *
+ */
 public class ExcelTableCreator extends JTable {
 
 	private static final long serialVersionUID = 1L;
@@ -26,6 +32,8 @@ public class ExcelTableCreator extends JTable {
 
 	}
 
+	//METHODS
+	
 	/**
 	 * Creates a table mode with the data of an excel file
 	 * 

@@ -2,6 +2,12 @@ package funtions;
 
 import interfaces.GeneralView;
 
+/**
+ * Main class of the program
+ * 
+ * @author Yolanda
+ *
+ */
 public class Main {
 
 	public static void main(String[] args) {

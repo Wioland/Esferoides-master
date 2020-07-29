@@ -7,14 +7,20 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
+/**
+ * Function for showing the image Tiff as an ImageIcon
+ * 
+ * @author Yolanda
+ *
+ */
 public class ShowTiff {
 
 	private static int width = 700;
 	private static int height = 700;
 
 	/**
-	 * For showing a tiff image in the interface we transform it to an imageicon
-	 * since otherwise it won't appear
+	 * For showing a tiff image in the interface transform it to an imageicon since
+	 * otherwise it won't appear
 	 * 
 	 * @param path The path of the image tiff image to show
 	 * @return an imageIcon with the tiff image

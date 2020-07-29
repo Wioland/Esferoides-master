@@ -39,6 +39,12 @@ import interfaces.GeneralView;
 import interfaces.ImageTreePanel;
 import interfaces.JMenuPropertiesFile;
 
+/**
+ * Usefull funtions
+ * 
+ * @author Yolanda
+ *
+ */
 public class Utils {
 
 	public static GeneralView mainFrame = null;
@@ -50,6 +56,7 @@ public class Utils {
 	 * @param pattern pattern that the files must have
 	 * @param folder  folder to look for the files
 	 * @param result  array with the path of the files that have the pattern
+	 * @param deep    deep to search
 	 */
 	public static void search(final String pattern, final File folder, List<String> result, int deep) {
 		if (deep != -1) {
@@ -70,6 +77,16 @@ public class Utils {
 
 	}
 
+	/**
+	 * Method to search the list of files that satisfies a pattern in a folder with
+	 * the name given. The list of files is stored in the result list.
+	 * 
+	 * @param nameFolder  name of the folder we want to search
+	 * @param patternName pattern of the files
+	 * @param folder      main folder in which search the folder
+	 * @param result      list of results
+	 * @param deep        deep to search
+	 */
 	public static void search(final String nameFolder, final String patternName, final File folder, List<String> result,
 			int deep) {
 		if (deep != -1) {
@@ -94,6 +111,14 @@ public class Utils {
 
 	}
 
+	/**
+	 * Search for the child folders of the one given. The predictions and the
+	 * temporal ones will not be added to the result
+	 * 
+	 * @param parentDir  directory in which search the folders
+	 * @param folderList list of folders on the parentDir
+	 * @param deep       deep to search
+	 */
 	public static void searchFolders(File parentDir, List<String> folderList, int deep) {
 		if (deep != -1) {
 			for (final File f : parentDir.listFiles()) {
@@ -133,6 +158,14 @@ public class Utils {
 
 	}
 
+	/**
+	 * Search a folder/s in a directory given
+	 * 
+	 * @param parentDir  folder to search in
+	 * @param folderName name of the folder we are looking for
+	 * @param listResult list of folders that we are looking for
+	 * @param deep       deep to search
+	 */
 	public static void searchFoldersName(File parentDir, String folderName, List<String> listResult, int deep) {
 		if (deep != -1) {
 			for (final File f : parentDir.listFiles()) {
@@ -433,8 +466,7 @@ public class Utils {
 	}
 
 	/**
-	 * Gets the current directory the one that the user has selected and the program
-	 * in
+	 * Gets the current directory
 	 * 
 	 * @return path of the current directory
 	 */
@@ -444,13 +476,10 @@ public class Utils {
 
 	}
 
-	// METHODS
-
 	/**
 	 * Creates the Main frame or looks if there is a current one to repaint
 	 * 
-	 * @param dc     working directory
-	 * @param geView main JFrame of the program
+	 * @param dc working directory
 	 */
 	public static void callProgram(String dc) {
 
@@ -463,6 +492,12 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * Search if we hae tiff files(processed images) in the current directory and
+	 * subdirectories deep 2.
+	 * 
+	 * @return true if tiff files found
+	 */
 	public static boolean optionAction() {
 		boolean detect = true;
 
@@ -476,13 +511,11 @@ public class Utils {
 	}
 
 	/**
-	 * Checks if there is a main frame. if it is you repaint the tabpanel if not you
-	 * create a new one
+	 * Checks if there is a main frame. if it is, repaint the tabpanel if not create
+	 * a new one
 	 * 
-	 * @param geView     main JFrame of the program
 	 * @param dc         the path of the current directory
-	 * @param selectAlgo true if you select previously detect esferoide and false
-	 *                   otherwise
+	 * @param selectAlgo true if process images and false otherwise
 	 */
 	public static void createGeneralViewOrNot(String dc, boolean selectAlgo) {
 
@@ -502,6 +535,12 @@ public class Utils {
 
 	}
 
+	/**
+	 * Checks if have a directory with that name and if it is enable or not.
+	 * 
+	 * @param nameMenuItem name of the menu we want to know if is enable
+	 * @return true if it is enable
+	 */
 	public static boolean menuItemActive(String nameMenuItem) {
 		boolean isActive = false;
 
@@ -520,6 +559,9 @@ public class Utils {
 
 	}
 
+	/**
+	 * Menu for changing the algorithms that process the images
+	 */
 	public static void changeUsedAlgoritms() {
 
 		JDialog jDia = new JDialog(mainFrame);
@@ -655,6 +697,15 @@ public class Utils {
 		jDia.pack();
 	}
 
+	/**
+	 * Saves the imageJ image in the directory predictions.
+	 * 
+	 * @param dir      directory where the original image is
+	 * @param name     name of the image
+	 * @param imp1     imageJ Image
+	 * @param rm       roi manager
+	 * @param goodRows list of rows
+	 */
 	public static synchronized void showResultsAndSaveNormal(String dir, String name, ImagePlus imp1, RoiManager rm,
 			ArrayList<Integer> goodRows) {
 
@@ -754,6 +805,13 @@ public class Utils {
 
 	}
 
+	/**
+	 * Downloads a file
+	 * 
+	 * @param url      url of the file to download
+	 * @param location path to save the file
+	 * @return file dowload
+	 */
 	public static File download(final URL url, String location) {
 
 		try {

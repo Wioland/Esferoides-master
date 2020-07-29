@@ -24,6 +24,12 @@ import funtions.FileFuntions;
 import funtions.ShowTiff;
 import funtions.Utils;
 
+/**
+ * Shows the images like a pictures viewer 
+ * 
+ * @author Yolanda
+ *
+ */
 public class ViewImagesBigger {
 
 	private List<ImageIcon> listImages;
@@ -80,8 +86,6 @@ public class ViewImagesBigger {
 
 	}
 
-
-
 	/**
 	 * Creates the tab that shows the image selected in its full size
 	 * 
@@ -126,7 +130,6 @@ public class ViewImagesBigger {
 				createComparer();
 				addlistenerButton(jpComparer.getBackButton(), jpComparer.getForwarButtonButton(), false);
 				jpComparer.getPanelButtons().remove(jpComparer.getExitButton());
-				
 
 			} else {
 				jpComparer.remove(jpComparer.getPanelLabelsText());
@@ -135,7 +138,7 @@ public class ViewImagesBigger {
 				jpComparer.getPanelButtons().remove(jpComparer.getExitButton());
 				jpComparer.getPanelButtons().remove(jpComparer.getSelectButton());
 				jpComparer.getPanelButtons().remove(jpComparer.getScrollButton());
-				
+
 				addlistenerButton(jpComparer.getBackButton(), jpComparer.getForwarButtonButton(),
 						jpComparer.getTryAlgoButton());
 
@@ -293,13 +296,13 @@ public class ViewImagesBigger {
 		this.listImages = listImages;
 	}
 
-	// METHODS
-
 	public void setImage(String image) {
 
 		indexImagenList = this.indexImage.get(image);
 		moreActionChangeIndexIma();
 	}
+
+	// METHODS
 
 	/**
 	 * Creates the comparer if the comparer is in the algorithmView frame
@@ -514,6 +517,12 @@ public class ViewImagesBigger {
 		}
 	}
 
+	/**
+	 * Action for the back and forward buttons
+	 * 
+	 * @param newVsOld      true if comparer
+	 * @param forwardAction true if forward action false if back action
+	 */
 	public void backForwardActionPerform(boolean newVsOld, boolean forwardAction) {
 		if (forwardAction) {
 			indexImagenList++;
@@ -595,6 +604,9 @@ public class ViewImagesBigger {
 
 	}
 
+	/**
+	 * Delete the temporal folders and repaints the view
+	 */
 	public void deleteTemporalAndRepaintView() {
 		File temporal = null;
 		List<String> temporalFolders = new ArrayList<String>();
@@ -647,6 +659,10 @@ public class ViewImagesBigger {
 
 	}
 
+	/**
+	 * Delete an image from the list of images that this view is showing when it is
+	 * not a comparer
+	 */
 	public void deleteImageFromListNoComparerOldVsNew() {
 		listImages.remove(indexImagenList);
 		indexImagenList = 0;
@@ -666,6 +682,10 @@ public class ViewImagesBigger {
 
 	}
 
+	/**
+	 * Modify an image from the list of images that this view is showing when it is
+	 * not a comparer
+	 */
 	public void modifyImageFromListNoComparerOldVsNew() {
 
 		ImageIcon i = ShowTiff.showTiffToImageIcon(listImages.get(indexImagenList).getDescription());
@@ -678,6 +698,10 @@ public class ViewImagesBigger {
 
 		moreActionChangeIndexIma();
 	}
+
+	/**
+	 * Initialize the map indexImage
+	 */
 	private void initialiceMap() {
 		int i = 0;
 		for (ImageIcon imageIcon : listImages) {
@@ -687,6 +711,11 @@ public class ViewImagesBigger {
 
 	}
 
+	/**
+	 * Adds the action to the scrollview button
+	 * 
+	 * @param scrollButton button to show the images in a scroll view
+	 */
 	private void addListenerMenuScroll(JButton scrollButton) {
 
 		scrollButton.addMouseListener(new MouseAdapter() {
@@ -699,6 +728,9 @@ public class ViewImagesBigger {
 
 	}
 
+	/**
+	 * Adds this element to the tab panel
+	 */
 	private void addTotab() {
 
 		// Gets the name of the tab and add the title

@@ -7,6 +7,12 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
+/**
+ * Functions for working with the .properties file
+ * 
+ * @author Yolanda
+ *
+ */
 public class PropertiesFileFuntions {
 
 	// Properties of the properties file

@@ -35,6 +35,12 @@ import interfaces.ExcelTableCreator;
 import interfaces.TabPanel;
 import task.ExcelTask;
 
+/**
+ * Functions for working with Excel files
+ * 
+ * @author Yolanda
+ *
+ */
 public class ExcelActions {
 
 	private ResultsTable rt;
@@ -174,7 +180,8 @@ public class ExcelActions {
 	}
 
 	/**
-	 * Checks is the excel of it tab have change or if an
+	 * Checks if the excel of it tab have change, if it has been deleted or a new
+	 * Excel has appeared
 	 * 
 	 * @param tp    TabPanel that contains the excel tab
 	 * @param dir   The excel directory
@@ -206,8 +213,8 @@ public class ExcelActions {
 						JOptionPane.showMessageDialog(Utils.mainFrame,
 								"The excel " + excel.getName() + " was modified. Updating it´s tab");
 
-						JPanel jpa=(JPanel) tp.getComponentAt(index);
-						JScrollPane sp = (JScrollPane) jpa.getComponent(1) ;
+						JPanel jpa = (JPanel) tp.getComponentAt(index);
+						JScrollPane sp = (JScrollPane) jpa.getComponent(1);
 						JViewport jP = (JViewport) sp.getComponent(0);
 						ExcelTableCreator eTC = (ExcelTableCreator) jP.getComponent(0);
 						jP.remove(eTC);
@@ -408,11 +415,12 @@ public class ExcelActions {
 
 	/**
 	 * Methods for checking the excel tabs in the seconds given in order to know if
-	 * the excels had change or new ones have appear
+	 * the Excels had changed or new ones have appeared
 	 * 
 	 * @param tp        The tabPanel
 	 * @param directory The current directory to check
 	 * @param secons    The seconds between calls
+	 * @return Timer
 	 */
 	public static Timer excelcheckWithTime(TabPanel tp, String directory, int secons) {
 		ExcelTask exTask = new ExcelTask(tp, directory);
@@ -441,6 +449,13 @@ public class ExcelActions {
 
 	}
 
+	/**
+	 * Merges the excels of a directory and its subdirectories down to a certain
+	 * depth and leaves the result excel in the main directory
+	 * 
+	 * @param directory main directory
+	 * @param deep      deep of merge
+	 */
 	public static void mergeExcelsDirectoryAndSubdir(File directory, int deep) {
 
 		List<String> result = new ArrayList<String>();
@@ -495,6 +510,13 @@ public class ExcelActions {
 
 	}
 
+	/**
+	 * Gets the last row of the sheet of an excel file
+	 * 
+	 * @param excel Excel file
+	 * @param sheet position of the sheet on the excel
+	 * @return the position of the last row in the excel
+	 */
 	private static int getNumberLastRow(File excel, int sheet) {
 		HSSFWorkbook oldExcel;
 		int n = 0;
@@ -755,6 +777,12 @@ public class ExcelActions {
 
 	}
 
+	/**
+	 * Saves an excel file in the given directory with the rows given
+	 * 
+	 * @param goodRows rows to add to the excel
+	 * @param folder   place where the excel is going to be save
+	 */
 	public static void saveExcel(ArrayList<Integer> goodRows, File folder) {
 		ResultsTable rt = ResultsTable.getResultsTable();
 		int rows = rt.getCounter();
@@ -780,6 +808,12 @@ public class ExcelActions {
 		rt.reset();
 	}
 
+	/**
+	 * Deletes a row of the excel given by id.
+	 * 
+	 * @param excelFile    Excel file
+	 * @param originalName first column data of the excel that identify the row
+	 */
 	public static void deleteRow(File excelFile, String originalName) {
 		HSSFWorkbook workbook;
 		try {
@@ -797,6 +831,12 @@ public class ExcelActions {
 
 	}
 
+	/**
+	 * Deletes a row of the excel given by position.
+	 * 
+	 * @param sheet    excel sheet
+	 * @param rowIndex position of the row in the sheet
+	 */
 	public static void removeRow(HSSFSheet sheet, int rowIndex) {
 		int lastRowNum = sheet.getLastRowNum();
 		if (rowIndex >= 0 && rowIndex < lastRowNum) {
@@ -810,6 +850,15 @@ public class ExcelActions {
 		}
 	}
 
+	/**
+	 * Changes a row of the given excel from the result Table of imageJ
+	 * 
+	 * @param goodRows     rows to add
+	 * @param sheet        sheet to modify
+	 * @param originalName id of the row
+	 * @param excelFile    excel file
+	 * @param workbook     workbook of the excel
+	 */
 	public static void getchangeExcelRowFromResultTable(ArrayList<Integer> goodRows, HSSFSheet sheet,
 			String originalName, File excelFile, HSSFWorkbook workbook) {
 
