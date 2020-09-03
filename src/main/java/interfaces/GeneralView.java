@@ -116,8 +116,8 @@ public class GeneralView extends JFrame {
 	public void paintMainFRame(String dc) {
 
 		if (dc != null) {
-			boolean selectAlgo = checkOriginalAndAskProcess(dc);
 			this.dir = dc;
+			boolean selectAlgo = checkOriginalAndAskProcess(dc);
 			createContent(dc, selectAlgo);
 			this.repaint();
 		}

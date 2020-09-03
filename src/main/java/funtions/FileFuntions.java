@@ -1588,22 +1588,24 @@ public class FileFuntions {
 			String jpgSave) {
 		boolean change = false;
 		if (fluoSave == null || tifSave == null || nd2Save == null || jpgSave == null) {
-			String hv2 = Methods.getAlgorithms()[3];
-			String tbg = Methods.getAlgorithms()[5];
-			String tp = Methods.getAlgorithms()[7];
-
-			FileFuntions.saveAlgorithmConfi(hv2, hv2, tbg, tp);
+//			String hv2 = Methods.getAlgorithms()[3];
+//			String tbg = Methods.getAlgorithms()[5];
+//			String tp = Methods.getAlgorithms()[7];
+//
+//			FileFuntions.saveAlgorithmConfi(hv2, hv2, tbg, tp);
+			FileFuntions.saveAlgorithmConfi(Methods.getAlgorithms()[8], Methods.getAlgorithms()[8], Methods.getAlgorithms()[8], Methods.getAlgorithms()[8]);
 			change = true;
 
 		} else {
 			List<String> listax = Arrays.asList(Methods.getAlgorithms());
 			if (!listax.contains(fluoSave) || !listax.contains(tifSave) || !listax.contains(nd2Save)
 					|| !listax.contains(jpgSave)) {
-				String hv2 = Methods.getAlgorithms()[3];
-				String tbg = Methods.getAlgorithms()[5];
-				String tp = Methods.getAlgorithms()[7];
-
-				FileFuntions.saveAlgorithmConfi(hv2, hv2, tbg, tp);
+//				String hv2 = Methods.getAlgorithms()[3];
+//				String tbg = Methods.getAlgorithms()[5];
+//				String tp = Methods.getAlgorithms()[7];
+//
+//				FileFuntions.saveAlgorithmConfi(hv2, hv2, tbg, tp);
+				FileFuntions.saveAlgorithmConfi(Methods.getAlgorithms()[8], Methods.getAlgorithms()[8], Methods.getAlgorithms()[8], Methods.getAlgorithms()[8]);
 				change = true;
 			}
 		}

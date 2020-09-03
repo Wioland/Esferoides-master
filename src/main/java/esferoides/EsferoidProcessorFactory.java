@@ -1,10 +1,10 @@
 package esferoides;
+
 /**
  * 
  * @author Jonathan
- * @see <a href =
- *      "https://github.com/joheras/SpheroidJ"
- *      > Github repository </a>
+ * @see <a href = "https://github.com/joheras/SpheroidJ" > Github repository
+ *      </a>
  *
  *
  */
@@ -57,6 +57,11 @@ public class EsferoidProcessorFactory {
 
 			break;
 		}
+		case "Teodora No Holes": {
+			esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesJPG, // searchFilesTeodora,
+					DetectEsferoidMethods::detectEsferoideTeodoraBigNoHoles);
+			break;
+		}
 		case "Hector fluo stack": {
 
 			esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesTeodora,
@@ -70,6 +75,11 @@ public class EsferoidProcessorFactory {
 			esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFilesJPG,
 					DetectEsferoidMethods::detectEsferoideTeniposide);
 
+			break;
+		}
+		case "HRNSeg": {
+			esferoidProcessor = new EsferoidProcessor(SearchFilesMethods::searchFiles,
+					DetectEsferoidMethods::detectEsferoideDeep);
 			break;
 		}
 		}

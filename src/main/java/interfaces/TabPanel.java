@@ -45,6 +45,7 @@ public class TabPanel extends JTabbedPane {
 	private LensMEnuButtons lens;
 	private Thread t;
 	private RoiModifyView roiModifyTab = null;
+	private boolean alreadyprocessed = false;
 
 	public TabPanel(String directory, boolean selectAlgo) {
 
@@ -143,17 +144,21 @@ public class TabPanel extends JTabbedPane {
 		// the images tab
 
 		if (imageIcon.isEmpty()) {
-
-			boolean proessImages = Utils.mainFrame.checkOriginalAndAskProcess(this.dir);
-			if (proessImages) {
-
-				selectAlgorithmImagesTab(directory);
-
-			} else {
+			if (this.alreadyprocessed) {
 				noFileText("Images", null);
 				tabsActions(result);
-			}
+				this.alreadyprocessed=false;
+			} else {
+				boolean proessImages = Utils.mainFrame.checkOriginalAndAskProcess(this.dir);
+				if (proessImages) {
 
+					selectAlgorithmImagesTab(directory);
+
+				} else {
+					noFileText("Images", null);
+					tabsActions(result);
+				}
+			}
 		} else {
 
 			viewImagen = new ViewImagesBigger(imageIcon, this);
@@ -317,6 +322,21 @@ public class TabPanel extends JTabbedPane {
 			Utils.searchFoldersName(new File(this.dir), "predictions", predictionsFolderPAth, 1);
 			if (folderList.isEmpty() || predictionsFolderPAth.isEmpty()) {
 				compare = processImage(i, listExtensions, directory, result);
+				
+				predictionsFolderPAth.clear();
+				Utils.searchFoldersName(new File(this.dir), "predictions", predictionsFolderPAth, 1);
+				File predic = null;
+				for (String path : predictionsFolderPAth) {
+					predic = new File(path);
+					if (predic.listFiles().length == 0) {
+						predic.delete();
+					}
+				}
+				predictionsFolderPAth.clear();
+				Utils.searchFoldersName(new File(this.dir), "predictions", predictionsFolderPAth, 1);
+				if (predictionsFolderPAth.isEmpty()) {
+					this.alreadyprocessed = true;
+				}
 				showImages(directory, compare, result, false);
 			} else {
 

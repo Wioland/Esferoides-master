@@ -67,7 +67,8 @@ public class Utils {
 				}
 
 				if (f.isFile()) {
-					if (f.getName().toUpperCase().matches(pattern.toUpperCase())) {
+					if (f.getName().toUpperCase()
+							.matches(pattern.toUpperCase()) /* && !f.getName().contains("pred") */) {
 						result.add(f.getAbsolutePath());
 					}
 				}
@@ -574,11 +575,17 @@ public class Utils {
 		String tbg = Methods.getAlgorithms()[5];
 		String hfs = Methods.getAlgorithms()[6];
 		String tp = Methods.getAlgorithms()[7];
+		String hrn = Methods.getAlgorithms()[8];
 
-		String fluoSave = hv2;
-		String tifSave = hv2;
-		String nd2Save = tbg;
-		String jpgSave = tp;
+//		String fluoSave = hv2;
+//		String tifSave = hv2;
+//		String nd2Save = tbg;
+//		String jpgSave = tp;
+
+		String fluoSave = hrn;
+		String tifSave = hrn;
+		String nd2Save = hrn;
+		String jpgSave = hrn;
 
 		URL urlUpdater = FileFuntions.getProgramProps();
 		if (urlUpdater != null) {
@@ -605,20 +612,24 @@ public class Utils {
 		tiffFluoCombobox.addItem(hv1);
 		tiffFluoCombobox.addItem(hv2);
 		tiffFluoCombobox.addItem(hfs);
+		tiffFluoCombobox.addItem(hrn);
 		tiffFluoCombobox.setSelectedItem(fluoSave);
 
 		JComboBox<String> tiffCombobox = new JComboBox<String>();
 		tiffCombobox.addItem(hv1);
 		tiffCombobox.addItem(hv2);
+		tiffCombobox.addItem(hrn);
 		tiffCombobox.setSelectedItem(tifSave);
 
 		JComboBox<String> nd2Combobox = new JComboBox<String>();
 		nd2Combobox.addItem(tbg);
 		nd2Combobox.addItem(tv1);
+		nd2Combobox.addItem(hrn);
 		nd2Combobox.setSelectedItem(nd2Save);
 
 		JComboBox<String> jpgCombobox = new JComboBox<String>();
 		jpgCombobox.addItem(tp);
+		jpgCombobox.addItem(hrn);
 		jpgCombobox.setSelectedItem(jpgSave);
 
 		JLabel tiffFluoLAbel = new JLabel("Tiff fluo:");

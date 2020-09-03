@@ -275,6 +275,39 @@ public class DetectEsferoidMethods {
 		imp.close();
 
 	}
+	// Method to detect esferoides.
+		public static void detectEsferoideTeodoraBigNoHoles(ImporterOptions options, String dir, String name,
+				ArrayList<Integer> goodRows, boolean temp) {
+			options.setId(name);
+		
+			String nameClass = "TeodoraBigNoHoles";
+//			ImagePlus[] imps;
+			ImagePlus imp = IJ.openImage(name);
+			ImagePlus imp2 = imp.duplicate();
+
+			RoiManager rm;
+
+			DetectEsferoidImageMethods.processEsferoidBig(imp2);
+			rm = AnalyseParticleMethods.analyseParticlesTeodora(imp2, false, false);
+
+			imp2 = imp.duplicate();
+			int iters = 0;
+			while ((rm == null || rm.getRoisAsArray().length == 0) && iters < 7) {
+				DetectEsferoidImageMethods.processEsferoidEdges(imp2, iters);
+				rm = AnalyseParticleMethods.analyseParticlesTeodora(imp2, false, false);
+				iters++;
+			}
+
+			if (temp) {
+				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
+//					Utils.showResultsAndSave(dir, name, imp, rm, goodRows, "", temp);
+			} else {
+				Utils.showResultsAndSaveNormal(dir, name, imp, rm, goodRows);
+			}
+//				Utils.showResultsAndSave(dir, name, imp, rm, goodRows);
+			imp.close();
+
+		}
 
 	// Method to detect esferoides.
 	public static void detectEsferoideFluoStack(ImporterOptions options, String dir, String name,
@@ -306,47 +339,47 @@ public class DetectEsferoidMethods {
 		DetectEsferoidImageMethods.processEsferoidFluo(impFluoD, true);
 		RoiManager rm = AnalyseParticleMethods.analyzeParticlesHector(impFluoD);
 		Utils.keepBiggestROI(rm);
-		Roi r = rm.getRoi(0);
-		ImageStatistics stats = r.getStatistics();
-		impFluoD.close();
-
-		if (stats.area > 10000) {
-			rm.runCommand("Select All");
-			rm.runCommand("Delete");
-
-			ImagePlus impNoFluoD = impNoFluo.duplicate();
-			DetectEsferoidImageMethods.processEsferoidNoFluoThreshold(impNoFluoD);
-			rm = AnalyseParticleMethods.analyzeParticlesHector(impNoFluoD);
-			Utils.keepBiggestROI(rm);
-
-			double round = 0;
-
-			if (rm.getRoisAsArray().length > 0) {
-				r = rm.getRoi(0);
-				stats = r.getStatistics();
-				impNoFluoD.close();
-				round = 4.0 * (stats.area / (Math.PI * stats.major * stats.major));
-			}
-			if (round < 0.9) {
-				rm.runCommand("Select All");
-				rm.runCommand("Delete");
-				System.out.println("Round less than 0.9");
-				impFluoD = impFluo.duplicate();
-				DetectEsferoidImageMethods.processEsferoidFluo(impFluoD, true);
-				DetectEsferoidImageMethods.processEsferoidNoFluoBis(impNoFluo);
-				ImageCalculator ic = new ImageCalculator();
-				ImagePlus imp3 = ic.run("And create", impFluoD, impNoFluo);
-				IJ.run(imp3, "Fill Holes", "");
-
-				imp3 = ic.run("ADD create", imp3, impFluoD);
-				rm = AnalyseParticleMethods.analyzeParticlesFluo(imp3);
-				imp3.close();
-				impFluoD.close();
-				impNoFluo.close();
-
-			}
-
-		}
+//		Roi r = rm.getRoi(0);
+//		ImageStatistics stats = r.getStatistics();
+//		impFluoD.close();
+//
+//		if (stats.area > 10000) {
+//			rm.runCommand("Select All");
+//			rm.runCommand("Delete");
+//
+//			ImagePlus impNoFluoD = impNoFluo.duplicate();
+//			DetectEsferoidImageMethods.processEsferoidNoFluoThreshold(impNoFluoD);
+//			rm = AnalyseParticleMethods.analyzeParticlesHector(impNoFluoD);
+//			Utils.keepBiggestROI(rm);
+//
+//			double round = 0;
+//
+//			if (rm.getRoisAsArray().length > 0) {
+//				r = rm.getRoi(0);
+//				stats = r.getStatistics();
+//				impNoFluoD.close();
+//				round = 4.0 * (stats.area / (Math.PI * stats.major * stats.major));
+//			}
+//			if (round < 0.9) {
+//				rm.runCommand("Select All");
+//				rm.runCommand("Delete");
+//				System.out.println("Round less than 0.9");
+//				impFluoD = impFluo.duplicate();
+//				DetectEsferoidImageMethods.processEsferoidFluo(impFluoD, true);
+//				DetectEsferoidImageMethods.processEsferoidNoFluoBis(impNoFluo);
+//				ImageCalculator ic = new ImageCalculator();
+//				ImagePlus imp3 = ic.run("And create", impFluoD, impNoFluo);
+//				IJ.run(imp3, "Fill Holes", "");
+//
+//				imp3 = ic.run("ADD create", imp3, impFluoD);
+//				rm = AnalyseParticleMethods.analyzeParticlesFluo(imp3);
+//				imp3.close();
+//				impFluoD.close();
+//				impNoFluo.close();
+//
+//			}
+//
+//		}
 
 		if (temp) {
 			Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
@@ -370,17 +403,40 @@ public class DetectEsferoidMethods {
 
 		DetectEsferoidImageMethods.processEsferoidEdgesThreshold(impD, 22, 255);
 		RoiManager rm = AnalyseParticleMethods.analyzeParticlesFluo(impD);
-
-		if (rm.getRoisAsArray().length > 0) {
+	
+		if (rm != null && rm.getRoisAsArray().length > 0) {
+			Utils.keepBiggestROI(rm);
 			Roi r = rm.getRoi(0);
 			ImageStatistics stats = r.getStatistics();
 			double solidity = (stats.area / Utils.getArea(r.getConvexHull()));
-			if (solidity < 0.8) {
+			System.out.println(solidity);
+			int thesh = 23;
+			while (solidity < 0.8 && thesh > 15) {
+				System.out.println(thesh);
+				thesh--;
 				impD = imp.duplicate();
-				DetectEsferoidImageMethods.processEsferoidEdgesThresholdDilateErode(impD, 22, 255);
+				DetectEsferoidImageMethods.processEsferoidEdgesThresholdDilateErode(impD, thesh, 255);
 				rm = AnalyseParticleMethods.analyzeParticlesFluo(impD);
+				Utils.keepBiggestROI(rm);
+				r = rm.getRoi(0);
+				stats = r.getStatistics();
+				solidity = (stats.area / Utils.getArea(r.getConvexHull()));
+				System.out.println(solidity);
 			}
+		} else {
+			DetectEsferoidImageMethods.processEsferoidEdgesThresholdDilateErode(impD, 22, 255);
+			rm = AnalyseParticleMethods.analyzeParticlesFluo(impD);
 		}
+//		if (rm.getRoisAsArray().length > 0) {
+//			Roi r = rm.getRoi(0);
+//			ImageStatistics stats = r.getStatistics();
+//			double solidity = (stats.area / Utils.getArea(r.getConvexHull()));
+//			if (solidity < 0.8) {
+//				impD = imp.duplicate();
+//				DetectEsferoidImageMethods.processEsferoidEdgesThresholdDilateErode(impD, 22, 255);
+//				rm = AnalyseParticleMethods.analyzeParticlesFluo(impD);
+//			}
+//		}
 
 		imp.close();
 
@@ -393,5 +449,31 @@ public class DetectEsferoidMethods {
 		imp.close();
 
 	}
+	
+	// Method to detect esferoides.
+			public static void detectEsferoideDeep(ImporterOptions options, String dir, String name,
+					ArrayList<Integer> goodRows, boolean temp) {
+				options.setId(name);
+
+				String nameClass = "EsferoideDeep";
+				RoiManager rm;
+
+				
+//				ImagePlus imp2 = IJ.getImage();
+				ImagePlus imp2 =FileFuntions.openImageIJ(name, options);
+				ImagePlus imp=imp2.duplicate();
+				DetectEsferoidImageMethods.processEsferoidDeep(imp);
+				rm = AnalyseParticleMethods.analyseParticlesTeodora(imp, false, false);
+
+				if (temp) {
+					Utils.showResultsAndSave(dir, name, imp2, rm, goodRows, nameClass, temp);
+//						Utils.showResultsAndSave(dir, name, imp, rm, goodRows, "", temp);
+				} else {
+					Utils.showResultsAndSaveNormal(dir, name, imp, rm, goodRows);
+				}
+//					Utils.showResultsAndSave(dir, name, imp2, rm, goodRows);
+				imp2.close();
+
+			}
 
 }

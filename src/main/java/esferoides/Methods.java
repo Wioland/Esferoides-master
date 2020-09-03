@@ -25,7 +25,7 @@ import loci.plugins.in.ImporterOptions;
 public class Methods {
 
 	private static String[] algorithms = { "Fluorescence", "colageno", "Edges", "Hector no fluo v2",
-			"Threshold + Edges", "Threshold & Edges", "Hector fluo stack", "Threshold" };
+			"Threshold + Edges", "Threshold & Edges", "Hector fluo stack", "Threshold", "HRNSeg" };
 	private static File temporalFolder;
 	private ArrayList<Integer> goodRows;
 	private boolean setScale = false;
@@ -145,15 +145,15 @@ public class Methods {
 				}
 			}
 
-			//  initialize the ResultsTable
+			// initialize the ResultsTable
 
 			ImporterOptions options = new ImporterOptions();
 
-			//  construct the EsferoidProcessorObject
+			// construct the EsferoidProcessorObject
 
 			EsferoidProcessor esferoidProcessor = EsferoidProcessorFactory.createEsferoidProcessor(type);
 			goodRows = new ArrayList<>();
-			// For each file in the folder  detect the spheroid on it.
+			// For each file in the folder detect the spheroid on it.
 			for (String name : result) {
 				esferoidProcessor.getDetectEsferoid().apply(options, directory, name, goodRows, temp);
 			}
