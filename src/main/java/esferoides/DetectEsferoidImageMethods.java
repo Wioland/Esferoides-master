@@ -332,7 +332,8 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Fill Holes", "");
 		IJ.run(imp2, "Erode", "");
 	}
-	public static void processSpheroidDeep(ImagePlus imp2) {
+	
+	public static void processEsferoidDeep(ImagePlus imp2) {
 
 //		try {
 //			ProcessBuilder pBuilder = null;

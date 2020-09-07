@@ -249,17 +249,18 @@ public class ExcelActions {
 	 * @param index the index of the tab in the tabPane
 	 * @param tp    The tabPanel
 	 */
-	public static void deleteExcelTab(File excel, int index, TabPanel tp) {
+	public static synchronized void deleteExcelTab(File excel, int index, TabPanel tp) {
 
 //		tp.countComponents()
 		if (index <= tp.getComponents().length && index > 0) {
 			JOptionPane.showMessageDialog(Utils.mainFrame, "The excel " + excel.getName() + " was deleted");
-			JScrollPane sp = (JScrollPane) tp.getComponentAt(index);
+			JPanel jpa = (JPanel) tp.getComponentAt(index);
+			JScrollPane sp = (JScrollPane) jpa.getComponent(1);
 			JViewport jP = (JViewport) sp.getComponent(0);
 
 			// if it is the last excel tab we transform it to a noFileTab
 			if (tp.getIndexTabExcel().size() == 1) {
-
+				jpa.remove(0);
 				tp.noFileText("Excel", jP);
 				tp.setTitleAt(1, "Excel ");
 
@@ -274,7 +275,7 @@ public class ExcelActions {
 
 				if (index != (indexTabExcelSize + 1)) {
 					int i = 0;
-					for (i = index; i < (indexTabExcelSize + 1); i++) {
+					for (i = index; i < indexTabExcelSize; i++) {
 						tp.getIndexTabExcel().put(i, tp.getIndexTabExcel().get(i + 1));
 					}
 					tp.getIndexTabExcel().remove(tp.getIndexTabExcel().size());
@@ -300,9 +301,6 @@ public class ExcelActions {
 			if (!tp.getIndexTabExcel().isEmpty()) {
 				firstCheck = true;
 			}
-			String name;
-			ExcelTableCreator eTC;
-			File ex;
 
 			for (String path : result) {
 				// if there is a nofileTab the first excel goes there Changing
@@ -310,26 +308,13 @@ public class ExcelActions {
 				// the ScrollPane with the excel
 				if (!tp.getIndexTabExcel().containsValue(new File(path))) {
 					if (!firstCheck) {
-						JScrollPane sp = (JScrollPane) tp.getComponent(1);
-						JViewport jP = (JViewport) sp.getComponent(0);
-						jP.remove(jP.getComponent(0));
-
-						ex = new File(path);
-						eTC = new ExcelTableCreator(ex);
-
-						jP.add(eTC);
-						jP.repaint();
-
-						name = ex.getName();
-						tp.getExcelModificationIndexTab().put(1, ex.lastModified());
-						tp.getIndexTabExcel().put(1, ex);
-						tp.setTitleAt(1, "Excel " + name);
-
+						tp.remove(1);
+						addExcelPanel(new File(path), tp, 1);
 						firstCheck = true;
 
 					} else {
 						// For the rest of excels we create a new tab
-						addExcelPanel(new File(path), tp);
+						addExcelPanel(new File(path), tp,-1);
 					}
 				}
 
@@ -343,8 +328,9 @@ public class ExcelActions {
 	 * 
 	 * @param excel The excel file to add
 	 * @param tp    The Tabpanel
+	 * @param index index in the tabpanel if -1 the last index of the tabpanel
 	 */
-	public static void addExcelPanel(File excel, TabPanel tp) {
+	public static void addExcelPanel(File excel, TabPanel tp, int index) {
 
 		String name = excel.getName();
 		ExcelTableCreator excelPanel = new ExcelTableCreator(excel);
@@ -401,7 +387,11 @@ public class ExcelActions {
 		}
 
 		s.setName("Excel " + name);
-		tp.add("Excel " + name, panel);
+		if (index == -1) {
+			tp.add("Excel " + name, panel);
+		} else {
+			tp.insertTab("Excel " + name, null, panel, null, index);
+		}
 
 		// we add to the maps the index and the last modification of the file
 		tp.getExcelModificationIndexTab().put(tp.indexOfTab("Excel " + name), excel.lastModified());

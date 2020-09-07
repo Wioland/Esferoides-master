@@ -185,7 +185,7 @@ public class TabPanel extends JTabbedPane {
 
 				excel = new File(path);
 				if (excel.exists()) {
-					ExcelActions.addExcelPanel(excel, this);
+					ExcelActions.addExcelPanel(excel, this,-1);
 
 				} else {
 					noFileText("Excel", null);
