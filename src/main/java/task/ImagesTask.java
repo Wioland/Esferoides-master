@@ -1,5 +1,6 @@
 package task;
 
+import java.io.File;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,19 +32,24 @@ public class ImagesTask extends TimerTask {
 	public void run() {
 
 		currentDir = Utils.getCurrentDirectory();
-		// If the tabPanel was delete or change to another one we kill the task
-		if (tp.getDir() != currentDir) {
-			this.cancel();
 
+		if ((new File(currentDir).exists())) {
+			// If the tabPanel was delete or change to another one we kill the task
+			if (tp.getDir() != currentDir) {
+				this.cancel();
+
+			} else {
+				// For showing in the console how many times the task has been performed
+				LOGGER.log(Level.INFO, "ImageTask    Numero de ejecución " + counter);
+				counter++;
+
+				// Checks if the images of the prediction folder has changed
+
+				FileFuntions.isDirectoryContentModify(dir, tp);
+
+			}
 		} else {
-			// For showing in the console how many times the task has been performed
-			LOGGER.log(Level.INFO, "ImageTask    Numero de ejecución " + counter);
-			counter++;
-
-			// Checks if the images of the prediction folder has changed
-
-			FileFuntions.isDirectoryContentModify(dir, tp);
-
+			Utils.mainFrame.backinitialEstate();
 		}
 	}
 

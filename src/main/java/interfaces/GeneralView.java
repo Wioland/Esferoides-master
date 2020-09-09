@@ -292,7 +292,9 @@ public class GeneralView extends JFrame {
 		disableButonToolBar = new ArrayList<JButton>();
 		disableButonToolBar.add(btnDetectFile);
 		disableButonToolBar.add(btnDetectDir);
+		disableButonToolBar.add(btnCloseDir);
 
+		btnCloseDir.setEnabled(false);
 		btnDetectFile.setEnabled(false);
 		btnDetectDir.setEnabled(false);
 

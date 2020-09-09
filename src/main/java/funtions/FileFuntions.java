@@ -414,10 +414,11 @@ public class FileFuntions {
 	 */
 	private static boolean checkAllDirectChangeMapDire() {
 		boolean b = false;
-		for (String dire : directoryLastChange.keySet()) {
-			if (directoryHasChange(dire)) {
+		Object[] keys = directoryLastChange.keySet().toArray();
+		for (Object dire : keys) {
+			if (directoryHasChange((String) dire)) {
 				b = true;
-				break;
+
 			}
 		}
 		return b;
@@ -431,7 +432,11 @@ public class FileFuntions {
 	 */
 	public static boolean directoryHasChange(String directory) {
 		File direFile = new File(directory);
-		return direFile.lastModified() != directoryLastChange.get(directory);
+		boolean change = (direFile.lastModified() != directoryLastChange.get(directory));
+		if (!direFile.exists()) {
+			directoryLastChange.remove(directory);
+		}
+		return change;
 	}
 
 	/**
@@ -457,9 +462,18 @@ public class FileFuntions {
 					Utils.mainFrame.getImageTree().repainTabNoTimers(false);
 				} else {
 					// Repaint the images in the viewer
+
 					List<ImageIcon> listImages = transformListToImageicon(actualImages);
 					tp.getViewImagen().setListImages(listImages);
-					tp.getViewImagen().moreActionChangeIndexIma();
+
+					if (actualImages.isEmpty()) {
+						JOptionPane.showMessageDialog(null,
+								"The predicted images has been deleted. Trying to create new ones", "Warning",
+								JOptionPane.WARNING_MESSAGE);
+						Utils.mainFrame.getImageTree().repainTabNoTimers(false);
+					} else {
+						tp.getViewImagen().moreActionChangeIndexIma();
+					}
 
 					// repaint the images in the scroll view
 					if (tp.indexOfTab("Images Scroll") != -1) {
@@ -1593,7 +1607,8 @@ public class FileFuntions {
 //			String tp = Methods.getAlgorithms()[7];
 //
 //			FileFuntions.saveAlgorithmConfi(hv2, hv2, tbg, tp);
-			FileFuntions.saveAlgorithmConfi(Methods.getAlgorithms()[8], Methods.getAlgorithms()[8], Methods.getAlgorithms()[8], Methods.getAlgorithms()[8]);
+			FileFuntions.saveAlgorithmConfi(Methods.getAlgorithms()[8], Methods.getAlgorithms()[8],
+					Methods.getAlgorithms()[8], Methods.getAlgorithms()[8]);
 			change = true;
 
 		} else {
@@ -1605,7 +1620,8 @@ public class FileFuntions {
 //				String tp = Methods.getAlgorithms()[7];
 //
 //				FileFuntions.saveAlgorithmConfi(hv2, hv2, tbg, tp);
-				FileFuntions.saveAlgorithmConfi(Methods.getAlgorithms()[8], Methods.getAlgorithms()[8], Methods.getAlgorithms()[8], Methods.getAlgorithms()[8]);
+				FileFuntions.saveAlgorithmConfi(Methods.getAlgorithms()[8], Methods.getAlgorithms()[8],
+						Methods.getAlgorithms()[8], Methods.getAlgorithms()[8]);
 				change = true;
 			}
 		}

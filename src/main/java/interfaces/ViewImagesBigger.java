@@ -350,8 +350,11 @@ public class ViewImagesBigger {
 	 * the selected image in the case of the AlgorithmView
 	 */
 	public void moreActionChangeIndexIma() {
-		jpComparer.setLabelImageIcon(listImages.get(indexImagenList), listImages.get(indexImagenList).getDescription());
-		image = jpComparer.getLabelImageIcon();
+		if(!listImages.isEmpty()) {
+			jpComparer.setLabelImageIcon(listImages.get(indexImagenList), listImages.get(indexImagenList).getDescription());
+			image = jpComparer.getLabelImageIcon();
+		}
+		
 
 		if (al != null && tp == null) {
 			al.setSelectedBu(al.getButtonFromImage(listImages.get(indexImagenList).getDescription()));
