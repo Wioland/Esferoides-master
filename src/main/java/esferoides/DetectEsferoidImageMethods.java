@@ -1,10 +1,17 @@
 package esferoides;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import funtions.FileFuntions;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.ImageCalculator;
 import ij.process.ImageStatistics;
+import loci.plugins.in.ImporterOptions;
 
 /**
  * 
@@ -333,45 +340,60 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Erode", "");
 	}
 	
-	public static void processEsferoidDeep(ImagePlus imp2) {
+//	public static void processEsferoidDeep(ImagePlus imp2) {
+//
+//			IJ.setThreshold(imp2, 1, 255);
+//
+//			IJ.run(imp2, "Convert to Mask", "");
+//			IJ.run(imp2, "Create Selection", "");
+//			imp2.changes=false;
+//
+//	}
+	public static ImagePlus processSpheroidDeep(String dir, String name, ImporterOptions options) {
 
-//		try {
-//			ProcessBuilder pBuilder = null;
-//
-//			boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-//
-//			if (isWindows) {
-//				pBuilder = new ProcessBuilder("cmd.exe", "/c", "deep-tumour-spheroid.exe image \"" + name + "\" \"" + dir.replace("\\", "\\\\") + "\"");
-//			} else {
-//				System.out.println("Linux ");
-//				pBuilder = new ProcessBuilder("bash", "-ic", "deep-tumour-spheroid image '" + name + "' '" + dir + "'");
-//			}
-//
-//			Process process = pBuilder.start();
-//
-//			StringBuilder output = new StringBuilder();
-//
-//			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-//
-//			String line;
-//			while ((line = reader.readLine()) != null) {
-//				output.append(line + "\n");
-//			}
-//
-//			int exitVal = process.waitFor();
-//			if (exitVal == 0) {
-//				System.out.println("Success!");
-//				System.out.println(output);
-//			} else {
-//				System.out.println("Error");
-//				System.out.println("DirName: "+dir);
-//				System.out.println(output);
-//				System.out.println("Exit Value: " + Integer.toString(exitVal));
-//				System.out.println("--------ErrorEnd--------");
-//			}
+		try {
+			ProcessBuilder pBuilder = null;
+			File deepFolder=new File(dir+"temporalDeepFolder");
+			deepFolder.mkdir();
 
-//			String predictionPath = name.substring(0, name.lastIndexOf('.')) + "_pred.png";
+			boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 
+			if (isWindows) {
+				System.out.println("cmd.exe /c deep-tumour-spheroid.exe image \"" + name + "\" \"" + (deepFolder.getAbsolutePath()+File.separator).replace("\\", "\\\\") + "\""+ ":...............................................");
+				pBuilder = new ProcessBuilder("cmd.exe", "/c", "deep-tumour-spheroid.exe image \"" + name + "\" \"" + (deepFolder.getAbsolutePath()+File.separator).replace("\\", "\\\\") + "\"");
+			} else {
+				System.out.println("Linux ");
+				System.out.println("bash -ic deep-tumour-spheroid image '" + name + "' '" + deepFolder.getAbsolutePath() + "'" +"...........................................................");
+				pBuilder = new ProcessBuilder("bash", "-ic", "deep-tumour-spheroid image '" + name + "' '" + deepFolder.getAbsolutePath() + "'");
+			}
+			
+			Process process = pBuilder.start();
+
+			StringBuilder output = new StringBuilder();
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+			String line;
+			while ((line = reader.readLine()) != null) {
+				output.append(line + "\n");
+			}
+
+			int exitVal = process.waitFor();
+			if (exitVal == 0) {
+				System.out.println("Success!");
+				System.out.println(output);
+			} else {
+				System.out.println("Error");
+				System.out.println("DirName: "+dir);
+				System.out.println(output);
+				System.out.println("Exit Value: " + Integer.toString(exitVal));
+				System.out.println("--------ErrorEnd--------");
+			}
+
+			
+			String predictionPath =deepFolder.getAbsolutePath()+File.separator+FileFuntions.namewithoutExtension(name) + "_pred.png";
+
+			ImagePlus imp2 =FileFuntions.openImageIJ(predictionPath, options);
 //			ImagePlus imp2 = IJ.openImage(predictionPath);
 //			imp2.show();
 			IJ.setThreshold(imp2, 1, 255);
@@ -379,64 +401,18 @@ public class DetectEsferoidImageMethods {
 			// IJ.run('Options...', 'black');
 			IJ.run(imp2, "Convert to Mask", "");
 			IJ.run(imp2, "Create Selection", "");
-//			RoiManager roiManager = new RoiManager();
-//			roiManager.addRoi(imp2.getRoi());
-//			roiManager.runCommand("Save", predictionPath.replace("_pred.png", ".roi"));
-//			roiManager.close();
-
-			imp2.close();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+			imp2.changes=false;
+			return imp2;
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
-//	public static void processEsferoidDeep(ImagePlus imp2) {
-////
-////		try {
-////			Process p;
-////			ProcessBuilder processBuilder = new ProcessBuilder();
-////			processBuilder.command("bash", "-c", "spheroids " + name + " " + dir);
-////
-////			Process process = processBuilder.start();
-////
-////			StringBuilder output = new StringBuilder();
-////
-////			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-////
-////			String line;
-////			while ((line = reader.readLine()) != null) {
-////				output.append(line + "\n");
-////			}
-////
-////			int exitVal = process.waitFor();
-////			if (exitVal == 0) {
-////				System.out.println("Success!");
-////				System.out.println(output);
-////				// System.exit(0);
-////			} else {
-////				System.out.println("Error");
-////				System.out.println(exitVal);
-////			}
-//
-////			String predictionPath = name.substring(0, name.lastIndexOf('.')) + "_pred";
-////			System.out.println(predictionPath);
-////			ImagePlus imp2 = IJ.openImage(predictionPath);
-////			imp2.show();
-//		IJ.run(imp2, "8-bit", "");
-//		IJ.setAutoThreshold(imp2, "Default");
-//		IJ.run(imp2, "Convert to Mask", "");
-//		imp2.changes = false;
-////		} catch (IOException e) {
-////			// TODO Auto-generated catch block
-////			e.printStackTrace();
-////		} catch (InterruptedException e) {
-////			// TODO Auto-generated catch block
-////			e.printStackTrace();
-////		}
-//	}
 
 	public static void processBlackHoles(ImagePlus imp2, boolean dilate) {
 		IJ.setThreshold(imp2, 0, 2300);

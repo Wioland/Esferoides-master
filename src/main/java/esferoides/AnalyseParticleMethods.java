@@ -2,15 +2,13 @@ package esferoides;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.gui.Roi;
 import ij.plugin.frame.RoiManager;
 
 /**
  * 
  * @author Jonathan
- * @see <a href =
- *      "https://github.com/joheras/SpheroidJ"
- *      > Github repository </a>
+ * @see <a href = "https://github.com/joheras/SpheroidJ" > Github repository
+ *      </a>
  *
  *
  */
@@ -45,22 +43,22 @@ public class AnalyseParticleMethods {
 		return rm;
 	}
 
-	public synchronized static Roi[] analyzeParticlesHectorRoi(ImagePlus imp2) {
-
-		IJ.run(imp2, "Analyze Particles...", "size=0.01-Infinity  circularity=0.15-2.00 exclude add");
-		imp2.changes = false;
-
-		RoiManager rm = RoiManager.getInstance();
-		Roi[] rois = null;
-
-		if (rm != null) {
-			rm.setVisible(false);
-			rois = rm.getRoisAsArray();
-
-		}
-
-		return rois;
-	}
+//	public synchronized static Roi[] analyzeParticlesHectorRoi(ImagePlus imp2) {
+//
+//		IJ.run(imp2, "Analyze Particles...", "size=0.01-Infinity  circularity=0.15-2.00 exclude add");
+//		imp2.changes = false;
+//
+//		RoiManager rm = RoiManager.getInstance();
+//		Roi[] rois = null;
+//
+//		if (rm != null) {
+//			rm.setVisible(false);
+//			rois = rm.getRoisAsArray();
+//
+//		}
+//
+//		return rois;
+//	}
 
 	public static RoiManager analyseParticlesTeodora(ImagePlus imp2, boolean blackHole, boolean exclude) {
 

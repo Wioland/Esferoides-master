@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.GridLayout;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
@@ -13,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -1548,6 +1551,25 @@ public class FileFuntions {
 		}
 
 	}
+	
+	
+	/**
+	 * Open a link in a browser
+	 * 
+	 * @param link	link
+	 */
+    public static void openLink (String link){
+    	if (Desktop.isDesktopSupported()) {
+			try {
+
+				Desktop.getDesktop().browse(new URI(link));
+			} catch (URISyntaxException | IOException ex) {
+				JOptionPane.showMessageDialog(null,
+						"The link can´t be open", "ERROR",
+						JOptionPane.ERROR_MESSAGE);
+			} 
+		}
+    }
 
 	/**
 	 * Opens the about section
@@ -1558,12 +1580,23 @@ public class FileFuntions {
 
 		String version = prop.getProp().getProperty("version");
 		String about = prop.getProp().getProperty("about");
+		String web=prop.getProp().getProperty("web");
 
 		JDialog jDia = new JDialog(Utils.mainFrame);
 		jDia.setTitle("About Spheroid APP");
 
 		JLabel versionTextLabel = new JLabel("Version: ");
 		JLabel versionLabel = new JLabel(version);
+		JLabel webTextLabel = new JLabel("Web: ");
+		JButton webLabel = new JButton(web);
+		webLabel.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				openLink (web);				
+				
+			}
+		});
 		JLabel aboutTextLabel = new JLabel("About: ");
 		JTextPane aboutLabel = new JTextPane();
 		aboutLabel.setEditable(false);
@@ -1572,15 +1605,19 @@ public class FileFuntions {
 
 		JPanel vePAnel = new JPanel(new GridLayout(0, 2));
 		JPanel abPAnel = new JPanel(new GridLayout(2, 2));
+		JPanel webPAnel = new JPanel(new GridLayout(0, 2));
 
 		vePAnel.add(versionTextLabel);
 		vePAnel.add(versionLabel);
+		webPAnel.add(webTextLabel);
+		webPAnel.add(webLabel);
 		abPAnel.add(aboutTextLabel);
 		abPAnel.add(aboutLabel);
 
 		JPanel principalPanel = new JPanel(new GridLayout(4, 0));
 		principalPanel.add(name);
 		principalPanel.add(vePAnel);
+		principalPanel.add(webPAnel);
 		principalPanel.add(abPAnel);
 
 		jDia.add(principalPanel);
