@@ -4,7 +4,7 @@ A graphical interface built on top of ImageJ to employ SpheroidJ  https://github
 
 <b>*INGLÉS / ENGLISH*</b>
 
-For the exeution of the files <b>*java must be installed*</b> on the computer, in other case the execution of them will not start, , (<b>*Java 11 o higher*</b>). Also <b>Python</b> (64-bit in Windows, otherwise it will not be possible to install the necessary packages for the Deep learning model) and the Python package [Deep-Tumour-Spheroid](https://pypi.org/project/Deep-Tumour-Spheroid/). [(Steps for the installation of the packages)](https://github.com/joheras/SpheroidJ#installation)
+For the exeution of the files <b>*java must be installed*</b> on the computer, in other case the execution of them will not start, (<b>*Java 11 o higher*</b>). Also <b>Python</b> (64-bit in Windows, otherwise it will not be possible to install the necessary packages for the Deep learning model) and the Python package [Deep-Tumour-Spheroid](https://pypi.org/project/Deep-Tumour-Spheroid/). [(Steps for the installation of the packages)](https://github.com/joheras/SpheroidJ#installation)
 
  In *Linux* the installer does not allow its execution from the first moment because it does not recognize the manufacturer, therefore to allow this, you must perform: *right click on the file →  Properties → Permissions → check the box "Allow executing file as program"
 
