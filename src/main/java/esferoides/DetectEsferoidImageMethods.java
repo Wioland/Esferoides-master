@@ -49,9 +49,6 @@ public class DetectEsferoidImageMethods {
 	}
 
 	public static void processEsferoidFluo(ImagePlus imp2, boolean threshold) {
-//		IJ.run(imp2, "8-bit", "");
-//		IJ.setAutoThreshold(imp2, "Li dark");
-//		IJ.run(imp2, "Convert to Mask", "");
 		IJ.run(imp2, "8-bit", "");
 		IJ.setAutoThreshold(imp2, "RenyiEntropy dark");// Li, MaxEntropy
 
@@ -263,7 +260,7 @@ public class DetectEsferoidImageMethods {
 			IJ.setAutoThreshold(imp2, "Default");
 		}
 
-		// IJ.setAutoThreshold(imp2, "Default"); // dark
+		
 		IJ.run(imp2, "Convert to Mask", "");
 
 	}
@@ -312,7 +309,7 @@ public class DetectEsferoidImageMethods {
 		ic.run("ADD", imp2, imp1);
 		IJ.run(imp2, "Fill Holes", "");
 		imp1.changes = false;
-		// imp2.changes=false;
+		
 		imp1.close();
 
 	}
@@ -340,15 +337,7 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Erode", "");
 	}
 	
-//	public static void processEsferoidDeep(ImagePlus imp2) {
-//
-//			IJ.setThreshold(imp2, 1, 255);
-//
-//			IJ.run(imp2, "Convert to Mask", "");
-//			IJ.run(imp2, "Create Selection", "");
-//			imp2.changes=false;
-//
-//	}
+
 	public static ImagePlus processSpheroidDeep(String dir, String name, ImporterOptions options) {
 
 		try {
@@ -393,22 +382,18 @@ public class DetectEsferoidImageMethods {
 			
 			String predictionPath =deepFolder.getAbsolutePath()+File.separator+FileFuntions.namewithoutExtension(name) + "_pred.png";
 
-			ImagePlus imp2 =FileFuntions.openImageIJ(predictionPath, options);
-//			ImagePlus imp2 = IJ.openImage(predictionPath);
-//			imp2.show();
+			ImagePlus imp2 =FileFuntions.openImageIJ(predictionPath, options);			
 			IJ.setThreshold(imp2, 1, 255);
 
-			// IJ.run('Options...', 'black');
+		
 			IJ.run(imp2, "Convert to Mask", "");
 			IJ.run(imp2, "Create Selection", "");
 			imp2.changes=false;
 			return imp2;
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -423,7 +408,6 @@ public class DetectEsferoidImageMethods {
 			IJ.run(imp2, "Dilate", "");
 		}
 		IJ.run(imp2, "Watershed", "");
-//		IJ.run(imp2, "Shape Smoothing", "relative_proportion_fds=5 absolute_number_fds=2 keep=[Relative_proportion of FDs]");
 
 	}
 

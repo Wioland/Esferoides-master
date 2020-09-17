@@ -153,9 +153,7 @@ public class GeneralView extends JFrame {
 			JMenuPropertiesFile jm = (JMenuPropertiesFile) component;
 			Collection<JMenuItem> items = jm.getListMenusNotEnable().values();
 			for (JMenuItem menu : items) {
-//				if (!menu.isEnabled()) {
 				menu.setEnabled(!menu.isEnabled());
-//				}
 			}
 		}
 

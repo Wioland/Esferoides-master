@@ -577,11 +577,6 @@ public class Utils {
 		String tp = Methods.getAlgorithms()[7];
 		String hrn = Methods.getAlgorithms()[8];
 
-//		String fluoSave = hv2;
-//		String tifSave = hv2;
-//		String nd2Save = tbg;
-//		String jpgSave = tp;
-
 		String fluoSave = hrn;
 		String tifSave = hrn;
 		String nd2Save = hrn;

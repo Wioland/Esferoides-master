@@ -967,7 +967,6 @@ public class FileFuntions {
 			if (op == 0) {
 				// if yes we call the updater jar
 				try {
-//					Runtime.getRuntime().exec("java -jar " + "\"" + pathJArUpdater + "\"");
 
 					Runtime.getRuntime().exec(new String[] { "java", "-jar", pathJArUpdater });
 
@@ -1639,11 +1638,7 @@ public class FileFuntions {
 			String jpgSave) {
 		boolean change = false;
 		if (fluoSave == null || tifSave == null || nd2Save == null || jpgSave == null) {
-//			String hv2 = Methods.getAlgorithms()[3];
-//			String tbg = Methods.getAlgorithms()[5];
-//			String tp = Methods.getAlgorithms()[7];
-//
-//			FileFuntions.saveAlgorithmConfi(hv2, hv2, tbg, tp);
+
 			FileFuntions.saveAlgorithmConfi(Methods.getAlgorithms()[8], Methods.getAlgorithms()[8],
 					Methods.getAlgorithms()[8], Methods.getAlgorithms()[8]);
 			change = true;
@@ -1652,11 +1647,7 @@ public class FileFuntions {
 			List<String> listax = Arrays.asList(Methods.getAlgorithms());
 			if (!listax.contains(fluoSave) || !listax.contains(tifSave) || !listax.contains(nd2Save)
 					|| !listax.contains(jpgSave)) {
-//				String hv2 = Methods.getAlgorithms()[3];
-//				String tbg = Methods.getAlgorithms()[5];
-//				String tp = Methods.getAlgorithms()[7];
-//
-//				FileFuntions.saveAlgorithmConfi(hv2, hv2, tbg, tp);
+
 				FileFuntions.saveAlgorithmConfi(Methods.getAlgorithms()[8], Methods.getAlgorithms()[8],
 						Methods.getAlgorithms()[8], Methods.getAlgorithms()[8]);
 				change = true;
@@ -1727,7 +1718,7 @@ public class FileFuntions {
 
 		Path origenPath = Paths.get(origenFile);
 		Path destiPath = Paths.get(destiFile);
-		// sobreescribir el fichero de destino si existe y lo copia
+		// overwrite the destination file if it exists and copy it
 		try {
 			Files.copy(origenPath, destiPath, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
