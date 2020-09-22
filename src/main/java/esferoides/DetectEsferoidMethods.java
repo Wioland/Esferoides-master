@@ -412,13 +412,16 @@ public class DetectEsferoidMethods {
 		ImagePlus imp2 = DetectEsferoidImageMethods.processSpheroidDeep(dir, name, options);
 
 		if (imp2 != null) {
-			ImagePlus imp = imp2.duplicate();
-			rm = AnalyseParticleMethods.analyseParticlesTeodora(imp, false, false);
+//			ImagePlus imp = imp2.duplicate();
+		
+			rm = AnalyseParticleMethods.analyseParticlesTeodora(imp2, false, false);
+			
+			imp2 =FileFuntions.openImageIJ(name, options);	
 			if (temp) {
-				Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
+				Utils.showResultsAndSave(dir, name, imp2, rm, goodRows, nameClass, temp);
 
 			} else {
-				Utils.showResultsAndSaveNormal(dir, name, imp, rm, goodRows);
+				Utils.showResultsAndSaveNormal(dir, name, imp2, rm, goodRows);
 			}
 
 			imp2.close();

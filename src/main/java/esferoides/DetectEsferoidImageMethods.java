@@ -385,9 +385,11 @@ public class DetectEsferoidImageMethods {
 			ImagePlus imp2 =FileFuntions.openImageIJ(predictionPath, options);			
 			IJ.setThreshold(imp2, 1, 255);
 
-		
+			
 			IJ.run(imp2, "Convert to Mask", "");
+			
 			IJ.run(imp2, "Create Selection", "");
+			
 			imp2.changes=false;
 			return imp2;
 			
