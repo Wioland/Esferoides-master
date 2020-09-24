@@ -18,9 +18,8 @@ import loci.plugins.in.ImporterOptions;
 /**
  * 
  * @author Jonathan
- * @see <a href = "https://github.com/joheras/SpheroidJ" > Github repository
- *      </a>
- *
+ * @see <a href = "https://github.com/joheras/SpheroidJ" > This code has changes
+ *      compared the original in this Github repository </a>
  *
  */
 public class DetectEsferoidMethods {
@@ -339,7 +338,6 @@ public class DetectEsferoidMethods {
 		RoiManager rm = AnalyseParticleMethods.analyzeParticlesHector(impFluoD);
 		Utils.keepBiggestROI(rm);
 
-
 		if (temp) {
 			Utils.showResultsAndSave(dir, name, imp, rm, goodRows, nameClass, temp);
 
@@ -387,7 +385,6 @@ public class DetectEsferoidMethods {
 			rm = AnalyseParticleMethods.analyzeParticlesFluo(impD);
 		}
 
-
 		imp.close();
 
 		if (temp) {
@@ -413,10 +410,10 @@ public class DetectEsferoidMethods {
 
 		if (imp2 != null) {
 //			ImagePlus imp = imp2.duplicate();
-		
+
 			rm = AnalyseParticleMethods.analyseParticlesTeodora(imp2, false, false);
-			
-			imp2 =FileFuntions.openImageIJ(name, options);	
+
+			imp2 = FileFuntions.openImageIJ(name, options);
 			if (temp) {
 				Utils.showResultsAndSave(dir, name, imp2, rm, goodRows, nameClass, temp);
 
@@ -425,11 +422,10 @@ public class DetectEsferoidMethods {
 			}
 
 			imp2.close();
-			
-			File deepFolder=new File(dir+"temporalDeepFolder");
+
+			File deepFolder = new File(dir + "temporalDeepFolder");
 			FileFuntions.deleteFolder(deepFolder);
 		}
-
 
 	}
 

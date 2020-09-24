@@ -16,9 +16,8 @@ import loci.plugins.in.ImporterOptions;
 /**
  * 
  * @author Jonathan
- * @see <a href = "https://github.com/joheras/SpheroidJ" > Github repository
- *      </a>
- *
+ * @see <a href = "https://github.com/joheras/SpheroidJ" > This code has changes
+ *      compared the original in this Github repository </a>
  *
  */
 public class DetectEsferoidImageMethods {
@@ -260,7 +259,6 @@ public class DetectEsferoidImageMethods {
 			IJ.setAutoThreshold(imp2, "Default");
 		}
 
-		
 		IJ.run(imp2, "Convert to Mask", "");
 
 	}
@@ -309,7 +307,7 @@ public class DetectEsferoidImageMethods {
 		ic.run("ADD", imp2, imp1);
 		IJ.run(imp2, "Fill Holes", "");
 		imp1.changes = false;
-		
+
 		imp1.close();
 
 	}
@@ -336,26 +334,30 @@ public class DetectEsferoidImageMethods {
 		IJ.run(imp2, "Fill Holes", "");
 		IJ.run(imp2, "Erode", "");
 	}
-	
 
 	public static ImagePlus processSpheroidDeep(String dir, String name, ImporterOptions options) {
 
 		try {
 			ProcessBuilder pBuilder = null;
-			File deepFolder=new File(dir+"temporalDeepFolder");
+			File deepFolder = new File(dir + "temporalDeepFolder");
 			deepFolder.mkdir();
 
 			boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 
 			if (isWindows) {
-				System.out.println("cmd.exe /c deep-tumour-spheroid.exe image \"" + name + "\" \"" + (deepFolder.getAbsolutePath()+File.separator).replace("\\", "\\\\") + "\""+ ":...............................................");
-				pBuilder = new ProcessBuilder("cmd.exe", "/c", "deep-tumour-spheroid.exe image \"" + name + "\" \"" + (deepFolder.getAbsolutePath()+File.separator).replace("\\", "\\\\") + "\"");
+				System.out.println("cmd.exe /c deep-tumour-spheroid.exe image \"" + name + "\" \""
+						+ (deepFolder.getAbsolutePath() + File.separator).replace("\\", "\\\\") + "\""
+						+ ":...............................................");
+				pBuilder = new ProcessBuilder("cmd.exe", "/c", "deep-tumour-spheroid.exe image \"" + name + "\" \""
+						+ (deepFolder.getAbsolutePath() + File.separator).replace("\\", "\\\\") + "\"");
 			} else {
 				System.out.println("Linux ");
-				System.out.println("bash -ic deep-tumour-spheroid image '" + name + "' '" + deepFolder.getAbsolutePath() + "'" +"...........................................................");
-				pBuilder = new ProcessBuilder("bash", "-ic", "deep-tumour-spheroid image '" + name + "' '" + deepFolder.getAbsolutePath() + "'");
+				System.out.println("bash -ic deep-tumour-spheroid image '" + name + "' '" + deepFolder.getAbsolutePath()
+						+ "'" + "...........................................................");
+				pBuilder = new ProcessBuilder("bash", "-ic",
+						"deep-tumour-spheroid image '" + name + "' '" + deepFolder.getAbsolutePath() + "'");
 			}
-			
+
 			Process process = pBuilder.start();
 
 			StringBuilder output = new StringBuilder();
@@ -373,26 +375,24 @@ public class DetectEsferoidImageMethods {
 				System.out.println(output);
 			} else {
 				System.out.println("Error");
-				System.out.println("DirName: "+dir);
+				System.out.println("DirName: " + dir);
 				System.out.println(output);
 				System.out.println("Exit Value: " + Integer.toString(exitVal));
 				System.out.println("--------ErrorEnd--------");
 			}
 
-			
-			String predictionPath =deepFolder.getAbsolutePath()+File.separator+FileFuntions.namewithoutExtension(name) + "_pred.png";
+			String predictionPath = deepFolder.getAbsolutePath() + File.separator
+					+ FileFuntions.namewithoutExtension(name) + "_pred.png";
 
-			ImagePlus imp2 =FileFuntions.openImageIJ(predictionPath, options);			
+			ImagePlus imp2 = FileFuntions.openImageIJ(predictionPath, options);
 			IJ.setThreshold(imp2, 1, 255);
 
-			
 			IJ.run(imp2, "Convert to Mask", "");
-			
 			IJ.run(imp2, "Create Selection", "");
-			
-			imp2.changes=false;
+			imp2.changes = false;
+
 			return imp2;
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {

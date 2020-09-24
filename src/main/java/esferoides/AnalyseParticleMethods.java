@@ -5,11 +5,11 @@ import ij.ImagePlus;
 import ij.plugin.frame.RoiManager;
 
 /**
+ *
  * 
  * @author Jonathan
- * @see <a href = "https://github.com/joheras/SpheroidJ" > Github repository
- *      </a>
- *
+ * @see <a href = "https://github.com/joheras/SpheroidJ" > This code has changes
+ *      compared the original in this Github repository </a>
  *
  */
 public class AnalyseParticleMethods {
@@ -42,7 +42,6 @@ public class AnalyseParticleMethods {
 
 		return rm;
 	}
-
 
 	public static RoiManager analyseParticlesTeodora(ImagePlus imp2, boolean blackHole, boolean exclude) {
 
