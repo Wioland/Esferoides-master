@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
@@ -40,6 +42,16 @@ public class OurProgressBar extends JDialog {
 	public OurProgressBar(JFrame frameDad, boolean showProgress) {
 		super(frameDad);
 		this.showProgress = showProgress;
+		
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				frameDad.setEnabled(true);
+			}
+
+			public void windowClosed(WindowEvent e) {
+				frameDad.setEnabled(true);
+			}
+		});
 
 		setTitle("Work in progress");
 		JProgressBar progressBar = new JProgressBar();
@@ -61,6 +73,8 @@ public class OurProgressBar extends JDialog {
 
 		setUndecorated(true);
 		setVisible(true);
+		
+		frameDad.setEnabled(false);
 
 	}
 
