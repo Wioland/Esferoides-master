@@ -147,7 +147,7 @@ public class TabPanel extends JTabbedPane {
 			if (this.alreadyprocessed) {
 				noFileText("Images", null);
 				tabsActions(result);
-				this.alreadyprocessed=false;
+				this.alreadyprocessed = false;
 			} else {
 				boolean proessImages = Utils.mainFrame.checkOriginalAndAskProcess(this.dir);
 				if (proessImages) {
@@ -185,7 +185,7 @@ public class TabPanel extends JTabbedPane {
 
 				excel = new File(path);
 				if (excel.exists()) {
-					ExcelActions.addExcelPanel(excel, this,-1);
+					ExcelActions.addExcelPanel(excel, this, -1);
 
 				} else {
 					noFileText("Excel", null);
@@ -322,7 +322,7 @@ public class TabPanel extends JTabbedPane {
 			Utils.searchFoldersName(new File(this.dir), "predictions", predictionsFolderPAth, 1);
 			if (folderList.isEmpty() || predictionsFolderPAth.isEmpty()) {
 				compare = processImage(i, listExtensions, directory, result);
-				
+
 				predictionsFolderPAth.clear();
 				Utils.searchFoldersName(new File(this.dir), "predictions", predictionsFolderPAth, 1);
 				File predic = null;

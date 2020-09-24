@@ -146,6 +146,14 @@ public class AlgorithmView extends JFrame {
 		this.tabbedPanel = tabbedPanel;
 	}
 
+	public JPanel getjSp() {
+		return jSp;
+	}
+
+	public void setjSp(JPanel jSp) {
+		this.jSp = jSp;
+	}
+
 	// METHODS
 	/**
 	 * Initializes the Algorithm view JFrame with the content created
@@ -219,9 +227,9 @@ public class AlgorithmView extends JFrame {
 	}
 
 	/**
-	 * Action to perform when a button with an image is clicked.
-	 *  - One click select the button and makes it the selected 
-	 *  - Two clicks opens a comparer in the JFRame to compare with the image in predictions
+	 * Action to perform when a button with an image is clicked. - One click select
+	 * the button and makes it the selected - Two clicks opens a comparer in the
+	 * JFRame to compare with the image in predictions
 	 * 
 	 * @param me        Mouse event
 	 * @param imageIcon ImageIco in the button clicked
@@ -305,6 +313,7 @@ public class AlgorithmView extends JFrame {
 
 				case KeyEvent.VK_RIGHT:
 					vi.getJPComparer().getForwarButtonButton().doClick();
+
 					break;
 
 				default:

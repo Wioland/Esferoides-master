@@ -549,6 +549,13 @@ public class ViewImagesBigger {
 		}
 
 		jpComparer.restoreSizeIndicators();
+		
+		if(al==null) {
+			Utils.mainFrame.requestFocusInWindow();
+		}else {
+			al.getjSp().requestFocusInWindow();
+		}
+		
 	}
 
 	/**
@@ -656,7 +663,7 @@ public class ViewImagesBigger {
 				if (!alreadyAlView) {
 					new AlgorithmView(f);
 				}
-
+				Utils.mainFrame.requestFocusInWindow();
 			}
 		});
 
