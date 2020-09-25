@@ -60,27 +60,27 @@ Para la instalación del programa, solo hace falta descargar los archivos necesa
 <h1>Possible improvements to add / Posibles mejoras a añadir</h1>
 
 <b>*INGLÉS / ENGLISH*</b>
-• Add new methods
-• Incorporate threads for faster stopping speed
-• When an image is not processed by an algorithm (it does not create an image), notify the user or try to find some other algorithm by which it is generated
-• Reduce the size of the file.
-• Make temporary or auxiliary folders not visible to the user
-• When a new version is found, notify that new features have been added compared to the current version.
-• At the time of installation, have the necessary Python packages installed together with the program files instead of doing it manually
-• Set the progress bar when the views are being changed because the directory has been modified
-• Linux does not show the window containing the image when opening the modifier, since it is displayed even though the content of this is already in the main window
+* Add new methods
+* Incorporate threads for faster stopping speed
+* When an image is not processed by an algorithm (it does not create an image), notify the user or try to find some other algorithm by which it is generated
+* Reduce the size of the file.
+* Make temporary or auxiliary folders not visible to the user
+* When a new version is found, notify that new features have been added compared to the current version.
+* At the time of installation, have the necessary Python packages installed together with the program files instead of doing it manually
+* Set the progress bar when the views are being changed because the directory has been modified
+* Linux does not show the window containing the image when opening the modifier, since it is displayed even though the content of this is already in the main window
 
 
 <b>*ESPAÑOL / SPANISH*</b>
 
-•	Añadir nuevos métodos
-•	Incorporar hilos para una mayor rapidez de detención 
-•	Cuando una imagen no se procese por un algoritmo (no crea imagen), notificárselo al usuario o intentar encontrar alguno otro algoritmo por el que si se genere
-•	Disminuir el tamaño del fichero.
-•	Hacer que las carpetas temporales o auxiliares, no sean visibles para el usuario
-•	Cuando se encuentre una nueva versión, notificar que nuevas características se han añadido con respecto a la versión actual.
-•	A la hora de realizar la instalación hacer que se instale junto a los archivos del programa, los paquetes de Python necesarios en lugar de realizarlo manualmente
-•	Poner la barra de progreso cuando se está cambiando las vistas porque el directorio ha sido modificado
-•	Linux no mostrar al abrir el modificador la ventana que contiene la imagen, ya que se muestra a pesar de que el contenido de esta ya está en la ventana principal
+*	Añadir nuevos métodos
+*	Incorporar hilos para una mayor rapidez de detención 
+*	Cuando una imagen no se procese por un algoritmo (no crea imagen), notificárselo al usuario o intentar encontrar alguno otro algoritmo por el que si se genere
+*	Disminuir el tamaño del fichero.
+*	Hacer que las carpetas temporales o auxiliares, no sean visibles para el usuario
+*	Cuando se encuentre una nueva versión, notificar que nuevas características se han añadido con respecto a la versión actual.
+*	A la hora de realizar la instalación hacer que se instale junto a los archivos del programa, los paquetes de Python necesarios en lugar de realizarlo manualmente
+*	Poner la barra de progreso cuando se está cambiando las vistas porque el directorio ha sido modificado
+*	Linux no mostrar al abrir el modificador la ventana que contiene la imagen, ya que se muestra a pesar de que el contenido de esta ya está en la ventana principal
 
 
