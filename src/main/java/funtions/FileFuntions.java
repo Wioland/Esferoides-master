@@ -502,7 +502,8 @@ public class FileFuntions {
 	private static void repaintImagesScrollView(List<String> imagesTiff, TabPanel tp) {
 
 		// we paint again the images
-		JPanel sp = (JPanel) tp.getComponent(0);
+	
+		JPanel sp = (JPanel) tp.getComponent(tp.indexOfTab("Images Scroll")+1);
 		JScrollPane s = (JScrollPane) sp.getComponent(1);
 		JViewport jv = (JViewport) s.getComponent(0);
 		ShowImages images = (ShowImages) jv.getComponent(0);

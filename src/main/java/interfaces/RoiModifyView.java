@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -69,7 +70,7 @@ public class RoiModifyView extends JPanel {
 		this.roiPath = roiPath;
 		this.mainFrame = true;
 
-		paintContent();
+		paintContent(Utils.mainFrame);
 	}
 
 	public RoiModifyView(String pathImage, String roiPath, AlgorithmView al) {
@@ -79,7 +80,7 @@ public class RoiModifyView extends JPanel {
 		this.roiPath = roiPath;
 		this.mainFrame = false;
 
-		paintContent();
+		paintContent(al);
 	}
 
 	// GETTERS Y SETTERS
@@ -103,10 +104,10 @@ public class RoiModifyView extends JPanel {
 	/**
 	 * PAints the content of this JPanel
 	 */
-	private void paintContent() {
+	private void paintContent(JFrame f) {
 		JPanel panelButtons = new JPanel(new GridLayout(0, 1));
 
-		OurProgressBar pb = new OurProgressBar(null, false);
+		OurProgressBar pb = new OurProgressBar(f, false);
 
 		Thread t = new Thread() {
 			public void run() {
